@@ -2,26 +2,26 @@ import torch
 import torch.nn as nn
 import torch_geometric.nn as gnn
 
-# MLP with one hidden layer
-class MLP(nn.module):
+# TODO: MLP with one hidden layer?
+"""class MLP(nn.Module):
     def __init__(self):
         super().__init__()
 
 
     def forward(self, x):
-        return self.model(x)
+        return self.model(x)"""
     
 
 # Three layer GNN   (GCN) for Graph Classification based on PGExplainer Source code
-class GraphGNN(nn.module):
+class GraphGNN(nn.Module):
     def __init__(self, features, output_dim):
         super().__init__()
         
-        self.hidden1 = gnn.conv.GraphConv(features, 20, True)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
+        self.hidden1 = gnn.conv.GraphConv(features, 20)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
         self.relu1 = nn.ReLU()
-        self.hidden2 = gnn.conv.GraphConv(20, 20, True)         # GraphConvolution layer2: input dim = hidden dim = 20,
+        self.hidden2 = gnn.conv.GraphConv(20, 20)         # GraphConvolution layer2: input dim = hidden dim = 20,
         self.relu2 = nn.ReLU()
-        self.hidden3 = gnn.conv.GraphConv(20, 20, True)         # GraphConvolution layer3: 
+        self.hidden3 = gnn.conv.GraphConv(20, 20)         # GraphConvolution layer3: 
         self.relu3 = nn.ReLU()
         
         self.lin = nn.Linear(20, output_dim)                    # fully connected layer(Dense) => nn.linear: input dim = hidden dim, output dim = output dim = classes?
@@ -29,7 +29,7 @@ class GraphGNN(nn.module):
 
     def forward(self, x, edge_index, batch = None):             # edge weights missing ; x, edge_index = feature_tensor, adjs_tensor?
         if batch is None:
-            batch = torch.zeros(x.size(0), dtype= torch.long)   # all nodes belong to the same graph 0
+            batch = torch.zeros(x.shape[0], dtype= torch.long)   # all nodes belong to the same graph 0
             
         out = self.hidden1(x, edge_index)
         out = self.relu1(out)
@@ -46,3 +46,6 @@ class GraphGNN(nn.module):
         out = self.lin(torch.cat([maxP, meanP], -1))            # concat embeddings to get better representation of graph to classify => input_dim lin = 2* size of features?
         
         return out
+    
+
+# TODO: GCN for node classification
