@@ -28,6 +28,7 @@ class GraphGNN(nn.Module):
 
 
     def forward(self, x, edge_index, batch = None):             # edge weights missing ; x, edge_index = feature_tensor, adjs_tensor?
+        # encoding net
         if batch is None:
             batch = torch.zeros(x.shape[0], dtype= torch.long)   # all nodes belong to the same graph 0
             
@@ -39,11 +40,14 @@ class GraphGNN(nn.Module):
         
         out = self.hidden3(out, edge_index)
         out = self.relu3(out)
+
+        # TODO: node emdeggins (out hidden3) need to be returned seperatly for MLP input
         
-        maxP = gnn.pool.global_max_pool(out, batch)               # max pool
-        meanP = gnn.pool.global_mean_pool(out, batch)             # mean pool
+        # classifier net
+        maxP = gnn.pool.global_max_pool(out, batch)
+        meanP = gnn.pool.global_mean_pool(out, batch)
         
-        out = self.lin(torch.cat([maxP, meanP], -1))            # concat embeddings to get better representation of graph to classify => input_dim lin = 2* size of features?
+        out = self.lin(torch.cat([maxP, meanP], -1))            # concat pooled embeddings to get better representation of graph to classify => input_dim lin = 2* size of features?
         
         return out
     

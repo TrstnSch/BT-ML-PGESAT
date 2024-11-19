@@ -35,8 +35,9 @@ def loadDataset (datasetName: Literal['BA2Motif','MUTAG']) :
 
         #dataset.node_features = node_features      """
 
-        with open('BA-2motif.pkl', 'rb') as f:
+        with open('datasets/BA-2motif.pkl', 'rb') as f:
             adjs, feas, labels = pickle.load(f)
+            #dataset = pickle.load(f)
 
         # TODO: data shuffling + create masks?!
 
@@ -53,8 +54,6 @@ def loadDataset (datasetName: Literal['BA2Motif','MUTAG']) :
     # TODO: load nodeC datasets
     
 
+# TODO: visualizeDataset
 def visualizeDataset () : 
-    return
-
-def visualizeGraph () : 
     return

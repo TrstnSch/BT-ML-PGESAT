@@ -1,0 +1,19 @@
+Understand GCN/GraphConv in PyG
+ - Validate params
+
+Implement + understand DataLoader   80/10/10 split 
+Understand masking + shuffling
+
+training loop
+ - params
+ - optimizer
+ - initalization
+ - train/test split
+
+implement utils
+
+
+
+re-read longer Version of paper
+write Exposee
+set up BA template in Latex
