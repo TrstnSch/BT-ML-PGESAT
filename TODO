@@ -2,7 +2,8 @@ Understand GCN/GraphConv in PyG
  - Validate params
 
 Implement + understand DataLoader   80/10/10 split 
-Understand masking + shuffling
+ - Not possible to edit data in datasets?! => Create Dataset class from scratch with logic from ExplainerDataset? OR use from PyG
+Understand masking (+ shuffling)
 
 training loop
  - params

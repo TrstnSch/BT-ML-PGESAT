@@ -14,7 +14,7 @@ import torch_geometric.nn as gnn
 
 # Three layer GNN   (GCN) for Graph Classification based on PGExplainer Source code
 class GraphGNN(nn.Module):
-    def __init__(self, features, output_dim):
+    def __init__(self, features = 10, output_dim = 2):
         super().__init__()
         
         self.hidden1 = gnn.conv.GraphConv(features, 20)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
@@ -24,10 +24,10 @@ class GraphGNN(nn.Module):
         self.hidden3 = gnn.conv.GraphConv(20, 20)         # GraphConvolution layer3: 
         self.relu3 = nn.ReLU()
         
-        self.lin = nn.Linear(20, output_dim)                    # fully connected layer(Dense) => nn.linear: input dim = hidden dim, output dim = output dim = classes?
+        self.lin = nn.Linear(20*2, output_dim)                    # fully connected layer(Dense) => nn.linear: input dim = hidden dim * 2 due to concat of pooling, output dim = output dim = classes
 
 
-    def forward(self, x, edge_index, batch = None):             # edge weights missing ; x, edge_index = feature_tensor, adjs_tensor?
+    def forward(self, x, edge_index, batch = None):             # edge weights missing ; x, edge_index = feature_tensor, transformed adjs_tensor
         # encoding net
         if batch is None:
             batch = torch.zeros(x.shape[0], dtype= torch.long)   # all nodes belong to the same graph 0
