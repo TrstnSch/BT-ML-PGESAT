@@ -1,20 +1,53 @@
 Understand GCN/GraphConv in PyG
- - Validate params
+ - DONE: Validate params
 
-Implement + understand DataLoader   80/10/10 split 
- - Not possible to edit data in datasets?! => Create Dataset class from scratch with logic from ExplainerDataset? OR use from PyG
-Understand masking (+ shuffling)
+DONE: Implement + understand DataLoader   80/10/10 split 
+ - Create Dataset classes from scratch (with logic from ExplainerDataset?) OR use from PyG
+ - Understand masking data
 
 training loop
  - params
- - optimizer
- - initalization
- - train/test split
+ - optimizer Adam
+ - initalization Xavier
+ - DONE: train/test split
+ - accuracy
+ - ...
+=> GNN models for different Datasets
+
+
+implement Explainer/MLP
+ - ADD, GNNExplainer, PGExplainer ?!?!
+
+Explainer training loop
+
+ 
+
+
 
 implement utils
 
 
 
+Select one paper to go by !!
 re-read longer Version of paper
 write Exposee
-set up BA template in Latex
+DONE: set up BA template in Latex
+ - change Lehrstuhl, Fachgruppe, Logo on title page
+
+
+Content:
+ - Theoretical:
+   - GNN/GCN
+   - 
+   - SAT
+   - 
+
+ - Reimplementation:
+   - PGExlpainer
+   - GNNExplainer?
+   - Results comparison
+   - optimization
+
+ - Benchmarking PGExplainer?
+
+ - SAT Problem in PGExplainer?
