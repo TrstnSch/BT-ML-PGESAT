@@ -31,25 +31,42 @@ class GraphGNN(nn.Module):
 
 
     def forward(self, x, edge_index, batch = None):             # edge weights missing ; x, edge_index = feature_tensor, transformed adjs_tensor
-        # encoding net
-        out = self.hidden1(x, edge_index)
+        """out = self.hidden1(x, edge_index)
         out = self.relu1(out)
         
         out = self.hidden2(out, edge_index)
         out = self.relu2(out)
         
         out = self.hidden3(out, edge_index)
-        out = self.relu3(out)
+        out = self.relu3(out)"""
 
-        # TODO: node emdeggins (out hidden3) need to be returned seperatly for MLP input
+        # Encoding net
+        emb = self.getNodeEmbeddings(x, edge_index)
         
-        # classifier net
-        maxP = gnn.pool.global_max_pool(out, batch)
-        meanP = gnn.pool.global_mean_pool(out, batch)
+        # Classifier net
+        maxP = gnn.pool.global_max_pool(emb, batch)
+        meanP = gnn.pool.global_mean_pool(emb, batch)
         
         out = self.lin(torch.cat([maxP, meanP], -1))            # concat pooled embeddings to get better representation of graph to classify => input_dim lin = 2* size of features?
         
         return out
     
 
+    # Node embeddings need to be returned seperatly to the MLP and are also part of the forward pass
+    def getNodeEmbeddings(self, x, edge_index):
+        emb1 = self.hidden1(x, edge_index)
+        emb1 = self.relu1(emb1)
+        
+        emb2 = self.hidden2(emb1, edge_index)
+        emb2 = self.relu2(emb2)
+        
+        emb3 = self.hidden3(emb2, edge_index)
+        emb3 = self.relu3(emb3)
+
+        return emb3
+    
+
 # TODO: GCN for node classification
+class NodeGNN(nn.Module):
+    def __init__(self, features, labels):
+        super().__init__()
