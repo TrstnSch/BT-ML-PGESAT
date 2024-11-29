@@ -40,7 +40,7 @@ Content:
    - GNN/GCN
    - 
    - SAT
-   - 
+   - Bipartite Graphs
 
  - Reimplementation:
    - PGExlpainer
