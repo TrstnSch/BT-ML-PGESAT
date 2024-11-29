@@ -9,7 +9,6 @@ def evaluateGNN(gnn, val_loader, test_loader):
 
     batch_size = val_loader.batch_size
 
-    #train_acc, val_acc, test_acc = 0.0
     num_batches = 0.0
     valLosses = 0.0
     testLosses = 0.0
@@ -28,8 +27,7 @@ def evaluateGNN(gnn, val_loader, test_loader):
 
             val_acc_sum += torch.sum(valPred == data.y)         # DONE: should work with batches!?
             
-
-        valLosses += batch_size_ratio * valLoss
+        valLosses += batch_size_ratio * valLoss.item()
 
     val_acc = val_acc_sum/(num_batches*batch_size)          # ROUNDING ERROR SOMEWHERE. Works on batch sizes 1 and 2 but not 16, because loader size 100 not divisible by 16
     num_batches = 0.0
@@ -47,9 +45,8 @@ def evaluateGNN(gnn, val_loader, test_loader):
             test_acc_sum += torch.sum(testPred == data.y)       # DONE: should work with batches!?
             
 
-        testLosses += batch_size_ratio * testLoss
+        testLosses += batch_size_ratio * testLoss.item()
         
-    test = valLosses
     test_acc = test_acc_sum/(num_batches*batch_size)
 
-    return  test, val_acc, valLosses/num_batches, test_acc, testLosses/num_batches        # dividing by num_batches correct? should be
+    return  val_acc, valLosses/num_batches, test_acc, testLosses/num_batches        # dividing by num_batches correct? should be

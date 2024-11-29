@@ -52,42 +52,6 @@ def loadDataset (datasetName: Literal['BA2Motif','MUTAG', 'BA-Shapes', 'BA-Commu
 
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
     if datasetName == 'BA2Motif' :
-        """# 400 Barabasi-Albert graphs (20 nodes, following PGE/GNN?) attached with one house motif
-        dataset1 = ExplainerDataset(
-            graph_generator=BAGraph(20, 1),
-            motif_generator=HouseMotif(),
-            num_motifs=1,
-            num_graphs=400,
-            transform=T.Constant()      # appends value 1 node feature for every node
-        )
-        
-        # set y to 0 for House. HOW?!?!?!?! 
-        for i, data in enumerate(dataset1):
-            data.y = torch.tensor([0])
-            #print(data.y)
-
-        # 400 Barabasi-Albert graphs (20 nodes, following PGE/GNN?) attached with one five-node-cycle motif
-        dataset2 = ExplainerDataset(
-            graph_generator=BAGraph(20, 1),
-            motif_generator=CycleMotif(5),
-            num_motifs=1,
-            num_graphs=400,
-            transform=T.Constant()
-        )
-
-        # set y to 1 for Cycle
-        for i, data in enumerate(dataset2):
-            data.y = torch.tensor([1])
-
-        dataset = torch.utils.data.ConcatDataset([dataset1, dataset2])      # no features => use 10 dimensional vector with all 1s
-
-        # TODO: create masks?!
-
-        train_loader = DataLoader(dataset, batch_size, True)
-        test_loader = DataLoader(dataset, batch_size, True)
-
-        # torch_geometric.transforms.RandomLinkSplit for train/test/valid"""
-
         dataset = BA2MotifDataset('datasets')                   # 10d feature vector of 10 times 0.1 instead of 1        
     
 
