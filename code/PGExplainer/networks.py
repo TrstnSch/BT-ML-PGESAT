@@ -87,7 +87,7 @@ class GraphGNN(nn.Module):
 
 class NodeGNN(nn.Module):
     def __init__(self, features, labels):
-        super(GraphGNN, self).__init__()
+        super(NodeGNN, self, self).__init__()
         
         # TODO: ADD BNorm, used in og code ??
 
@@ -111,7 +111,7 @@ class NodeGNN(nn.Module):
         
         self.lin = nn.Linear(20*3, labels)                  # outputs of three hidden layers are by default concatenated in PGE Node classification and input into lin layer
 
-    def forward(self, x, edge_index, batch = None):
+    def forward(self, x, edge_index):
         # Encoding net
         emb = self.getNodeEmbeddings(x, edge_index)
         

@@ -41,7 +41,9 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
             motif_generator=HouseMotif(),
             num_motifs=80,
             num_graphs=1,
+            transform=T.Constant()
         )
+        # 4 labels?
 
     if datasetName == 'BA-Community' :
         dataset = ExplainerDataset(
@@ -51,6 +53,8 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
             num_graphs=2,
             #transform=T.Constant()      # TODO: use 2 gaussian distributions
         )
+        # 8 labels?
+
     if datasetName == 'Tree-Cycles' :
         dataset = ExplainerDataset(
             graph_generator=TreeGraph(8),
@@ -59,6 +63,7 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
             num_graphs=1,
             #transform=T.Constant()      # TODO: appends value 1 node feature for every node?
         )
+        # 2 labels?
 
     if datasetName == 'TreeGrid' :
         dataset = ExplainerDataset(
@@ -68,5 +73,6 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
             num_graphs=1,
             #transform=T.Constant()      # TODO: appends value 1 node feature for every node?
         )
+        # # 2 labels?
     
     return dataset
