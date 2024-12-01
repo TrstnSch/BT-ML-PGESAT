@@ -1,0 +1,93 @@
+------------------ EPOCH 990 -------------------
+average training loss: 0.3086960665001306, training acc: 0.8659942150115967
+validation loss: 0.38601100973544583, validation acc: 0.8452655673027039, test loss: 0.43337775869852935, test acc: 0.8087557554244995
+
+------------------ EPOCH 991 -------------------
+average training loss: 0.30367272198200224, training acc: 0.8680115342140198
+validation loss: 0.39031758732784727, validation acc: 0.8337182402610779, test loss: 0.45655090797881376, test acc: 0.7834101319313049
+
+------------------ EPOCH 992 -------------------
+average training loss: 0.30448249722763854, training acc: 0.8680115342140198
+validation loss: 0.3909948330870422, validation acc: 0.8406466245651245, test loss: 0.4586797587333187, test acc: 0.7834101319313049
+
+------------------ EPOCH 993 -------------------
+average training loss: 0.3007629196221272, training acc: 0.8740633726119995
+validation loss: 0.38312086703315856, validation acc: 0.8498845100402832, test loss: 0.45133747785322126, test acc: 0.8018433451652527
+
+------------------ EPOCH 994 -------------------
+average training loss: 0.3109865983384487, training acc: 0.8628242015838623
+validation loss: 0.38436903238021836, validation acc: 0.8498845100402832, test loss: 0.4448948757989066, test acc: 0.8087557554244995
+
+------------------ EPOCH 995 -------------------
+average training loss: 0.30210464483379285, training acc: 0.8720461130142212
+validation loss: 0.38952945165919817, validation acc: 0.8429561257362366, test loss: 0.4409419935419812, test acc: 0.7972350120544434
+
+------------------ EPOCH 996 -------------------
+average training loss: 0.3051295255549703, training acc: 0.8680115342140198
+validation loss: 0.3886248049098775, validation acc: 0.8429561257362366, test loss: 0.44090470328309017, test acc: 0.8156682252883911
+
+------------------ EPOCH 997 -------------------
+average training loss: 0.30015034019431736, training acc: 0.8731988668441772
+validation loss: 0.39233440133283765, validation acc: 0.8383371829986572, test loss: 0.45320873628563596, test acc: 0.7995391488075256
+
+------------------ EPOCH 998 -------------------
+average training loss: 0.30000754873072377, training acc: 0.8668587803840637
+validation loss: 0.39135857688666487, validation acc: 0.8545034527778625, test loss: 0.44889813826380787, test acc: 0.804147481918335
+
+------------------ EPOCH 999 -------------------
+average training loss: 0.28716708067858254, training acc: 0.8818444013595581
+validation loss: 0.3927903998694662, validation acc: 0.8290992975234985, test loss: 0.4507935582767434, test acc: 0.7972350120544434
+
+------------------ EPOCH 1000 -------------------
+average training loss: 0.30598420147765265, training acc: 0.8677233457565308
+validation loss: 0.38855221874428236, validation acc: 0.8475750684738159, test loss: 0.45393448985666723, test acc: 0.7926267385482788
+highest validation accuracy: 0.8591223955154419 in epoch 658
+
+
+
+No normalize
+------------------ EPOCH 831 -------------------
+average training loss: 0.3345566939680652, training acc: 0.8538904786109924
+validation loss: 0.517632251236296, validation acc: 0.7852193713188171, test loss: 0.406178948379332, test acc: 0.8456221222877502
+
+------------------ EPOCH 832 -------------------
+average training loss: 0.3246583900723059, training acc: 0.8625360131263733
+validation loss: 0.5156931958165586, validation acc: 0.7944572567939758, test loss: 0.414845866129695, test acc: 0.843317985534668
+
+------------------ EPOCH 833 -------------------
+average training loss: 0.3280999937644953, training acc: 0.8587896227836609
+validation loss: 0.522833976671443, validation acc: 0.7921478152275085, test loss: 0.4181862562070794, test acc: 0.8410138487815857
+
+------------------ EPOCH 834 -------------------
+average training loss: 0.3198830494061327, training acc: 0.8613832592964172
+validation loss: 0.5071808938881219, validation acc: 0.8036951422691345, test loss: 0.4027247340311103, test acc: 0.8410138487815857
+
+------------------ EPOCH 835 -------------------
+average training loss: 0.3290322739384016, training acc: 0.860518753528595
+validation loss: 0.5224136245964859, validation acc: 0.7921478152275085, test loss: 0.4054203624000198, test acc: 0.8341013789176941
+
+------------------ EPOCH 836 -------------------
+average training loss: 0.321175095086826, training acc: 0.8634005784988403
+validation loss: 0.5093367774091009, validation acc: 0.7944572567939758, test loss: 0.3970746446040369, test acc: 0.8387096524238586
+
+------------------ EPOCH 837 -------------------
+average training loss: 0.33251559263691094, training acc: 0.8579250574111938
+validation loss: 0.5134703802622957, validation acc: 0.8013857007026672, test loss: 0.40661627473095047, test acc: 0.8341013789176941
+
+------------------ EPOCH 838 -------------------
+average training loss: 0.3144802313544908, training acc: 0.8645533323287964
+validation loss: 0.5272621074991841, validation acc: 0.7921478152275085, test loss: 0.42164436889134244, test acc: 0.8387096524238586
+
+------------------ EPOCH 839 -------------------
+average training loss: 0.31896258252498394, training acc: 0.8628242015838623
+validation loss: 0.5114130706007031, validation acc: 0.7944572567939758, test loss: 0.40667809017242923, test acc: 0.8456221222877502
+
+------------------ EPOCH 840 -------------------
+average training loss: 0.31478847880184824, training acc: 0.8642651438713074
+validation loss: 0.5191214293378839, validation acc: 0.7898383140563965, test loss: 0.4010850183562749, test acc: 0.8502303957939148
+
+------------------ EPOCH 841 -------------------
+average training loss: 0.31771245961230493, training acc: 0.8596541881561279
+validation loss: 0.5361075108089755, validation acc: 0.7898383140563965, test loss: 0.4285333206027334, test acc: 0.8387096524238586
+Stopping training due to early stopping threshold
+highest validation accuracy: 0.8129330277442932 in epoch 340

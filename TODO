@@ -16,13 +16,13 @@ training loop
  - ...
 => GNN models for different Datasets
 
-Clean up network, loader, eval, training
-Create structure for different datasets/training loops. How to load/save parameters for each task? Differentiate trainGraph and trainNode?
+Clean up
+Create structure for different datasets/training loops. How to load/save parameters for each task?
 
 NodeGNN
 
 
-implement Explainer/MLP
+-------------- implement Explainer/MLP ---------------------
  - ADD, GNNExplainer, PGExplainer ?!?!
 
 Explainer training loop
