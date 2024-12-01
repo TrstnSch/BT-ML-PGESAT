@@ -8,13 +8,32 @@ from torch_geometric.datasets.motif_generator import CycleMotif
 from torch_geometric.datasets.motif_generator import GridMotif
 from torch_geometric.datasets import BA2MotifDataset
 from torch_geometric.datasets import TUDataset
-from torch_geometric.loader import DataLoader
 import torch_geometric.transforms as T
 import os
-# import pickle
 
 
-def loadDataset (datasetName: Literal['BA2Motif','MUTAG', 'BA-Shapes', 'BA-Community', 'Tree-Cycles', 'TreeGrid'], batch_size: int) :
+def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG']) :
+    
+    # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
+    if datasetName == 'BA2Motif' :
+        dataset = BA2MotifDataset('datasets')                   # 10d feature vector of 10 times 0.1 instead of 1        
+    
+
+    if datasetName == 'MUTAG':
+        # TODO: check if reimplementation needed. OG uses 10d features?!
+        dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity")
+
+        dataset.download()
+
+    # Implement splits
+    train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(dataset, [0.8, 0.1, 0.1])        # this "shuffels" data into 3 splits! Use a generator for fixed set with seed
+
+    return train_dataset, val_dataset, test_dataset
+
+
+
+
+def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cycles', 'TreeGrid']) :
     # no node features assigned
     if datasetName == 'BA-Shapes' :
         dataset = ExplainerDataset(
@@ -49,28 +68,5 @@ def loadDataset (datasetName: Literal['BA2Motif','MUTAG', 'BA-Shapes', 'BA-Commu
             num_graphs=1,
             #transform=T.Constant()      # TODO: appends value 1 node feature for every node?
         )
-
-    # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
-    if datasetName == 'BA2Motif' :
-        dataset = BA2MotifDataset('datasets')                   # 10d feature vector of 10 times 0.1 instead of 1        
     
-
-    if datasetName == 'MUTAG':
-        # TODO: check if reimplementation needed. OG uses 10d features?!
-        dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity")
-
-        dataset.download()
-
-    # Implement splits
-    train_dataset, test_dataset, val_dataset = torch.utils.data.random_split(dataset, [0.8, 0.1, 0.1])        # this "shuffels" data into 3 splits! Use a generator for fixed set with seed
-
-    train_loader = DataLoader(train_dataset, batch_size, True)
-    val_loader = DataLoader(val_dataset, batch_size, True)
-    test_loader = DataLoader(test_dataset, batch_size)
-
-    return (train_loader, val_loader, test_loader)
-    
-
-# TODO: visualizeDataset
-def visualizeDataset () : 
-    return
+    return dataset
