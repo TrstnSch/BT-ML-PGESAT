@@ -2,17 +2,24 @@ Understand GCN/GraphConv in PyG
  - DONE: Validate params
 
 DONE: Implement + understand DataLoader   80/10/10 split 
- - Create Dataset classes from scratch (with logic from ExplainerDataset?) OR use from PyG
- - Understand masking data
+ - Create Dataset classes from scratch (with logic from ExplainerDataset?) OR use from PyG    PROBABLY NOT NEEDED
+ - loading masks from dataset???
+ - DONE: visualize Dataset, TODO: color node classes
 
 training loop
  - params
- - optimizer Adam
- - initalization Xavier
+ - DONE: optimizer Adam
+ - DONE: initalization Xavier
  - DONE: train/test split
- - accuracy
+ - DONE: accuracy
+ - DONE: plot!
  - ...
 => GNN models for different Datasets
+
+Clean up network, loader, eval, training
+Create structure for different datasets/training loops. How to load/save parameters for each task? Differentiate trainGraph and trainNode?
+
+NodeGNN
 
 
 implement Explainer/MLP
@@ -20,19 +27,18 @@ implement Explainer/MLP
 
 Explainer training loop
 
- 
-
-
 
 implement utils
 
 
-
 Select one paper to go by !!
 re-read longer Version of paper
-write Exposee
+fix Exposee
 DONE: set up BA template in Latex
  - change Lehrstuhl, Fachgruppe, Logo on title page
+
+
+
 
 
 Content:
