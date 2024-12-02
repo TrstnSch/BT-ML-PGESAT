@@ -43,15 +43,6 @@ class GraphGNN(nn.Module):
 
 
     def forward(self, x, edge_index, batch = None):             # edge weights missing ; x, edge_index = feature_tensor, transformed adjs_tensor
-        """out = self.hidden1(x, edge_index)
-        out = self.relu1(out)
-        
-        out = self.hidden2(out, edge_index)
-        out = self.relu2(out)
-        
-        out = self.hidden3(out, edge_index)
-        out = self.relu3(out)"""
-
         # Encoding net
         emb = self.getNodeEmbeddings(x, edge_index)
         
@@ -92,20 +83,20 @@ class NodeGNN(nn.Module):
         # TODO: ADD BNorm, used in og code ??
 
         self.hidden1 = gnn.GraphConv(features, 20)
-        nn.init.xavier_normal_(self.hidden1.lin_rel.weight)
-        nn.init.xavier_normal_(self.hidden1.lin_root.weight)
+        nn.init.xavier_uniform_(self.hidden1.lin_rel.weight)
+        nn.init.xavier_uniform_(self.hidden1.lin_root.weight)
         self.relu1 = nn.ReLU()
         #self.dropout1 = nn.Dropout(p=0.1)               # Not used in PGExplainer
 
         self.hidden2 = gnn.GraphConv(20, 20)
-        nn.init.xavier_normal_(self.hidden2.lin_rel.weight)
-        nn.init.xavier_normal_(self.hidden2.lin_root.weight)
+        nn.init.xavier_uniform_(self.hidden2.lin_rel.weight)
+        nn.init.xavier_uniform_(self.hidden2.lin_root.weight)
         self.relu2 = nn.ReLU()
         #self.dropout2 = nn.Dropout(p=0.1)               # Not used in PGExplainer
 
         self.hidden3 = gnn.GraphConv(20, 20)
-        nn.init.xavier_normal_(self.hidden3.lin_rel.weight)
-        nn.init.xavier_normal_(self.hidden3.lin_root.weight)
+        nn.init.xavier_uniform_(self.hidden3.lin_rel.weight)
+        nn.init.xavier_uniform_(self.hidden3.lin_root.weight)
         self.relu3 = nn.ReLU()
         #self.dropout3 = nn.Dropout(p=0.1)               # Not used in PGExplainer
         
