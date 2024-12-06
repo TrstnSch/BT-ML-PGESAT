@@ -3,8 +3,12 @@ Understand GCN/GraphConv in PyG
 
 DONE: Implement + understand DataLoader   80/10/10 split 
  - Create Dataset classes from scratch (with logic from ExplainerDataset?) OR use from PyG    PROBABLY NOT NEEDED
- - loading masks from dataset???
- - DONE: visualize Dataset, TODO: color node classes
+ - loading masks from dataset??? => Node masks vor train/val/test are created from RandomSplit
+ - DONE: visualize Dataset, 
+ - DONE: color node classes (optional)
+ - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static.
+ - TODO: Validate creation of datasets!!
+ - TODO: Combine graphs for BA-Community
 
 training loop
  - params
