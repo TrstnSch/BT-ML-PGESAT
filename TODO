@@ -3,8 +3,13 @@ Understand GCN/GraphConv in PyG
 
 DONE: Implement + understand DataLoader   80/10/10 split 
  - Create Dataset classes from scratch (with logic from ExplainerDataset?) OR use from PyG    PROBABLY NOT NEEDED
- - loading masks from dataset???
- - DONE: visualize Dataset, TODO: color node classes
+ - loading masks from dataset??? => Node masks vor train/val/test are created from RandomSplit
+ - DONE: visualize Dataset, 
+ - DONE: color node classes (optional)
+ - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static.
+ - DONE: Validate creation of datasets!!
+ - TODO: BA-Graph Generator not correct -> Use and transform original datasets?? Generate own dataset??
+ - TODO: Combine graphs for BA-Community
 
 training loop
  - params
@@ -40,7 +45,10 @@ DONE: set up BA template in Latex
  - change Lehrstuhl, Fachgruppe, Logo on title page
 
 
+DONE: Presentation 1
+DONE: Abstract
 
+Presentation 2:
 
 Presentation 2:
   - Entropie alleine sorgt nicht ausschließlich für minimale graphen -> Zusätzlich Budget oder connectivity constraint um graphen zu minimieren
@@ -49,6 +57,8 @@ Presentation 2:
 Content:
  - Theoretical:
    - GNN/GCN
+   - Explainabilty methods(taxonomy)
+   - Expand on chosen method (perturbation)
    - 
    - SAT
    - Bipartite Graphs
