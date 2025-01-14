@@ -2,17 +2,23 @@ import torch
 import torch.nn as nn
 import torch_geometric.nn as gnn
 
-# TODO: PGExplainer MLP with one hidden layer?
+# TODO: PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
 class MLP(nn.Module):
     def __init__(self):
-        super().__init__()
+        super().__init__(self, features = 60,)
 
         # Fully connected (#input(node: 60, graph: 40), 64)
+        self.hidden1 = gnn.GraphConv(self.features, 64)
         # ReLu
+        self.relu1 = nn.ReLU()
         # Linear Fully connected (20, 1)
+        self.lin1 = nn.Linear(20,1)
 
     def forward(self, x):
-        return self.model(x)
+        h1 = self.hidden1(x)
+        r1 = self.relu1(h1)
+        l1 = self.lin1(r1)
+        return l1
     
 
 # Three layer GNN(GCN) for Graph Classification based on PGExplainer paper/Source code
@@ -21,21 +27,21 @@ class GraphGNN(nn.Module):
         super(GraphGNN, self).__init__()
         
         # TODO: Try GCNConv
-        self.hidden1 = gnn.SAGEConv(features, 20)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
-        nn.init.xavier_uniform_(self.hidden1.lin_r.weight)
-        nn.init.xavier_uniform_(self.hidden1.lin_l.weight)
+        self.hidden1 = gnn.GraphConv(features, 20)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
+        nn.init.xavier_uniform_(self.hidden1.lin_rel.weight)
+        nn.init.xavier_uniform_(self.hidden1.lin_root.weight)
         self.relu1 = nn.ReLU()
         self.dropout1 = nn.Dropout(p=0.1)               # Not used in PGExplainer
 
-        self.hidden2 = gnn.SAGEConv(20, 20)         # GraphConvolution layer2: input dim = hidden dim = 20,
-        nn.init.xavier_uniform_(self.hidden1.lin_r.weight)
-        nn.init.xavier_uniform_(self.hidden1.lin_l.weight)
+        self.hidden2 = gnn.GraphConv(20, 20)         # GraphConvolution layer2: input dim = hidden dim = 20,
+        nn.init.xavier_uniform_(self.hidden1.lin_rel.weight)
+        nn.init.xavier_uniform_(self.hidden1.lin_root.weight)
         self.relu2 = nn.ReLU()
         self.dropout2 = nn.Dropout(p=0.1)               # Not used in PGExplainer
 
-        self.hidden3 = gnn.SAGEConv(20, 20)         # GraphConvolution layer3: 
-        nn.init.xavier_uniform_(self.hidden1.lin_r.weight)
-        nn.init.xavier_uniform_(self.hidden1.lin_l.weight)
+        self.hidden3 = gnn.GraphConv(20, 20)         # GraphConvolution layer3: 
+        nn.init.xavier_uniform_(self.hidden1.lin_rel.weight)
+        nn.init.xavier_uniform_(self.hidden1.lin_root.weight)
         self.relu3 = nn.ReLU()
         self.dropout3 = nn.Dropout(p=0.1)               # Not used in PGExplainer
         

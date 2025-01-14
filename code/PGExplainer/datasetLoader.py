@@ -60,7 +60,7 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
     # no node features assigned
     if datasetName == 'BA-Shapes' :
         dataset = ExplainerDataset(
-            graph_generator=BAGraph(300, 1),
+            graph_generator=BAGraph(300, 1),            # TODO: BAGraph() does not create accurate BA Graphs. Graphs can have unconnected nodes
             motif_generator=HouseMotif(),
             num_motifs=80,
             num_graphs=1,

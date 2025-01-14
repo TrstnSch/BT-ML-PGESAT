@@ -7,7 +7,8 @@ DONE: Implement + understand DataLoader   80/10/10 split
  - DONE: visualize Dataset, 
  - DONE: color node classes (optional)
  - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static.
- - TODO: Validate creation of datasets!!
+ - DONE: Validate creation of datasets!!
+ - TODO: BA-Graph Generator not correct -> Use and transform original datasets?? Generate own dataset??
  - TODO: Combine graphs for BA-Community
 
 training loop
@@ -42,12 +43,17 @@ DONE: set up BA template in Latex
  - change Lehrstuhl, Fachgruppe, Logo on title page
 
 
+DONE: Presentation 1
+DONE: Abstract
 
+Presentation 2:
 
 
 Content:
  - Theoretical:
    - GNN/GCN
+   - Explainabilty methods(taxonomy)
+   - Expand on chosen method (perturbation)
    - 
    - SAT
    - Bipartite Graphs
