@@ -4,11 +4,11 @@ import torch_geometric.nn as gnn
 
 # TODO: PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
 class MLP(nn.Module):
-    def __init__(self):
-        super().__init__(self, features = 60,)
+    def __init__(self, features = 60):
+        super(MLP, self).__init__()
 
         # Fully connected (#input(node: 60, graph: 40), 64)
-        self.hidden1 = gnn.GraphConv(self.features, 64)
+        self.hidden1 = nn.Linear(features, 20)
         # ReLu
         self.relu1 = nn.ReLU()
         # Linear Fully connected (20, 1)
@@ -19,6 +19,16 @@ class MLP(nn.Module):
         r1 = self.relu1(h1)
         l1 = self.lin1(r1)
         return l1
+    
+    #def loss(self, mean_preds_k, predictions_batch, Y_true_one_hot):
+    #    Loss = torch.sum(torch.nn.functional.softmax(predictions_batch, dim=1) * Y_true_one_hot * torch.log(mean_preds_k + 1e-8))
+    #    return Loss
+
+    def loss(self, prediction_OGgraphOrBatch, prediction_sample):
+        # prediction_OGgraphOrBatch: Wahrscheinlichkeit bei original Graph Klasse 1/2 zu sein
+        # prediction_sample: Wahrscheinlichkeit bei sampled Graph Klasse 1/2 zu sein
+        Loss = torch.sum(prediction_OGgraphOrBatch * torch.log(prediction_sample))                  # use sum to get values for all class labels
+        return Loss
     
 
 # Three layer GNN(GCN) for Graph Classification based on PGExplainer paper/Source code
@@ -76,7 +86,7 @@ class GraphGNN(nn.Module):
         emb3 = self.hidden3(emb2, edge_index)
         #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
         emb3 = self.relu3(emb3)
-        emb3 = self.dropout1(emb3)
+        emb3 = self.dropout1(emb3)                  # TODO: No dropout before out of embeddinggs??
 
         return emb3
     
