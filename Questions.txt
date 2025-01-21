@@ -10,3 +10,5 @@ How to create datasets on a singular graph?!
 Use dropout?
 
 MLP not learning
+
+Apply constraints
