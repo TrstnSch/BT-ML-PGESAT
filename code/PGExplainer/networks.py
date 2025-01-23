@@ -19,16 +19,46 @@ class MLP(nn.Module):
         r1 = self.relu1(h1)
         l1 = self.lin1(r1)
         return l1
-    
-    #def loss(self, mean_preds_k, predictions_batch, Y_true_one_hot):
-    #    Loss = torch.sum(torch.nn.functional.softmax(predictions_batch, dim=1) * Y_true_one_hot * torch.log(mean_preds_k + 1e-8))
-    #    return Loss
 
-    def loss(self, prediction_OGgraphOrBatch, prediction_sample):
-        # prediction_OGgraphOrBatch: Wahrscheinlichkeit bei original Graph Klasse 1/2 zu sein
-        # prediction_sample: Wahrscheinlichkeit bei sampled Graph Klasse 1/2 zu sein
-        Loss = torch.sum(prediction_OGgraphOrBatch * torch.log(prediction_sample))                  # use sum to get values for all class labels
+    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg):
+        # pOriginal: Wahrscheinlichkeit bei original Graph Klasse 1/2 zu sein
+        # pSample: Wahrscheinlichkeit bei sampled Graph Klasse 1/2 zu sein
+        # size regularization
+        sizeReg = torch.sum(edge_ij) * coefficientSizeReg       #We penalize large size of the explanation by adding the sum of all elements of the mask paramters as the regularization term
+
+        # entropy regularization (Binary Cross Entropy beacuse we care for both classes)
+        bce = -edge_ij * torch.log(edge_ij + 1e-8) - (1-edge_ij) * torch.log(1-edge_ij + 1e-8)         #we use element-wise entropy to encourage structural and node feature masks to be discrete
+        entropyReg = entropyReg * torch.mean(bce)
+
+        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + sizeReg + entropyReg                # use sum to get values for all class labels
         return Loss
+    
+    def getGraphEdgeEmbeddings(self, data_loader, modelGraphGNN):
+        embeddings = []
+
+        for batch_index, data in enumerate(data_loader):
+            emb = modelGraphGNN.getNodeEmbeddings(data.x, data.edge_index)              # shape: 25 X 20 = Nodes X hidden_embs
+
+            # Transform embeddings so that it contains the concatenated hidden_embs of each two connected nodes
+            graph_embs = []
+            for index in range(0, len(data.edge_index[0])):
+                i = data.edge_index[0][index]
+                j = data.edge_index[1][index]
+
+                embCat = torch.cat([emb[i],emb[j]])                     # shape: 1 X 40 = 1Edge X hidden_embs_2Nodes
+                graph_embs.append(embCat)                               # shape: ~50 X 40 = Edges X hidden_embs_2Nodes
+
+            embeddings.append(torch.stack(graph_embs))                  # shape: 600 X ~50 X 40 = Graphs X Edges X hidden_embs_2Nodes
+
+        # TODO: transform embeddings with cat or stack? Stack only applicable for same size tensors
+        return embeddings
+    
+    def sampleGraph(self, w_ij, temperature):
+        # Sample with reparam trick via edge weights
+        epsilon = torch.rand(w_ij.size())       # shape: ~50 X 1 = EdgesOG X epsilon
+        
+        edge_ij = nn.Sigmoid()((torch.log(epsilon + 1e-8)-torch.log(1-epsilon + 1e-8)+w_ij)/temperature)    # shape: ~50 X 1 = EdgesOG X SampledEdgesProbability
+        return edge_ij
     
 
 # Three layer GNN(GCN) for Graph Classification based on PGExplainer paper/Source code
@@ -58,9 +88,9 @@ class GraphGNN(nn.Module):
         self.lin = nn.Linear(20*2, labels)                    # fully connected layer(Dense) => nn.linear: input dim = hidden dim * 2 due to concat of pooling, output dim = output dim = classes
 
 
-    def forward(self, x, edge_index, batch = None):             # edge weights missing ; x, edge_index = feature_tensor, transformed adjs_tensor
+    def forward(self, x, edge_index, batch = None, edge_weights=None):             # edge weights missing ; x, edge_index = feature_tensor, transformed adjs_tensor
         # Encoding net
-        emb = self.getNodeEmbeddings(x, edge_index)
+        emb = self.getNodeEmbeddings(x, edge_index, edge_weights)
         
         # Classifier net
         maxP = gnn.pool.global_max_pool(emb, batch)
@@ -72,18 +102,21 @@ class GraphGNN(nn.Module):
     
 
     # Node embeddings need to be returned seperatly to the MLP and are also part of the forward pass
-    def getNodeEmbeddings(self, x, edge_index):
-        emb1 = self.hidden1(x, edge_index)
+    def getNodeEmbeddings(self, x, edge_index, edge_weights=None):
+        if edge_weights is None:
+            edge_weights = torch.ones(edge_index.size(1))
+            
+        emb1 = self.hidden1(x, edge_index, edge_weights)
         #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)
         emb1 = self.relu1(emb1)
         emb1 = self.dropout1(emb1)
         
-        emb2 = self.hidden2(emb1, edge_index)
+        emb2 = self.hidden2(emb1, edge_index, edge_weights)
         #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
         emb2 = self.relu2(emb2)
         emb2 = self.dropout1(emb2)
         
-        emb3 = self.hidden3(emb2, edge_index)
+        emb3 = self.hidden3(emb2, edge_index, edge_weights)
         #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
         emb3 = self.relu3(emb3)
         emb3 = self.dropout1(emb3)                  # TODO: No dropout before out of embeddinggs??

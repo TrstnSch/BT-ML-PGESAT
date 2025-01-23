@@ -32,7 +32,11 @@ PyG transform random node split for train/val/test
 -------------- implement Explainer/MLP ---------------------
  - ADD, GNNExplainer, PGExplainer ?!?!
 
+
 Explainer training loop
+ - Done: GNN explainer training loop
+ - TODO: Loss regularization implemented but not working as expected. PROBLEM: Model learns lowest edge weights instead of highest?!
+ - TODO: edge_index is bidirectional -> topk edges contain duplicates. Remove self-loops/coalesce on dataset?
 
 
 implement utils
