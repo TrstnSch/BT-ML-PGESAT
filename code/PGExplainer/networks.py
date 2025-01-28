@@ -20,9 +20,21 @@ class MLP(nn.Module):
         l1 = self.lin1(r1)
         return l1
 
+
     def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg):
-        # pOriginal: Wahrscheinlichkeit bei original Graph Klasse 1/2 zu sein
-        # pSample: Wahrscheinlichkeit bei sampled Graph Klasse 1/2 zu sein
+        """Loss of explanation model for singular (sampled) instance(graph)
+
+        Args:
+            pOriginal (float tensor): Probability of original graph to be class 1/2
+            pSample (float tensor): Probability of sampled graph to be class 1/2
+            edge_ij (float tensor): Probability of edge i,j to be in the explanation, Sigmoid applied
+            coefficientSizeReg (float): Coefficient for size regularization
+            entropyReg (float): Coefficient for entropy regularization
+
+        Returns:
+            float: Loss of explanation model
+        """
+
         # size regularization
         sizeReg = torch.sum(edge_ij) * coefficientSizeReg       #We penalize large size of the explanation by adding the sum of all elements of the mask paramters as the regularization term
 
@@ -30,7 +42,8 @@ class MLP(nn.Module):
         bce = -edge_ij * torch.log(edge_ij + 1e-8) - (1-edge_ij) * torch.log(1-edge_ij + 1e-8)         #we use element-wise entropy to encourage structural and node feature masks to be discrete
         entropyReg = entropyReg * torch.mean(bce)
 
-        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + sizeReg + entropyReg                # use sum to get values for all class labels
+        # TODO: sizeReg and/or entropyReg mess up weights to be negative
+        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg               # use sum to get values for all class labels
         return Loss
     
     def getGraphEdgeEmbeddings(self, data_loader, modelGraphGNN):

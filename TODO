@@ -37,6 +37,7 @@ Explainer training loop
  - Done: GNN explainer training loop
  - TODO: Loss regularization implemented but not working as expected. PROBLEM: Model learns lowest edge weights instead of highest?!
  - TODO: edge_index is bidirectional -> topk edges contain duplicates. Remove self-loops/coalesce on dataset?
+ - TODO: Batching
 
 TODO: PROBLEMs
  - When examining use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam valures??
