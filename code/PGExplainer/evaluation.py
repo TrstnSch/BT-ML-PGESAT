@@ -1,5 +1,11 @@
 import torch
 import torch.nn as nn
+from torcheval.metrics.aggregation.auc import AUC
+from torchmetrics.functional import roc
+from torch_geometric.loader import DataLoader
+from torcheval.metrics import BinaryAUROC
+from sklearn.metrics import roc_auc_score
+from torch_geometric.utils import k_hop_subgraph
 
 def evaluateGraphGNN(gnn, data_loader):
     
@@ -36,7 +42,6 @@ def evaluateNodeGNN(gnn, data, mask):
 
     gnn.eval()
 
-
     out = gnn.forward(data.x, data.edge_index)
     currLoss = loss(out[mask], data.y[mask])
 
@@ -46,3 +51,103 @@ def evaluateNodeGNN(gnn, data, mask):
     final_acc = acc_sum/len(data.y[mask])
 
     return final_acc, currLoss.item()
+
+
+def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
+    # TODO: Work on different batch sizes
+
+    AUCLoader = DataLoader(dataset, 1, False)
+
+    mlp.eval()
+    modelGraphGNN.eval()
+    metric = AUC(n_tasks=1)
+    metric2 = BinaryAUROC()
+
+    for batch_index, data in enumerate(AUCLoader):
+        if batch_index == 0: 
+            dataOut = data
+        
+        w_ij = mlp.forward(modelGraphGNN, data.x, data.edge_index)
+
+        # Motfis in BA2Motif are nodes 20-24
+        if MUTAG == False:
+            motif_node_indices = torch.arange(20,25)
+            ground_truth_indices = []
+
+            for index in range(0, len(data.edge_index[0])):
+                if data.edge_index[0][index] in motif_node_indices and data.edge_index[1][index] in motif_node_indices:
+                    ground_truth_indices.append(index)
+
+            groundTruthMask = torch.zeros_like(w_ij, dtype=torch.bool)
+            groundTruthMask[ground_truth_indices] = 1
+        
+        # MUTAG has edge_attr [edges, 3]
+        if MUTAG: groundTruthMask = torch.argmax(data.edge_attr, dim=1)
+        # TODO: Triple bonds are detect as double bonds, predicted edge should be there? Validate
+        groundTruthMask = torch.where(groundTruthMask == 2, torch.tensor(1), groundTruthMask)
+        
+        #print(data.edge_attr)
+
+        #print(groundTruthMask)
+
+        #explanationWeights.append(w_ij.detach()*-1)                # Contains edge weights in order([~50])
+        #groundTruthLabels.append(groundTruthMask)                  #([~50])
+
+        # TODO: This is cheating because of weights * -1
+        edge_ij = mlp.sampleGraph(w_ij*-1, 1).detach()
+        
+        fpr, tpr, thresholds = roc(edge_ij, groundTruthMask, task='binary')
+        
+        #print(groundTruthMask.float())
+        metric.update(fpr, tpr)
+        metric2.update(edge_ij, groundTruthMask)
+        
+    print(f"AUC of ROC: {metric.compute().item()}")
+    print(f"BinaryAUROC: {metric2.compute().item()}")
+    print(f"roc_auc_score: {roc_auc_score(groundTruthMask, edge_ij)}")
+    
+    return dataOut
+    
+    
+def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, startNode):
+    # TODO: This fails if the last node of a motif is selected and the k hop graph only contains 1s?
+    mlp.eval()
+    modelNodeGNN.eval()
+    metric = AUC(n_tasks=1)
+    metric2 = BinaryAUROC()
+    
+    # Compute k hop graph for 1 random node of class 1
+    subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=startNode, num_hops=3, edge_index=edge_index_undirected, relabel_nodes=True)
+    indexNodeToPred = (subset == startNode).nonzero().item()
+    
+    w_ij = mlp.forward(modelNodeGNN, data.x[subset], edge_index_hop, indexNodeToPred)
+
+    # TODO: weights*-1 needed???
+    edge_ij = mlp.sampleGraph(w_ij, 1).detach()
+    
+    # TODO: Ground truth from dataset?
+    ground_truth_indices = []
+    labelsSubset = data.y[subset]
+
+    for index in range(0, len(edge_index_hop[0])):
+        if labelsSubset[edge_index_hop[0][index]] == 1 and labelsSubset[edge_index_hop[1][index]] == 1:
+            ground_truth_indices.append(index)
+
+    groundTruthMask = torch.zeros_like(w_ij, dtype=torch.bool)
+    groundTruthMask[ground_truth_indices] = 1
+    
+    if len(torch.unique(edge_ij)) == 1 or len(torch.unique(groundTruthMask)) == 1:
+        print("AUC not computable")
+        return data
+
+    fpr, tpr, thresholds = roc(edge_ij, groundTruthMask, task='binary')
+    
+    #print(groundTruthMask.float())
+    metric.update(fpr, tpr)
+    metric2.update(edge_ij, groundTruthMask.float())
+        
+    print(f"AUC of ROC: {metric.compute().item()}")
+    print(f"BinaryAUROC: {metric2.compute().item()}")
+    print(f"roc_auc_score: {roc_auc_score(groundTruthMask, edge_ij)}")
+    
+    return data
