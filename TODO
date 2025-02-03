@@ -6,8 +6,8 @@ DONE: Implement + understand DataLoader   80/10/10 split
  - loading masks from dataset??? => Node masks vor train/val/test are created from RandomSplit
  - DONE: visualize Dataset, 
  - DONE: color node classes (optional)
- - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static.
- - DONE: Validate creation of datasets!!
+  - DONE: Validate creation of datasets!!
+ - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static. OR take original ones and transform?
  - TODO: BA-Graph Generator not correct -> Use and transform original datasets?? Generate own dataset??
  - TODO: Combine graphs for BA-Community
 
@@ -22,12 +22,13 @@ training loop
 => GNN models for different Datasets
 
 Clean up
-Create structure for different datasets/training loops. How to load/save parameters for each task?
+Create structure for different datasets/training loops. How to load/save parameters for each task? => One notebook/script per explainer training
 TRY GraphSage and GATConv for GNN
 
 NodeGNN
-PyG transform random node split for train/val/test
-
+ - DONE: PyG transform random node split for train/val/test
+ - TODO: Model for every dataset
+ - TODO: Test different architectures: BN, Norm, Dropout...
 
 -------------- implement Explainer/MLP ---------------------
  - ADD, GNNExplainer, PGExplainer ?!?!
@@ -35,29 +36,36 @@ PyG transform random node split for train/val/test
 
 Explainer training loop
  - Done: GNN explainer training loop
+ - DONE: edge_index is bidirectional, topk edges contain duplicates => Average edge weights for both directions when calculating weights
+ - Done: Batching
  - TODO: Loss regularization implemented but not working as expected. PROBLEM: Model learns lowest edge weights instead of highest?!
- - TODO: edge_index is bidirectional -> topk edges contain duplicates. Remove self-loops/coalesce on dataset?
- - TODO: Batching
+
 
 TODO: PROBLEMs
- - When examining use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam valures??
- - Model learns minimal weights???
- - Edges are duplicate because of undirected representation in PyG => Remove edges beforehand(unlikely)? Or combine edge weights (Automatically when converting to networkX)?
+ - DONE: When examining use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam values? => Paper states to use latent variables, but code uses probabilites!
+ - DONE: Sampling during eval() only Sigmoid, no randomness, therefore use preds instead of weights
+ - TODO: Model learns minimal weights???
+ - DONE: Edges are duplicate because of undirected representation in PyG => Remove edges beforehand? => Not good
+
+1. Remove duplicate edges BEFORE => Did not work well
+2. Vorzeichenfehler loss? => Unlikely
+3. DONE: Computational Graph(hidden graph layers) representation (k-hop neighbourhood)
+4. TODO: Node classification - Weights are 1 for complete subgraph, no differentiation between motif and non motif
+5. DONE: BATCHING: Loss for each graph, not across batch!
 
 
 Learning minimal weight Problems:
  - not fault of regularization, architecture 20 instead 64, 
 
-
+TODO: Clear up structure
 implement utils
 
 
+
+
 Select one paper to go by !!
-re-read longer Version of paper
-fix Exposee: "reproduce experiments"?
 DONE: set up BA template in Latex
  - change Lehrstuhl, Fachgruppe, Logo on title page
-
 
 DONE: Presentation 1
 DONE: Abstract
@@ -66,6 +74,8 @@ Presentation 2:
 
 Presentation 2:
   - Entropie alleine sorgt nicht ausschließlich für minimale graphen -> Zusätzlich Budget oder connectivity constraint um graphen zu minimieren
+
+
 
 
 Content:

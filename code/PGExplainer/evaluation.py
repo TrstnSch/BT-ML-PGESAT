@@ -85,13 +85,6 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
         if MUTAG: groundTruthMask = torch.argmax(data.edge_attr, dim=1)
         # TODO: Triple bonds are detect as double bonds, predicted edge should be there? Validate
         groundTruthMask = torch.where(groundTruthMask == 2, torch.tensor(1), groundTruthMask)
-        
-        #print(data.edge_attr)
-
-        #print(groundTruthMask)
-
-        #explanationWeights.append(w_ij.detach()*-1)                # Contains edge weights in order([~50])
-        #groundTruthLabels.append(groundTruthMask)                  #([~50])
 
         # TODO: This is cheating because of weights * -1
         edge_ij = mlp.sampleGraph(w_ij*-1, 1).detach()
