@@ -30,6 +30,12 @@ class OnesDimTransform:
     def __call__(self, data):
         data.x = torch.ones((data.num_nodes, self.num_features))  # 10D features of ones for each node
         return data
+    
+class ReplaceFeatures(object):
+    def __call__(self, data):
+        num_nodes = data.x.shape[0]  # Get number of nodes
+        data.x = torch.ones((num_nodes, 10))  # Replace x with 10d ones
+        return data
 
 
 
@@ -39,11 +45,10 @@ def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG']) :
     
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
     if datasetName == 'BA2Motif' :
-        dataset = BA2MotifDataset('datasets')                   # 10d feature vector of 10 times 0.1 instead of 1        
+        dataset = BA2MotifDataset('datasets')                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
     
 
     if datasetName == 'MUTAG':
-        # TODO: check if reimplementation needed. OG uses 10d features?!
         dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity")
 
         dataset.download()
@@ -57,10 +62,11 @@ def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG']) :
 
 
 def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid']) :       # TODO: perturb graphs?!
+    # TODO: BAGraph() does not create accurate BA Graphs. Graphs can have unconnected nodes
     # no node features assigned
     if datasetName == 'BA-Shapes' :
         dataset = ExplainerDataset(
-            graph_generator=BAGraph(300, 1),            # TODO: BAGraph() does not create accurate BA Graphs. Graphs can have unconnected nodes
+            graph_generator=BAGraph(300, 1),
             motif_generator=HouseMotif(),
             num_motifs=80,
             num_graphs=1,
