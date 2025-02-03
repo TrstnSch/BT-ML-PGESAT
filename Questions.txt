@@ -7,8 +7,21 @@ How to create datasets on a singular graph?!
 
 
 
-Use dropout?
+Use dropout => Sure, as long as eval() is used when not training
 
-MLP not learning
+MLP learning lowest weights!! -> "Fixed" by setting ADAM to max or calculating reparam trick with -w_ij
+ -> This is crucial, possible to "hotfix" with -1?
 
-Apply constraints
+Performance on MUTAG?
+
+How do I calc AUC?
+
+Apply constraints => size+entropy done
+Budget and Connectivity only for node!?
+
+Mirror edge weights during training?? Fix efficient method!
+
+Graph order determines whether learns highest or lowest?!?!
+First 10 epochs learns to maximize, after minimizes?? TRY
+
+Triple bonds are detect as double bonds, predicted edge should be there?

@@ -43,7 +43,10 @@ TODO: PROBLEMs
  - When examining use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam valures??
  - Model learns minimal weights???
  - Edges are duplicate because of undirected representation in PyG => Remove edges beforehand(unlikely)? Or combine edge weights (Automatically when converting to networkX)?
- - 
+
+
+Learning minimal weight Problems:
+ - not fault of regularization, architecture 20 instead 64, 
 
 
 implement utils
