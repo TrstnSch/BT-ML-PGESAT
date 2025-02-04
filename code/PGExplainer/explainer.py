@@ -7,11 +7,12 @@ class MLP(nn.Module):
     def __init__(self, GraphTask=True, hidden_dim=20):
         super(MLP, self).__init__()
         
-        if GraphTask: inputSize = 2*20
-        else: inputSize = 3*60
+        self.graphTask = GraphTask
+        
+        self.inputSize = 2 * 20 if GraphTask else 3 * 60
 
         self.model = nn.Sequential(                 # Fully connected (#input(node: 60, graph: 40), 64) => WRONG!
-            nn.Linear(inputSize, hidden_dim),        # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
+            nn.Linear(self.inputSize, hidden_dim),        # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
             nn.ReLU(),
             nn.Linear(hidden_dim, 1)                # Linear Fully connected (20, 1)
         )
@@ -41,7 +42,7 @@ class MLP(nn.Module):
         return w_ij_sym
 
 
-    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg):
+    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=None):
         """Loss of explanation model for singular (sampled) instance(graph)
 
         Args:
@@ -55,15 +56,25 @@ class MLP(nn.Module):
             float: Loss of explanation model
         """
         # size regularization: penalize large size of the explanation by adding the sum of all elements of the mask parameters as the regularization term
+        # TODO: This should be on the weights, not the probabilites?!
         sizeReg = torch.sum(edge_ij) * coefficientSizeReg
 
         # entropy regularization (Binary Cross Entropy beacuse we care for both classes) to encourage structural and node feature masks to be discrete
         bce = -edge_ij * torch.log(edge_ij + 1e-8) - (1-edge_ij) * torch.log(1-edge_ij + 1e-8)
         entropyReg = entropyReg * torch.mean(bce)
+        
+        # coefficientL2Reg is 0 in standard og config 
+        l2norm = 0.0
+        if not self.graphTask:
+            for name, param in self.model.named_parameters():
+                if "weight" in name:
+                    l2norm += torch.norm(param)
+
+            l2norm = coefficientL2Reg * l2norm
 
         # TODO: sizeReg and/or entropyReg mess up weights to be negative
-        # TODO: This minimizes both for both pOriginal and pSample. Maye only supposed to for pSample??
-        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg               # use sum to get values for all class labels
+        # TODO: This minimizes both for both pOriginal and pSample. Maybe only supposed to for pSample??
+        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pOriginal, pSample) + entropyReg + sizeReg
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
         #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?

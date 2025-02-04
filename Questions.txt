@@ -25,3 +25,9 @@ Graph order determines whether learns highest or lowest?!?!
 First 10 epochs learns to maximize, after minimizes? Only on some architectures/hyperparams => TRY!
 
 Triple bonds are detect as double bonds, predicted edge should be there?
+
+
+
+WEIGHTS TEND TO BE WAY TOO HIGH FOR TREE-CYCLES. -> PROBABILITIES OF EDGES ARE ALL 1.
+CAN BE REDUCED VIA L2NORM, ALTHOUGH APPARENTLY NOT USED IN ORIGINAL!
+NORMALIZATION ERROR IN MY MODEL? WHERE? POSSIBLE CAUSES?

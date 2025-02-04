@@ -53,7 +53,7 @@ def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG']) :
 
         dataset.download()
 
-    # Implement splits
+    # Implement splits  TODO: Move outside
     train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(dataset, [0.8, 0.1, 0.1])        # this "shuffels" data into 3 splits! Use a generator for fixed set with seed
 
     return train_dataset, val_dataset, test_dataset
@@ -137,7 +137,7 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
         )
         labels = 2
     
-
+    # TODO: Move outside
     transform = T.RandomNodeSplit('train_rest', 1, num_val = 0.1, num_test = 0.1)
 
     data = transform(dataset[0])
