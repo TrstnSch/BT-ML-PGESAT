@@ -97,12 +97,12 @@ class NodeGNN(nn.Module):
     def __init__(self, features, labels):
         super(NodeGNN, self).__init__()
         
-        # TODO: ADD BNorm, used in og code ??
         self.hidden1 = gnn.GraphConv(features, 20)
         self.hidden2 = gnn.GraphConv(20, 20)
         self.hidden3 = gnn.GraphConv(20, 20)
         
-        self.bn = nn.BatchNorm1d(20)                    # Not used in PGExplainer
+        # TODO: ADD BNorm, used in og code ??
+        self.bn = gnn.LayerNorm(20)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=0.1)                # Not used in PGExplainer
 
@@ -150,19 +150,18 @@ class NodeGNN(nn.Module):
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
         #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)
-        #emb1 = self.bn(emb1)
         emb1 = self.relu(emb1)
+        emb1 = self.bn(emb1)
         #emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
         #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
-        #emb2 = self.bn(emb2)
         emb2 = self.relu(emb2)
+        emb2 = self.bn(emb2)
         #emb2 = self.dropout(emb2)
         
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
         #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
-        #emb3 = self.bn(emb3)
         emb3 = self.relu(emb3)
         #emb3 = self.dropout(emb3)
 
