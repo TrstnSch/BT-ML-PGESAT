@@ -41,6 +41,7 @@ def plotGraph (graph, pos=None, color_map=None, edge_weights=False, MUTAG=False)
     plt.show()
     return pos
 
+
 # TODO: Not quite clean, maybe do k_hop_subgraph outside
 def plotKhopGraph (startNode, x, edge_index, num_hops=3, pos=None, color_map=None):
     subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(startNode, num_hops, edge_index, relabel_nodes=False)
@@ -66,6 +67,37 @@ def plotKhopGraph (startNode, x, edge_index, num_hops=3, pos=None, color_map=Non
     
     return pos, G_hop
 
+
+def plotMotif ():
+    return
+
+
+def plotTreeCycles (graph, pos=None, color_map=None, edge_weights=None):
+    if color_map is None:
+        color_map = []
+        for i, j in enumerate(graph.y):
+            color_map.append([j.item()])
+            
+    plt.figure(figsize=(10, 10))  # You can adjust the size as needed
+    
+    if edge_weights is not None: 
+        graphSampled = Data(x=graph.x,edge_index=graph.edge_index,edge_attr=edge_weights)
+        g = to_networkx(graphSampled, edge_attrs=["edge_attr"], to_undirected="lower")
+        labels = nx.get_edge_attributes(g,'edge_attr')
+        labels = {edge: f"{weight:.2f}" for edge, weight in nx.get_edge_attributes(g, 'edge_attr').items()}
+        nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, font_size=8)
+    else:
+        g = to_networkx(graph, to_undirected=True)
+
+    if pos is None: pos = nx.spring_layout(g, seed=42)          # try kamada_kawai_layout
+    
+    nx.draw(g, pos, node_size=40,font_size=8, node_color = color_map)    
+    
+    plt.show()
+    
+    return pos
+    
+    
 # TODO: This shit does not work
 def combineEdgeWeights (edge_index, edge_weights):
     # Example: Edge index (2, num_edges) and edge weights

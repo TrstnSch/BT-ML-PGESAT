@@ -102,7 +102,7 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
     return dataOut
     
     
-def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, startNode):
+def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, startNode, ground_truth=None):
     # TODO: This fails if the last node of a motif is selected and the k hop graph only contains 1s?
     mlp.eval()
     modelNodeGNN.eval()
@@ -110,37 +110,51 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, st
     metric2 = BinaryAUROC()
     
     # Compute k hop graph for 1 random node of class 1
-    subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=startNode, num_hops=3, edge_index=edge_index_undirected, relabel_nodes=True)
-    indexNodeToPred = (subset == startNode).nonzero().item()
+    subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=startNode, num_hops=3, edge_index=edge_index_undirected, relabel_nodes=False)
     
-    w_ij = mlp.forward(modelNodeGNN, data.x[subset], edge_index_hop, indexNodeToPred)
+    w_ij = mlp.forward(modelNodeGNN, data.x, edge_index_hop, startNode)
 
     # TODO: weights*-1 needed???
     edge_ij = mlp.sampleGraph(w_ij, 1).detach()
     
-    # TODO: Ground truth from dataset?
     ground_truth_indices = []
-    labelsSubset = data.y[subset]
-
+    labels = data.y
+    
     for index in range(0, len(edge_index_hop[0])):
-        if labelsSubset[edge_index_hop[0][index]] == 1 and labelsSubset[edge_index_hop[1][index]] == 1:
+        if labels[edge_index_hop[0][index]] == 1 and labels[edge_index_hop[1][index]] == 1:
             ground_truth_indices.append(index)
 
     groundTruthMask = torch.zeros_like(w_ij, dtype=torch.bool)
     groundTruthMask[ground_truth_indices] = 1
     
+    # TODO: This shit does not work, gt from dataset
+    """# Convert larger edge index to a set of tuples for fast lookup
+    gt_set = set(zip(ground_truth[0].tolist(), ground_truth[1].tolist()))
+
+    # Create ground truth labels (1 if edge exists in large set, else 0)
+    gt_labels = torch.tensor([1 if (u, v) in gt_set else 0 for u, v in zip(edge_index_hop[0], edge_index_hop[1])])"""
+    
+    
     if len(torch.unique(edge_ij)) == 1 or len(torch.unique(groundTruthMask)) == 1:
         print("AUC not computable")
-        return data
+        return
 
     fpr, tpr, thresholds = roc(edge_ij, groundTruthMask, task='binary')
     
-    #print(groundTruthMask.float())
     metric.update(fpr, tpr)
     metric2.update(edge_ij, groundTruthMask.float())
         
     print(f"AUC of ROC: {metric.compute().item()}")
     print(f"BinaryAUROC: {metric2.compute().item()}")
     print(f"roc_auc_score: {roc_auc_score(groundTruthMask, edge_ij)}")
+    """fpr, tpr, thresholds = roc(edge_ij, gt_labels, task='binary')
     
-    return data
+    #print(groundTruthMask.float())
+    metric.update(fpr, tpr)
+    metric2.update(edge_ij, gt_labels.float())
+        
+    print(f"AUC of ROC: {metric.compute().item()}")
+    print(f"BinaryAUROC: {metric2.compute().item()}")
+    print(f"roc_auc_score: {roc_auc_score(gt_labels, edge_ij)}")"""
+    
+    return

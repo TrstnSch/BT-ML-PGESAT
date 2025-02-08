@@ -4,7 +4,7 @@ import utils
 
 # TODO: PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
 class MLP(nn.Module):
-    def __init__(self, GraphTask=True, hidden_dim=20):
+    def __init__(self, GraphTask=True, hidden_dim=64):
         super(MLP, self).__init__()
         
         self.graphTask = GraphTask
@@ -16,8 +16,19 @@ class MLP(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, 1)                # Linear Fully connected (20, 1)
         )
+        
+        self.init_weights()  # Call the initialization function
 
 
+    def init_weights(self):
+        """Xavier Initialization for Linear Layers"""
+        for layer in self.model:
+            if isinstance(layer, nn.Linear):
+                nn.init.xavier_uniform_(layer.weight)  # Xavier for weights
+                if layer.bias is not None:
+                    nn.init.zeros_(layer.bias)  # Zero for bias
+
+            
     def forward(self, modelGraphGNN, x, edge_index, nodeToPred=None):
         """Forward method of our model. This starts by calculating edge embeddings on thy fly.
         These are the inputs that are fed through the model. The model output edge weights are transformed
@@ -42,7 +53,7 @@ class MLP(nn.Module):
         return w_ij_sym
 
 
-    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=None):
+    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=0.0):
         """Loss of explanation model for singular (sampled) instance(graph)
 
         Args:
@@ -56,7 +67,7 @@ class MLP(nn.Module):
             float: Loss of explanation model
         """
         # size regularization: penalize large size of the explanation by adding the sum of all elements of the mask parameters as the regularization term
-        # TODO: This should be on the weights, not the probabilites?!
+        # TODO: This should be on the weights, not the probabilites?
         sizeReg = torch.sum(edge_ij) * coefficientSizeReg
 
         # entropy regularization (Binary Cross Entropy beacuse we care for both classes) to encourage structural and node feature masks to be discrete
@@ -73,7 +84,6 @@ class MLP(nn.Module):
             l2norm = coefficientL2Reg * l2norm
 
         # TODO: sizeReg and/or entropyReg mess up weights to be negative
-        # TODO: This minimizes both for both pOriginal and pSample. Maybe only supposed to for pSample??
         Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pOriginal, pSample) + entropyReg + sizeReg
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.

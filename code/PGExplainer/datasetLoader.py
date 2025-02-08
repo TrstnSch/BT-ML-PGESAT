@@ -1,4 +1,5 @@
 import torch
+import pickle
 from typing import Literal
 from torch_geometric.datasets import ExplainerDataset
 from torch_geometric.data import Data
@@ -12,6 +13,7 @@ from torch_geometric.datasets import BA2MotifDataset
 from torch_geometric.datasets import TUDataset
 import torch_geometric.transforms as T
 import os
+from torch_geometric.utils import to_undirected
 
 class GaussianFeatureTransform:
     def __init__(self, num_features=10, mean=0.0, std=1.0):
@@ -145,4 +147,66 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
     return labels, data
 
 
+def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid']):
+    mapping = {
+    'BA-Shapes': 'syn1',
+    'BA-Community': 'syn2',
+    'Tree-Cycles': 'syn3',
+    'Tree-Grid': 'syn4'
+    }
+    labelMapping = {
+    'BA-Shapes': 4,
+    'BA-Community': 8,
+    'Tree-Cycles': 2,
+    'Tree-Grid': 2
+    }
 
+    file_name = mapping[datasetName]
+    file_path = 'datasets/original/' + file_name + '.pkl'
+    
+    # SHAPE FOR ALL NODE TASKS: adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask, edge_label_matrix
+    with open(file_path, 'rb') as file:
+        data = pickle.load(file)
+        
+    adj = torch.tensor(data[0], dtype=torch.float64)
+    edge_index = adj.nonzero().t().contiguous()
+    edge_index_undirected = to_undirected(edge_index)
+    
+    # TODO: gt is kept as matrx/edge_index. Impractical
+    edge_label_matrix = torch.tensor(data[8], dtype=torch.float64)
+    gt = edge_label_matrix.nonzero().t().contiguous()
+    gt_undirected = to_undirected(gt)
+    
+    x=torch.tensor(data[1], dtype=torch.float32)
+    
+    y_full = torch.zeros_like(torch.tensor(data[2], dtype=torch.float64))
+    y_train, y_val, y_test = torch.tensor(data[2], dtype=torch.float64), torch.tensor(data[3], dtype=torch.float64), torch.tensor(data[4], dtype=torch.float64)
+    train_mask, val_mask, test_mask = torch.tensor(data[5], dtype=torch.bool), torch.tensor(data[6], dtype=torch.bool), torch.tensor(data[7], dtype=torch.bool)
+
+    # TODO: Optimize
+    y_full[train_mask] = y_train[train_mask]
+    y_full[val_mask] = y_val[val_mask]
+    y_full[test_mask] = y_test[test_mask]
+    
+    y_full = torch.argmax(y_full, dim=1)
+    
+    data = Data(x=x,edge_index=edge_index_undirected, y=y_full, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask, gt=gt_undirected)
+
+    return data, labelMapping[datasetName]
+
+
+# Probably not needed
+def loadOriginalGraphDataset (datasetName: Literal['BA2Motif','MUTAG']):
+    mapping = {
+    'BA2Motif': 'BA2-motif',
+    'MUTAG': 'Mutagenicity'
+    }
+
+    file_name = mapping[datasetName]
+    file_path = 'datasets/original/' + file_name + '.pkl'
+    
+    # SHAPE FOR GRPAH TASKS: 
+    with open(file_path, 'rb') as file:
+        data = pickle.load(file)
+        
+    return data

@@ -6,7 +6,7 @@ DONE: Implement + understand DataLoader   80/10/10 split
  - loading masks from dataset??? => Node masks vor train/val/test are created from RandomSplit
  - DONE: visualize Dataset, 
  - DONE: color node classes (optional)
-  - DONE: Validate creation of datasets!!
+- DONE: Validate creation of datasets!!
  - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static. OR take original ones and transform?
  - TODO: BA-Graph Generator not correct -> Use and transform original datasets?? Generate own dataset??
  - TODO: Combine graphs for BA-Community
@@ -44,7 +44,7 @@ Explainer training loop
 TODO: PROBLEMs
  - DONE: When examining use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam values? => Paper states to use latent variables, but code uses probabilites!
  - DONE: Sampling during eval() only Sigmoid, no randomness, therefore use preds instead of weights
- - TODO: Model learns minimal weights???
+ - TODO: Model learns minimal weights??? Only for BA2Motif?
  - DONE: Edges are duplicate because of undirected representation in PyG => Remove edges beforehand? => Not good
 
 1. Remove duplicate edges BEFORE => Did not work well
@@ -61,6 +61,11 @@ TODO: Clear up structure
 implement utils
 
 
+# TODO:
+  - DONE: Try to use original datasets -> Transform for pyg
+  - AUC: take ground truth from dataset, predictions from graph? Try with topK predictions?
+  - DONE: Node training: Extract only first node from motifs and train on these! Use same for evaluation
+  - THEN try to mess around with weights and how to normalize them...
 
 
 Select one paper to go by !!
