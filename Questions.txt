@@ -31,3 +31,11 @@ Triple bonds are detect as double bonds, predicted edge should be there?
 WEIGHTS TEND TO BE WAY TOO HIGH FOR TREE-CYCLES. -> PROBABILITIES OF EDGES ARE ALL 1.
 CAN BE REDUCED VIA L2NORM, ALTHOUGH APPARENTLY NOT USED IN ORIGINAL!
 NORMALIZATION ERROR IN MY MODEL? WHERE? POSSIBLE CAUSES?
+
+Take topK(motif) edges for node tasks as well! => Calculate AUC with topK set to 1, others set to 0 vs. GroundTruth
+
+
+
+Background: How much into detail? Where to start? Neural Networks? Machine Learning? ...
+Mathematical background -> Probably needed, how deep, where to start?
+How to quote? Mathematical stuff/formulas quotes? General: Definitions from original works? Own "dictionary"? 
