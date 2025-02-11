@@ -6,7 +6,7 @@ DONE: Implement + understand DataLoader   80/10/10 split
  - loading masks from dataset??? => Node masks vor train/val/test are created from RandomSplit
  - DONE: visualize Dataset, 
  - DONE: color node classes (optional)
-- DONE: Validate creation of datasets!!
+ - DONE: Validate creation of datasets!!
  - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static. OR take original ones and transform?
  - TODO: BA-Graph Generator not correct -> Use and transform original datasets?? Generate own dataset??
  - TODO: Combine graphs for BA-Community
@@ -20,6 +20,7 @@ training loop
  - DONE: plot!
  - ...
 => GNN models for different Datasets
+  TODO: Models are overfitting!
 
 Clean up
 Create structure for different datasets/training loops. How to load/save parameters for each task? => One notebook/script per explainer training

@@ -43,7 +43,7 @@ class ReplaceFeatures(object):
 
 
 
-def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG']) :
+def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG'], manual_seed=42) :
     
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
     if datasetName == 'BA2Motif' :
@@ -56,7 +56,8 @@ def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG']) :
         dataset.download()
 
     # Implement splits  TODO: Move outside
-    train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(dataset, [0.8, 0.1, 0.1])        # this "shuffels" data into 3 splits! Use a generator for fixed set with seed
+    generator1 = torch.Generator().manual_seed(manual_seed)
+    train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(dataset, [0.8, 0.1, 0.1], generator1)        # this "shuffels" data into 3 splits! Use a generator for fixed set with seed
 
     return train_dataset, val_dataset, test_dataset
 

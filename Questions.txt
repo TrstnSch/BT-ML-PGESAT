@@ -39,3 +39,9 @@ Take topK(motif) edges for node tasks as well! => Calculate AUC with topK set to
 Background: How much into detail? Where to start? Neural Networks? Machine Learning? ...
 Mathematical background -> Probably needed, how deep, where to start?
 How to quote? Mathematical stuff/formulas quotes? General: Definitions from original works? Own "dictionary"? 
+
+BA2Motif now struggling on 64 architecture. DOES NOT LEARN ANYMORE. Loss fluctuating!
+
+Training of NodeExplainer: Train on motifs? Node splits of original do not really make sense?? Same for AUC evaluation. HOW CAN I GET EVERY MOTIF ONCE FROM MY DATASET??
+    OR HOW CAN I VALIDATE ORIGINAL NODE SPLIT TO MAKE SENSE??
+    Motfis I use to calculate AUC are Subragph edges where both connected nodes are of class 1.

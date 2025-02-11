@@ -63,6 +63,7 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
     metric = AUC(n_tasks=1)
     metric2 = BinaryAUROC()
 
+    roc_auc_list = []
     for batch_index, data in enumerate(AUCLoader):
         if batch_index == 0: 
             dataOut = data
@@ -94,12 +95,15 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
         #print(groundTruthMask.float())
         metric.update(fpr, tpr)
         metric2.update(edge_ij, groundTruthMask)
+        roc_auc = roc_auc_score(groundTruthMask, edge_ij)
+        roc_auc_list.append(roc_auc)
         
+    meanAuc = torch.tensor(roc_auc_list).mean().item()
     print(f"AUC of ROC: {metric.compute().item()}")
     print(f"BinaryAUROC: {metric2.compute().item()}")
-    print(f"roc_auc_score: {roc_auc_score(groundTruthMask, edge_ij)}")
+    print(f"Mean roc_auc_score for dataset: {meanAuc}")
     
-    return dataOut
+    return dataOut, meanAuc
     
     
 def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, startNode, ground_truth=None):
@@ -137,16 +141,20 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, st
     
     if len(torch.unique(edge_ij)) == 1 or len(torch.unique(groundTruthMask)) == 1:
         print("AUC not computable")
-        return
+        return 0.0
 
     fpr, tpr, thresholds = roc(edge_ij, groundTruthMask, task='binary')
     
     metric.update(fpr, tpr)
     metric2.update(edge_ij, groundTruthMask.float())
         
-    print(f"AUC of ROC: {metric.compute().item()}")
-    print(f"BinaryAUROC: {metric2.compute().item()}")
-    print(f"roc_auc_score: {roc_auc_score(groundTruthMask, edge_ij)}")
+    auc_of_roc = metric.compute().item()
+    binaryAUROC = metric2.compute().item()
+    roc_auc = roc_auc_score(groundTruthMask, edge_ij)
+    print(f"AUC of ROC: {auc_of_roc}")
+    print(f"BinaryAUROC: {binaryAUROC}")
+    print(f"roc_auc_score: {roc_auc}")
+    
     """fpr, tpr, thresholds = roc(edge_ij, gt_labels, task='binary')
     
     #print(groundTruthMask.float())
@@ -157,4 +165,4 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, st
     print(f"BinaryAUROC: {metric2.compute().item()}")
     print(f"roc_auc_score: {roc_auc_score(gt_labels, edge_ij)}")"""
     
-    return
+    return roc_auc

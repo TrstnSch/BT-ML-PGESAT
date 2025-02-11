@@ -101,7 +101,7 @@ class NodeGNN(nn.Module):
         self.hidden2 = gnn.GraphConv(20, 20)
         self.hidden3 = gnn.GraphConv(20, 20)
         
-        # TODO: ADD BNorm, used in og code ??
+        # LayerNorm instead of BatchNorm(Did not work)
         self.bn = gnn.LayerNorm(20)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=0.1)                # Not used in PGExplainer
@@ -168,3 +168,7 @@ class NodeGNN(nn.Module):
         embs = torch.cat([emb1, emb2, emb3], 1)
         
         return embs
+    
+    # TODO:
+    def train ():
+        return
