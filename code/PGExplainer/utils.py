@@ -41,6 +41,51 @@ def plotGraph (graph, pos=None, color_map=None, edge_weights=False, MUTAG=False)
     plt.show()
     return pos
 
+# Edge weights seem to work, at least on graphs. graph needs attribute edge_attr containing weights. TODO: Test on NodeClass
+def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_task=False, MUTAG=False, number_nodes=False):
+    if edge_weights: nxGraph = to_networkx(graph, edge_attrs=["edge_attr"], to_undirected="upper")
+    else: nxGraph = to_networkx(graph, to_undirected=True)
+    
+    if pos is None: pos = nx.spring_layout(nxGraph, seed=42)
+        
+    if color_map is None:
+        if graph_task:
+            # TODO: Find a clean way to differentiate between MUTAG and BA2Motif to color motif nodes in latter
+            if MUTAG:
+                indices = torch.argmax(graph.x, axis=1)
+                colors = ['orange','red','lime','green','blue','orchid','darksalmon','darkslategray','gold','bisque','tan','lightseagreen','indigo','navy']
+                color_map = [
+                colors[idx]
+                for idx in indices
+                ]
+            else:
+               color_map = [
+                '#c41f1c' if node in [20,21] else 
+                '#d3eb0d' if node in [22,23] else 
+                '#28a8ec' if node == 24 else
+                '#eb790d' 
+                for node in nxGraph.nodes()
+        ] 
+        else: 
+            color_map = []
+            for i, j in enumerate(graph.y):
+                color_map.append([j.item()])
+        
+    
+    node_size = 300 if graph_task else 80
+    plt.figure(1, figsize=(10, 10))
+    nx.draw(nxGraph, pos=pos, node_size=node_size, node_color=color_map, font_size=8)
+
+    if number_nodes: nx.draw_networkx_labels(nxGraph, pos, labels={i: f"{i}" for i in range(graph.x.shape[0])})
+
+    if edge_weights:
+        labels = nx.get_edge_attributes(nxGraph,'edge_attr')
+        labels = {edge: f"{weight:.2f}" for edge, weight in nx.get_edge_attributes(nxGraph, 'edge_attr').items()}
+        nx.draw_networkx_edge_labels(nxGraph, pos, edge_labels=labels, font_size=6)
+ 
+    plt.show()
+    return pos
+
 
 # TODO: Not quite clean, maybe do k_hop_subgraph outside
 def plotKhopGraph (startNode, x, edge_index, num_hops=3, pos=None, color_map=None):
