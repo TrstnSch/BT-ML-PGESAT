@@ -48,4 +48,9 @@ Training of NodeExplainer: Train on motifs? Node splits of original do not reall
 
 
 
+plot ground truth from original
+Train over motif nodes, with node labels of motif class(each computanional graph should contain a motfi to detect it!?).  Compare to training on ALL nodes. 
+
+
+
 When training TreeGrid explainer on all nodes: "Detects" motfis as lowest weights?! Probably simply wrong, since model just learns to detect base nodes as important since usually represented?
