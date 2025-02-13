@@ -7,7 +7,7 @@ import torch
 
 # TODO: plotGraph
 def plotGraph (graph, pos=None, color_map=None, edge_weights=False, MUTAG=False):
-    if edge_weights: nxGraph = to_networkx(graph, edge_attrs=["edge_attr"], to_undirected="upper")
+    if edge_weights: nxGraph = to_networkx(graph, edge_attrs=["edge_attr"], to_undirected=True)
     else: nxGraph = to_networkx(graph, to_undirected=True)
     
     if pos is None: pos = nx.spring_layout(nxGraph)
@@ -68,8 +68,9 @@ def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_tas
         ] 
         else: 
             color_map = []
+            colors = ['orange','red','lime','green','blue','orchid','darksalmon','darkslategray','gold','bisque','tan','lightseagreen','indigo','navy']
             for i, j in enumerate(graph.y):
-                color_map.append([j.item()])
+                color_map.append(colors[j.item()])
         
     
     node_size = 300 if graph_task else 80
@@ -117,11 +118,13 @@ def plotMotif ():
     return
 
 
-def plotTreeCycles (graph, pos=None, color_map=None, edge_weights=None):
+def plotTreeCycles (graph, pos=None, color_map=None, edge_weights=None, node_list=None):
+    colors = ['orange','red','lime','green','blue','orchid','darksalmon','darkslategray','gold','bisque','tan','lightseagreen','indigo','navy']
     if color_map is None:
         color_map = []
         for i, j in enumerate(graph.y):
-            color_map.append([j.item()])
+            if(node_list is not None and i in node_list): color_map.append(colors[4])
+            else: color_map.append(colors[j.item()])
             
     plt.figure(figsize=(10, 10))  # You can adjust the size as needed
     

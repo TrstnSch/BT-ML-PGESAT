@@ -103,6 +103,7 @@ class NodeGNN(nn.Module):
         
         # LayerNorm instead of BatchNorm(Did not work)
         self.bn = gnn.LayerNorm(20)
+        #self.bn = gnn.BatchNorm(20)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=0.1)                # Not used in PGExplainer
 
@@ -130,6 +131,8 @@ class NodeGNN(nn.Module):
         # Classifier net, no pooling in node network
         out = self.lin(emb)
         
+        #TODO: Softmax should be here according to paper?? Should not change much, as long as embeddings do not get it
+        #out = nn.Softmax(out)
         return out
     
 
@@ -151,13 +154,13 @@ class NodeGNN(nn.Module):
         emb1 = self.hidden1(x, edge_index, edge_weights)
         #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)
         emb1 = self.relu(emb1)
-        emb1 = self.bn(emb1)
+        #emb1 = self.bn(emb1)
         #emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
         #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
         emb2 = self.relu(emb2)
-        emb2 = self.bn(emb2)
+        #emb2 = self.bn(emb2)
         #emb2 = self.dropout(emb2)
         
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
@@ -169,6 +172,6 @@ class NodeGNN(nn.Module):
         
         return embs
     
-    # TODO:
+"""    # TODO:
     def train ():
-        return
+        return"""

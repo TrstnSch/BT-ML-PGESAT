@@ -46,6 +46,10 @@ class MLP(nn.Module):
         
         # TODO: Check if this can remain like this for NodePred
         w_ij = self.model(embeddings).squeeze(1)
+        
+        # TODO: Take absolute value of w_ij to always have positive weights?!
+        #w_ij = torch.abs(w_ij)
+        
         # TODO: Validate
         w_ij_sym = utils.combineEdgeWeights(edge_index, w_ij)
         

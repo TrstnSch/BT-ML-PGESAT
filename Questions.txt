@@ -45,3 +45,7 @@ BA2Motif now struggling on 64 architecture. DOES NOT LEARN ANYMORE. Loss fluctua
 Training of NodeExplainer: Train on motifs? Node splits of original do not really make sense?? Same for AUC evaluation. HOW CAN I GET EVERY MOTIF ONCE FROM MY DATASET??
     OR HOW CAN I VALIDATE ORIGINAL NODE SPLIT TO MAKE SENSE??
     Motfis I use to calculate AUC are Subragph edges where both connected nodes are of class 1.
+
+
+
+When training TreeGrid explainer on all nodes: "Detects" motfis as lowest weights?! Probably simply wrong, since model just learns to detect base nodes as important since usually represented?
