@@ -32,11 +32,12 @@ def trainExplainer (dataset, save_model=False) :
     coefficient_L2_reg = params['coefficient_L2_reg']
 
     MUTAG = True if dataset == "MUTAG" else False
+    k = 10 if MUTAG else 5
     hidden_dim = 64 # Make loading possible
     clip_grad_norm = 2 # Make loading possible
     
 
-    wandb.init(project="Explainer-Training", config=config)
+    wandb.init(project="Explainer-Training", config=params)
 
     data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
 
@@ -50,9 +51,42 @@ def trainExplainer (dataset, save_model=False) :
         test_loader = DataLoader(test_dataset, params['batch_size'])
     else:
         # TODO
-        motifNodes = [i for i in range(511,800,1)]
+        if dataset == "Tree-Cycles":
+            k = 6
+            motifNodesOriginal = [i for i in range(511,871,6)]          # It LOOKS like thise takes only the first node of each motif
+            motifNodesModified = [i for i in range(len(data.x)) if data.y[i] == 1 ]
+            allNodes = [i for i in range(len(data.x))]
+        
+            motifNodes = motifNodesOriginal
+            
+        if dataset == "Tree-Grid":
+            k = 12
+            motifNodesOriginal = [i for i in range(511,800,9)]              #in(512,514,515,516,518) out(511,513, 517,519)                   range(511,800,1)
+            motifNodesNew = [i for i in range(len(data.x)) if data.y[i] == 1 ]
+            allNodes = [i for i in range(len(data.x))]
+
+            # motifNodesModified is supposed to only contain the "middle" elements of the motif, for which the 3-hop graph contains the complete motif 
+            motifNodesModified = [i for i in range(512,800,9)]
+            trainableNodes = [514, 515, 516, 518]
+
+            motifNodesMinimal = [i for i in range(512,800,9)]
+            motifNodesMinimal.extend([i for i in range(514,800,9)])
+            motifNodesMinimal = sorted(set(motifNodesMinimal))
+
+            def add_multiples_of_9(start, end=800, step=9):
+                return [i for i in range(start, end, step)]
+
+            for element in trainableNodes:
+                motifNodesModified.extend(add_multiples_of_9(element))
+                
+            motifNodesModified = sorted(set(motifNodesModified))
+            
+            motifNodes = motifNodesOriginal
+        
+        
 
 
+    # TODO: Instead of loading static one, pass model as argument?
     downstreamTask = networks.GraphGNN(features = train_dataset[0].x.shape[1], labels=2) if graph_task else networks.NodeGNN(features = data.x.shape[1], labels=labels)
     downstreamTask.load_state_dict(torch.load(f"models/{dataset}", weights_only=True))
 
@@ -98,7 +132,7 @@ def trainExplainer (dataset, save_model=False) :
 
                 # TODO: Check if current_data.batch works with nodes! Add batch support for nodes? Batch has to contain map for edge_index?
                 pOriginal = fn.softmax(downstreamTask.forward(current_data.x, current_edge_index, current_data.batch), dim=1)
-                pSample = fn.softmax(downstreamTask.forward(current_data.x, current_edge_index, current_data.batch, edge_weights=edge_ij), dim=1)
+                pSample = fn.softmax(downstreamTask.forward(current_data.x, current_edge_index, batch=current_data.batch, edge_weights=edge_ij), dim=1)
 
                 if graph_task:
                     # For graph
@@ -128,11 +162,12 @@ def trainExplainer (dataset, save_model=False) :
         mlp.eval()
         
         if graph_task:
-            dataOut, meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, MUTAG)
+            dataOut, meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, MUTAG, k=k)
         else:
             aucList = []
-            for i in motifNodes:
-                aucList.append(evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, data.edge_index, i, data.gt))
+            for i in motifNodesModified:
+                currAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, data.edge_index, i, data.gt, k=k)
+                if currAuc != -1: aucList.append(currAuc)
             meanAuc = torch.tensor(aucList).mean().item()
     
         wandb.log({"train/Loss": loss, "val/mean_AUC": meanAuc})
@@ -142,7 +177,7 @@ def trainExplainer (dataset, save_model=False) :
     if save_model:
         torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{meanAuc}_{wandb.run.name}")
 
-    return mlp
+    return mlp, downstreamTask
 
 
 def loadConfig(dataset):
@@ -156,5 +191,5 @@ def loadConfig(dataset):
     return config
 
 
-trainExplainer(dataset=sys.argv[1], save_model=sys.argv[2])
+#trainExplainer(dataset=sys.argv[1], save_model=sys.argv[2])
 

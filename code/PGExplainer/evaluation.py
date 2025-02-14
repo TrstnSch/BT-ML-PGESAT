@@ -53,7 +53,7 @@ def evaluateNodeGNN(gnn, data, mask):
     return final_acc, currLoss.item()
 
 
-def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
+def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False, k=5):
     # TODO: Work on different batch sizes
 
     AUCLoader = DataLoader(dataset, 1, False)
@@ -72,6 +72,7 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
 
         # Motfis in BA2Motif are nodes 20-24
         if MUTAG == False:
+            k = 6 if data.y.item() == 1 else 5
             motif_node_indices = torch.arange(20,25)
             ground_truth_indices = []
 
@@ -88,14 +89,20 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False):
         groundTruthMask = torch.where(groundTruthMask == 2, torch.tensor(1), groundTruthMask)
 
         # TODO: This is cheating because of weights * -1
-        edge_ij = mlp.sampleGraph(w_ij*-1, 1).detach()
+        #edge_ij = mlp.sampleGraph(w_ij*-1, 1).detach()
         
-        fpr, tpr, thresholds = roc(edge_ij, groundTruthMask, task='binary')
+        # Instead of weights, take top k edges according to motif?
+        k = k * 2 if len(w_ij) >= k*2 else len(w_ij)
+        _, top_k_indices = torch.topk(w_ij, k=k, largest=True)
+        topEdgesMask = torch.zeros_like(w_ij, dtype=torch.float32)
+        topEdgesMask[top_k_indices] = 1
+        
+        fpr, tpr, thresholds = roc(topEdgesMask, groundTruthMask, task='binary')
         
         #print(groundTruthMask.float())
         metric.update(fpr, tpr)
-        metric2.update(edge_ij, groundTruthMask)
-        roc_auc = roc_auc_score(groundTruthMask, edge_ij)
+        metric2.update(topEdgesMask, groundTruthMask)
+        roc_auc = roc_auc_score(groundTruthMask, topEdgesMask)
         roc_auc_list.append(roc_auc)
         
     meanAuc = torch.tensor(roc_auc_list).mean().item()

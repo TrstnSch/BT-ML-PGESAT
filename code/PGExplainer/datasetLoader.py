@@ -43,10 +43,12 @@ class ReplaceFeatures(object):
 
 
 
-def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG'], manual_seed=42) :
+def loadGraphDataset (datasetName: Literal['BA-2Motif','MUTAG'], manual_seed=42) :
+    
+    labels = 2
     
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
-    if datasetName == 'BA2Motif' :
+    if datasetName == 'BA-2Motif' :
         dataset = BA2MotifDataset('datasets')                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
     
 
@@ -54,12 +56,14 @@ def loadGraphDataset (datasetName: Literal['BA2Motif','MUTAG'], manual_seed=42) 
         dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity")
 
         dataset.download()
+        
 
     # Implement splits  TODO: Move outside
-    generator1 = torch.Generator().manual_seed(manual_seed)
+    """generator1 = torch.Generator().manual_seed(manual_seed)
     train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(dataset, [0.8, 0.1, 0.1], generator1)        # this "shuffels" data into 3 splits! Use a generator for fixed set with seed
 
-    return train_dataset, val_dataset, test_dataset
+    return train_dataset, val_dataset, test_dataset"""
+    return dataset, labels
 
 
 

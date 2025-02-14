@@ -124,7 +124,7 @@ class MLP(nn.Module):
         return embCat
     
 
-    def sampleGraph(self, w_ij, temperature):
+    def sampleGraph(self, w_ij, temperature=1):
         """Implementation of the reparametrization trick to sample edges from the edge weights. 
         If evaluating we only apply Sigmoid to get predictions from weights while eliminating randomness.
 

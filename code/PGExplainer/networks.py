@@ -124,7 +124,7 @@ class NodeGNN(nn.Module):
             nn.init.zeros_(self.lin.bias)
             
             
-    def forward(self, x, edge_index, edge_weights=None):
+    def forward(self, x, edge_index, batch = None, edge_weights=None):
         # Encoding net
         emb = self.getNodeEmbeddings(x, edge_index, edge_weights)
         

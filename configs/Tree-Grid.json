@@ -1,0 +1,16 @@
+{
+    "params": {
+        "architecture": "MLP",
+        "dataset": "Tree-Grid",
+        "graph_task": false,
+        "epochs": 30,
+        "batch_size": 1,
+        "lr_mlp": 0.003,
+        "sampled_graphs": 20,
+        "coefficient_size_reg": 1.0,
+        "coefficient_entropy_reg": 1.0,
+        "coefficient_L2_reg": 0.0,
+        "t0": 5.0,
+        "tT": 2.0
+    }
+}

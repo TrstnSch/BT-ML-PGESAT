@@ -1,13 +1,13 @@
 {
     "params": {
         "architecture": "MLP",
-        "dataset": "MUTAG",
-        "graph_task": true,
+        "dataset": "Tree-Cycles",
+        "graph_task": false,
         "epochs": 20,
-        "batch_size": 64,
-        "lr_mlp": 0.01,
+        "batch_size": 1,
+        "lr_mlp": 0.003,
         "sampled_graphs": 20,
-        "coefficient_size_reg": 0.01,
+        "coefficient_size_reg": 0.0001,
         "coefficient_entropy_reg": 0.01,
         "coefficient_L2_reg": 0.0,
         "t0": 5.0,
