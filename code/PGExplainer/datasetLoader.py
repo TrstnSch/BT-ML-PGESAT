@@ -38,6 +38,26 @@ class ReplaceFeatures(object):
         num_nodes = data.x.shape[0]  # Get number of nodes
         data.x = torch.ones((num_nodes, 10))  # Replace x with 10d ones
         return data
+    
+class addGroundTruth(object):
+    def __call__(self, data, MUTAG):
+        if MUTAG:
+            data.gt = None # Load from file + convert to gt_mask
+        else:
+            #k = 6 if data.y.item() == 1 else 5
+            k = 5
+            motif_node_indices = torch.arange(20,25)
+            ground_truth_indices = []
+
+            for index in range(0, len(data.edge_index[0])):
+                if data.edge_index[0][index] in motif_node_indices and data.edge_index[1][index] in motif_node_indices:
+                    ground_truth_indices.append(index)
+
+            groundTruthMask = torch.zeros_like(data.edge_index[0], dtype=torch.bool)
+            groundTruthMask[ground_truth_indices] = 1
+
+            data.gt = groundTruthMask
+        return data
 
 
 
@@ -50,12 +70,14 @@ def loadGraphDataset (datasetName: Literal['BA-2Motif','MUTAG'], manual_seed=42)
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
     if datasetName == 'BA-2Motif' :
         dataset = BA2MotifDataset('datasets')                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
-    
 
     if datasetName == 'MUTAG':
         dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity")
 
         dataset.download()
+
+        # This has to be done for every elem probably
+        dataset = addGroundTruth(dataset, True)
         
 
     # Implement splits  TODO: Move outside
@@ -181,7 +203,38 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
     edge_label_matrix = torch.tensor(data[8], dtype=torch.float64)
     gt = edge_label_matrix.nonzero().t().contiguous()
     gt_undirected = to_undirected(gt)
+
+
+
+    # TODO: Create mask for edge_index_undirected over gt_undirected
+    # Ensure the edges are sorted (important for direct comparison)
+    edges_1 = edge_index_undirected.T  # Shape: [N, 2] (edge pairs as rows)
+    edges_2 = gt_undirected.T  # Shape: [M, 2] (edge pairs as rows)
+
+    # Create a mask that is True if the edge from edge_index_1 exists in edge_index_2
+    gt_mask = torch.zeros(edge_index_undirected.size(1), dtype=torch.bool)  # Initialize a mask of False
+
+    # Loop through each edge in edge_index_1 and check if it is in edge_index_2
+    for i, edge in enumerate(edges_1):
+        # Check if edge exists in edge_index_2 (order matters)
+        if any(torch.equal(edge, e) for e in edges_2):
+            gt_mask[i] = True
     
+
+
+    # Convert edges to tuples for easier set operations
+    edges_1 = set(map(tuple, edge_index_undirected.T.tolist()))  # Set of edges from edge_index_1
+    edges_2 = set(map(tuple, gt_undirected.T.tolist()))  # Set of edges from edge_index_2
+
+    # Find the intersection of edges
+    intersection = edges_1 & edges_2
+
+    # Create a mask based on the intersection
+    mask = torch.tensor([tuple(edge) in intersection for edge in edge_index_undirected.T.tolist()], dtype=torch.bool)
+
+
+
+
     x=torch.tensor(data[1], dtype=torch.float32)
     
     y_full = torch.zeros_like(torch.tensor(data[2], dtype=torch.float64))

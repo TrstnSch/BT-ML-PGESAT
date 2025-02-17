@@ -145,8 +145,6 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, startNode, ground_truth=N
     ground_truth_indices = []
     labels = data.y
     
-    #print(labels)
-    
     for index in range(0, len(edge_index_hop[0])):
         if labels[edge_index_hop[0][index]] == 1 and labels[edge_index_hop[1][index]] == 1:
             ground_truth_indices.append(index)
@@ -157,8 +155,19 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, startNode, ground_truth=N
     # IDEA: Take gt edge index from dataset, extract subset nodes! Problem: Can't use indices, have to search in edge_index to get nodes
     
     
+
+    # TODO: Use edge_mask from k_hop_subgraph on gt of same length. This should work well but gt (edge_index_mask) MUST match data.edge_index!
+    subgraph_ground_truth = data.gt[edge_mask]
+
+    """# TODO: INSTEAD take subgraph_indices from subgraph_edge_mask
+    # Get the indices of edges that are part of the subgraph (where edge_mask is True)
+    subgraph_indices = edge_mask.nonzero(as_tuple=True)[0]  # This gives the indices where edge_mask is True
+
+    # Filter the ground truth mask to match the subgraph's edges
+    filtered_gt = data.gt[subgraph_indices]"""
+
     
-    # TODO: This shit does not work, gt from dataset
+    """# TODO: This shit does not work, gt from dataset
     # Convert larger edge index to a set of tuples for fast lookup
     gt_set = set(zip(ground_truth[0].tolist(), ground_truth[1].tolist()))
 
@@ -166,7 +175,7 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, startNode, ground_truth=N
     gt_labels = torch.tensor([1 if (u, v) in gt_set else 0 for u, v in zip(edge_index_hop[0], edge_index_hop[1])])
     
     #for index in range(0, len(edge_index_hop[0])):
-        # if ground_truth edge index contains edge_index_hop[0][index], edge_index_hop[1][index] at one index => 1
+        # if ground_truth edge index contains edge_index_hop[0][index], edge_index_hop[1][index] at one index => 1"""
             
     
     # This prevents AUC being calculated if all nodes are from the same class, since only either positives or negatives
