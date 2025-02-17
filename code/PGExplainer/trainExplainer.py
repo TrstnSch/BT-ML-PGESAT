@@ -1,12 +1,11 @@
 import datasetLoader
 import evaluation
 import explainer
-import json
 import networks
+import utils
 import sys
 import torch
 import torch.nn.functional as fn
-from pathlib import Path
 from torch_geometric.loader import DataLoader
 from torch_geometric.utils import k_hop_subgraph
 import wandb
@@ -14,13 +13,33 @@ import wandb
 
 datasetType = ['BA-2Motif','MUTAG', 'BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid']
 
-def trainExplainer (dataset, save_model=False) :
+
+def loadExplainer(dataset):
     # Check valid dataset name
-    if dataset not in datasetType:
-        print("Dataset argument must be one of the following: BA-2Motif, MUTAG, BA-Shapes, BA-Community, Tree-Cycles, Tree-Grid")
+    config = utils.loadConfig(dataset)
+    if config == -1:
         return
     
-    config = loadConfig(dataset)
+    params = config['params']
+    graph_task = params['graph_task']
+    
+    data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
+    
+    mlp = explainer.MLP(GraphTask=graph_task, hidden_dim=64)     # Adjust according to data and task
+    mlp.load_state_dict(torch.load(f"models/explainer{dataset}", weights_only=True))
+
+    downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = data.x.shape[1], labels=labels)
+    downstreamTask.load_state_dict(torch.load(f"models/{dataset}", weights_only=True))
+    
+    return mlp, downstreamTask
+
+
+def trainExplainer (dataset, save_model=False) :
+    # Check valid dataset name
+    config = utils.loadConfig(dataset)
+    if config == -1:
+        return
+    
     params = config['params']
     graph_task = params['graph_task']
     epochs = params['epochs']
@@ -30,9 +49,10 @@ def trainExplainer (dataset, save_model=False) :
     coefficient_size_reg = params['coefficient_size_reg']
     coefficient_entropy_reg = params['coefficient_entropy_reg']
     coefficient_L2_reg = params['coefficient_L2_reg']
+    num_explanation_edges = params['num_explanation_edges']
 
     MUTAG = True if dataset == "MUTAG" else False
-    k = 10 if MUTAG else 5
+    k = num_explanation_edges
     hidden_dim = 64 # Make loading possible
     clip_grad_norm = 2 # Make loading possible
     
@@ -51,8 +71,25 @@ def trainExplainer (dataset, save_model=False) :
         test_loader = DataLoader(test_dataset, params['batch_size'])
     else:
         # TODO
+        if dataset == "BA-Shapes":
+            motifNodesOriginal = [i for i in range(400,700,5)]
+            allNodes = [i for i in range(len(data.x))]
+            
+            motifNodes = motifNodesOriginal
+        
+        if dataset == "BA-Community":
+            # TODO: Validate this
+            single_label = data.y
+            #print(all_label)
+            #single_label = torch.argmax(all_label,axis=-1)
+            #print(single_label)
+            motifNodesOriginal = [i for i in range(single_label.shape[0]) if single_label[i] != 0 and single_label[i] != 4]
+            
+            allNodes = [i for i in range(len(data.x))]
+            
+            motifNodes = allNodes
+            
         if dataset == "Tree-Cycles":
-            k = 6
             motifNodesOriginal = [i for i in range(511,871,6)]          # It LOOKS like thise takes only the first node of each motif
             motifNodesModified = [i for i in range(len(data.x)) if data.y[i] == 1 ]
             allNodes = [i for i in range(len(data.x))]
@@ -60,7 +97,6 @@ def trainExplainer (dataset, save_model=False) :
             motifNodes = motifNodesOriginal
             
         if dataset == "Tree-Grid":
-            k = 12
             motifNodesOriginal = [i for i in range(511,800,9)]              #in(512,514,515,516,518) out(511,513, 517,519)                   range(511,800,1)
             motifNodesNew = [i for i in range(len(data.x)) if data.y[i] == 1 ]
             allNodes = [i for i in range(len(data.x))]
@@ -83,11 +119,10 @@ def trainExplainer (dataset, save_model=False) :
             
             motifNodes = motifNodesOriginal
         
-        
 
 
     # TODO: Instead of loading static one, pass model as argument?
-    downstreamTask = networks.GraphGNN(features = train_dataset[0].x.shape[1], labels=2) if graph_task else networks.NodeGNN(features = data.x.shape[1], labels=labels)
+    downstreamTask = networks.GraphGNN(features = train_dataset[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = data.x.shape[1], labels=labels)
     downstreamTask.load_state_dict(torch.load(f"models/{dataset}", weights_only=True))
 
     mlp = explainer.MLP(GraphTask=graph_task, hidden_dim=hidden_dim)
@@ -165,8 +200,8 @@ def trainExplainer (dataset, save_model=False) :
             dataOut, meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, MUTAG, k=k)
         else:
             aucList = []
-            for i in motifNodesModified:
-                currAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, data.edge_index, i, data.gt, k=k)
+            for i in motifNodes:
+                currAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, i, data.gt, k=k)
                 if currAuc != -1: aucList.append(currAuc)
             meanAuc = torch.tensor(aucList).mean().item()
     
@@ -178,17 +213,6 @@ def trainExplainer (dataset, save_model=False) :
         torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{meanAuc}_{wandb.run.name}")
 
     return mlp, downstreamTask
-
-
-def loadConfig(dataset):
-    # Load JSON file "dataset"
-    script_dir = Path(__file__).resolve().parent
-    config_dir = f"configs/{dataset}.json"
-
-    with open(script_dir.parent.parent / config_dir) as f:
-        config = json.load(f)
-
-    return config
 
 
 #trainExplainer(dataset=sys.argv[1], save_model=sys.argv[2])

@@ -1,11 +1,14 @@
 import torch
 import torch.nn as nn
+import utils
+import datasetLoader
 from torcheval.metrics.aggregation.auc import AUC
 from torchmetrics.functional import roc
 from torch_geometric.loader import DataLoader
 from torcheval.metrics import BinaryAUROC
 from sklearn.metrics import roc_auc_score
 from torch_geometric.utils import k_hop_subgraph
+
 
 def evaluateGraphGNN(gnn, data_loader):
     
@@ -114,14 +117,14 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False, k=5):
     
     
 # TODO: Not necessary to pass edge_index_undirected and gt, just take from data!!!
-def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, startNode, ground_truth=None, k=6):
+def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, startNode, ground_truth=None, k=6):
     mlp.eval()
     modelNodeGNN.eval()
     metric = AUC(n_tasks=1)
     metric2 = BinaryAUROC()
     
     # Compute k hop graph for 1 random node of class 1
-    subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=startNode, num_hops=3, edge_index=edge_index_undirected, relabel_nodes=False)
+    subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=startNode, num_hops=3, edge_index=data.edge_index, relabel_nodes=False)
     
     w_ij = mlp.forward(modelNodeGNN, data.x, edge_index_hop, startNode)
 
@@ -129,7 +132,7 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, st
     # TODO: PROBLEM: edges start to all get rounded to the same weight, since weights increase/decrease too strongly!?
     edge_ij = mlp.sampleGraph(w_ij, 1).detach()
     
-    print(w_ij)
+    #print(w_ij)
     
     # Instead of weights, take top k edges according to motif?
     k = k * 2 if len(w_ij) >= k*2 else len(w_ij)
@@ -171,8 +174,8 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, st
         print("AUC not computable")
         return -1
 
-    print(topEdgesMask)
-    print(groundTruthMask)
+    #print(topEdgesMask)
+    #print(groundTruthMask)
     
     fpr, tpr, thresholds = roc(topEdgesMask, groundTruthMask, task='binary')
     
@@ -197,3 +200,49 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, edge_index_undirected, st
     print(f"roc_auc_score: {roc_auc_score(gt_labels, edge_ij)}")"""
     
     return roc_auc
+
+
+def evaluate (datasetName, mlp, downstreamTask):
+    config = utils.loadConfig(datasetName)
+    if config == -1:
+        return
+    
+    params = config['params']
+    graph_task = params['graph_task']
+    num_explanation_edges = params['num_explanation_edges']
+    
+    MUTAG = True if datasetName == "MUTAG" else False
+
+    
+    data, labels = datasetLoader.loadGraphDataset(datasetName) if graph_task else datasetLoader.loadOriginalNodeDataset(datasetName)
+    
+    if graph_task:
+        # TODO: This loading of datasets needs to be generalized, maybe move back to data laoder
+        graph_dataset_seed = 42
+        generator1 = torch.Generator().manual_seed(graph_dataset_seed)
+        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
+        
+        dataOut, meanAuc = evaluateExplainerAUC(mlp, downstreamTask, val_dataset, MUTAG, k=num_explanation_edges)
+        
+        # For showExplanation, pass first(TODO: random) graph from test_dataset
+        data = test_dataset[0]
+    else:
+        # TODO: move to config
+        if datasetName == "BA-Community":
+            all_label = data.y
+            single_label = torch.argmax(all_label,axis=-1)
+            motifNodes = [i for i in range(single_label.shape[0]) if single_label[i] != 0 and single_label[i] != 4]
+        else:
+            motif_node_indices = params['motif_node_indices']
+            motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
+        
+        aucList = []
+        for i in motifNodes:
+            currAuc = evaluateNodeExplainerAUC(mlp, downstreamTask, data, i, data.gt, k=num_explanation_edges)
+            if currAuc != -1: aucList.append(currAuc)
+        meanAuc = torch.tensor(aucList).mean().item()
+        
+        randomAucNode = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graph_task)
+        auc = evaluateNodeExplainerAUC(mlp, downstreamTask, data, randomAucNode, data.gt, k=num_explanation_edges)
+        
+    return meanAuc

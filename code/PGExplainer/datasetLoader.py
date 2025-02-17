@@ -188,7 +188,7 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
     y_train, y_val, y_test = torch.tensor(data[2], dtype=torch.float64), torch.tensor(data[3], dtype=torch.float64), torch.tensor(data[4], dtype=torch.float64)
     train_mask, val_mask, test_mask = torch.tensor(data[5], dtype=torch.bool), torch.tensor(data[6], dtype=torch.bool), torch.tensor(data[7], dtype=torch.bool)
 
-    # TODO: Optimize
+    # TODO: Optimize, Use logical OR?
     y_full[train_mask] = y_train[train_mask]
     y_full[val_mask] = y_val[val_mask]
     y_full[test_mask] = y_test[test_mask]
