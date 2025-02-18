@@ -52,7 +52,6 @@ def trainExplainer (dataset, save_model=False) :
     num_explanation_edges = params['num_explanation_edges']
 
     MUTAG = True if dataset == "MUTAG" else False
-    k = num_explanation_edges
     hidden_dim = 64 # Make loading possible
     clip_grad_norm = 2 # Make loading possible
     
@@ -62,6 +61,14 @@ def trainExplainer (dataset, save_model=False) :
     data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
 
     if graph_task:
+        #TODO: FOR MUTAG: SELECT GRAPHS WITH GROUND TRUTH. HOW TO EVALUATE ONLY ON THESE? CHANGE TRAINING AGAIN AND REMOVE DATALOADERS?!
+        #if np.argmax(original_labels[gid]) == 0 and np.sum(edge_label_lists[gid]) > 0:
+        if MUTAG:
+            selectedIndices = []
+            for i in range(0, len(data)):
+                if data[i].y == 0 and torch.sum(data[i].gt_mask) > 0:
+                    selectedIndices.append(i)
+        
         graph_dataset_seed = 42
         generator1 = torch.Generator().manual_seed(graph_dataset_seed)
         train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
@@ -90,7 +97,7 @@ def trainExplainer (dataset, save_model=False) :
             motifNodes = allNodes
             
         if dataset == "Tree-Cycles":
-            motifNodesOriginal = [i for i in range(511,871,6)]          # It LOOKS like thise takes only the first node of each motif
+            motifNodesOriginal = [i for i in range(511,871,6)]          # It LOOKS like this takes only the first node of each motif
             motifNodesModified = [i for i in range(len(data.x)) if data.y[i] == 1 ]
             allNodes = [i for i in range(len(data.x))]
         
@@ -197,13 +204,14 @@ def trainExplainer (dataset, save_model=False) :
         mlp.eval()
         
         if graph_task:
-            dataOut, meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, MUTAG, k=k)
+            meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, MUTAG, num_explanation_edges)
         else:
             aucList = []
             for i in motifNodes:
-                currAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, i, data.gt, k=k)
+                currAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, i, num_explanation_edges)
                 if currAuc != -1: aucList.append(currAuc)
             meanAuc = torch.tensor(aucList).mean().item()
+            print(f"Mean auc: {meanAuc}")
     
         wandb.log({"train/Loss": loss, "val/mean_AUC": meanAuc})
 

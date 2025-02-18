@@ -39,26 +39,58 @@ class ReplaceFeatures(object):
         data.x = torch.ones((num_nodes, 10))  # Replace x with 10d ones
         return data
     
+# This seems to work
 class addGroundTruth(object):
-    def __call__(self, data, MUTAG):
-        if MUTAG:
-            data.gt = None # Load from file + convert to gt_mask
-        else:
-            #k = 6 if data.y.item() == 1 else 5
-            k = 5
-            motif_node_indices = torch.arange(20,25)
-            ground_truth_indices = []
+    def __call__(self, data):
+        motif_node_indices = torch.arange(20,25)
+        ground_truth_indices = []
 
-            for index in range(0, len(data.edge_index[0])):
-                if data.edge_index[0][index] in motif_node_indices and data.edge_index[1][index] in motif_node_indices:
-                    ground_truth_indices.append(index)
+        for index in range(0, len(data.edge_index[0])):
+            if data.edge_index[0][index] in motif_node_indices and data.edge_index[1][index] in motif_node_indices:
+                ground_truth_indices.append(index)
 
-            groundTruthMask = torch.zeros_like(data.edge_index[0], dtype=torch.bool)
-            groundTruthMask[ground_truth_indices] = 1
+        groundTruthMask = torch.zeros_like(data.edge_index[0], dtype=torch.bool)
+        groundTruthMask[ground_truth_indices] = 1
 
-            data.gt = groundTruthMask
+        data.gt_mask = groundTruthMask
         return data
 
+# This does not work, at some point gt is empty
+class addGroundTruthMUTAG(object):
+    def __init__(self):
+        self.edge_labels = self.load_edge_labels()
+
+    def load_edge_labels(self):
+        """
+        Load the edge labels from the given txt file.
+        The file format assumes one label per edge across all graphs.
+        """
+        edge_labels = []
+        with open("datasets/Mutagenicity/raw/Mutagenicity_edge_gt.txt", 'r') as f:
+            for line in f:
+                edge_labels.append(int(line.strip()))
+        return edge_labels
+    
+    def __call__(self, data):
+        """
+        This method is called to apply the transformation to each graph in the dataset.
+        Adds edge labels to the Data object.
+        """
+        edge_index = data.edge_index
+        num_edges = edge_index.size(1)
+        
+        # TODO: THIS IS TRIGGERED!!!! WHY?? PROBLEM WITH SHAPES
+        if num_edges > len(self.edge_labels):
+            raise ValueError(f"Not enough edge labels available for {num_edges} edges in this graph.")
+        
+        # Extract the correct number of edge labels for this graph
+        labels = self.edge_labels[:num_edges]
+        self.edge_labels = self.edge_labels[num_edges:]  # Remove used labels
+
+        # Convert the labels to a tensor and add it to the data object
+        data.gt_mask = torch.tensor(labels, dtype=torch.bool)
+
+        return data
 
 
 
@@ -69,15 +101,13 @@ def loadGraphDataset (datasetName: Literal['BA-2Motif','MUTAG'], manual_seed=42)
     
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
     if datasetName == 'BA-2Motif' :
-        dataset = BA2MotifDataset('datasets')                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
+        dataset = BA2MotifDataset('datasets', pre_transform=addGroundTruth())                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
 
     if datasetName == 'MUTAG':
-        dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity")
+        transformMUTAG= addGroundTruthMUTAG()
+        dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity", pre_transform=transformMUTAG)
 
         dataset.download()
-
-        # This has to be done for every elem probably
-        dataset = addGroundTruth(dataset, True)
         
 
     # Implement splits  TODO: Move outside
@@ -206,7 +236,7 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
 
 
 
-    # TODO: Create mask for edge_index_undirected over gt_undirected
+    """# TODO: Create mask for edge_index_undirected over gt_undirected
     # Ensure the edges are sorted (important for direct comparison)
     edges_1 = edge_index_undirected.T  # Shape: [N, 2] (edge pairs as rows)
     edges_2 = gt_undirected.T  # Shape: [M, 2] (edge pairs as rows)
@@ -218,7 +248,7 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
     for i, edge in enumerate(edges_1):
         # Check if edge exists in edge_index_2 (order matters)
         if any(torch.equal(edge, e) for e in edges_2):
-            gt_mask[i] = True
+            gt_mask[i] = True"""
     
 
 
@@ -230,7 +260,7 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
     intersection = edges_1 & edges_2
 
     # Create a mask based on the intersection
-    mask = torch.tensor([tuple(edge) in intersection for edge in edge_index_undirected.T.tolist()], dtype=torch.bool)
+    gt_mask = torch.tensor([tuple(edge) in intersection for edge in edge_index_undirected.T.tolist()], dtype=torch.bool)
 
 
 
@@ -248,7 +278,7 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
     
     y_full = torch.argmax(y_full, dim=1)
     
-    data = Data(x=x,edge_index=edge_index_undirected, y=y_full, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask, gt=gt_undirected)
+    data = Data(x=x,edge_index=edge_index_undirected, y=y_full, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask, gt_mask=gt_mask)
 
     return data, labelMapping[datasetName]
 
