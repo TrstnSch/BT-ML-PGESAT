@@ -55,7 +55,6 @@ class addGroundTruth(object):
         data.gt_mask = groundTruthMask
         return data
 
-# This does not work, at some point gt is empty
 class addGroundTruthMUTAG(object):
     def __init__(self):
         self.edge_labels = self.load_edge_labels()
@@ -79,7 +78,6 @@ class addGroundTruthMUTAG(object):
         edge_index = data.edge_index
         num_edges = edge_index.size(1)
         
-        # TODO: THIS IS TRIGGERED!!!! WHY?? PROBLEM WITH SHAPES
         if num_edges > len(self.edge_labels):
             raise ValueError(f"Not enough edge labels available for {num_edges} edges in this graph.")
         

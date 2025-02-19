@@ -88,18 +88,24 @@ def trainExplainer (dataset, save_model=False, config=None) :
             #TODO: FOR MUTAG: SELECT GRAPHS WITH GROUND TRUTH. HOW TO EVALUATE ONLY ON THESE? CHANGE TRAINING AGAIN AND REMOVE DATALOADERS?!
             #if np.argmax(original_labels[gid]) == 0 and np.sum(edge_label_lists[gid]) > 0:
             if MUTAG:
+                selected_data = []
                 selectedIndices = []
                 for i in range(0, len(data)):
                     if data[i].y == 0 and torch.sum(data[i].gt_mask) > 0:
                         selectedIndices.append(i)
+                        selected_data.append(data[i])
             
+                # TODO: Pre process data here or before loading to only contain motif graphs
+                data = selected_data
+            
+
             graph_dataset_seed = 42
             generator1 = torch.Generator().manual_seed(graph_dataset_seed)
             train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
 
             train_loader = DataLoader(train_dataset, params['batch_size'], True)
-            val_loader = DataLoader(val_dataset, params['batch_size'], False)
-            test_loader = DataLoader(test_dataset, params['batch_size'])
+            #val_loader = DataLoader(val_dataset, params['batch_size'], False)
+            #test_loader = DataLoader(test_dataset, params['batch_size'])
         else:
             # TODO
             if dataset == "BA-Shapes":
@@ -183,11 +189,13 @@ def trainExplainer (dataset, save_model=False, config=None) :
 
                 if not graph_task:
                     subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=content, num_hops=3, edge_index=current_data.edge_index, relabel_nodes=False)
+                    # TODO: CHANGE TO content instead of index
                     node_to_predict = index
 
                 current_edge_index = current_data.edge_index if graph_task else edge_index_hop
 
                 # MLP forward
+                # TODO: Why node_to_predict = index for node task instead of content? Should probably be content!
                 w_ij = mlp.forward(downstreamTask, current_data.x, current_edge_index, nodeToPred=node_to_predict)
 
                 sampleLoss = torch.FloatTensor([0])
@@ -228,7 +236,8 @@ def trainExplainer (dataset, save_model=False, config=None) :
             mlp.eval()
             
             if graph_task:
-                meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, MUTAG, num_explanation_edges)
+                # TODO: IF MUTAG val_dataset should be changed to dataset with only motifs/pass indices
+                meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
             else:
                 aucList = []
                 for i in motifNodes:
