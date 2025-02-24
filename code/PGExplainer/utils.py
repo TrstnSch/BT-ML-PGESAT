@@ -205,7 +205,7 @@ def loadConfig(dataset):
     return config
 
 
-def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graphTask=True):
+def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graphTask=True, MUTAG=False):
     mlp.eval()
     downstreamTask.eval()
     
@@ -227,17 +227,25 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
         weights_masked = edge_ij[sortedTopK]                # This is ordered by size
 
         # edge_index_masked and weights_masked to display top 5 edges; data1.edge_index and w_ij to display original graph
-        Gs = Data(x=data.x, edge_index=edge_index_masked, edge_attr=weights_masked)
+        G_weights = Data(x=data.x, edge_index=edge_index_masked, edge_attr=weights_masked)
+        Gs = Data(x=data.x, edge_index=data.edge_index, edge_attr=edge_ij)
+        G_gt = Data(x=data.x, edge_index=data.edge_index[:,data.gt_mask])
 
         print("-----------------Original Graph-----------------")
 
-        pos = plotGraphAll(data, number_nodes=True, graph_task=True)
+        pos = plotGraphAll(data, number_nodes=True, graph_task=True, MUTAG=MUTAG)
+        
+        print("-----------Original Graph with edge weights-----------")
+        
+        pos1 = plotGraphAll(G_weights, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG)
 
         print("-----------------Explanation Graph-----------------")
 
-        pos1 = plotGraphAll(Gs, pos=pos, number_nodes=True, graph_task=True, edge_weights=True)
+        pos1 = plotGraphAll(Gs, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG)
+        
+        print("-----------------Ground truth Graph-----------------")
     
-    
+        pos2 = plotGraphAll(G_gt, pos=pos, number_nodes=True, graph_task=True, MUTAG=MUTAG)
     
     else:
         randomAUCNode = random.choice(motifNodes)
@@ -248,6 +256,7 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
 
         G_hop = Data(x=data.x[subset], edge_index=edge_index_hop, y=data.y[subset])
 
+        print("-----------------Original Computational Graph-----------------")
         pos = plotGraphAll(G_hop)
 
         w_ij = mlp.forward(downstreamTask, data.x[subset], edge_index_hop, indexNodeToPred)
@@ -265,6 +274,7 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
 
         GraphSampled = Data(x=G_hop.x, edge_index=G_hop.edge_index, y=G_hop.y, edge_attr=edge_ij.detach())
 
+        print("-----------Original Computational Graph with calculated Weights -----------")
         pos = plotGraphAll(GraphSampled, pos, edge_weights=True)
 
 
@@ -282,6 +292,12 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
 
         GtopK = Data(x=G_hop.x, edge_index=edge_index_masked, y=G_hop.y, edge_attr=weights_masked)
 
+        print("-----------------Top K Motif Graph-----------------")
         pos1 = plotGraphAll(GtopK, pos=pos, color_map=None, edge_weights=True)
+        
+        G_gt = Data(x=G_hop.x, edge_index=G_hop.edge_index[:,data.gt_mask[edge_mask]], y=G_hop.y)
+        
+        print("-----------------Ground Truth-----------------")
+        pos1 = plotGraphAll(G_gt, pos=pos, color_map=None, edge_weights=False)
     
     return randomAUCNode

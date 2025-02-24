@@ -53,11 +53,16 @@ class MLP(nn.Module):
         # TODO: Validate
         w_ij_sym = utils.combineEdgeWeights(edge_index, w_ij)
         
+        weights_min = w_ij_sym.min()
+        weights_max = w_ij_sym.max()
+        weights_norm = (w_ij_sym - weights_min) / (weights_max - weights_min)
+        
+        
         # TODO: Original uses structure that directly calls sampleGraph and puts through downstream taks, returns prediction for sample and saves edgeMask as global var
-        return w_ij_sym
+        return weights_norm
 
 
-    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=0.0):
+    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):
         """Loss of explanation model for singular (sampled) instance(graph)
 
         Args:
@@ -87,8 +92,9 @@ class MLP(nn.Module):
 
             l2norm = coefficientL2Reg * l2norm
 
-        # TODO: sizeReg and/or entropyReg mess up weights to be negative
-        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
+        # TODO: sizeReg and/or entropyReg mess up weights to be negative??
+        # TODO: Order should probably be pSample first and pOriginal second!!
+        Loss = -torch.sum(pSample * torch.log(pOriginal + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pOriginal, pSample) + entropyReg + sizeReg
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
         #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?
@@ -137,7 +143,7 @@ class MLP(nn.Module):
         """
         if self.training:
             epsilon = torch.rand(w_ij.size()) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
-        
+
             edge_ij = nn.Sigmoid()((torch.log(epsilon)-torch.log(1-epsilon)+w_ij)/temperature)    # shape: ~50 X 1 = EdgesOG X SampledEdgesProbability
         else:
             edge_ij = nn.Sigmoid()(w_ij)
