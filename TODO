@@ -7,9 +7,9 @@ DONE: Implement + understand DataLoader   80/10/10 split
  - DONE: visualize Dataset, 
  - DONE: color node classes (optional)
  - DONE: Validate creation of datasets!!
- - TODO: Datasets for Node classification need to be generated once, saved and loaded to be static. OR take original ones and transform?
- - TODO: BA-Graph Generator not correct -> Use and transform original datasets?? Generate own dataset??
- - TODO: Combine graphs for BA-Community
+ - DONE: Datasets for Node classification need to be generated once, saved and loaded to be static. OR take original ones and transform?
+ - DONE: BA-Graph Generator not correct -> Use and transform original datasets?? Generate own dataset??
+ - DONE: Combine graphs for BA-Community
 
 training loop
  - params
@@ -41,9 +41,17 @@ Explainer training loop
  - Done: Batching
  - TODO: Loss regularization implemented but not working as expected. PROBLEM: Model learns lowest edge weights instead of highest?!
 
-TODO: MUTAG ground truth!
 TODO: BA-Community gt!
 TODO: BA-Community performance!!
+
+
+
+
+TODO: VALIDAT MUTAG GT!!! SEEMS TO BE MESSED UP!
+
+
+
+
 
 TODO: PROBLEMs
  - DONE: When examining use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam values? => Paper states to use latent variables, but code uses probabilites!
@@ -65,7 +73,7 @@ TODO: Clear up structure
 implement utils
 
 
-# TODO:
+DONE:
   - DONE: Try to use original datasets -> Transform for pyg
   - AUC: take ground truth from dataset, predictions from graph? Try with topK predictions?
   - DONE: Node training: Extract only first node from motifs and train on these! Use same for evaluation
