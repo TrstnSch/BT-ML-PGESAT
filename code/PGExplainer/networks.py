@@ -148,25 +148,25 @@ class NodeGNN(nn.Module):
             flaot tensor: Node embeddings
         """
         # TODO: Understand IF AND WHY this would not be necessary!
-        """if edge_weights is None:
-            edge_weights = torch.ones(edge_index.size(1))"""
+        if edge_weights is None:
+            edge_weights = torch.ones(edge_index.size(1))
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
         #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)
         emb1 = self.relu(emb1)
         #emb1 = self.bn(emb1)
-        #emb1 = self.dropout(emb1)
+        emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
         #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
         emb2 = self.relu(emb2)
         #emb2 = self.bn(emb2)
-        #emb2 = self.dropout(emb2)
+        emb2 = self.dropout(emb2)
         
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
         #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
         emb3 = self.relu(emb3)
-        #emb3 = self.dropout(emb3)
+        emb3 = self.dropout(emb3)
 
         embs = torch.cat([emb1, emb2, emb3], 1)
         
