@@ -17,7 +17,7 @@ class MLP(nn.Module):
             nn.Linear(hidden_dim, 1)                # Linear Fully connected (20, 1)
         )
         
-        self.init_weights()  # Call the initialization function
+        #self.init_weights()  # Call the initialization function
 
 
     def init_weights(self):
@@ -53,13 +53,8 @@ class MLP(nn.Module):
         # TODO: Validate
         w_ij_sym = utils.combineEdgeWeights(edge_index, w_ij)
         
-        weights_min = w_ij_sym.min()
-        weights_max = w_ij_sym.max()
-        weights_norm = (w_ij_sym - weights_min) / (weights_max - weights_min)
-        
-        
         # TODO: Original uses structure that directly calls sampleGraph and puts through downstream taks, returns prediction for sample and saves edgeMask as global var
-        return weights_norm
+        return w_ij_sym
 
 
     def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):

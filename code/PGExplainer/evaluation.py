@@ -101,6 +101,7 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, MUTAG=False, num_explanat
         
         groundTruthMask = data.gt_mask
         
+        # TODO: REMOVE! ONLY FOR TESTING WITHOUT TOPK SAMPLING
         topEdgesMask = edge_ij
         
         # This prevents AUC being calculated if all nodes are from the same class, since only either positives or negatives
