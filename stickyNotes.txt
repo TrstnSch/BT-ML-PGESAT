@@ -1,0 +1,90 @@
+Normalize added to graph downstream task:
+AUC decreases to 0 really fast. Learns the wrong way, but very accurate!!!!
+
+Layer norm in Node Task(Tree-Cycles) leads to better performance in explainer, but also learns to predict minimal weights!
+BatchNorm with bad validation values leads to auc of 0.5?! Second run 0.7 but decreases ti 0.5 during later epochs.
+USE 2 DIFFERENT BN LAYERS! -> Leads to AUC of 0.05, but increases slightly. LEARNS LOWEST
+
+Tree-Grid learns with same 2 bn layers architecture highest edge weights?! Nearly perfect
+Was lucky/random? Second run only around 0.58
+Validation quite well though, seems to work well overall
+
+
+
+
+
+
+
+
+
+
+BA-2Motif:
+Added weight norm intro forward of explainer. ROC increases to around 90%! Does not steadily increase though and goes up and down.
+Cheating?
+Houses are detected perfectly, but only gives 5 instead of 6 ndoes. Circle does not work too well, 2 nodes are detected outside?
+Seems like that was coincidence ☹️
+
+Weight norm Leads to horrible performance on Tree-Cycles
+Init weights for explainer seems to be a bad idea!
+
+Tree-Cycle model without weight norm and init went from AUC of 1 to AUC of 0.5
+
+
+
+
+
+
+
+
+
+
+
+Added edge weights of one of none given to node downstream task. 
+BA-Shapes only has auc problems when additional motif node in graph
+BA-Community around 60%, same problem as BA-Shapes(AUC increases if using edge weights instead of topK to 80%. AUC does not improve over epochs). Relatively high probabilies?
+Tree-Cycles: Stable around 60%, seems to be missing connectivity constraint! Predicts 4/6 edges correctly, but prefers other tri connected node edges over „base“ motif node edges. CONNECTIVITY CONSTRAINT NOT USED IN OG!?
+
+BA-2Motif: Same as MUTAG, just inverted. All weights are around 0. AUC decreases a lot
+MUTAG: Ground truth still messed up + all edge probabilites 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Swapped pOriginal and pSample in Loss.
+
+BA-Shapes works well
+BA-Community is inefficient!
+Tree-Cycles does not work, stuck around 50
+Tree-Grid does not work, stuck around 50
+ Works well if only trained on „middle“ nodes of  Motif (Apparently not anymore)
+BA-2Motif decreases AUC during training?!
+ From 60% down to 40%
+-> PROBLEM WITH NEGATIVE WEIGHTS -> Highest probabilites are 0?!
+(Maybe graph impl. problem)
+MUTAG is bad, because of bugged ground truth!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+BIGGEST PROBLEM: topK does not perfectly identify topK edges, because of bidirectional edges!!! If same vale edge weights at threshold different edges might be selected instead of always two belonging ones.
+To fix: Maybe extract one direction of edges from edge_index and edge weights accordingly before evaluating/processing?
