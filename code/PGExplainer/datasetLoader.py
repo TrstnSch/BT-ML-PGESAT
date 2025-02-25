@@ -118,7 +118,7 @@ def loadGraphDataset (datasetName: Literal['BA-2Motif','MUTAG'], manual_seed=42)
 
 
 
-def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid']) :       # TODO: perturb graphs?!
+"""def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid']) :       # TODO: perturb graphs?!
     # TODO: BAGraph() does not create accurate BA Graphs. Graphs can have unconnected nodes
     # no node features assigned
     if datasetName == 'BA-Shapes' :
@@ -199,7 +199,7 @@ def loadNodeDataset (datasetName: Literal['BA-Shapes', 'BA-Community', 'Tree-Cyc
 
     data = transform(dataset[0])
 
-    return labels, data
+    return labels, data"""
 
 
 def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid']):

@@ -9,7 +9,7 @@
         "sampled_graphs": 20,
         "coefficient_size_reg": 1.0,
         "coefficient_entropy_reg": 1.0,
-        "coefficient_L2_reg": 0.0,
+        "coefficient_L2_reg": 0,
         "num_explanation_edges": 12,
         "motif_node_indices": [512,800,9],
         "t0": 5.0,

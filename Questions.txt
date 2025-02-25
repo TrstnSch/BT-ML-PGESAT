@@ -54,3 +54,11 @@ Train over motif nodes, with node labels of motif class(each computanional graph
 
 
 When training TreeGrid explainer on all nodes: "Detects" motfis as lowest weights?! Probably simply wrong, since model just learns to detect base nodes as important since usually represented?
+
+BA-Community: 3-Hop graph contains multiple motifs. How to calculate topK/compare to gt?!
+Order of pSample and pOriginal in Loss
+
+\section{Linear Algebra} with Scalar, Vector, Matrix... needed? 
+
+
+Weights for Graph classification too low/high -> All one or all zero. Where to normalize? In forward pass?

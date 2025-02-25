@@ -75,17 +75,17 @@ class GraphGNN(nn.Module):
             edge_weights = torch.ones(edge_index.size(1))
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
-        #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)
+        emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)              # This improves model!? Used to normalize edge embeddings for graphs task, as they else get too high/low for BA-2Motif in explainer
         emb1 = self.relu(emb1)
         emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
-        #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
+        emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
         emb2 = self.relu(emb2)
         emb2 = self.dropout(emb2)
         
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
-        #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
+        emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
         emb3 = self.relu(emb3)
         emb3 = self.dropout(emb3)
 
@@ -102,8 +102,9 @@ class NodeGNN(nn.Module):
         self.hidden3 = gnn.GraphConv(20, 20)
         
         # LayerNorm instead of BatchNorm(Did not work)
-        self.bn = gnn.LayerNorm(20)
-        #self.bn = gnn.BatchNorm(20)
+        #self.bn = gnn.LayerNorm(20)
+        self.bn1 = gnn.BatchNorm(20)
+        self.bn2 = gnn.BatchNorm(20)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=0.1)                # Not used in PGExplainer
 
@@ -148,23 +149,20 @@ class NodeGNN(nn.Module):
             flaot tensor: Node embeddings
         """
         # TODO: Understand IF AND WHY this would not be necessary!
-        """if edge_weights is None:
-            edge_weights = torch.ones(edge_index.size(1))"""
+        if edge_weights is None:
+            edge_weights = torch.ones(edge_index.size(1))
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
-        #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)
         emb1 = self.relu(emb1)
-        #emb1 = self.bn(emb1)
+        emb1 = self.bn1(emb1)
         #emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
-        #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
         emb2 = self.relu(emb2)
-        #emb2 = self.bn(emb2)
+        emb2 = self.bn2(emb2)
         #emb2 = self.dropout(emb2)
         
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
-        #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
         emb3 = self.relu(emb3)
         #emb3 = self.dropout(emb3)
 
