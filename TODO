@@ -54,7 +54,8 @@ TODO: VALIDAT MUTAG GT!!! SEEMS TO BE MESSED UP!
 
 
 TODO: PROBLEMs
- - DONE: When examining use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam values? => Paper states to use latent variables, but code uses probabilites!
+ - DONE: When evaluating use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam values? => Paper states to use latent variables, but code uses probabilites!
+ - TODO: Problem with topK when ground_truth contains multiple motifs or partial motifs -> Better to calc auc all with edge_prob instead of topk?!
  - DONE: Sampling during eval() only Sigmoid, no randomness, therefore use preds instead of weights
  - TODO: Model learns minimal weights??? Only for BA2Motif?
  - DONE: Edges are duplicate because of undirected representation in PyG => Remove edges beforehand? => Not good
