@@ -90,6 +90,7 @@ class addGroundTruthMUTAG(object):
         # Convert the labels to a tensor and add it to the data object
         data.gt_mask = torch.tensor(labels, dtype=torch.bool)
 
+        # Replace features with 10d ones instead of 0.1s
         num_nodes = data.x.shape[0]  # Get number of nodes
         data.x = torch.ones((num_nodes, 10))  # Replace x with 10d ones
         
