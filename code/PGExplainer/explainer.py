@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import utils
 
-# TODO: PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
+#PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
 class MLP(nn.Module):
     def __init__(self, GraphTask=True, hidden_dim=64):
         super(MLP, self).__init__()
@@ -11,13 +11,13 @@ class MLP(nn.Module):
         
         self.inputSize = 2 * 20 if GraphTask else 3 * 60
 
-        self.model = nn.Sequential(                 # Fully connected (#input(node: 60, graph: 40), 64) => WRONG!
-            nn.Linear(self.inputSize, hidden_dim),        # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
+        self.model = nn.Sequential(
+            nn.Linear(self.inputSize, hidden_dim),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
             nn.ReLU(),
-            nn.Linear(hidden_dim, 1)                # Linear Fully connected (20, 1)
+            nn.Linear(hidden_dim, 1)                        # Linear Fully connected (20, 1)
         )
         
-        #self.init_weights()  # Call the initialization function
+        self.init_weights()
 
 
     def init_weights(self):
@@ -44,17 +44,15 @@ class MLP(nn.Module):
         """
         embeddings = self.getGraphEdgeEmbeddings(modelGraphGNN, x, edge_index, nodeToPred)
         
-        # TODO: Check if this can remain like this for NodePred
         w_ij = self.model(embeddings).squeeze(1)
         
         # TODO: Take absolute value of w_ij to always have positive weights?!
         #w_ij = torch.abs(w_ij)
         
-        # TODO: Validate
-        w_ij_sym = utils.combineEdgeWeights(edge_index, w_ij)
+        # TODO: Validate, maybe move to sample if evaluating
+        #w_ij_sym = utils.combineEdgeWeights(edge_index, w_ij)
         
-        # TODO: Original uses structure that directly calls sampleGraph and puts through downstream taks, returns prediction for sample and saves edgeMask as global var
-        return w_ij_sym
+        return w_ij
 
 
     def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):
@@ -87,10 +85,7 @@ class MLP(nn.Module):
 
             l2norm = coefficientL2Reg * l2norm
 
-        # TODO: sizeReg and/or entropyReg mess up weights to be negative??
-        # TODO: Order should probably be pSample first and pOriginal second!!
-        Loss = -torch.sum(pSample * torch.log(pOriginal + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
-        #Loss = torch.nn.functional.cross_entropy(pOriginal, pSample) + entropyReg + sizeReg
+        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
         #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?
         return Loss

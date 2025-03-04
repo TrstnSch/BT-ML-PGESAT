@@ -15,6 +15,8 @@ import torch_geometric.transforms as T
 import os
 from torch_geometric.utils import to_undirected
 
+import numpy as np
+
 class GaussianFeatureTransform:
     def __init__(self, num_features=10, mean=0.0, std=1.0):
         self.num_features = num_features
@@ -88,6 +90,9 @@ class addGroundTruthMUTAG(object):
         # Convert the labels to a tensor and add it to the data object
         data.gt_mask = torch.tensor(labels, dtype=torch.bool)
 
+        num_nodes = data.x.shape[0]  # Get number of nodes
+        data.x = torch.ones((num_nodes, 10))  # Replace x with 10d ones
+        
         return data
 
 
@@ -102,10 +107,12 @@ def loadGraphDataset (datasetName: Literal['BA-2Motif','MUTAG'], manual_seed=42)
         dataset = BA2MotifDataset('datasets', pre_transform=addGroundTruth())                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
 
     if datasetName == 'MUTAG':
-        transformMUTAG= addGroundTruthMUTAG()
+        """transformMUTAG= addGroundTruthMUTAG()
         dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity", pre_transform=transformMUTAG)
 
-        dataset.download()
+        dataset.download()"""
+        edge_lists, graph_labels, edge_label_lists, node_label_lists = loadOriginalMUTAG()
+        dataset = transformMUTAG(edge_lists, graph_labels, edge_label_lists, node_label_lists)
         
 
     # Implement splits  TODO: Move outside
@@ -296,3 +303,105 @@ def loadOriginalGraphDataset (datasetName: Literal['BA2Motif','MUTAG']):
         data = pickle.load(file)
         
     return data
+
+# This is taken from the original code
+def loadOriginalMUTAG ():
+    pri = './datasets/'+'MutagOriginal'+'/'+'Mutagenicity'+'_'
+
+    file_edges = pri+'A.txt'
+    # file_edge_labels = pri+'edge_labels.txt'
+    file_edge_labels = pri+'edge_gt.txt'
+    file_graph_indicator = pri+'graph_indicator.txt'
+    file_graph_labels = pri+'graph_labels.txt'
+    file_node_labels = pri+'node_labels.txt'
+
+    edges = np.loadtxt( file_edges,delimiter=',').astype(np.int32)
+    try:
+        edge_labels = np.loadtxt(file_edge_labels,delimiter=',').astype(np.int32)
+    except Exception as e:
+        print(e)
+        print('use edge label 0')
+        edge_labels = np.zeros(edges.shape[0]).astype(np.int32)
+
+    graph_indicator = np.loadtxt(file_graph_indicator,delimiter=',').astype(np.int32)
+    graph_labels = np.loadtxt(file_graph_labels,delimiter=',').astype(np.int32)
+
+    try:
+        node_labels = np.loadtxt(file_node_labels,delimiter=',').astype(np.int32)
+    except Exception as e:
+        print(e)
+        print('use node label 0')
+        node_labels = np.zeros(graph_indicator.shape[0]).astype(np.int32)
+
+    graph_id = 1
+    starts = [1]
+    node2graph = {}
+    for i in range(len(graph_indicator)):
+        if graph_indicator[i]!=graph_id:
+            graph_id = graph_indicator[i]
+            starts.append(i+1)
+        node2graph[i+1]=len(starts)-1
+    # print(starts)
+    # print(node2graph)
+    graphid  = 0
+    edge_lists = []
+    edge_label_lists = []
+    edge_list = []
+    edge_label_list = []
+    for (s,t),l in list(zip(edges,edge_labels)):
+        sgid = node2graph[s]
+        tgid = node2graph[t]
+        if sgid!=tgid:
+            print('edges connecting different graphs, error here, please check.')
+            print(s,t,'graph id',sgid,tgid)
+            exit(1)
+        gid = sgid
+        if gid !=  graphid:
+            edge_lists.append(edge_list)
+            edge_label_lists.append(edge_label_list)
+            edge_list = []
+            edge_label_list = []
+            graphid = gid
+        start = starts[gid]
+        edge_list.append((s-start,t-start))
+        edge_label_list.append(l)
+
+    edge_lists.append(edge_list)
+    edge_label_lists.append(edge_label_list)
+
+    # node labels
+    node_label_lists = []
+    graphid = 0
+    node_label_list = []
+    for i in range(len(node_labels)):
+        nid = i+1
+        gid = node2graph[nid]
+        # start = starts[gid]
+        if gid!=graphid:
+            node_label_lists.append(node_label_list)
+            graphid = gid
+            node_label_list = []
+        node_label_list.append(node_labels[i])
+    node_label_lists.append(node_label_list)
+
+    return edge_lists, graph_labels, edge_label_lists, node_label_lists
+
+
+
+def transformMUTAG (edge_lists, graph_labels, edge_label_lists, node_label_lists):
+    dataList = []
+    for i in range(len(edge_lists)):
+        sources, targets = zip(*edge_lists[i])
+        edge_index = torch.tensor([sources, targets], dtype=torch.int64)
+        
+        # Features, node_label_lists contains label for each node -> Transfomrm to 14d one-hot vector?
+        #node_label_lists[i]
+        node_features = torch.nn.functional.one_hot(torch.tensor(node_label_lists[i], dtype=torch.long), num_classes=14)
+        
+        gt_mask = torch.tensor(edge_label_lists[i], dtype=torch.bool)
+        
+        # TODO: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor)
+        data = Data(x=node_features.clone().detach().to(torch.float32),y=torch.tensor(graph_labels[i], dtype=torch.long),edge_index=edge_index,gt_mask=gt_mask)
+        dataList.append(data)
+        
+    return dataList

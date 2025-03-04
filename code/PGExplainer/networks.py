@@ -12,6 +12,10 @@ class GraphGNN(nn.Module):
         self.hidden2 = gnn.GraphConv(20, 20)         # GraphConvolution layer2: input dim = hidden dim = 20,
         self.hidden3 = gnn.GraphConv(20, 20)         # GraphConvolution layer3: 
         
+        #self.bn1 = gnn.BatchNorm(20)
+        #self.bn2 = gnn.BatchNorm(20)
+        #self.bn3 = gnn.BatchNorm(20)
+        
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=0.1)               # Not used in PGExplainer
 
@@ -44,8 +48,8 @@ class GraphGNN(nn.Module):
         Returns:
             out: Classification output tensor [batch_size, num_classes]
         """
-        """if batch is None: # No batch given
-            batch = torch.zeros(x.size(0), dtype=torch.long)"""
+        if batch is None: # No batch given
+            batch = torch.zeros(x.size(0), dtype=torch.long)
         
         # Encoding net
         emb = self.getNodeEmbeddings(x, edge_index, edge_weights)
@@ -77,17 +81,20 @@ class GraphGNN(nn.Module):
         emb1 = self.hidden1(x, edge_index, edge_weights)
         emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)              # This improves model!? Used to normalize edge embeddings for graphs task, as they else get too high/low for BA-2Motif in explainer
         emb1 = self.relu(emb1)
-        emb1 = self.dropout(emb1)
+        #emb1 = self.bn1(emb1)
+        #emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
         emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
         emb2 = self.relu(emb2)
-        emb2 = self.dropout(emb2)
+        #emb2 = self.bn2(emb2)
+        #emb2 = self.dropout(emb2)
         
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
         emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
+        #emb3 = self.bn3(emb3)
         emb3 = self.relu(emb3)
-        emb3 = self.dropout(emb3)
+        #emb3 = self.dropout(emb3)
 
         return emb3
     
@@ -102,7 +109,6 @@ class NodeGNN(nn.Module):
         self.hidden3 = gnn.GraphConv(20, 20)
         
         # LayerNorm instead of BatchNorm(Did not work)
-        #self.bn = gnn.LayerNorm(20)
         self.bn1 = gnn.BatchNorm(20)
         self.bn2 = gnn.BatchNorm(20)
         self.relu = nn.ReLU()
@@ -148,7 +154,6 @@ class NodeGNN(nn.Module):
         Returns:
             flaot tensor: Node embeddings
         """
-        # TODO: Understand IF AND WHY this would not be necessary!
         if edge_weights is None:
             edge_weights = torch.ones(edge_index.size(1))
             
@@ -169,7 +174,3 @@ class NodeGNN(nn.Module):
         embs = torch.cat([emb1, emb2, emb3], 1)
         
         return embs
-    
-"""    # TODO:
-    def train ():
-        return"""
