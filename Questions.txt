@@ -62,3 +62,8 @@ Order of pSample and pOriginal in Loss
 
 
 Weights for Graph classification too low/high -> All one or all zero. Where to normalize? In forward pass?
+
+
+
+Loss.detach() on initialization??
+What needs to be detached? What needs to require grad??

@@ -99,10 +99,10 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         
             data = selected_data
 
-        #graph_dataset_seed = 42
+        #graph_dataset_seed = 43
         #generator1 = torch.Generator().manual_seed(graph_dataset_seed)
         #train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
-
+        
         train_loader = DataLoader(data, params['batch_size'], True)
         #val_loader = DataLoader(val_dataset, params['batch_size'], False)
         #test_loader = DataLoader(test_dataset, params['batch_size'])
@@ -169,6 +169,8 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     for param in downstreamTask.parameters():
         param.requires_grad = False
 
+    """preAcc, preLoss = evaluation.evaluateGraphGNN(downstreamTask, train_loader)
+    print(f"Evaluation downstream task before training: {preAcc}")"""
 
     training_iterator = train_loader if graph_task else motifNodes
     
@@ -179,6 +181,11 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         temperature = t0*((tT/t0) ** ((epoch+1)/epochs))
         
         current_data = data
+        
+        sampledEdges = 0.0
+        sumSampledEdges = 0.0
+        
+        samplePredSum = 0
 
         # If graph task: iterate over training loader with content = current graph. If node task: iterate over motifNodes with content = current node 
         for index, content in enumerate(training_iterator):
@@ -199,11 +206,14 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             
             for k in range(0, sampled_graphs):
                 edge_ij = mlp.sampleGraph(w_ij, temperature)
+                
+                sampledEdges += torch.sum(edge_ij)
             
                 # TODO: Check if current_data.batch works with nodes! Add batch support for nodes? Batch has to contain map for edge_index?
                 pOriginal = fn.softmax(downstreamTask.forward(current_data.x, current_edge_index, current_data.batch), dim=1)
                 pSample = fn.softmax(downstreamTask.forward(current_data.x, current_edge_index, batch=current_data.batch, edge_weights=edge_ij), dim=1)
 
+                samplePredSum += torch.sum(torch.argmax(pSample, dim=1))
                 if epoch == 10:
                     #print(f"{k}. random sampled edges: {edge_ij}")
                     #print(f"prediction Original: {torch.argmax(pOriginal, dim=1)}")
@@ -233,11 +243,17 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
                         sampleLoss += currLoss
                 else:
                     # For node
-                    currLoss = mlp.loss(pOriginal[content], pSample[content], edge_ij, coefficient_size_reg, coefficient_entropy_reg, coefficient_L2_reg)
+                    
+                    
+                    currLoss = mlp.loss(pOriginal[node_to_predict], pSample[node_to_predict], edge_ij, coefficient_size_reg, coefficient_entropy_reg, coefficient_L2_reg)
                     sampleLoss += currLoss
 
             loss += sampleLoss / sampled_graphs
+            
+            sumSampledEdges += sampledEdges / sampled_graphs
 
+        print(samplePredSum)
+        
         loss = loss / len(training_iterator)
         loss.backward()
 
@@ -246,9 +262,9 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         torch.nn.utils.clip_grad_norm_(mlp.parameters(), max_norm=clip_grad_norm)
         
         # TODO: Try if this does something, clip grad for -2. Does not seem to do anything
-        for param in mlp.parameters():
+        """for param in mlp.parameters():
             if param.grad is not None:
-                param.grad.data = torch.max(param.grad.data, min_clip_value * torch.ones_like(param.grad.data))
+                param.grad.data = torch.max(param.grad.data, min_clip_value * torch.ones_like(param.grad.data))"""
 
         mlp_optimizer.step()
 
@@ -260,11 +276,19 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             meanAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges)
             #print(f"Mean auc epoch {epoch+1}: {meanAuc}")
     
-        wandb.log({"train/Loss": loss, "val/mean_AUC": meanAuc})
+        sumSampledEdges = sumSampledEdges / len(training_iterator)
+        wandb.log({"train/Loss": loss, "val/mean_AUC": meanAuc, "val/sum_sampledEdges": sumSampledEdges, "val/temperature": temperature})
 
+        """for name, param in mlp.named_parameters():
+            if param.requires_grad:
+                print(f"{name}: {param.grad}")"""
+        
     if save_model == "True":
         torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{meanAuc}_{wandb.run.name}")
 
     wandb.finish()
+    
+    """postAcc, postLoss = evaluation.evaluateGraphGNN(downstreamTask, train_loader)
+    print(f"Evaluation downstream task after training: {postAcc}")"""
     
     return mlp, downstreamTask

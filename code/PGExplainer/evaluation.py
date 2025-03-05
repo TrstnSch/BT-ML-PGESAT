@@ -197,7 +197,7 @@ def evaluate (datasetName, mlp, downstreamTask):
         meanAuc = evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges=num_explanation_edges)
         
         randomAucNode = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graph_task)
-        auc = evaluateNodeExplainerAUC(mlp, downstreamTask, data, randomAucNode, num_explanation_edges=num_explanation_edges)
+        auc = evaluateNodeExplainerAUC(mlp, downstreamTask, data, [randomAucNode], num_explanation_edges=num_explanation_edges)
         print(f"AUC for random Node: {auc}")
         
     return meanAuc
