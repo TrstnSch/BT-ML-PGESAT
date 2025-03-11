@@ -1,4 +1,16 @@
-BA-2Motif needs ones as features!!!!!! neverminde!?!??!?! After significant changes the first run seems to be doing good, but then it gets worse?!
+Current „Problems“:
+BA-Shapes: Weird Loss
+BA-Community, Tree-Grid: Look stable
+Tree-Cycles: VERY high Variance in sampledEdgeSum and AUC       DID NOT USE PYTORCH CONFIGS
+BA-2Motif: Scuffed Loss, high AUC variance, AUC decreasing!     DID NOT USE PYTORCH CONFIGS
+MUTAG: Loss a bit jumpy                                         DID NOT USE PYTORCH CONFIGS
+
+
+
+
+
+
+BA-2Motif needs ones as features!!!!!! nevermind!?!??!?! After significant changes the first run seems to be doing good, but then it gets worse?!
 
 
 

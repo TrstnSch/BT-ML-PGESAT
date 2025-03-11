@@ -24,11 +24,11 @@ training loop
 
 Clean up
 Create structure for different datasets/training loops. How to load/save parameters for each task? => One notebook/script per explainer training
-TRY GraphSage and GATConv for GNN
+TRY GraphSage and GATConv for GNN: GraphSage/SageConv does not allow to pass edge_weights
 
 NodeGNN
  - DONE: PyG transform random node split for train/val/test
- - TODO: Model for every dataset
+ - DONE: Model for every dataset
  - TODO: Test different architectures: BN, Norm, Dropout...
 
 -------------- implement Explainer/MLP ---------------------
@@ -39,15 +39,12 @@ Explainer training loop
  - Done: GNN explainer training loop
  - DONE: edge_index is bidirectional, topk edges contain duplicates => Average edge weights for both directions when calculating weights
  - Done: Batching
- - TODO: Loss regularization implemented but not working as expected. PROBLEM: Model learns lowest edge weights instead of highest?!
+ - DONE?: Loss regularization implemented but not working as expected
 
-TODO: BA-Community gt!
+DONE: BA-Community gt!
 TODO: BA-Community performance!!
 
-
-
-
-TODO: VALIDAT MUTAG GT!!! SEEMS TO BE MESSED UP!
+DONE: VALIDAT MUTAG GT!!! SEEMS TO BE MESSED UP! Fixed by changing data type/loading full data from original
 
 
 
@@ -55,7 +52,7 @@ TODO: VALIDAT MUTAG GT!!! SEEMS TO BE MESSED UP!
 
 TODO: PROBLEMs
  - DONE: When evaluating use topK(5/6 for BA2Motif) weights/mlp outputs instead of reparam values? => Paper states to use latent variables, but code uses probabilites!
- - TODO: Problem with topK when ground_truth contains multiple motifs or partial motifs -> Better to calc auc all with edge_prob instead of topk?!
+ - DONE: Problem with topK when ground_truth contains multiple motifs or partial motifs -> Better to calc auc all with edge_prob instead of topk!
  - DONE: Sampling during eval() only Sigmoid, no randomness, therefore use preds instead of weights
  - TODO: Model learns minimal weights??? Only for BA2Motif?
  - DONE: Edges are duplicate because of undirected representation in PyG => Remove edges beforehand? => Not good
