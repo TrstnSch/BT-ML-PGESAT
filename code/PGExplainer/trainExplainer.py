@@ -7,8 +7,10 @@ import sys
 import torch
 import torch.nn.functional as fn
 from torch_geometric.loader import DataLoader
+from torch_geometric import seed
 from torch_geometric.utils import k_hop_subgraph
 import wandb
+
 
 
 datasetType = ['BA-2Motif','MUTAG', 'BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid']
@@ -36,8 +38,8 @@ def loadExplainer(dataset):
 
 
 
-def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replication") :
-    
+def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replication",runSeed=None) :
+    if seed is not None: seed.seed_everything(runSeed)
     
     
     # CAREFUL FOR WANDB SWEEP dataset = "MUTAG"
@@ -158,7 +160,8 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
 
     # TODO: Instead of loading static one, pass model as argument?
     downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = 10, labels=labels)
-    downstreamTask.load_state_dict(torch.load(f"models/{dataset}", weights_only=True))
+    # TODO: Remove no_norm
+    downstreamTask.load_state_dict(torch.load(f"models/no_norm/{dataset}", weights_only=True))
 
     mlp = explainer.MLP(GraphTask=graph_task, hidden_dim=hidden_dim)
     wandb.watch(mlp, log= "all", log_freq=2, log_graph=False)
