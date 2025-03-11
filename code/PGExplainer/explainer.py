@@ -55,7 +55,7 @@ class MLP(nn.Module):
         return w_ij
 
 
-    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, entropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):
+    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):
         """Loss of explanation model for singular (sampled) instance(graph)
 
         Args:
@@ -74,7 +74,7 @@ class MLP(nn.Module):
 
         # entropy regularization (Binary Cross Entropy beacuse we care for both classes) to encourage structural and node feature masks to be discrete
         bce = -edge_ij * torch.log(edge_ij + 1e-8) - (1-edge_ij) * torch.log(1-edge_ij + 1e-8)
-        entropyReg = entropyReg * torch.mean(bce)
+        entropyReg = coefficientEntropyReg * torch.mean(bce)
         
         # coefficientL2Reg is 0 in standard og config 
         l2norm = 0.0

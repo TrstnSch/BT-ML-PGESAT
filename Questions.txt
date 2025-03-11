@@ -94,3 +94,16 @@ Nächste Woche paar Folien Zeigen
 
 
 How to calc stddev in WandB?!?!?!?
+Loss.detach() on initialization??
+What needs to be detached? What needs to require grad??
+
+
+How far into detail? Only basics like in Introduction to GNNs or deeper? Graphics?
+
+Embrace the follow up paper? Use configs from follow up that probably work well or use original and say not working well? Both?
+If using their configs, what is own work so far?! How to I write about that?
+Compare results to results from reimplementation?
+
+Next steps: Try to play around so that BA-2Motif works??
+Try on SAT anyways? Predict motif size??
+
