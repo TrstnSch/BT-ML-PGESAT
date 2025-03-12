@@ -48,6 +48,13 @@ DONE: VALIDAT MUTAG GT!!! SEEMS TO BE MESSED UP! Fixed by changing data type/loa
 
 
 
+TODO: Try GPU training for all models
+TODO: Retrain Downstream task on GPU? Write down accuracies!
+TODO: Hyperparameter search for all datasets. Sweeps are really slow and have to be run on GPU(?!) -> MUTAG 4 min/model
+ -> Performance/Optimization of my model/training loop might be lacking
+
+TODO: Apply on NeuroSAT
+
 
 
 TODO: PROBLEMs

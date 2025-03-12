@@ -42,6 +42,9 @@ class MLP(nn.Module):
         Returns:
             float tensor: Edge weights
         """
+        x = x.to(device)
+        edge_index = edge_index.to(device)
+        
         embeddings = self.getGraphEdgeEmbeddings(modelGraphGNN, x, edge_index, nodeToPred)
         
         w_ij = self.model(embeddings).squeeze(1)
@@ -105,6 +108,9 @@ class MLP(nn.Module):
         Returns:
             Listy<float tensor>: List of edge embeddings per graph
         """
+        x = x.to(device)
+        edge_index = edge_index.to(device)
+        
         emb = modelGraphGNN.getNodeEmbeddings(x, edge_index)              # shape: 25 X 20 = Nodes X hidden_embs
 
         # Transform embeddings so that it contains the concatenated hidden_embs of each two connected nodes
@@ -132,10 +138,12 @@ class MLP(nn.Module):
             float tensor: Probability of edge i,j to be in the explanation, Sigmoid applied
         """
         if self.training:
-            epsilon = torch.rand(w_ij.size()) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
+            epsilon = torch.rand(w_ij.size()).to(device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
 
             edge_ij = nn.Sigmoid()((torch.log(epsilon)-torch.log(1-epsilon)+w_ij)/temperature)    # shape: ~50 X 1 = EdgesOG X SampledEdgesProbability
         else:
             edge_ij = nn.Sigmoid()(w_ij)
             
         return edge_ij
+    
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

@@ -88,7 +88,7 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, num_explanation_edges=5):
         metric2.update(edge_ij, groundTruthMask.float())
         
         reals.append(groundTruthMask.flatten().numpy())
-        preds.append(edge_ij.flatten().numpy())
+        preds.append(edge_ij.cpu().flatten().numpy())
             
     # Convert the lists to numpy arrays and calculate the roc_auc_score
     reals = np.concatenate(reals)  # Flatten the list of arrays
@@ -135,7 +135,7 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanatio
         metric2.update(edge_ij, subgraph_ground_truth.float())
         
         reals.append(subgraph_ground_truth.flatten().numpy())
-        preds.append(edge_ij.flatten().numpy())
+        preds.append(edge_ij.cpu().flatten().numpy())
         
     binaryAUROC = metric2.compute().item()
     

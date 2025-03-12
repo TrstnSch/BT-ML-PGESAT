@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch_geometric.nn as gnn    
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 # Three layer GNN(GCN) for Graph Classification based on PGExplainer paper/Source code
 class GraphGNN(nn.Module):
     def __init__(self, features = 10, labels = 2):
@@ -49,7 +51,12 @@ class GraphGNN(nn.Module):
             out: Classification output tensor [batch_size, num_classes]
         """
         if batch is None: # No batch given
-            batch = torch.zeros(x.size(0), dtype=torch.long)
+            batch = torch.zeros(x.size(0), dtype=torch.long).to(device)
+            
+        x = x.to(device)
+        edge_index = edge_index.to(device)
+        if edge_weights is not None:
+            edge_weights = edge_weights.to(device)
         
         # Encoding net
         emb = self.getNodeEmbeddings(x, edge_index, edge_weights)
@@ -76,7 +83,11 @@ class GraphGNN(nn.Module):
             flaot tensor: Node embeddings
         """
         if edge_weights is None:
-            edge_weights = torch.ones(edge_index.size(1))
+            edge_weights = torch.ones(edge_index.size(1)).to(device)
+            
+        x = x.to(device)
+        edge_index = edge_index.to(device)
+        edge_weights = edge_weights.to(device)
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
         emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)              # This improves model!? Used to normalize edge embeddings for graphs task, as they else get too high/low for BA-2Motif in explainer
@@ -132,6 +143,11 @@ class NodeGNN(nn.Module):
             
             
     def forward(self, x, edge_index, batch = None, edge_weights=None):
+        x = x.to(device)
+        edge_index = edge_index.to(device)
+        if edge_weights is not None:
+            edge_weights = edge_weights.to(device)
+            
         # Encoding net
         emb = self.getNodeEmbeddings(x, edge_index, edge_weights)
         
@@ -155,7 +171,11 @@ class NodeGNN(nn.Module):
             flaot tensor: Node embeddings
         """
         if edge_weights is None:
-            edge_weights = torch.ones(edge_index.size(1))
+            edge_weights = torch.ones(edge_index.size(1)).to(device)
+            
+        x = x.to(device)
+        edge_index = edge_index.to(device)
+        edge_weights = edge_weights.to(device)
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
         emb1 = self.relu(emb1)

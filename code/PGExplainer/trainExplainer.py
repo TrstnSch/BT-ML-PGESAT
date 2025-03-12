@@ -39,11 +39,9 @@ def loadExplainer(dataset):
 
 
 def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replication",runSeed=None) :
-    if seed is not None: seed.seed_everything(runSeed)
+    if runSeed is not None: seed.seed_everything(runSeed)
     
-    
-    # CAREFUL FOR WANDB SWEEP dataset = "MUTAG"
-    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     # Check valid dataset name
     configOG = utils.loadConfig(dataset)
@@ -160,10 +158,10 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
 
     # TODO: Instead of loading static one, pass model as argument?
     downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = 10, labels=labels)
-    # TODO: Remove no_norm
-    downstreamTask.load_state_dict(torch.load(f"models/no_norm/{dataset}", weights_only=True))
+    downstreamTask.load_state_dict(torch.load(f"models/{dataset}", weights_only=True))
+    downstreamTask.to(device)
 
-    mlp = explainer.MLP(GraphTask=graph_task, hidden_dim=hidden_dim)
+    mlp = explainer.MLP(GraphTask=graph_task, hidden_dim=hidden_dim).to(device)
     wandb.watch(mlp, log= "all", log_freq=2, log_graph=False)
 
     mlp_optimizer = torch.optim.Adam(params = mlp.parameters(), lr = lr_mlp, maximize=False)
@@ -193,19 +191,22 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         # If graph task: iterate over training loader with content = current graph. If node task: iterate over motifNodes with content = current node 
         for index, content in enumerate(training_iterator):
             node_to_predict = None
-            if graph_task: current_data = content
+            if graph_task: 
+                current_data = content.to(device)
 
             if not graph_task:
                 node_to_predict = content
                 subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=node_to_predict, num_hops=3, edge_index=current_data.edge_index, relabel_nodes=False)
+                edge_index_hop = edge_index_hop.to(device)
 
             current_edge_index = current_data.edge_index if graph_task else edge_index_hop
+            current_edge_index = current_edge_index.to(device)
 
             # MLP forward
-            w_ij = mlp.forward(downstreamTask, current_data.x, current_edge_index, nodeToPred=node_to_predict)
+            w_ij = mlp.forward(downstreamTask, current_data.x.to(device), current_edge_index, nodeToPred=node_to_predict)
 
-            sampleLoss = torch.FloatTensor([0])
-            loss = torch.FloatTensor([0])
+            sampleLoss = torch.FloatTensor([0]).to(device)
+            loss = torch.FloatTensor([0]).to(device)
             
             for k in range(0, sampled_graphs):
                 edge_ij = mlp.sampleGraph(w_ij, temperature)
@@ -213,8 +214,8 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
                 sampledEdges += torch.sum(edge_ij)
             
                 # TODO: Check if current_data.batch works with nodes! Add batch support for nodes? Batch has to contain map for edge_index?
-                pOriginal = fn.softmax(downstreamTask.forward(current_data.x, current_edge_index, current_data.batch), dim=1)
-                pSample = fn.softmax(downstreamTask.forward(current_data.x, current_edge_index, batch=current_data.batch, edge_weights=edge_ij), dim=1)
+                pOriginal = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, current_data.batch.to(device)), dim=1)
+                pSample = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, batch=current_data.batch.to(device), edge_weights=edge_ij), dim=1)
 
                 samplePredSum += torch.sum(torch.argmax(pSample, dim=1))
                 if epoch == 10:
