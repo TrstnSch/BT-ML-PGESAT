@@ -65,6 +65,35 @@ Weights for Graph classification too low/high -> All one or all zero. Where to n
 
 
 
+Switch back pOriginal and pSample in Loss. Log is apllied to the distribution we want to learn.
+
+Think about creating a dataset for SAT
+
+Presentation: Vorschlag no motfis in graph included prediction
+
+Change graph convolution layer. Implement one according to original code? Replace? -> Exact layer should not really matter, downstream task is treated as blackbox
+
+Train/Test split in Explainer? YES
+
+Absolute values to normalization?! Disregards positively learned values as worst?
+
+
+
+Try PGExplainer training for BA-2Motif with only class 1 or only class 2
+Calculate downstream task accuracy after explainer training to validate, that downstream task is fixed!
+
+
+
+
+Next presentation:
+- quick recap
+
+Generalisierung: Modell soll im voraus lernen wieviele Kanten zu Motif zählen bzw. ob Motif überhaupt vorhanden
+
+Nächste Woche paar Folien Zeigen
+
+
+How to calc stddev in WandB?!?!?!?
 Loss.detach() on initialization??
 What needs to be detached? What needs to require grad??
 
