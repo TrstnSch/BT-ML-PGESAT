@@ -3,15 +3,15 @@
         "architecture": "MLP",
         "dataset": "MUTAG",
         "graph_task": true,
-        "epochs": 20,
+        "epochs": 30,
         "batch_size": 64,
         "lr_mlp": 0.0003,
         "sampled_graphs": 20,
-        "coefficient_size_reg": 0.01,
-        "coefficient_entropy_reg": 0.1,
+        "coefficient_size_reg": 0.005,
+        "coefficient_entropy_reg": 1,
         "coefficient_L2_reg": 0.0,
         "num_explanation_edges": 10,
         "t0": 5.0,
-        "tT": 1.0
+        "tT": 5.0
     }
 }
