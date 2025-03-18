@@ -1,0 +1,30 @@
+Need to be able to convert SAT problem used in NeuroSAT into pyg graph with x features and edge_index.
+
+Calculate embeddings with NeuroSAT by passing in PROBLEM
+Returns embeddings for clauses and literals
+Convert into graph so that one edge_index exists with clauses and literals and maps embeddings accordingly!
+
+Then we would have the needed representation to calculate embeddings for explainer as expected?
+
+Predictions during training:
+ Need to be able to sample existing edges for DS task -> NeuroSAT forward pass needs to be adapted so that edges can be "removed" or edges have a standard weight of 1 during DS training which can later be passed by explainer.
+
+
+ Alterantive: After calculating embeddings from downstream task (explainer forward gets Problem as input), edges need to be sampled.
+  -> Convert Problem into graph to feed into sampleGraph, calculates edge probabilites
+  -> Convert back into Problem to feed into NeuroSAT?           !! This will probably not work because convertion likely bad for gradients!! 
+                                                                    -> Problem should not be changed, edge probabilities have to be added, edges cannot be removed!!
+
+
+HOW AND WHERE to pass edge weights in NeuroSAT???
+
+
+NeuroSAT treats clauses and literals seperately instead of in one graph?? Problematic? Calculation for PGExplainer probably needs to be one one complete graph to get info on complete structure?!
+
+
+In connections pass edge weights instead of indices?!
+
+if edge_weights = None: 
+    values=torch.ones(problem.n_cells, device=self.device)
+else:
+    values=edge_weights
