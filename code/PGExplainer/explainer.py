@@ -138,7 +138,7 @@ class MLP(nn.Module):
             float tensor: Probability of edge i,j to be in the explanation, Sigmoid applied
         """
         if self.training:
-            epsilon = torch.rand(w_ij.size()).to(device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
+            epsilon = torch.rand(w_ij.size(), device=device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
 
             edge_ij = nn.Sigmoid()((torch.log(epsilon)-torch.log(1-epsilon)+w_ij)/temperature)    # shape: ~50 X 1 = EdgesOG X SampledEdgesProbability
         else:

@@ -16,30 +16,6 @@ import os
 from torch_geometric.utils import to_undirected
 
 import numpy as np
-
-class GaussianFeatureTransform:
-    def __init__(self, num_features=10, mean=0.0, std=1.0):
-        self.num_features = num_features
-        self.mean = mean
-        self.std = std
-
-    def __call__(self, data):
-        data.x = self.mean + self.std * torch.randn((data.num_nodes, self.num_features))  # Gaussian with mean and std
-        return data
-    
-class OnesDimTransform:
-    def __init__(self, num_features=10):
-        self.num_features = num_features
-
-    def __call__(self, data):
-        data.x = torch.ones((data.num_nodes, self.num_features))  # 10D features of ones for each node
-        return data
-    
-class ReplaceFeatures(object):
-    def __call__(self, data):
-        num_nodes = data.x.shape[0]  # Get number of nodes
-        data.x = torch.ones((num_nodes, 10))  # Replace x with 10d ones
-        return data
     
 # This seems to work
 class addGroundTruth(object):
@@ -156,23 +132,6 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
     gt_undirected = to_undirected(gt)
 
 
-
-    """# TODO: Create mask for edge_index_undirected over gt_undirected
-    # Ensure the edges are sorted (important for direct comparison)
-    edges_1 = edge_index_undirected.T  # Shape: [N, 2] (edge pairs as rows)
-    edges_2 = gt_undirected.T  # Shape: [M, 2] (edge pairs as rows)
-
-    # Create a mask that is True if the edge from edge_index_1 exists in edge_index_2
-    gt_mask = torch.zeros(edge_index_undirected.size(1), dtype=torch.bool)  # Initialize a mask of False
-
-    # Loop through each edge in edge_index_1 and check if it is in edge_index_2
-    for i, edge in enumerate(edges_1):
-        # Check if edge exists in edge_index_2 (order matters)
-        if any(torch.equal(edge, e) for e in edges_2):
-            gt_mask[i] = True"""
-    
-
-
     # Convert edges to tuples for easier set operations
     edges_1 = set(map(tuple, edge_index_undirected.T.tolist()))  # Set of edges from edge_index_1
     edges_2 = set(map(tuple, gt_undirected.T.tolist()))  # Set of edges from edge_index_2
@@ -182,8 +141,6 @@ def loadOriginalNodeDataset (datasetName = Literal['BA-Shapes', 'BA-Community', 
 
     # Create a mask based on the intersection
     gt_mask = torch.tensor([tuple(edge) in intersection for edge in edge_index_undirected.T.tolist()], dtype=torch.bool)
-
-
 
 
     x=torch.tensor(data[1], dtype=torch.float32)

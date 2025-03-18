@@ -36,8 +36,6 @@ def loadExplainer(dataset):
     return mlp, downstreamTask
 
 
-
-
 def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replication",runSeed=None) :
     if runSeed is not None: seed.seed_everything(runSeed)
     
@@ -48,7 +46,6 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     if configOG == -1:
         return
     
-
     params = configOG['params']
     graph_task = params['graph_task']
     epochs = params['epochs']
@@ -85,10 +82,11 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     clip_grad_norm = 2 # Make loading possible
     min_clip_value = -2
     
-    data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
-    
     generator_seed = 43
     generator1 = torch.Generator().manual_seed(generator_seed)
+    
+    
+    data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
     
     if graph_task:
         # FOR MUTAG: SELECT GRAPHS WITH GROUND TRUTH
@@ -102,22 +100,18 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         
             data = selected_data
         
-        train_loader = DataLoader(data, params['batch_size'], True)
-        #val_loader = DataLoader(val_dataset, params['batch_size'], False)
-        #test_loader = DataLoader(test_dataset, params['batch_size'])
+        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
+        train_loader = DataLoader(train_dataset, params['batch_size'], True)
     else:
-        
         if dataset == "BA-Community":
             single_label = data.y
-            motifNodesOriginal = [i for i in range(single_label.shape[0]) if single_label[i] != 0 and single_label[i] != 4]
-            
-            allNodes = [i for i in range(len(data.x))]
-            
-            motifNodes = motifNodesOriginal
+            motifNodes = [i for i in range(single_label.shape[0]) if single_label[i] != 0 and single_label[i] != 4]
         else:
             motif_node_indices = params['motif_node_indices']
             motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
-
+        
+        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [0.8, 0.1, 0.1], generator1)
+    
 
     # TODO: Instead of loading static one, pass model as argument?
     downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = 10, labels=labels)
@@ -133,7 +127,7 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     for param in downstreamTask.parameters():
         param.requires_grad = False
 
-    training_iterator = train_loader if graph_task else motifNodes
+    training_iterator = train_loader if graph_task else train_nodes
     
     for epoch in range(0, epochs) :
         mlp.train()
@@ -179,23 +173,6 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
                 pSample = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, batch=current_data.batch, edge_weights=edge_ij), dim=1)
 
                 samplePredSum += torch.sum(torch.argmax(pSample, dim=1))
-                if epoch == 10:
-                    #print(f"{k}. random sampled edges: {edge_ij}")
-                    #print(f"prediction Original: {torch.argmax(pOriginal, dim=1)}")
-                    
-                    # THIS IS ALWAYS 0 for BA-2MOTIF!?!??!?!
-                    #print(f"prediction Sampled: {pSample}")
-                    
-                    """if not graph:
-                        G_weights = Data(x=current_data.x, edge_index=current_edge_index, edge_attr=edge_ij)
-                        
-                        pos = utils.plotGraphAll(current_data, number_nodes=True, graph_task=True, MUTAG=MUTAG)
-                        
-                        pos1 = utils.plotGraphAll(G_weights, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG)
-                        graph = True"""
-                    #print(edge_ij)
-                
-                
                 
                 if graph_task:
                     # For graph
@@ -208,7 +185,6 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
                         sampleLoss += currLoss
                 else:
                     # For node
-                    
                     
                     currLoss = mlp.loss(pOriginal[node_to_predict], pSample[node_to_predict], edge_ij, coefficient_size_reg, coefficient_entropy_reg, coefficient_L2_reg)
                     sampleLoss += currLoss
@@ -225,31 +201,31 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         print(f"Epoch {epoch+1}, Loss: {loss.item()}")
 
         torch.nn.utils.clip_grad_norm_(mlp.parameters(), max_norm=clip_grad_norm)
-        
-        # TODO: Try if this does something, clip grad for -2. Does not seem to do anything
-        """for param in mlp.parameters():
-            if param.grad is not None:
-                param.grad.data = torch.max(param.grad.data, min_clip_value * torch.ones_like(param.grad.data))"""
 
         mlp_optimizer.step()
 
         mlp.eval()
         
+        #Evaluation on validation set
         if graph_task:
-            meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, data, num_explanation_edges)
+            valAUC = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
         else:
-            meanAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges)
-            #print(f"Mean auc epoch {epoch+1}: {meanAuc}")
+            valAUC = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, val_nodes, num_explanation_edges)
     
         sumSampledEdges = sumSampledEdges / len(training_iterator)
-        wandb.log({"train/Loss": loss, "val/mean_AUC": meanAuc, "val/sum_sampledEdges": sumSampledEdges, "val/temperature": temperature})
-
-        """for name, param in mlp.named_parameters():
-            if param.requires_grad:
-                print(f"{name}: {param.grad}")"""
+        wandb.log({"train/Loss": loss, "val/AUC": valAUC, "val/sum_sampledEdges": sumSampledEdges, "val/temperature": temperature})
         
+    print("---------------- TEST AUC ----------------")
+    # Evaluation on test set
+    if graph_task:
+        testAUC = evaluation.evaluateExplainerAUC(mlp, downstreamTask, test_dataset, num_explanation_edges)
+    else:
+        testAUC = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
+        
+    wandb.log({"test/AUC": testAUC})
+    
     if save_model == "True":
-        torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{meanAuc}_{wandb.run.name}")
+        torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{testAUC}_{wandb.run.name}")
 
     wandb.finish()
     

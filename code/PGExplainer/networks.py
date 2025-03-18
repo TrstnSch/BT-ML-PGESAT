@@ -51,7 +51,7 @@ class GraphGNN(nn.Module):
             out: Classification output tensor [batch_size, num_classes]
         """
         if batch is None: # No batch given
-            batch = torch.zeros(x.size(0), dtype=torch.long).to(device)
+            batch = torch.zeros(x.size(0), dtype=torch.long, device=device)
             
         x = x.to(device)
         edge_index = edge_index.to(device)
@@ -83,7 +83,7 @@ class GraphGNN(nn.Module):
             flaot tensor: Node embeddings
         """
         if edge_weights is None:
-            edge_weights = torch.ones(edge_index.size(1)).to(device)
+            edge_weights = torch.ones(edge_index.size(1), device=device)
             
         x = x.to(device)
         edge_index = edge_index.to(device)
@@ -171,7 +171,7 @@ class NodeGNN(nn.Module):
             flaot tensor: Node embeddings
         """
         if edge_weights is None:
-            edge_weights = torch.ones(edge_index.size(1)).to(device)
+            edge_weights = torch.ones(edge_index.size(1), device=device)
             
         x = x.to(device)
         edge_index = edge_index.to(device)
