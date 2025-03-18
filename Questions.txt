@@ -107,3 +107,27 @@ Compare results to results from reimplementation?
 Next steps: Try to play around so that BA-2Motif works??
 Try on SAT anyways? Predict motif size??
 
+
+
+
+
+
+
+For NeuroSAT:
+Explainer MLP gets all embeddings batched, as it is done in Original. Should work like this, right?
+Explicit extraction of sub_problems only for calculation of loss?
+
+How to avoid predicted weights getting closer and closer to 0 instead of staying around the same dimension and varying? Normalization?
+
+How to evaluate Sweeps? Trust Sweep importance scores across 2 seeds? Values obviously dependant on seed.
+
+Writing: PGExplainer explanation in theoretical background and implementation/changes made etc. in main part or everything in main part?
+
+Things done: Sweeps for 5/6 datasets, adapted NeuroSAT and evaluated first runs on 1 sub_problem, ran replication with train/test split
+
+Compared CPU and GPU: Only for BA-2Motif big difference, 3 datasets identical -> Valid to use cpu for 5/6 datasets and gpu only for BA-2Motif? /Does not matter whether cpu/gpu used?
+
+How to dislay standard deviation in wandb???
+
+Replication TODO: Batching for node task to improve performance, validate early stopping and save respective model state for ds task training, Sweep BA-2Motit
+NeuroSAT TODO: Evaluate on multiple sub_problems, implement train/test/val split?, Add normalization?, Size of gt passed into qual evaluation: necessary?, Add unsat core to data, Sweep, try different hiddem dim?, MUS?, try with satisfiable problems and backbones as gt?, try on GPU

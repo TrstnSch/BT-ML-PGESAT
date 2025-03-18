@@ -1,3 +1,123 @@
+TODO:
+Compare GPU CPU runs to determine which datasets can be swept on cpu
+
+Run train split version and compare? On Tree-Cycles very high in variance -> bad
+If doing good, hyperparam search with this?
+
+Play around with motif nodes for Tree-Grid? Get better results with only on node per motif that covers complete motif?
+
+
+
+
+
+
+
+
+
+TODO: Display negative literals correctly in visualisation, index +-1?
+Edge weights for gt too thick! -> Normalize gt and predictions to be between 0 and 1?
+
+GTs vary in size, general problematic for Explainer?
+
+Sweep NeuroSAT
+ lr 0.03 leads to edge probabalities geeting rounded to 0
+Edge probabilities get very close to 0 anyways -> normalize? Or only hyperparams?
+
+Continue colab runs
+
+
+
+
+
+
+
+
+First NeuroSAT run with gt:
+Eval on one single sub_problem, roc seems to increas, but prediction of sampled graph changes!
+
+
+
+
+
+
+
+Tree-Cycles with all cycle nodes does not work good, at least on „old“ config
+
+BUT: clear observation, runs converge consantly to 0.5 -> random guessing. In original we have very high variance between runs/seeds!
+
+Maybe try sweeping with all nodes?
+
+
+
+
+
+
+
+
+
+Sweep BA-Shapes:
+
+LR 0.0003 too low with 10 epochs, discarded fast.
+
+
+
+
+
+
+
+
+Added Edge mask to calculate loss per sub_problem.
+QUESTION: Passing batched data into mlp fine? Should be as it how it works for PGExplainer, right?
+
+
+NeuroSAT problems: Code runs out of memory?
+-> Maybe fixed by detaching NeuroSAT predictions and only calculating pOriginal once
+
+Loss is nan -> Because of negative values passed into log, fixed wiht softmax
+
+1 Epoch takes about 7 minutes atm
+
+What does NeuroSAT predict? -> SAT/UNSAT for each sub_problem in batch
+
+
+
+
+
+
+
+
+NeuroSAT:
+Are problems batches of one big problem?! If so, explainer probably hast to unpack batches and view complete problem! -> Problem is batch of multiple sub_problems
+
+
+
+
+
+Performance improvement: Instead of k graphs for loop scale edge_ij, predictions?
+
+
+
+
+Differences GPU CPU training:
+
+BA-Shapes: identical
+Ba-Community: very slightly better on CPU?!
+Tree-Cycles: identical
+Tree-Grid: very slightly better on CPU?!
+BA-2Motif: stable on GPU, instable on CPU
+MUTAG: identical
+
+
+
+
+
+How to batch node data? Possible?
+K_hop_subgraph can be calculate batch wise, but prediction of downstream task has to be calced node wise?!
+
+
+
+
+
 Current „Problems“:
 BA-Shapes: Weird Loss
 BA-Community, Tree-Grid: Look stable
