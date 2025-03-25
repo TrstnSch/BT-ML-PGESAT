@@ -1,0 +1,42 @@
+\chapter{Results}
+\label{ch:Results}
+
+Experimental Setup:
+We follow the experimental setup from the PGExplainer as closely as possible. Since the textual description refers to the setup from GNNExplainer and is lacking in some aspects, we extract the missing information from the codebase. As the hyperparameters are unclear or not comprehensible for some tasks we also draw information from the configs of PYTORCH REIMPL. \\
+
+We use normalization in our downstream models, though it is not described in the paper, since it is used in the code. We also experimented with the effects of the use of normalization since it seems to be relevant to the performance of the explainer. \\
+The explainer is trained and evaluated on the same data. We also run experiments with added train/test splits TODO! \\
+Not all data is fed into the explainer:
+BA-Shapes: 
+BA-Community:
+Tree-Cycles: "First"/to base graph attached node of each motif in graph is used.
+Tree-Grid: All Motif nodes are used
+BA-2Motif: All graphs are used
+MUTAG: Only the graphs with an available ground truth are used. GT exist for mutagenic graphs that have either chemical groups NH2 or NO2.
+We later discuss if these selections make sense and run experiments with different data selections.
+
+Quantitative: 10 explainer runs on one downstream model; Calculate ROC-AUC over ALL graphs/nodes in each run;
+Qualitative: Original uses a threshold; we instead take the topK nodes according to the dataset/motif as an explanation
+
+We also discuss if treating the number of k edges as a hyperparameter dependant on the downstream task makes sense and propose having the network learn it, to improve generalizability and allow the explainer to work on data with varying size. \\
+
+CPU vs GPU: \\
+It is important to highlight that our code achieved better and way more stable results for BA-2Motif when trained on a gpu instead of cpu. \\
+Ba-Shapes, Tree-Cycles and MUTAG results achieved were identical. \\
+Ba-Community and Tree-Grid achieved very slightly better results on CPU. \\
+
+Sweeps: (Params ordered by importance)\\
+BA-Shapes: higher size reg -> 0.1; lower entropy reg -> 0.01; lr and tT very low impact but slightly higher -> 0.01 and 5. Note that Loss curve jumps on most runs! (logical-sweep-94 and restful-sweep-92 have clean loss) TRY HIGHER SIZE REG AND LOWER ENTROPY REG \\
+
+BA-Community: lr 0.0001 too low, not working -> 0.003; lower entropy -> 0.1; higher size -> 0.1; TRY MORE SEEDS, LR, EPOCHS? \\
+
+Tree-Cycles: high lr -> 0.01 ; lower entropy reg -> 0.1/0.01; higher size reg -> 0.1/0.01 ; lower tT -> 1. TRY WITH MORE SEEDS FOR ENT, SIZE, TEMP? Confirmed higher size reg -> 0.1; lower entropy reg -> 0.01; temp really low impact, tendency higher. TRY 30 EPOCHS???\\
+
+Tree-Grid: high lr -> 0.01; high size reg -> 1; higher entropy reg? -> 10/1, high tT -> 5. TRY MORE SEEDS FOR ENTROPY REG -> not quite clear, tendency lower; MAYBE EVEN HIGHER LR -> No\\
+
+BA-2Motif: RUN ON GPU\\
+
+MUTAG: Low lr -> 0.0003; low entropy reg(high impact, but highest AUC runs vary) -> 0.1; low tT -> 1; less epochs -> 20; low size reg -> 0.005(/0.01); Loss is messy and AUC seems to decrease over time! lr 0.0001 worse, entropy reg 0.1/0.01 has zero effect -> 0.1\\
+
+
+ Effects of selected motif nodes for Node task: Compare Tree-Grid/Tree-Cycles performance when using all/one node per motif...

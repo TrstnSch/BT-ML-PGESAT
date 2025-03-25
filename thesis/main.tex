@@ -1,0 +1,31 @@
+\documentclass[]{thesis}
+
+\begin{document}
+    \pagenumbering{gobble}
+    \include{chapters/titlepage}
+    \cleardoublepage
+
+    \include{chapters/00-abstract}
+    \cleardoublepage
+
+    \tableofcontents
+    \cleardoublepage
+
+    \pagenumbering{arabic}
+    \include{chapters/01-introduction}
+    \include{chapters/02-background}
+    \include{chapters/03-PGExplainer}
+    \include{chapters/04-implementation-details}
+    \include{chapters/05-results}
+    \include{chapters/06-discussion}
+    \include{chapters/07-conclusion}
+
+    \addcontentsline{toc}{chapter}{\bibname}
+    \printbibliography
+
+    \appendix
+    \include{chapters/09-appendix}
+
+    \addcontentsline{toc}{chapter}{Affidavit}
+    \includepdf[pages=-]{Eidesstattliche_Versicherung}
+\end{document}

@@ -1,0 +1,68 @@
+\chapter{PGExplainer - Main part}
+\label{ch:PGExplainer}
+V1: In the following chapter, we introduce the PGExplainer\cite{} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models for any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. This approach seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{}. \\
+
+V2: In the following chapter, we introduce the PGExplainer\cite{} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models that have proven to learn the concise underlying structures of GNNs most relevant to their predictions. This approach may be applied to any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. PGExplainer seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{}. This means that all edges in the dataset are predicted by the same model, which leads to a global understanding of the DT. \\
+
+Transductive/Inductive relevant? \\
+
+TODO: Maybe separate the theory of PGE from our own work more strictly? E.g. 3. PGE theory, 4. PGE reimplementation and NeuroSAT application? \\
+
+We then describe our reimplementation in detail (Section 3.2), including the changes made and difficulties during the process. \\
+
+In Section 3.3 we present the idea of applying PGExplainer on the NeuroSAT framework to generate explanations for the machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores and backbone variables. 
+%Usable in transductive and inductive settings, the latter being the reason for better generalizability, as the explainer model does not have to be retrained to infer explanations of unexplained nodes.
+%"generative probabilistic model for graph data", able to learn succinct(prägnant) underlying structure (The probabilistic model is the explanation)
+%Explainer aims to uncover the concise underlying structure, believed to have the highest impact on the prediction of the DS, as an explanation.
+\section{Theory}
+We follow the structure of the original Paper\cite{} and start by describing the learning objective (Section 3.1.1), the reparameterization trick (Section 3.1.2), the global explanations (Section 3.1.3) and regularization terms (Section 3.1.4).
+
+\subsection{Learning Objective}
+
+\subsection{Reparameterization Trick}
+
+\subsection{Global Explanations}
+
+\subsection{Regularization Terms}
+
+\section{Reimplementation}
+Implementation details:
+\begin{itemize}
+    \item Started by reimplementing the downstream tasks used in og paper for node and graph class.
+    \item Node datasets taken from original and transformed to a "pyg format", to keep original structure and ground truths
+    \item Graph: BA-2Motif from pyg library with self generated gt, MUTAG dataset taken from pyg and added gt-labels that were added in original dataset
+    \item Created pytorch/pytorch geometric implementation of 3-layer graph conv networks
+    \item architecture as described in paper: ReLu activation, Pooling for graph net
+    \item Xavier initialization for all layers
+    \item Same hyperparameters?(Adam, $1*10^-3$ lr, 1000 epochs)/experimental setup?
+    \item ADDED Dropout(0.1) to improve performance/overfitting on node tasks
+    \item Fully connected layer: torch geometric GraphConv to allow passing of edge weights(+ bipartite)!?
+    \item Original references sageConv in paper, pyG impl. does not allow edge weights, verify!
+    \item GATConv for Graph attention(referenced by original)
+    \item Alternatives: GCNConv(edge weights, no bipartite graphs)
+    \item 80/10/10 split
+    \item => Similar accuracies achieved
+\end{itemize}
+ 
+
+ Explainer:
+ This is irrelevant for paper, description of why reparametrization trick necessary
+ - First approach tried passing a masked edge index to downstream task with edge weights > 0.5
+ => Unable to learn with hard cut-off (bad for gradients). (Same with TopK probably?!)
+ - Pass calculated edge weights to downstream task for learning. If no edge weights are passed(downstream task), all edge weights are initialized with one to represent all edges beeing relevant
+ 
+%\section{Benchmarking}
+%\section{Application on Bipartite Graphs?}#
+
+\section{Application on NeuroSAT}
+Reimplementation of NeuroSAT provided by Rodhi. As the code used for NeuroSAT can also be found in our Repository, we stress that only the changes described in the following chapter are part of our work. \\
+
+What did we do? What did we change for NeuroSAT? What data was used? How did we adapt PGExplainer? \\
+
+Only change in NeuroSAT: pass edge weights into adjacency matrix. Calculates .... \\
+Generated batches of unsat problems that "turned" unsat because of last added clause. 10 literals per problem. Only unsat to test for unsat cores, that only apply for unsat problems. Calculated unsat cores with solver xy by adding negative assumption literals per clause and passing these as assumption for calulation. The edges of the clauses present in the unsat core were treated as ground truth. \\
+
+Changes for explainer:
+Edge embeddings calced by DS and passed to explainer. Calculated edge embeddings by concatenating node embeddings for connected nodes, similar to original. Embeddings fed into MLP, weights sampled with reparam. trick to get edge "probabilities", passed as "unbatched" sampled graph into NeuroSAT predictor. Visualization of SAT problems with edge weights, ands gts. \\
+For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
+For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
