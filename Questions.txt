@@ -129,6 +129,7 @@ How to dislay standard deviation in wandb???
 Replication TODO: Batching for node task to improve performance, validate early stopping and save respective model state for ds task training, Sweep BA-2Motit
 NeuroSAT TODO: Evaluate on multiple sub_problems, implement train/test/val split?, Add normalization?, Size of gt passed into qual evaluation: necessary?, Add unsat core to data, Sweep, try different hiddem dim?, MUS?, try with satisfiable problems and backbones as gt?, try on GPU
 
+------------------------------
 
 Logical conclusion of graph probability P(G) for graph generation?; Only direct dependency to Gilbert graph is principle of edge probabilites beeing drawn independently?
 
