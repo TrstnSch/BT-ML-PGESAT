@@ -159,3 +159,9 @@ Gilbert graph / Diestel definition: Definition with p is correct for different p
 To PGE: "A straightforward instantiation of P (eij ) is the Bernoulli distribution eij ∼ Bern(θij )" What is Teta ij?
 
 "In the random graph proposed by Gilbert, each potential edge is independently chosen from a Bernoulli distribution" -> Wrong!? Since Gilbert graph also uses same probability for each edge?
+
+
+Explanations from Lucas:
+Intuition: conditional entropy only for one concrete sampled graph G_s, cross entropy for two probability distributions and therefore over distribution of all sampled graphs
+
+Gilbert random graph: PGExplainer uses base idea of Gilbert random graph, but adapts it for varying probabilites per edge -> Independent experiments with DIFFERENT probabalities
