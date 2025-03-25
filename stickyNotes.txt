@@ -1,3 +1,58 @@
+When taking topK lowest edges there is zero overlap between gt and topk, as expected
+
+
+
+
+
+
+
+
+THERE MUST BE A PROBLEM WITH ROC_AUC OR VISUALIZATION! GT AND TOPK ONLY SHARE 1 OR FEW EDGES?!?!?!?
+Same result when training on evaluation data.
+
+For problem with highest and lowest auc, only 1 for highest and 3 for lowest edges are in GT AND TOPK! -> Does not seem to be detecting unsat core.
+AUC seems to be increasing for bigger graphs?
+Auc probably not a good metric?
+
+
+
+
+
+
+
+
+Added L2Norm explainer getGraphEmbeddings -> Leads to decrease in AUC?!
+Only during training: minimal decrease in auc compared to without, no effect on weights
+
+
+
+
+
+
+
+
+
+
+NeuroSAT on GPU seems to be identical to CPU runs. Evaluation on multiple sub_problems implemented -> Currently using a very large validation set
+
+TODO: Find a clean way to seperate the problem batches into train/val/test
+
+Take high auc and low auc example and compare gt with topK by showing edges present both graphs!
+
+Are calced unsat cores perfect? Able to calculate multiple ones?
+
+Sweep
+
+Node prediction? NeuroSAT not really meant for that?
+
+
+
+
+------------------------------------------
+
+
+
+
 TODO:
 Compare GPU CPU runs to determine which datasets can be swept on cpu
 

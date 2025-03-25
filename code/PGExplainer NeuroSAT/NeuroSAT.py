@@ -12,21 +12,21 @@ class NeuroSAT(nn.Module):
         self.init_tensor = torch.ones(1, device=self.device)
         self.init_tensor.requires_grad = False
 
-        self.L_init = nn.Linear(in_features=1, out_features=opts['emb_dim'])
-        self.C_init = nn.Linear(in_features=1, out_features=opts['emb_dim'])
+        self.L_init = nn.Linear(in_features=1, out_features=opts['emb_dim']).to(self.device)
+        self.C_init = nn.Linear(in_features=1, out_features=opts['emb_dim']).to(self.device)
 
-        self.L_msg = MLP(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'], output_size=opts['emb_dim'])
-        self.C_msg = MLP(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'], output_size=opts['emb_dim'])
+        self.L_msg = MLP(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'], output_size=opts['emb_dim']).to(self.device)
+        self.C_msg = MLP(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'], output_size=opts['emb_dim']).to(self.device)
 
-        self.L_update = nn.LSTM(input_size=opts['emb_dim']*2, hidden_size=opts['emb_dim'],)
-        self.C_update = nn.LSTM(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'],)
+        self.L_update = nn.LSTM(input_size=opts['emb_dim']*2, hidden_size=opts['emb_dim'],).to(self.device)
+        self.C_update = nn.LSTM(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'],).to(self.device)
 
-        self.lnorm_l = nn.LayerNorm(opts['emb_dim'])
-        self.lnorm_c = nn.LayerNorm(opts['emb_dim'])
+        self.lnorm_l = nn.LayerNorm(opts['emb_dim']).to(self.device)
+        self.lnorm_c = nn.LayerNorm(opts['emb_dim']).to(self.device)
 
-        self.L_vote = MLP(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'], output_size=1)
+        self.L_vote = MLP(input_size=opts['emb_dim'], hidden_size=opts['emb_dim'], output_size=1).to(self.device)
 
-        self.denom = torch.sqrt(torch.Tensor([opts['emb_dim']], device=self.device))
+        self.denom = torch.sqrt(torch.tensor([opts['emb_dim']], device=self.device))
 
     def forward(self, problem, edge_weights=None):
         n_variables = problem.n_variables
@@ -35,7 +35,7 @@ class NeuroSAT(nn.Module):
         n_problems = len(problem.is_sat)
         n_vars_batch = n_variables // n_problems
 
-        edges = torch.Tensor(problem.batch_edges, device=self.device).t().long()
+        edges = torch.tensor(problem.batch_edges, device=self.device).t().long()
 
         init_tensor = self.init_tensor
         L_init = self.L_init(init_tensor).view(1,1,-1)

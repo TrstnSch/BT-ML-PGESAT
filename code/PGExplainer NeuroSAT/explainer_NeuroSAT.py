@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import utils
 
 #PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
@@ -115,25 +116,26 @@ class MLP(nn.Module):
         
         _, _, all_l_emb, all_c_emb = downstreamTask.forward(problem)              # shape: 25 X 20 = Nodes X hidden_embs
         
-        # TODO: Concat l_emb and c_emb where edge between l_emb and c_emb??
-        # TODO: i has to be source literals connected to j clauses
+        # Concat l_emb and c_emb where edge between l_emb and c_emb??
+        # i has to be source literals connected to j clauses
         
-        #Take last element from l_emb/c_emb, as it is output form "last hidden layer"?
+        #Take last element from l_emb/c_emb, as it is output form "last hidden layer" -> Not hidden layer, as all layers share the same parameters
         l_emb = all_l_emb[-1]           # Shape: (n_literals, emb_dim=128)
         c_emb = all_c_emb[-1]           # Shape: (n_clauses, emb_dim=128)
         
-        # TODO: Concatenate embeddings for connected edges
+        # This does not grant larger edge weights
+        """l_emb = F.normalize(all_l_emb[-1], p=2, dim=1)  # L2 normalization
+        c_emb = F.normalize(all_c_emb[-1], p=2, dim=1)  # L2 normalization"""
+            
 
         # Transform embeddings so that it contains the concatenated hidden_embs of each two connected nodes
         # edges = problem.L_unpack_indices is edge_index? If so, edge index is from literal to clause?
         # -> edge_index = edges and i from literal, j from clause?
-        """i, j = edge_index[0], edge_index[1]"""
-        
-        # TODO: This does not work! Shape is not like edge_index!
         #i, j = problem.batch_edges[0], problem.batch_edges[1]
         
-        i = torch.tensor(problem.batch_edges[:,0])
-        j = torch.tensor(problem.batch_edges[:,1])
+        # Maybe remove to.(device and just use it in forward?)
+        i = torch.tensor(problem.batch_edges[:,0]).to(device)
+        j = torch.tensor(problem.batch_edges[:,1]).to(device)
         
         if nodeToPred is not None:
             # append embeddings (60d hidden features) for NodeToPred(startNode)

@@ -110,9 +110,6 @@ Try on SAT anyways? Predict motif size??
 
 
 
-
-
-
 For NeuroSAT:
 Explainer MLP gets all embeddings batched, as it is done in Original. Should work like this, right?
 Explicit extraction of sub_problems only for calculation of loss?
@@ -131,3 +128,22 @@ How to dislay standard deviation in wandb???
 
 Replication TODO: Batching for node task to improve performance, validate early stopping and save respective model state for ds task training, Sweep BA-2Motit
 NeuroSAT TODO: Evaluate on multiple sub_problems, implement train/test/val split?, Add normalization?, Size of gt passed into qual evaluation: necessary?, Add unsat core to data, Sweep, try different hiddem dim?, MUS?, try with satisfiable problems and backbones as gt?, try on GPU
+
+
+Logical conclusion of graph probability P(G) for graph generation?; Only direct dependency to Gilbert graph is principle of edge probabilites beeing drawn independently?
+
+PGE formula 5 to 6: Replace conditional entropy with cross entropy?! Explanation in GNNExplainer: "We can modify the conditional entropy objective in Equation 4 with a cross entropy objective between the label class and the model prediction"
+
+Convention citing: Seitenzahlen? Chapter?
+
+
+random graphs !?! Gilbert: "every possible edge occurs independently with probability 0 < p < 1"
+Is that what happens in PGE? edges occur independetly, but probabilities are learned/differ from edge to edge? Or only relevant for defintion; instantiation with bernoulli == what Gilbert definded?
+IDEA: instantiation as bernoulli is "constant", not learned. Sampling process: ALWAYS draws from random(0,1), learned weight only added and therefore influences the outcome.
+Eq. 3: At this point we only randomly sample a graph and define the goal as the probability that the label is the same for the sampled graph?
+-> Graph probability == epsilon?
+=> Random graphs/Gilbert model explanation satisfies PGE background, general probabilistic graphical model not needed?
+
+
+
+Normalization already present in NeuroSAT, embeddings should be normalized. Additional normalization leads to slight decrease in AUC, does not lead to larger probabilites 
