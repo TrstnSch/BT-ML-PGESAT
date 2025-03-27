@@ -102,10 +102,13 @@ How far into detail? Only basics like in Introduction to GNNs or deeper? Graphic
 
 Embrace the follow up paper? Use configs from follow up that probably work well or use original and say not working well? Both?
 If using their configs, what is own work so far?! How to I write about that?
-Compare results to results from reimplementation?
+Compare results to results from reimplementation? Yes
 
-Next steps: Try to play around so that BA-2Motif works??
-Try on SAT anyways? Predict motif size??
+Next steps: Try to play around so that BA-2Motif works?? No
+Try on SAT anyways? Predict motif size?? -> Try SAT
+
+
+
 
 
 
@@ -126,7 +129,7 @@ Compared CPU and GPU: Only for BA-2Motif big difference, 3 datasets identical ->
 
 How to dislay standard deviation in wandb???
 
-Replication TODO: Batching for node task to improve performance, validate early stopping and save respective model state for ds task training, Sweep BA-2Motit
+Replication TODO: Batching for node task to improve performance, validate early stopping and save respective model state for ds task training, Sweep BA-2Motif
 NeuroSAT TODO: Evaluate on multiple sub_problems, implement train/test/val split?, Add normalization?, Size of gt passed into qual evaluation: necessary?, Add unsat core to data, Sweep, try different hiddem dim?, MUS?, try with satisfiable problems and backbones as gt?, try on GPU
 
 ------------------------------
@@ -146,5 +149,19 @@ Eq. 3: At this point we only randomly sample a graph and define the goal as the 
 => Random graphs/Gilbert model explanation satisfies PGE background, general probabilistic graphical model not needed?
 
 
-
 Normalization already present in NeuroSAT, embeddings should be normalized. Additional normalization leads to slight decrease in AUC, does not lead to larger probabilites 
+
+
+UNSAT core calculation assumptions literature o.ä.
+
+Gilbert graph / Diestel definition: Definition with p is correct for different p per edge? "Fixed probability" for each experiment means a) fixed for all edges or b) fixed for edge e across all Graphs on V?
+
+To PGE: "A straightforward instantiation of P (eij ) is the Bernoulli distribution eij ∼ Bern(θij )" What is Teta ij?
+
+"In the random graph proposed by Gilbert, each potential edge is independently chosen from a Bernoulli distribution" -> Wrong!? Since Gilbert graph also uses same probability for each edge?
+
+
+Explanations from Lucas:
+Intuition: conditional entropy only for one concrete sampled graph G_s, cross entropy for two probability distributions and therefore over distribution of all sampled graphs
+
+Gilbert random graph: PGExplainer uses base idea of Gilbert random graph, but adapts it for varying probabilites per edge -> Independent experiments with DIFFERENT probabalities
