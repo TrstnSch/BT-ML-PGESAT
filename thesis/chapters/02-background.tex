@@ -164,16 +164,24 @@ Graph Neural Networks(GNNs)\cite{4700287} are a deep learning-based approach tha
 \subsection{Convolutional Graph Neural Networks}
 Explain? Used in architecture of downstream task, only slightly relevant
 
-\section{TODO Perturbation-based Explainability in GNNs}
+\section{Perturbation-based Explainability in GNNs}
 Methods in deep learning have seen growth in performance in many tasks of artificial intelligence, including GNNs. However, the interpretability of these models is often limited due to their black-box design. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields. There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into gradients/feature-based, perturbation-based, decomposition methods and surrogate methods. Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations. \\
-In this work we focus on the perturbation-based approach, more specifically the PGExplainer, that aims to evaluate the change of prediction with respect to input perturbations. 
+In this work we focus on the perturbation-based approach, more specifically the PGExplainer\cite{luo2020parameterized}, that aims to evaluate the change of prediction with respect to input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. \\
+It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem(see Dabkowski et al.\cite{ Dabkowski }). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. \\
+Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. TODO: One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC/AUC) (see Richardson et al.\cite{}). \\
+\url{https://www.sciencedirect.com/science/article/pii/S2666389924001090?ref=pdf_download&fr=RR-2&rr=92785edbb946f803}
+The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. \bigskip
 
-Evaluation metrics?
+TODO: \\
+Explain TRP FPR?
+
+Variation in perturbation approaches lie in: mask gen. alg., type of mask, objective function.
 
 Differentiate between "interpretable" and "explainable"? Model itself provides human-understandable interpretations vs model still black box with explanations by post-hoc model.
 
-- Common metric to measure accuracy of explanation methods in comparison to ground truth is ROC-AUC score? (Explain/name first in results?)
 - Other metric includes fidelity, results of taxonomy propose only using PGExplainer for Node Classification as it achieves low fidelity on Graph tasks
+
+TODO: Perturbation pipeline?
 
 \section{Boolean Satisfiability Problem}
 We define the Boolean Satisfiability Problem (SAT) according to Guo et al.\cite{guo2023machine}[p.641]: \\
