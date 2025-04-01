@@ -3,12 +3,14 @@
 In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT).
 
 \section{TODO Deep learning}
+In this chapter we introduce Deep Learning (DL) in the context of Machine Learning (ML) and their concepts required for this work. \\
 What is machine learning? What is Deep learning? \\
 Types of tasks in machine learning; Classification task in our case; \\
-Supervised vs unsupervised learning;
+Supervised vs unsupervised learning; \\
+All definitions in this chapter follow Goodfellow et al.\cite{Goodfellow-et-al-2016}. 
 
 \subsection{Deep Feedforward Networks/MLP}
-
+A classical deep learning model is the multilayer perceptron (MLP) with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\Theta)$ and learns the value of the parameters $\Theta$ that best approximate the function. These models are also referred to as feedforward neural networks, as they process information from $x$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(x)))$ that consists of first layer $f^{(1)}$, second layer $f^{(2)}$ and output layer $f^{(3)}$. The length of this chain of functions is called depth and origin of the term "deep learning". The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(x)$ at different points in the training and labels $y\approx f^*(x)$. These training examples dictate the output layer to generate a value close to $y$ for each $x$. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued, with each vector element, referred to as unit, loosely taking the role of a neuron in neuroscience.
 \subsection{Gradient descent}
 
 \subsection{Computational graph}
