@@ -149,11 +149,11 @@ if __name__ == '__main__':
         'out_dir': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/data/dataset_train_10',
         'logging': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/log/dataset_train_10.log',
         'n_pairs': 100,  # Anzahl der zu generierenden Paare
-        'min_n': 10,
-        'max_n': 10,
+        'min_n': 8,
+        'max_n': 8,
         'p_k_2': 0.3,
         'p_geo': 0.4,
-        'max_nodes_per_batch': 12000,
+        'max_nodes_per_batch': 4000,
         'one_pair': False,
         'Task' : None
     }
