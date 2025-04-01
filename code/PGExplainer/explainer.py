@@ -44,7 +44,7 @@ class MLP(nn.Module):
         """
         x = x.to(device)
         edge_index = edge_index.to(device)
-        
+
         embeddings = self.getGraphEdgeEmbeddings(modelGraphGNN, x, edge_index, nodeToPred)
         
         w_ij = self.model(embeddings).squeeze(1)

@@ -235,11 +235,12 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
 
         pos = plotGraphAll(data, number_nodes=True, graph_task=True, MUTAG=MUTAG)
         
-        print("-----------Original Graph with edge weights-----------")
+        
+        print("-----------------Explanation Graph-----------------")
         
         pos1 = plotGraphAll(G_weights, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG)
 
-        print("-----------------Explanation Graph-----------------")
+        print("-----------Original Graph with edge weights-----------")
 
         pos1 = plotGraphAll(Gs, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG)
         

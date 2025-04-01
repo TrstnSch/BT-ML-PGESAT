@@ -28,7 +28,7 @@ def loadExplainer(dataset):
     data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
     
     mlp = explainer.MLP(GraphTask=graph_task, hidden_dim=64)     # Adjust according to data and task
-    mlp.load_state_dict(torch.load(f"models/explainer{dataset}", weights_only=True))
+    mlp.load_state_dict(torch.load(f"models/explainer{dataset}", weights_only=False, map_location=torch.device('cpu')))
 
     downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = data.x.shape[1], labels=labels)
     downstreamTask.load_state_dict(torch.load(f"models/{dataset}", weights_only=True))
@@ -42,6 +42,8 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     if runSeed is not None: seed.seed_everything(runSeed)
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    torch.use_deterministic_algorithms(True)
     
     # Check valid dataset name
     configOG = utils.loadConfig(dataset)
@@ -168,6 +170,9 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             sampleLoss = torch.FloatTensor([0]).to(device)
             loss = torch.FloatTensor([0]).to(device)
             
+            #print(current_data)
+            #print(w_ij)
+            
             for k in range(0, sampled_graphs):
                 edge_ij = mlp.sampleGraph(w_ij, temperature)
                 
@@ -248,7 +253,7 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             if param.requires_grad:
                 print(f"{name}: {param.grad}")"""
         
-    if save_model == "True":
+    if save_model == True:
         torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{meanAuc}_{wandb.run.name}")
 
     wandb.finish()

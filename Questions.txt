@@ -165,3 +165,9 @@ Explanations from Lucas:
 Intuition: conditional entropy only for one concrete sampled graph G_s, cross entropy for two probability distributions and therefore over distribution of all sampled graphs
 
 Gilbert random graph: PGExplainer uses base idea of Gilbert random graph, but adapts it for varying probabilites per edge -> Independent experiments with DIFFERENT probabalities
+
+
+------------------------------
+
+
+When to use detach()? detach() original predictions?
