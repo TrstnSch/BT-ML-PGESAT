@@ -190,6 +190,9 @@ TODO: \\
 - data preprocessed: mapping to simpler representation \\
 - encode graph structure/topology to keep structural information \bigskip
 
+Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements a classifier of complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
+The GNN approach tries to preserve the important, graph structured information by encoding the topological relationships.
+
 A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^S$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al.\cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the features of each node and $x_e$ the optional features of each edge. $co[v]$ and $ne[v]$ denote the set of edges and neighbors of node $v$ respectively. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
 \begin{equation}
     \mathbf{h}_v = f(\mathbf{x}_v, \mathbf{x}_{co[v]}, \mathbf{h}_{ne[v]}, \mathbf{x}_{ne[v]}),
