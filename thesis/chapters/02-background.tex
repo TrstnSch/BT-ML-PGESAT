@@ -2,25 +2,34 @@
 \label{ch:Background}
 In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT).
 
-\section{TODO Deep learning}
-In this chapter we introduce Deep Learning (DL) in the context of Machine Learning (ML) and their concepts required for this work. \\
-What is machine learning? What is Deep learning? \\
-Types of tasks in machine learning; Classification task in our case; \\
-Supervised vs unsupervised learning; \\
-The definitions in this chapter loosely follow Goodfellow et al.\cite{Goodfellow-et-al-2016}. Deep learning usually involves optimizing a function, usually by minimizing $f(x)$. This objective function is also referred to as loss function in the context of minimization. %We denote $x^*=\text{arg min} f(x)$.
+\section{Deep learning}
+In this chapter we introduce Deep Learning (DL) in the context of Machine Learning (ML) and their concepts required for this work. The definitions in this chapter loosely follow Goodfellow et al.\cite{Goodfellow-et-al-2016}.
 
-\subsection{Deep Feedforward Networks/MLP}
-A classical deep learning model is the multilayer perceptron (MLP) with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\Theta)$ and learns the value of the parameters $\Theta$ that best approximate the function. These models are also referred to as feedforward neural networks, as they process information from $x$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(x)))$ that consists of input layer $f^{(1)}$, hidden layer $f^{(2)}$ and output layer $f^{(3)}$. The length of this chain of functions is called depth and origin of the term "deep learning". The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(x)$ at different points in the training and labels $y\approx f^*(x)$. These training examples dictate the output layer to generate a value close to $y$ for each $x$. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued with each vector element, referred to as unit, loosely taking the role of a neuron in neuroscience. 
+An ML algorithm generally learns to perform a certain task from data. Common ML tasks include classification, where the goal is to assign an input to one of $k$ categories, and regression, where the program shall predict a numeric value given some input. 
 
-Use non-linear activation function in layers to describe features and keep the model from learning a strictly linear transformation of its inputs. Result for a layer is vector of hidden units $h=g(W^Tx+b)$, where $W$ contains the weights of a linear transformation and b the biases. x is the input vector. $g$ is the activation function that is usually applied element-wise, such as ReLU or Sigmoid.
+ML algorithms can be broadly divided into supervised and unsupervised learning. In this work, we focus on supervised learning, meaning that the algorithm learns from a dataset containing both features and labels or targets that the algorithm is supposed to predict. In other words, the algorithm learns from a training set of inputs $x$ and outputs $y$ to associate another unseen input with some output.
 
-A linear layer for our model with parameters $\Theta$ consisting of weights $w$ and bias $b$ can be described as $f(x; w,b)=x^Tw+b$. To keep the model from strictly learning a linear function of its inputs we calculate the values of a layer $h$ by applying an activation function $g$ to its output to describe the features. This results in our hidden layer $h=g(W^Tx+b)$
+%Deep learning entails adding more layers and units to the model used in our algorithm to allow for representations of functions with increasing complexity.
 
-5.10: A deep learning algorithm usually consists of the following components: a dataset specification, a cost function, an optimization procedure and a model.
+DL entails expanding the size of the model used in our algorithm to allow for representations of functions with increasing complexity. This enables many human-solvable tasks that consist of mapping an input vector to an output vector to be performed with DL, given sufficiently large models and datasets.
 
-GNN BOOK: \\
-initiated with random weights or values, updated in each neuron with backpropagation. Learned knowledge stored in connections digitally. \\
-Each neuron therefore takes inputs $x_1, ..., x_n$ with corresponding weights $w_1, ..., w_n$ and an offset $b$. A layer can then be described as a linear function $y=\sum_{i=1}^{n} w_i x_i +b$ that is optionally passed through a non-linear activation function $f$ that generates the output of the current layer $z = f(y)$. The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity. Examples are the Sigmoid function 
+In many cases DL involves optimizing a function, usually by minimizing $f(x)$. This objective function is also referred to as loss function in the context of minimization. %We denote $x^*=\text{arg min} f(x)$.
+To minimize a function $f(x)$ we make use of the derivative $f'(x)$ that tells us how to change $x$ in order to get an improvement in $y$. We can reduce $f(x)$ by moving $x$ in the direction opposite of the sign of its derivative, since $f(x-\epsilon \text{ sign}(f'(x))) < f(x)$ for small enough $\epsilon$. This technique is called gradient descent (see Cauchy\cite{cauchy1847methode}).
+
+Furthermore, a DL algorithm typically consists of the following components: a dataset specification, an objective function, an optimization procedure, like gradient descent, and a model. %5.10
+
+\subsection{Multilayer Perceptron}
+A classical DL model is the multilayer perceptron (MLP) with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\Theta)$ and learns the value of the parameters $\Theta$ that best approximate the function. These models are also referred to as feedforward neural networks, as they process information from $x$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(x)))$ that consists of input layer $f^{(1)}$, hidden layer $f^{(2)}$ and output layer $f^{(3)}$. The length of this chain of functions is called depth and origin of the term "deep learning". The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(x)$ at different points in the training and labels $y\approx f^*(x)$. These training examples dictate the output layer to generate a value close to $y$ for each $x$. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued with each vector element, referred to as unit, loosely taking the role of a neuron in neuroscience. Models are therefore also referred to as neural networks.
+
+%We use non-linear activation functions in layers to describe features and keep the model from learning a strictly linear transformation of its inputs. Result for a layer is vector of hidden units $h=g(W^Tx+b)$, where $W$ contains the weights of a linear transformation and b the biases. x is the input vector. $g$ is the activation function that is usually applied element-wise, such as ReLU or Sigmoid.
+
+A linear layer for our model with parameters $\Theta$ consisting of weight $w$ and bias $b$ can be described as $f(x; w,b)=x^Tw+b$ for an input vector $x$. To keep the model from strictly learning a linear function of its inputs we can calculate the values of a layer $h$ by applying an activation function $g$ to its output to describe the features. This results in our hidden layer $h=g(W^Tx+c)$, with $W$ containing the weights of a linear transformation and $c$ the biases.
+
+The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity (see GNN book \cite{Liu2020}). Examples are the Sigmoid function
+
+%GNN BOOK: \\
+%initiated with random weights or values, updated in each neuron with backpropagation. Learned knowledge stored in connections digitally. \\
+%Each neuron therefore takes inputs $x_1, ..., x_n$ with corresponding weights $w_1, ..., w_n$ and an offset $b$. A layer can then be described as a linear function $y=\sum_{i=1}^{n} w_i x_i +b$ that is optionally passed through a non-linear activation function $f$ that generates the output of the current layer $z = f(y)$. The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity. Examples are the Sigmoid function 
 \begin{equation}
     \sigma (x)= \frac{1}{1+e^{-x}}
 \end{equation}
@@ -33,7 +42,7 @@ and the Rectified Linear Unit (ReLU)
 \end{equation}
 
 
-To minimize a function $f(x)$ we make use of the derivative $f'(x)$ that tells us how to change $x$ in order to get an improvement in $y$. We can reduce $f(x)$ by moving $x$ in the direction opposite of the sign of its derivative, since $f(x-\epsilon \text{sign}(f'(x))) < f(x)$ for small enough $\epsilon$. This technique is called gradient descent (see Cauchy\cite{cauchy1847methode}).
+%To minimize a function $f(x)$ we make use of the derivative $f'(x)$ that tells us how to change $x$ in order to get an improvement in $y$. We can reduce $f(x)$ by moving $x$ in the direction opposite of the sign of its derivative, since $f(x-\epsilon \text{sign}(f'(x))) < f(x)$ for small enough $\epsilon$. This technique is called gradient descent (see Cauchy\cite{cauchy1847methode}).
 
 \subsection{Backpropagation}
 The back propagation algorithm is commonly used during neural network training. It optimizes the network parameters by leveraging gradient descent. It first calculates the values for each unit in the network given the input and a set of parameters in a forward order. Then the error for each variable to be optimized is calculated, and the parameters are updated according to their corresponding partial derivative backwards. These two steps will repeat until reaching the optimization target. \\
@@ -59,7 +68,7 @@ be the sum to estimate with $p$ being a probability distribution over a random v
 
 
 \section{Graph Theory}
-TODO: EDGE WEIGHTS, K-hop/computational graph? \bigskip
+TODO: edge weights, k-hop/computational graph? \bigskip
 
 These definitions will loosely follow Liu et al.\cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. An edge $e=(u,v)$ connects nodes $u$ and $v$, making them neighbours. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v$ is the number of edges connected to $v$ and denoted by $d(v)$. $G$ can be described by an adjacency matrix $A \in \mathbb{R}^{n \times n}$, where
 \begin{equation*}
@@ -102,11 +111,11 @@ We additionally define bipartite graphs according to Asratian et al.\cite{asrati
 Gilbert\cite{gilbert1959random} describes the process of generating a random graph of order $N$ by assigning a common probability to each potential edge between two nodes for existing in the graph. Note that these random selections are made independently of each other and effectively drawn from a Bernoulli distribution. \\
 %by performing independent experiments for each potential edge between two nodes of the graph. Since these experiments share a common probability, the process can be described as drawing from a Bernoulli distribution. \\
 %TODO:  Introduce change of assigning different probabilities to each edge in PGE
-V1 (probability space for PGE not needed, definition for one random graph suffices?): \\
+Version 1 (probability space for PGE not needed, definition for one random graph suffices?): \\
 A random graph is further described by Diestel\cite{Diestel2017}[p.323] as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. Our goal is to define the set $\mathcal{G}$ of all graphs on $V$ as a probability space, which allows us to ask whether a Graph $G \in \mathcal{G}$ has a certain property. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$.
 \bigskip
 
-V2: \\
+Version 2: \\
 A random graph is further described by Diestel\cite{Diestel2017}[p.323] as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$. It follows our desired probability space $\mathcal{G}=(n,p)$ as the product space
 \begin{equation}
     \Omega := \prod_{e \in [V]^2} \Omega_e
@@ -121,18 +130,18 @@ E(G) = Edges of G. G is called a random graph on V with egde probability p. \big
 % TODO: Gilberts idea also assigns the same probability across all edges, so probably best to explain the general idea as presented in Diestel. Then explain the difference in PGE? PGEs appraoch mainly inspired by probabilistic graphical model/bayesian networks. Gilbert model mainly baseline for probabilistic graphs. PGExplainer mainly inspired by Gilbert, but "required" concept is PGM.
 
 \section{Information Theory}
-To fully understand the learning objective of PGExplainer it is necessary to define the concepts of entropy and mutual information. We follow the definitions by Cover et al.\cite{Cover2005}[p.13].
+To fully understand the learning objective of PGExplainer it is necessary to define the concepts of entropy and mutual information. We follow the definitions by Cover et al.\cite{Cover2005}[p.13] if not stated otherwise.
 
 \subsection{Entropy}
-TODO: REVISE THIS. Probably best to define with general expactation, for continous and discrete, according to Goodfellow. Derive conditional entropy for general case. Only apply discrete case where needed? (cross entropy in PGE) \bigskip
+%TODO: REVISE THIS. Probably best to define with general expactation, for continous and discrete, according to Goodfellow. Derive conditional entropy for general case. Only apply discrete case where needed? (cross entropy in PGE) \bigskip
 
 Entropy is used to describe the uncertainty of a random variable. It measures the amount of information required on average to describe a random variable. Let $X$ be a discrete random variable with alphabet $\mathcal{X}$ and probability mass function $p(x)=Pr\{X=x\}$ for $x\in X$.
 The entropy $H(X)$, also written as $H(p)$, is defined as
 \begin{equation}
     H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x).
 \end{equation}
-TODO: %WE USE NATURAL LOGARITHM IN CODE!
-The log is to the base $e$ and entropy is measured in nats in our case. TODO: DEFINE EDGE CASES log 0 TODO: TOO MUTCH + SOURCE? %A simple example is tossing two coins: There are four possible outcomes $\mathcal{X}=\{00,10,01,11\}$, 0 for heads and 1 for tails, each with a probability $p=0,25$. The resulting entropy $H(X)=2$ represents that two bits of information can be stored this way. \bigskip
+%TODO: WE USE NATURAL LOGARITHM IN CODE!
+The log is to the base $e$ and entropy is measured in nats in our case. TODO: DEFINE EDGE CASES log 0 %A simple example is tossing two coins: There are four possible outcomes $\mathcal{X}=\{00,10,01,11\}$, 0 for heads and 1 for tails, each with a probability $p=0,25$. The resulting entropy $H(X)=2$ represents that two bits of information can be stored this way. \bigskip
 \\
 %TODO: DIFFER MORE CLEARLY FROM CROSS? \\
 %Analogously we define the joint entropy $H(X,Y)$ of a pair of discrete random variables $(X,Y)$ with a joint distribution $p(x,y)$ as follows:
@@ -146,25 +155,36 @@ The conditional entropy of $Y$ given $X$ is defined as the expected value of the
     &= -E \log p(Y|X) \text{ with E = Expectation}.
 \end{align}
 
-Elements of Information Theory: equation 2.26 describes KL distance/relative entropy \bigskip
-
-The following definitions loosely follow Goodfellow et al.\cite{Goodfellow-et-al-2016}[p.74].
-The relative entropy is a measure of the distance between two distributions.
-"measure how different these two distributions are" \cite{Goodfellow-et-al-2016}
-"In the case of discrete variables, it is the extra amount of information needed to send a message containing symbols drawn from probability distribution P, when we use a code that was designed to minimize the length of messages drawn from probability distribution Q."
-"The KL divergence is 0 if and only if P and Q are the same distribution in the case of discrete variables"
-non symmetrical.
-"When computing many of these quantities, it is common to encounter expressions of the form 0 log 0. By convention, in the context of information theory, we treat these expressions as limx→0 x log x = 0. \\
-We define the KL divergence or relative entropy between two probability distributions $P, Q$ as
+\subsection{Relative Entropy and Cross-Entropy}
+%Elements of Information Theory: equation 2.26 describes KL distance/relative entropy \bigskip
+The relative entropy between two distributions is a measure of "distance" between the two. It measures the inefficiency of assuming a distribution to be $q$ when the true distribution is $p$. It is not a true measure of distance as it is among other things not symmetrical. The relative entropy takes a value of $0$ only if $p = q$.
+We define the KL divergence or relative entropy between two probability mass functions $p(x), q(x)$ as
 \begin{equation}
-    D_{KL}(P||Q) = \sum_{x \in \mathcal{X}} P(x)\log \frac{P(x)}{Q(x)}
+    D_{KL}(p||q) = \sum_{x \in \mathcal{X}} p(x)\log \frac{p(x)}{q(x)}
+\end{equation}
+Suppose we know the true distribution $p$ of our random variable. We could then construct a code with an average description length of $H(p)$. If we used the code for the distribution $q$ instead, we would need $H(p) + D_{KL}(p||q)$ nats to describe the random variable on average. This is also referred to as the cross-entropy (see Goodfellow et al.\cite{Goodfellow-et-al-2016}[p.74]):
+\begin{equation}
+    H(p,q) =  H(p) + D_{KL}(p||q)
 \end{equation}
 
-The cross entropy is closely related to KL distance and therefore defined as
-\begin{align}
-    H(P,Q) &= -\mathbb{E}_{x\sim P}\log Q(x) \\
-    &= H(P) + D_{KL}(P||Q)
-\end{align}
+
+%The following definitions loosely follow Goodfellow et al.\cite{Goodfellow-et-al-2016}[p.74].
+%The relative entropy is a measure of the distance between two distributions.
+%"measure how different these two distributions are" \cite{Goodfellow-et-al-2016}
+%"In the case of discrete variables, it is the extra amount of information needed to send a message containing symbols drawn from probability distribution P, when we use a code that was designed to minimize the length of messages drawn from probability distribution Q."
+%"The KL divergence is 0 if and only if P and Q are the same distribution in the case of discrete variables"
+%non symmetrical.
+%"When computing many of these quantities, it is common to encounter expressions of the form 0 log 0. By convention, in the context of information theory, we treat these expressions as limx→0 x log x = 0. \\
+%We define the KL divergence or relative entropy between two probability distributions $P, Q$ as
+%\begin{equation}
+%    D_{KL}(P||Q) = \sum_{x \in \mathcal{X}} P(x)\log \frac{P(x)}{Q(x)}
+%\end{equation}
+
+%The cross entropy is closely related to KL distance and therefore defined as
+%\begin{align}
+%    H(P,Q) &= -\mathbb{E}_{x\sim P}\log Q(x) \\
+%    &= H(P) + D_{KL}(P||Q)
+%\end{align}
 
 We derive for the discrete case with mass probability functions $p, q$ defined on the same support $\mathcal{X}$:
 \begin{align}
@@ -174,24 +194,20 @@ We derive for the discrete case with mass probability functions $p, q$ defined o
 \end{align}
 
 \subsection{Mutual Information}
-Another closely related concept is mutual information (see Cover et al.\cite{Cover2005}[p.19]). It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other.
+%(see Cover et al.\cite{Cover2005}[p.19])
+Another closely related concept is mutual information. It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other.
 Let $X$ and $Y$ be two random variables with the joint probability mass function $p(x,y)$ and marginal probability mass functions $p(x)$ and $p(y)$. Mutual information $I(X;Y)$ is the relative entropy between the joint distribution and the product distribution $p(x)p(y)$: 
 \begin{align}
     I(X;Y)&=\sum_{x \in \mathcal{X}}\sum_{y \in \mathcal{Y}} p(x,y)\log \frac{p(x,y)}{p(x)p(y)} \\
     &= H(X) - H(X|Y)
 \end{align}
 
-\section{TODO Graph Neural Networks}
+\section{Graph Neural Networks}
 
-Graph Neural Networks(GNNs)\cite{4700287} are a deep learning-based approach that operates on graphs. Due to their unique non-Euclidean property, they find usage in classification, link prediction, and clustering tasks. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks\cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings\cite{cai2018comprehensive} to leverage the power of feature extraction and representation as low-dimensional vectors for graphs\cite{Liu2020}. \bigskip
+Graph Neural Networks(GNNs)\cite{4700287} are a DL-based approach that operates on graphs. Due to their unique non-Euclidean property, they find usage in classification, link prediction, and clustering tasks. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks\cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings\cite{cai2018comprehensive} to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu et al.\cite{Liu2020}).\bigskip
 
-TODO: \\
-- difference node classification, graph classification (Scarselli) \\
-- data preprocessed: mapping to simpler representation \\
-- encode graph structure/topology to keep structural information \bigskip
-
-Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements a classifier of complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
-The GNN approach tries to preserve the important, graph structured information by encoding the topological relationships.
+Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements a classifier on complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
+The supervised GNN model by Scarselli et a.\cite{4700287} tries to preserve the important,  structural information of graphs by encoding their topological relationships among nodes.
 
 A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^S$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al.\cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the features of each node and $x_e$ the optional features of each edge. $co[v]$ and $ne[v]$ denote the set of edges and neighbors of node $v$ respectively. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
 \begin{equation}
@@ -226,7 +242,7 @@ Explain? Used in architecture of downstream task, only slightly relevant \\
 GCN, GraphSAGE?
 
 \section{Perturbation-based Explainability in GNNs}
-Methods in deep learning have seen growth in performance in many tasks of artificial intelligence, including GNNs. However, the interpretability of these models is often limited due to their black-box design. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields. There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into gradients/feature-based, perturbation-based, decomposition methods and surrogate methods. Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations. \\
+Methods in DL have seen growth in performance in many tasks of artificial intelligence, including GNNs. However, the interpretability of these models is often limited due to their black-box design. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields. There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into gradients/feature-based, perturbation-based, decomposition methods and surrogate methods. Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations. \\
 In this work we focus on the perturbation-based approach, more specifically the PGExplainer\cite{luo2020parameterized}, that aims to evaluate the change of prediction with respect to input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. \\
 It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. \\
 Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al.\cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. \bigskip
@@ -247,8 +263,7 @@ $$\psi(V) = (x_1) \land (\neg x_1 \lor x_2) \land (\neg x_2 \lor x_2)$$
 with satisfying assignment $A:\{x_1 \mapsto 1, x_2 \mapsto 1\}$. Furthermore, SAT is $NP$-complete, meaning that if there exists a deterministic algorithm able to solve SAT in polynomial time, then such an algorithm exists for every $NP$ problem (see cook\cite{cook2023complexity}). Current state-of-the-art SAT solvers apply searching based methods such as Conflict Driven Clause Learning\cite{marques1999grasp} or Stochastic Local Seach\cite{selman1993local} with exponential worst-case complexity.
 
 \subsection{Representation as Bipartite Graph}
-SAT has extensively been studied in the form of graphs, TODO: CONNECTION TO REPR. AS GRAPH\\
-Guo et al.\cite{guo2023machine} describe four different types of graph representations for CNF formulae with varying complexity and information compression. Since we want to minimize the loss of information for SAT we adapt the information-richest form of a literal-clause graph (LCG). 
+SAT has extensively been studied in the form of graphs. Guo et al.\cite{guo2023machine} describe four different types of graph representations for CNF formulae with varying complexity and information compression. Since we want to minimize the loss of information for SAT we adapt the information-richest form of a literal-clause graph (LCG). 
 A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in.
 The resulting graph can formally be described by a biadjacency matrix $B$ of shape $l \times c$. \\
 Let $A \in \mathbb{R}^{l+c \times l+c}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $l$ and $c$, the adjacency matrix can be represented as
@@ -307,6 +322,6 @@ The core of an unsatisfiable formula in CNF is a subset of the formula that is a
 Leave out for now.
 
 \section{TODO NeuroSAT}
-Machine learning approach for SAT solving using message passing neural network.
+ML approach for SAT solving using message passing neural network.
 NeuroSAT\cite{selsam2018learning}: Messages are passed between clauses and literals, as well as literals and their complement. 1. Clause receives from neighboring literals 2. Literals receive from clauses and complement. \\
 (Define flip function that swaps literal row with row of its negation; relevant for NeuroSAT)
