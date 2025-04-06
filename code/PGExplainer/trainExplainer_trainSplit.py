@@ -41,6 +41,8 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
+    torch.use_deterministic_algorithms(True)
+    
     # Check valid dataset name
     configOG = utils.loadConfig(dataset)
     if configOG == -1:
@@ -206,25 +208,32 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
 
         mlp.eval()
         
-        #Evaluation on validation set
+        print("---------------- TRAIN AUC ----------------")
         if graph_task:
-            valAUC = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
+            trainAUC, trainInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, train_dataset, num_explanation_edges)
         else:
-            valAUC = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, val_nodes, num_explanation_edges)
+            trainAUC, trainInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, train_nodes, num_explanation_edges)
+        
+        #Evaluation on validation set
+        print("---------------- VAL AUC ----------------")
+        if graph_task:
+            valAUC, valInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
+        else:
+            valAUC, valInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, val_nodes, num_explanation_edges)
     
         sumSampledEdges = sumSampledEdges / len(training_iterator)
-        wandb.log({"train/Loss": loss, "val/AUC": valAUC, "val/sum_sampledEdges": sumSampledEdges, "val/temperature": temperature})
+        wandb.log({"train/Loss": loss, "train/AUC": trainAUC, "val/AUC": valAUC, "val/sum_sampledEdges": sumSampledEdges, "val/temperature": temperature})
         
     print("---------------- TEST AUC ----------------")
     # Evaluation on test set
     if graph_task:
-        testAUC = evaluation.evaluateExplainerAUC(mlp, downstreamTask, test_dataset, num_explanation_edges)
+        testAUC, testInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, test_dataset, num_explanation_edges)
     else:
-        testAUC = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
+        testAUC, testInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
         
-    wandb.log({"test/AUC": testAUC})
+    wandb.log({"test/AUC": testAUC, "test/mean_infTime": testInfTime})
     
-    if save_model == "True":
+    if save_model is True:
         torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{testAUC}_{wandb.run.name}")
 
     wandb.finish()
