@@ -82,8 +82,9 @@ def loadGraphDataset (datasetName: Literal['BA-2Motif','MUTAG'], manual_seed=42)
     
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
     if datasetName == 'BA-2Motif' :
-        dataset = BA2MotifDataset('datasets', pre_transform=addGroundTruth(), force_reload=True)                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
-
+        #dataset = BA2MotifDataset('datasets', pre_transform=addGroundTruth(), force_reload=True)                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
+        dataset = loadOriginalBA2Motif(ones_features=False)
+        
     if datasetName == 'MUTAG':
         """transformMUTAG= addGroundTruthMUTAG()
         dataset = TUDataset(os.getcwd() + "/datasets", "Mutagenicity", pre_transform=transformMUTAG)
@@ -276,5 +277,34 @@ def transformMUTAG (edge_lists, graph_labels, edge_label_lists, node_label_lists
         # TODO: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor)
         data = Data(x=node_features.clone().detach().to(torch.float32),y=torch.tensor(graph_labels[i], dtype=torch.long),edge_index=edge_index,gt_mask=gt_mask)
         dataList.append(data)
+        
+    return dataList
+
+
+def loadOriginalBA2Motif (ones_features=False):
+    file_path = 'datasets/original/' + 'BA-2motif' + '.pkl'
+    
+    with open(file_path, 'rb') as file:
+        data = pickle.load(file)
+    
+    # data[0] = adjacency matrices
+    # data[1] = features
+    # data[2] = labels one-hot encoded
+    
+    dataList = []
+    for i in range(len(data[0])):
+        adj = torch.tensor(data[0][i], dtype=torch.float64)
+        edge_index = adj.nonzero().t().contiguous()
+        
+        node_range = torch.arange(19, 25)
+        src_in_range = torch.isin(edge_index[0], node_range)
+        tgt_in_range = torch.isin(edge_index[1], node_range)
+        gt_mask = src_in_range & tgt_in_range
+        
+        torch_features = torch.tensor(data[1][i], dtype=torch.float32)
+        features = torch.ones_like(torch_features) if ones_features else torch_features
+        
+        dataPYG = Data(x=features, y=torch.argmax(torch.tensor(data[2][i])), edge_index=edge_index, gt_mask=gt_mask)
+        dataList.append(dataPYG)
         
     return dataList

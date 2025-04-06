@@ -241,9 +241,9 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         mlp.eval()
         
         if graph_task:
-            meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, data, num_explanation_edges)
+            meanAuc, infTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, data, num_explanation_edges)
         else:
-            meanAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges)
+            meanAuc, infTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges)
             #print(f"Mean auc epoch {epoch+1}: {meanAuc}")
     
         sumSampledEdges = sumSampledEdges / len(training_iterator)

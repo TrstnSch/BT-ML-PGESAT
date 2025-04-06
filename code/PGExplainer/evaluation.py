@@ -10,6 +10,7 @@ from torcheval.metrics import BinaryAUROC
 from sklearn.metrics import roc_auc_score
 from torch_geometric.utils import k_hop_subgraph
 import numpy as np
+import time
 
 
 def evaluateGraphGNN(gnn, data_loader):
@@ -68,10 +69,15 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, num_explanation_edges=5):
     reals = []
     preds = []
 
+    infTimes = []
+    
     for batch_index, data in enumerate(AUCLoader):
+        startTime = time.time()
         w_ij = mlp.forward(modelGraphGNN, data.x, data.edge_index)
 
         edge_ij = mlp.sampleGraph(w_ij, 1).detach()
+        infTime = time.time() - startTime
+        infTimes.append(infTime)
         
         # Instead of weights, take top k edges according to motif?
         """k = num_explanation_edges * 2 if len(w_ij) >= num_explanation_edges*2 else len(w_ij)
@@ -98,7 +104,9 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, num_explanation_edges=5):
     print(f"BinaryAUROC: {metric2.compute().item()}")
     print(f"roc_auc_score: {roc_auc}")
     
-    return roc_auc
+    meanInferenceTime = np.mean(np.array(infTimes))
+    
+    return roc_auc, meanInferenceTime
     
     
 def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanation_edges=6):
@@ -109,12 +117,18 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanatio
     reals = []
     preds = []
     
+    infTimes = []
+    
     for currentNode in evalNodes:
         # Compute k hop graph for 1 node
         subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=currentNode, num_hops=3, edge_index=data.edge_index, relabel_nodes=False)
-    
+
+        startTime = time.time()
         w_ij = mlp.forward(modelNodeGNN, data.x, edge_index_hop, currentNode)
         edge_ij = mlp.sampleGraph(w_ij, 1).detach()
+        
+        infTime = time.time() - startTime
+        infTimes.append(infTime)
         
         #TODO: Sum up predictions of both directions
 
@@ -147,7 +161,9 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanatio
     print(f"BinaryAUROC: {binaryAUROC}")
     print(f"roc_auc_score: {roc_auc}")
     
-    return roc_auc
+    meanInferenceTime = np.mean(np.array(infTimes))
+    
+    return roc_auc, meanInferenceTime
 
 
 
@@ -178,7 +194,7 @@ def evaluate (datasetName, mlp, downstreamTask):
         
             data = selected_data
         
-        meanAuc = evaluateExplainerAUC(mlp, downstreamTask, data, num_explanation_edges=num_explanation_edges)
+        meanAuc, infTime = evaluateExplainerAUC(mlp, downstreamTask, data, num_explanation_edges=num_explanation_edges)
         
         # For showExplanation, pass random graph from data
         data = data[random.choice(range(0,len(data)))]
@@ -194,10 +210,10 @@ def evaluate (datasetName, mlp, downstreamTask):
             motif_node_indices = params['motif_node_indices']
             motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
         
-        meanAuc = evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges=num_explanation_edges)
+        meanAuc, infTime = evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges=num_explanation_edges)
         
         randomAucNode = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graph_task)
-        auc = evaluateNodeExplainerAUC(mlp, downstreamTask, data, [randomAucNode], num_explanation_edges=num_explanation_edges)
+        auc, infTime_ = evaluateNodeExplainerAUC(mlp, downstreamTask, data, [randomAucNode], num_explanation_edges=num_explanation_edges)
         print(f"AUC for random Node: {auc}")
         
-    return meanAuc
+    return meanAuc, infTime

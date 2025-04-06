@@ -171,3 +171,12 @@ Gilbert random graph: PGExplainer uses base idea of Gilbert random graph, but ad
 
 
 When to use detach()? detach() original predictions?
+
+Writing: Deep Learning, GNNs
+
+Code: 
+- Difference of BA-2Motif features, compare to original code/dataset
+- Opposite classification of Tree-Cycles
+
+Research towards NeuroSAT, try try try
+Concat embeddings from different 
