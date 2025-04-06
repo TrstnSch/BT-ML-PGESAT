@@ -5,7 +5,7 @@
         "graph_task": false,
         "epochs": 30,
         "batch_size": 1,
-        "lr_mlp": 0.003,
+        "lr_mlp": 0.01,
         "sampled_graphs": 20,
         "coefficient_size_reg": 1.0,
         "coefficient_entropy_reg": 1.0,
@@ -13,6 +13,6 @@
         "num_explanation_edges": 12,
         "motif_node_indices": [511,800,1],
         "t0": 5.0,
-        "tT": 2.0
+        "tT": 5.0
     }
 }
