@@ -34,7 +34,9 @@ Tree-Cycles: high lr -> 0.01 ; lower entropy reg -> 0.1/0.01; higher size reg ->
 
 Tree-Grid: high lr -> 0.01; high size reg -> 1; higher entropy reg? -> 10/1, high tT -> 5. TRY MORE SEEDS FOR ENTROPY REG -> not quite clear, tendency lower; MAYBE EVEN HIGHER LR -> No\\
 
-BA-2Motif: RUN ON GPU\\
+BA-2Motif: RUN ON GPU - Not the cause. Cause for better results were features of 1 instead of 0.1! However, good results achieved on BA2-Motif dataset from pyg, not original one.\\
+Comparison to orginal one: Original dataset transformed to pytorch performs way worse, for features of 0.1! Mean AUC of about 0.4! \\
+Original dataset with features changed to ones instead of 0.1: Works good as well.
 
 MUTAG: Low lr -> 0.0003; low entropy reg(high impact, but highest AUC runs vary) -> 0.1; low tT -> 1; less epochs -> 20; low size reg -> 0.005(/0.01); Loss is messy and AUC seems to decrease over time! lr 0.0001 worse, entropy reg 0.1/0.01 has zero effect -> 0.1\\
 
