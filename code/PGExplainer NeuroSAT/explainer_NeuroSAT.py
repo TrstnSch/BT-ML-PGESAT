@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import utils
+import math
 
 #PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
 class MLP(nn.Module):
@@ -11,7 +12,8 @@ class MLP(nn.Module):
         self.graphTask = GraphTask
         
         #self.inputSize = 2 * 20 if GraphTask else 3 * 60
-        self.inputSize = 2 * emb_dim
+        # emb*dim * 2 for both nodes per edge, * 3 since we take embeddings from 3 iterations
+        self.inputSize = 2 * emb_dim * 3
 
         self.model = nn.Sequential(
             nn.Linear(self.inputSize, hidden_dim),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
@@ -60,7 +62,8 @@ class MLP(nn.Module):
         return w_ij
 
 
-    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):
+    # current_batch_edges contains batch_edges for the current sub_problem/graph
+    def loss(self, pOriginal, pSample, edge_ij, current_batch_edges, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConsistency=0.0, coefficientConnect=0.0):
         """Loss of explanation model for singular (sampled) instance(graph)
 
         Args:
@@ -89,8 +92,72 @@ class MLP(nn.Module):
                     l2norm += torch.norm(param)
 
             l2norm = coefficientL2Reg * l2norm
+            
+            
+        # My idea
+        consistencyLoss = 0.0
+        
+        current_batch_clauses = torch.tensor(current_batch_edges[:, 1])
+        clauses = torch.unique(current_batch_clauses)
+        
+        for clause_id in clauses:
+            # apply i-th edge mask to the current_batch_edges to get connections for clause i
+            mask = current_batch_clauses == clause_id
+            #clause_edges = current_batch_edges[mask]
+            clause_edge_probs = edge_ij[mask]
+            
+            if len(clause_edge_probs) > 1:
+                clauses_var = torch.var(clause_edge_probs)
+                consistencyLoss += clauses_var
+                
+                mean_prob = clause_edge_probs.mean()
+                deviation = ((clause_edge_probs - mean_prob) ** 2).mean()  # MSE within group
+                # Confidence to reinforce learning close to 0 or 1?
+                confidence = ((mean_prob - 0) * (mean_prob - 1)) ** 2
+                
+                consistencyLoss += deviation + confidence
+            
+            
+            
+        # ChatGPT idea
+        # ASSUMES clause_mask: shape [N], boolean mask where True means node is a clause node    
+            
+        """# edge_index: [2, E]
+        lit_nodes = edge_index[0]     # source
+        clause_nodes = edge_index[1]  # target
+        num_nodes = clause_mask.size(0)
 
-        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
+        # clause_mask: boolean mask of shape [num_nodes], True for clause nodes
+        clause_ids = torch.where(clause_mask)[0]  # Indices of clause nodes
+
+        # Step 1: Identify edges going *into* clauses (i.e., all edges in edge_index[1])
+        clause_edge_mask = clause_mask[clause_nodes]        # shape [E], True if dst is a clause
+        clause_edge_indices = torch.where(clause_edge_mask)[0]  # Indices of edges going into clauses
+
+        # Step 2: Extract the relevant data
+        incoming_clause_ids = clause_nodes[clause_edge_indices]     # [E_clause]
+        clause_edge_scores = edge_ij[clause_edge_indices]              # [E_clause]
+
+        # Step 3: Mean importance score for each clause
+        mean_per_clause = scatter(clause_edge_scores, incoming_clause_ids, reduce='mean')
+
+        # Step 4: Variance: compute squared diffs
+        mean_expanded = mean_per_clause[incoming_clause_ids]  # Expand back to edge level
+        squared_diffs = (clause_edge_scores - mean_expanded) ** 2
+
+        # Step 5: Group-wise variance again
+        var_per_clause = scatter(squared_diffs, incoming_clause_ids, reduce='mean')
+
+        # Final: sum over all clauses that received any edges
+        relevant_clause_ids = torch.unique(incoming_clause_ids)
+        connect_loss = var_per_clause[relevant_clause_ids].sum() * coefficientConnect"""
+        
+        
+
+
+
+
+        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency               # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
         #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?
         
@@ -123,6 +190,17 @@ class MLP(nn.Module):
         l_emb = all_l_emb[-1]           # Shape: (n_literals, emb_dim=128)
         c_emb = all_c_emb[-1]           # Shape: (n_clauses, emb_dim=128)
         
+        iterations = downstreamTask.opts['iterations']
+        
+        l_emb_interm1 = all_l_emb[math.floor(iterations * 0.5)]           # Shape: (n_literals, emb_dim=128)
+        c_emb_interm1 = all_c_emb[math.floor(iterations * 0.5)]           # Shape: (n_clauses, emb_dim=128)
+        
+        l_emb_interm2 = all_l_emb[math.floor(iterations * 0.75)]           # Shape: (n_literals, emb_dim=128)
+        c_emb_interm2 = all_c_emb[math.floor(iterations * 0.75)]           # Shape: (n_clauses, emb_dim=128)
+        
+        l_embs_cat = torch.cat([l_emb, l_emb_interm1, l_emb_interm2], dim=1)
+        c_embs_cat = torch.cat([c_emb, c_emb_interm1, c_emb_interm2], dim=1)
+        
         # This does not grant larger edge weights
         """l_emb = F.normalize(all_l_emb[-1], p=2, dim=1)  # L2 normalization
         c_emb = F.normalize(all_c_emb[-1], p=2, dim=1)  # L2 normalization"""
@@ -143,7 +221,8 @@ class MLP(nn.Module):
             """embCat = torch.cat([emb[i], emb[j], emb[nodeToPred].repeat(len(i), 1)], dim=1)"""
         else:
             """embCat = torch.cat([emb[i], emb[j]], dim=1)"""
-            embCat = torch.cat([l_emb[i], c_emb[j]], dim=1)
+            #embCat = torch.cat([l_emb[i], c_emb[j]], dim=1)
+            embCat = torch.cat([l_embs_cat[i], c_embs_cat[j]], dim=1)
             
         return embCat
     

@@ -27,7 +27,7 @@ def loadExplainer(dataset):
     
     data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
     
-    mlp = explainer.MLP(GraphTask=graph_task, hidden_dim=64)     # Adjust according to data and task
+    mlp = explainer_NeuroSAT.MLP(GraphTask=graph_task, hidden_dim=64)     # Adjust according to data and task
     mlp.load_state_dict(torch.load(f"models/explainer{dataset}", weights_only=True))
 
     downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = data.x.shape[1], labels=labels)
