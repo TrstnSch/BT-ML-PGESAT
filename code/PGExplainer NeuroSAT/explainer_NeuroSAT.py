@@ -51,6 +51,11 @@ class MLP(nn.Module):
         
         embeddings = self.getGraphEdgeEmbeddings(downstreamTask, problem, nodeToPred)
         
+        #print(f"Input embeddings for MLP: {embeddings}")
+        #print(f"Max input embedding for MLP: {torch.max(embeddings)}")
+        #print(f"Min input embedding for MLP: {torch.min(embeddings)}")
+        #print("------------------------------------------")
+        
         w_ij = self.model(embeddings).squeeze(1)
         
         # TODO: Take absolute value of w_ij to always have positive weights?!
@@ -117,46 +122,6 @@ class MLP(nn.Module):
                 
                 consistencyLoss += deviation + confidence
             
-            
-            
-        # ChatGPT idea
-        # ASSUMES clause_mask: shape [N], boolean mask where True means node is a clause node    
-            
-        """# edge_index: [2, E]
-        lit_nodes = edge_index[0]     # source
-        clause_nodes = edge_index[1]  # target
-        num_nodes = clause_mask.size(0)
-
-        # clause_mask: boolean mask of shape [num_nodes], True for clause nodes
-        clause_ids = torch.where(clause_mask)[0]  # Indices of clause nodes
-
-        # Step 1: Identify edges going *into* clauses (i.e., all edges in edge_index[1])
-        clause_edge_mask = clause_mask[clause_nodes]        # shape [E], True if dst is a clause
-        clause_edge_indices = torch.where(clause_edge_mask)[0]  # Indices of edges going into clauses
-
-        # Step 2: Extract the relevant data
-        incoming_clause_ids = clause_nodes[clause_edge_indices]     # [E_clause]
-        clause_edge_scores = edge_ij[clause_edge_indices]              # [E_clause]
-
-        # Step 3: Mean importance score for each clause
-        mean_per_clause = scatter(clause_edge_scores, incoming_clause_ids, reduce='mean')
-
-        # Step 4: Variance: compute squared diffs
-        mean_expanded = mean_per_clause[incoming_clause_ids]  # Expand back to edge level
-        squared_diffs = (clause_edge_scores - mean_expanded) ** 2
-
-        # Step 5: Group-wise variance again
-        var_per_clause = scatter(squared_diffs, incoming_clause_ids, reduce='mean')
-
-        # Final: sum over all clauses that received any edges
-        relevant_clause_ids = torch.unique(incoming_clause_ids)
-        connect_loss = var_per_clause[relevant_clause_ids].sum() * coefficientConnect"""
-        
-        
-
-
-
-
         Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency               # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
         #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?

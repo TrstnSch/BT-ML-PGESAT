@@ -180,3 +180,32 @@ Code:
 
 Research towards NeuroSAT, try try try
 Concat embeddings from different 
+
+
+
+
+
+------------------------------
+
+
+NOTE:
+Embeddings for NeuroSAT seem to be between -1 and 1
+Embeddings for e.g. Tree-Cycles seem to be between -2 and 25
+
+LR of 3*10^-4 instead of 3*10^-3 keeps auc score, leads to better edge probabilities between 0.0006 and 0.0199
+    -> Try MUSs first? Formally probably good idea
+
+ROC-AUC for untrained model is 0.5, so metric seems to notice something, even if qual. evaluation does not look the WAY
+
+
+Relevant to monitor evaluation loss?
+
+
+BA-2Motif explainer works almost perfect for trained BA-2Motif model, if dataset uses features of ones. BA-2Motif model was trained on 0.1 features though and achieves poor accuracy of 0.5 on data with ones features!!!
+Trained BA-2Motif model with ones -> Explainer on same data performs relatively poor
+    -> Explainer with 0.1 as features performs even worse (NOTE THAT THIS VERSION LEADS TO A SMOOTH LOSS!)
+
+Trained on BA-2Motif with original 0.1 features and same data in explainer -> Starts out really well (0.9) but decreases to 0.65
+    -> Explainer with ones as achieves outstanding auc (0.98) (Does not make sense, explains data that the DT did not learn) (NOTE THAT THIS VERSION LEADS TO A SMOOTH LOSS!)
+
+Similar to the Batchnorm behaviour with different presence in training and evaluation in explainer
