@@ -178,13 +178,15 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
                 
                 if graph_task:
                     # For graph
-                    for graph_index in range(current_data.num_graphs):
+                    """for graph_index in range(current_data.num_graphs):
                         node_mask = current_data.batch == graph_index
                         edge_mask = (node_mask[current_edge_index[0]] & node_mask[current_edge_index[1]])
 
                         # TODO: VALIDATE pOriginal and pSample pass both label predictions, not just correct one
                         currLoss = mlp.loss(pOriginal[graph_index], pSample[graph_index], edge_ij[edge_mask], coefficient_size_reg, coefficient_entropy_reg)
-                        sampleLoss += currLoss
+                        sampleLoss += currLoss"""
+                    currLoss = mlp.loss(pOriginal, pSample, edge_ij, coefficient_size_reg, coefficient_entropy_reg)
+                    sampleLoss += currLoss
                 else:
                     # For node
                     

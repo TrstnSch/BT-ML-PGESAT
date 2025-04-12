@@ -49,9 +49,6 @@ class MLP(nn.Module):
         
         w_ij = self.model(embeddings).squeeze(1)
         
-        # TODO: Take absolute value of w_ij to always have positive weights?!
-        #w_ij = torch.abs(w_ij)
-        
         # TODO: Validate, maybe move to sample if evaluating
         #w_ij_sym = utils.combineEdgeWeights(edge_index, w_ij)
         
@@ -91,6 +88,11 @@ class MLP(nn.Module):
         Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
         #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?
+        
+        """if self.graphTask:
+            origninal_preds = torch.argmax(pOriginal, dim=1)
+            rows_pSample = torch.arange(pSample.size(0))
+            Loss = -torch.sum(torch.log(pSample[rows_pSample, origninal_preds] + 1e-8))+ entropyReg + sizeReg + l2norm"""
         return Loss
     
     

@@ -83,6 +83,8 @@ def loadGraphDataset (datasetName: Literal['BA-2Motif','MUTAG'], manual_seed=42)
     # Original paper 800 graphs, 2024 paper 1000 graphs. Use BA2MotifDataset?
     if datasetName == 'BA-2Motif' :
         #dataset = BA2MotifDataset('datasets', pre_transform=addGroundTruth(), force_reload=True)                   #transform=ReplaceFeatures()    10d feature vector of 10 times 0.1 instead of 1, seems to make no difference
+        
+        # ones_features sets features to 1s instead of 0.1s, OG USES 0.1!!!
         dataset = loadOriginalBA2Motif(ones_features=False)
         
     if datasetName == 'MUTAG':

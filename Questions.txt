@@ -209,3 +209,10 @@ Trained on BA-2Motif with original 0.1 features and same data in explainer -> St
     -> Explainer with ones as achieves outstanding auc (0.98) (Does not make sense, explains data that the DT did not learn) (NOTE THAT THIS VERSION LEADS TO A SMOOTH LOSS!)
 
 Similar to the Batchnorm behaviour with different presence in training and evaluation in explainer
+
+
+
+
+------------------------------
+
+Downstream task training: Use first model that achieves 1.0 val accuracy or last model that also decreases the val loss?

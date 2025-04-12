@@ -6,20 +6,28 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Three layer GNN(GCN) for Graph Classification based on PGExplainer paper/Source code
 class GraphGNN(nn.Module):
-    def __init__(self, features = 10, labels = 2):
+    def __init__(self, features = 10, labels = 2, GCNConv = False, BN = True, dropout = 0.0):
         super(GraphGNN, self).__init__()
         
-        # TODO: Try GCNConv
-        self.hidden1 = gnn.GraphConv(features, 20)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
-        self.hidden2 = gnn.GraphConv(20, 20)         # GraphConvolution layer2: input dim = hidden dim = 20,
-        self.hidden3 = gnn.GraphConv(20, 20)         # GraphConvolution layer3: 
+        self.BN = BN
         
-        #self.bn1 = gnn.BatchNorm(20)
-        #self.bn2 = gnn.BatchNorm(20)
-        #self.bn3 = gnn.BatchNorm(20)
+        if not GCNConv:
+            self.hidden1 = gnn.GraphConv(features, 20)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
+            self.hidden2 = gnn.GraphConv(20, 20)         # GraphConvolution layer2: input dim = hidden dim = 20,
+            self.hidden3 = gnn.GraphConv(20, 20)         # GraphConvolution layer3: 
+        
+        # GCNConv used in RE PGExplainer
+        else:
+            self.hidden1 = gnn.GCNConv(features, 20)   
+            self.hidden2 = gnn.GCNConv(20, 20)         
+            self.hidden3 = gnn.GCNConv(20, 20) 
+            
+        # Original code uses 2 (optional) BN layers for 3 graph layers
+        self.bn1 = gnn.BatchNorm(20)
+        self.bn2 = gnn.BatchNorm(20)
         
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(p=0.1)               # Not used in PGExplainer
+        self.dropout = nn.Dropout(p=dropout)               # Not used in PGExplainer
 
         self.lin = nn.Linear(20*2, labels)             # fully connected layer(Dense) => nn.linear: input dim = hidden dim * 2 due to concat of pooling, output dim = output dim = classes
         
@@ -90,40 +98,50 @@ class GraphGNN(nn.Module):
         edge_weights = edge_weights.to(device)
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
-        emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)              # This improves model!? Used to normalize edge embeddings for graphs task, as they else get too high/low for BA-2Motif in explainer
+        #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)              # This improves model!? Used to normalize edge embeddings for graphs task, as they else get too high/low for BA-2Motif in explainer
+        if self.BN: emb1 = self.bn1(emb1)
         emb1 = self.relu(emb1)
-        #emb1 = self.bn1(emb1)
-        #emb1 = self.dropout(emb1)
+        emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
-        emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
+        #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
+        if self.BN: emb2 = self.bn2(emb2)
         emb2 = self.relu(emb2)
-        #emb2 = self.bn2(emb2)
-        #emb2 = self.dropout(emb2)
+        emb2 = self.dropout(emb2)
         
+        # OG does not use bn for last hidden layer
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
-        emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
-        #emb3 = self.bn3(emb3)
+        #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
         emb3 = self.relu(emb3)
-        #emb3 = self.dropout(emb3)
+        emb3 = self.dropout(emb3)
 
         return emb3
     
 
 
 class NodeGNN(nn.Module):
-    def __init__(self, features, labels):
+    def __init__(self, features, labels, GCNConv = False, BN=True, dropout = 0.0):
         super(NodeGNN, self).__init__()
         
-        self.hidden1 = gnn.GraphConv(features, 20)
-        self.hidden2 = gnn.GraphConv(20, 20)
-        self.hidden3 = gnn.GraphConv(20, 20)
+        self.BN = BN
+        
+        if not GCNConv:
+            self.hidden1 = gnn.GraphConv(features, 20)   # GraphConvolution layer1: input dim = #features??, output dim = hidden dim = 20 , ReLu activation, bias = true in og config
+            self.hidden2 = gnn.GraphConv(20, 20)         # GraphConvolution layer2: input dim = hidden dim = 20,
+            self.hidden3 = gnn.GraphConv(20, 20)         # GraphConvolution layer3: 
+        
+        # GCNConv used in RE PGExplainer
+        else:
+            self.hidden1 = gnn.GCNConv(features, 20)   
+            self.hidden2 = gnn.GCNConv(20, 20)         
+            self.hidden3 = gnn.GCNConv(20, 20) 
         
         # LayerNorm instead of BatchNorm(Did not work)
         self.bn1 = gnn.BatchNorm(20)
         self.bn2 = gnn.BatchNorm(20)
+        
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(p=0.1)                # Not used in PGExplainer
+        self.dropout = nn.Dropout(p=dropout)                # Not used in PGExplainer
 
         self.lin = nn.Linear(20*3, labels)              # outputs of three hidden layers are by default concatenated in PGE Node classification and input into lin layer
         
@@ -178,18 +196,21 @@ class NodeGNN(nn.Module):
         edge_weights = edge_weights.to(device)
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
+        # We add bn before the activation, unlike original
+        if self.BN: emb1 = self.bn1(emb1)
         emb1 = self.relu(emb1)
-        emb1 = self.bn1(emb1)
-        #emb1 = self.dropout(emb1)
+        emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
+        # We add bn before the activation, unlike original
+        if self.BN: emb2 = self.bn2(emb2)
         emb2 = self.relu(emb2)
-        emb2 = self.bn2(emb2)
-        #emb2 = self.dropout(emb2)
+        emb2 = self.dropout(emb2)
         
+        # OG does not use bn for last hidden layer
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
         emb3 = self.relu(emb3)
-        #emb3 = self.dropout(emb3)
+        emb3 = self.dropout(emb3)
 
         embs = torch.cat([emb1, emb2, emb3], 1)
         
