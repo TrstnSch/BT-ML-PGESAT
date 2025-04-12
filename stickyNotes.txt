@@ -1,3 +1,237 @@
+Node tasks no more stable and never smaller roc than 0.5 -> Good
+
+Graph tasks now completely collapse!?
+
+
+
+
+
+
+
+
+Original Loss and Paper Loss seem to achieve same result
+DOWNSTREAM TASK MODELS WERE OVERFIT!??!?! -> Used last trained model instead of earlier model that achieved highest val/accuracy
+BA-Community explainer now performs well for frst tested seed
+BA-2Motif worse now, still achieves decent AUC if DT trained with 0.1 features and explainer uses ones features!
+
+
+
+
+
+
+
+
+DOWNSTREAM TASK LAST TRAINED (10.04.):
+GraphConv with BN after ⅔ hidden layers
+
+BA-2Motif: 1.0, 1.0, 1.0
+MUTAG (Dropout 0.1): 0.86, 0.86, 0.82
+
+BA-Shapes: 1.0, 1.0, 0.97
+BA-Community (Dropout 0.1): 0.92, 0.87, 0.89
+Tree-Cycles: 1.0, 1.0, 0.99
+Tree-Grid: 0.99, 0.99, 0.99
+
+
+
+
+
+
+
+
+
+Use current version of NeuroSAT to sweep over multiple architectures, hyperparameters and maybe even loss?
+
+Probably smart to store gt in data batch first -> Done
+Think on adding the clause meaning after the sampling randomness?
+
+
+
+
+
+
+
+
+
+Loss seems to be identical when calced at once instead of for each singular problem/graph
+
+
+
+
+
+
+
+
+
+Fix edge probabilite values for NeuroSAT!
+Look at mlp outputs/weights, check if negative?
+Normalize ->Already normalized out of NeuroSAT
+
+Lower lr improves edge probabilites
+
+
+
+
+
+
+
+
+
+Use Binary cross entropy for NeuroSAT, since paper describes using cross entropy and probabilites in NeuroSAT are binary.
+
+Seems comparable to our implemenation of described formula
+
+
+
+
+
+
+
+
+
+
+
+Tried to overfit NeuroSAT, very difficult as AUC is not directly used in Explainer since it only calculates loss between predictions. Introduced evidence might be a problem here?
+
+Implemented MUS calculation as gt instead of unsat cores, achieves very poor auc atm!
+
+
+
+
+
+
+
+
+Lower lr for neurosat achieves :
+Highest individual auc: 0.8164945919370697 
+
+
+
+
+
+
+
+NOTE:
+Embeddings for NeuroSAT seem to be between -1 and 1
+Embeddings for e.g. Tree-Cycles seem to be between -2 and 25
+
+
+
+
+
+
+
+CONFIRMED: NeuroSAT EVALUATION WITHOUT TRAINING RESULTS IN ROC_AUC OF 0.5!!!!
+
+
+
+
+
+
+
+
+NeuroSAT Problem:
+Unsat core always contains full clauses - for each clause all connected literals are part of graph/gt
+
+Explanations however do not fulfill this and can only contain some of the literals of a clause, which does not make it a subset of the original clause.
+Maybe introduce regularization that punishes selection of singular edge instead of all outgoing edges for a clause node?
+
+
+
+
+
+
+
+
+
+
+
+
+Currently re running all quant experiments with configs from sweeps and train/val/test split. Inference time included for test data.
+
+WHEN DONE:
+COMPARE LIKE IT IS for Tree-Cycles with all motif nodes, for ba-2motif with ones as features?, 
+Sweep BA-2Motif
+Re run dt on different data splits to get accuracies
+
+THEN:
+Leave it mostly as is, maybe try to improve the tasks that fail if ideas there. If no ideas THEN
+
+Continue with NeuroSAT:
+Check if explanation from explainer satisfiable (probably not)
+Try with MUS
+Sweep
+Expand input embeddings with intermediate embeddings.
+
+
+
+
+
+
+
+
+Explainer loss should probably use argmax for original prediction, as discrete case?
+-> No, Last loss equation in paper uses conditional probability of each class, so no argmax?!
+
+
+
+
+
+
+
+
+
+Current State:
+USE TRAIN SPLIT!
+BA-Shapes: very robust, works well
+BA-Community: Qualitative explanations suck
+Tree-Cycles: Does not make sense anymore. AllMotif now also either very high or very low?
+Tree-Grid: Okayish, not perfect
+
+BA-2Motif: Works very well with 1s as features
+MUTAG: Lowkey sucks, runs all increase but are incredibly high in variance
+
+
+
+
+
+
+Cannot reproduce Tree-Cycles runs stored in wandb, maybe redo. Train split plus all nodes also generates either good or bad runs?
+
+
+
+
+
+Reduced batch size for neuro sat, as well as number variables to constant 8. Different min/max problematic due to varying size having to be extracted from gt/problem individually.
+
+Common edges better now, after removing detach()
+
+Try with MUSs!
+
+
+
+
+
+
+
+TRY for original task:
+QUALITATIVE EVALUATION FOR BEST AUC MODELS!
+Check values of edge weights!
+TRY current effect of loss regularization terms?
+
+
+
+
+
+Fixed calculation of MUS in pysat. NO ASSUMPTIONS NEEDED!
+TODO: Convert MUS into gt
+
+
+
+
+
+
+
 When taking topK lowest edges there is zero overlap between gt and topk, as expected
 
 
