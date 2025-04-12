@@ -5,13 +5,13 @@
         "graph_task": true,
         "epochs": 30,
         "batch_size": 1,
-        "lr_mlp": 0.0003,
+        "lr_mlp": 0.00003,
         "sampled_graphs": 20,
-        "coefficient_size_reg": 0.003,
-        "coefficient_entropy_reg": 0.01,
+        "coefficient_size_reg": 0.001,
+        "coefficient_entropy_reg": 1.0,
         "coefficient_L2_reg": 0.0,
-        "coefficient_consistency": 1.0,
-        "num_explanation_edges": 5,
+        "coefficient_consistency": 0.0,
+        "num_explanation_edges": 0,
         "t0": 5.0,
         "tT": 1.0
     }
