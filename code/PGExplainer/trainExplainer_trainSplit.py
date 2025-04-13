@@ -159,13 +159,14 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             current_edge_index = current_edge_index.to(device)
 
             # MLP forward
-            w_ij = mlp.forward(downstreamTask, current_data.x.to(device), current_edge_index, nodeToPred=node_to_predict)
+            # TODO: CHECK IF THE unique_pairs, inverse_indices WORK AS EXPECTED!!!
+            w_ij, unique_pairs, inverse_indices = mlp.forward(downstreamTask, current_data.x.to(device), current_edge_index, nodeToPred=node_to_predict)
 
             sampleLoss = torch.FloatTensor([0]).to(device)
             loss = torch.FloatTensor([0]).to(device)
             
             for k in range(0, sampled_graphs):
-                edge_ij = mlp.sampleGraph(w_ij, temperature)
+                edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices, temperature)
                 
                 sampledEdges += torch.sum(edge_ij)
             

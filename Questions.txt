@@ -211,8 +211,17 @@ Trained on BA-2Motif with original 0.1 features and same data in explainer -> St
 Similar to the Batchnorm behaviour with different presence in training and evaluation in explainer
 
 
+Try to get explainer to overfit with very small number of subproplems, scale up the network size etc...
+
+
+Predict clauses instead of edges, adapt framework to carry clause weights on connected edges?
 
 
 ------------------------------
 
 Downstream task training: Use first model that achieves 1.0 val accuracy or last model that also decreases the val loss?
+
+For original:
+Undirected graphs have two edge embeddings since treated as directed graph with edges in both directions.
+Idea: Similar to NeuroSAT: Mean explainer logits for each edge pair? How to treat randomness?
+Add one random value to each edge pair instead of to each edge?

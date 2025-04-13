@@ -1,0 +1,147 @@
+TODO: 
+
+Display negative literals correctly in visualisation, index +-1?
+
+GTs vary in size, general problematic for Explainer?
+
+
+TODO: Find a clean way to seperate the problem batches into train/val/test
+
+Sweep
+
+Node prediction? NeuroSAT not really meant for that?
+
+
+OVERFIT NEUROSAT! (HOW? MODEL DOES NOT LEARN WITH GT!)
+
+
+Fix edge probabilite values for NeuroSAT!
+
+
+Use current version of NeuroSAT to sweep over multiple architectures, hyperparameters and maybe even loss?
+
+Think on adding the clause meaning after the sampling randomness? ADDED TO RANDOMNESS AS WELL
+
+
+---------------------------------------------------------------------------------------
+DONE RELEVANT:
+
+NeuroSAT:
+Are problems batches of one big problem?! If so, explainer probably has to unpack batches and view complete problem! -> Problem is batch of multiple sub_problems
+
+
+
+Added Edge mask to calculate loss per sub_problem.
+QUESTION: Passing batched data into mlp fine? Should be as it how it works for PGExplainer, right?
+
+NeuroSAT problems: Code runs out of memory?
+-> Maybe fixed by detaching NeuroSAT predictions and only calculating pOriginal once - NO!!
+ -> Fixed by decreasing batch size for SAT problems
+
+Loss is nan -> Because of negative values passed into log, fixed with softmax
+
+1 Epoch takes about 7 minutes atm
+
+What does NeuroSAT predict? -> SAT/UNSAT for each sub_problem in batch
+
+
+
+Edge weights for gt too thick! -> Normalize gt and predictions to be between 0 and 1?
+
+
+
+Sweep NeuroSAT
+ lr 0.03 leads to edge probabalities geeting rounded to 0
+Edge probabilities get very close to 0 anyways -> normalize? Or only hyperparams? Lower LR seems to fix scale mostly
+
+
+NeuroSAT on GPU seems to be identical to CPU runs. Evaluation on multiple sub_problems implemented -> Currently using a very large validation set
+
+Take high auc and low auc example and compare gt with topK by showing edges present both graphs!
+
+Are calced unsat cores perfect? Able to calculate multiple ones? -> Replaced wiht MUSs
+
+
+THERE MUST BE A PROBLEM WITH ROC_AUC OR VISUALIZATION! GT AND TOPK ONLY SHARE 1 OR FEW EDGES?!?!?!?
+Same result when training on evaluation data.
+
+For problem with highest and lowest auc, only 1 for highest and 3 for lowest edges are in GT AND TOPK! -> Does not seem to be detecting unsat core.
+AUC seems to be increasing for bigger graphs?
+Auc maybe not a good metric?
+
+
+
+When taking topK lowest edges there is zero overlap between gt and topk, as expected
+
+
+
+Added L2Norm explainer getGraphEmbeddings -> Leads to decrease in AUC?!
+Only during training: minimal decrease in auc compared to without, no effect on weights
+=> NeuroSAT embeddings are already normalized between -1 and 1
+
+Fixed calculation of MUS in pysat. NO ASSUMPTIONS NEEDED!
+Converted MUS into gt
+
+
+
+Reduced batch size for neuro sat, as well as number variables to constant 8. Different min/max problematic due to varying size having to be extracted from gt/problem individually.
+
+Common edges better now, after removing detach()!!!!
+
+Trying with MUSs
+
+
+Expand input embeddings with intermediate embeddings.
+
+
+Check if explanation from explainer satisfiable -> NEED FULL CLAUSES AS PREDICTIONS!
+
+
+NeuroSAT Problem:
+Unsat core always contains full clauses - for each clause all connected literals are part of graph/gt
+
+Explanations however do not fulfill this and can only contain some of the literals of a clause, which does not make it a subset of the original clause.
+Maybe introduce regularization that punishes selection of singular edge instead of all outgoing edges for a clause node?
+
+
+CONFIRMED: NeuroSAT EVALUATION WITHOUT TRAINING RESULTS IN ROC_AUC OF 0.5!!!!
+
+
+
+NOTE:
+Embeddings for NeuroSAT seem to be between -1 and 1
+Embeddings for e.g. Tree-Cycles seem to be between -2 and 25
+
+
+
+Lower lr for neurosat achieves (old?):
+Highest individual auc: 0.8164945919370697 
+
+
+
+Tried to overfit NeuroSAT, very difficult as AUC is not directly used in Explainer since it only calculates loss between predictions. Introduced evidence might be a problem here?
+
+Implemented MUS calculation as gt instead of unsat cores, achieves very poor auc atm!
+
+
+Use Binary cross entropy for NeuroSAT, since paper describes using cross entropy and probabilites in NeuroSAT are binary.
+
+Seems comparable to our implemenation of described formula
+
+
+Look at mlp outputs/weights, check if negative?
+Normalize ->Already normalized out of NeuroSAT
+Lower lr improves edge probabilites
+
+
+Loss seems to be identical when calced at once instead of for each singular problem/graph
+
+
+Probably smart to store gt in data batch first -> Done
+
+---------------------------------------------------------------------------------------
+DONE IRRELEVANT:
+
+
+First NeuroSAT run with gt:
+Eval on one single sub_problem, roc seems to increas, but prediction of sampled graph changes!

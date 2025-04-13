@@ -51,8 +51,53 @@ class MLP(nn.Module):
         
         # TODO: Validate, maybe move to sample if evaluating
         #w_ij_sym = utils.combineEdgeWeights(edge_index, w_ij)
+
+        # TODO: THIS IS WRONG. THIS WOULD MEAN ALL OUTGOING EDGES FOR EACH NODE
+        """batch_nodes_one_side = torch.tensor(edge_index[:, 1])
+        unique_nodes = torch.unique(batch_nodes_one_side)
         
-        return w_ij
+        for node_id in unique_nodes:
+            # apply i-th edge mask to the current_batch_edges to get connections for clause i
+            node_pair_mask = batch_nodes_one_side == node_id
+            #clause_edges = current_batch_edges[mask]
+            node_pair_edge_probs = w_ij[node_pair_mask]
+            
+            if len(node_pair_edge_probs) > 1:
+                node_pair_mean_weight = torch.mean(node_pair_edge_probs)
+                w_ij[node_pair_mask] = node_pair_mean_weight"""
+        
+        
+        # Assuming edge_index is [2, num_edges]
+        # and w_ij is a tensor of shape [num_edges]
+
+        # Transpose to get shape [num_edges, 2]
+        edge_pairs = edge_index.t()
+
+        # Sort node pairs so that (i, j) and (j, i) become the same
+        canonical_pairs , _ = edge_pairs.sort(dim=1)  # sorts each row
+
+        unique_pairs, inverse_indices = torch.unique(canonical_pairs, dim=0, return_inverse=True)
+
+        # Get unique pairs and the inverse index to map back
+        # This does not treat 1-2 and 2-1 as a unique edge
+        #unique_pairs, inverse_indices = torch.unique(edge_pairs, dim=0, return_inverse=True)
+
+        # Prepare a tensor to store new weights
+        #new_w_ij = torch.clone(w_ij)
+
+        # Go through each unique edge pair
+        for i in range(unique_pairs.size(0)):
+            mask = inverse_indices == i
+            #if torch.sum(mask) > 1:
+            mean_weight = torch.mean(w_ij[mask])
+            #new_w_ij[mask] = mean_weight
+            w_ij[mask] = mean_weight
+
+        # Optionally update w_ij in-place
+        #w_ij[:] = new_w_ij
+
+        
+        return w_ij, unique_pairs, inverse_indices
 
 
     def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):
@@ -128,7 +173,7 @@ class MLP(nn.Module):
         return embCat
     
 
-    def sampleGraph(self, w_ij, temperature=1):
+    def sampleGraph(self, w_ij, unique_pairs, inverse_indices, temperature=1):
         """Implementation of the reparametrization trick to sample edges from the edge weights. 
         If evaluating we only apply Sigmoid to get predictions from weights while eliminating randomness.
 
@@ -140,12 +185,23 @@ class MLP(nn.Module):
             float tensor: Probability of edge i,j to be in the explanation, Sigmoid applied
         """
         if self.training:
-            epsilon = torch.rand(w_ij.size(), device=device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
+            rand_vals = torch.rand(len(unique_pairs), device=w_ij.device) + 1e-8
+            epsilon = rand_vals[inverse_indices].reshape(w_ij.shape)
+
+            #epsilon = torch.rand(w_ij.size(), device=device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
 
             edge_ij = nn.Sigmoid()((torch.log(epsilon)-torch.log(1-epsilon)+w_ij)/temperature)    # shape: ~50 X 1 = EdgesOG X SampledEdgesProbability
         else:
             edge_ij = nn.Sigmoid()(w_ij)
             
+        # TODO: edge_ij contains two edges for each node pair, because undirected graph treated as graph with edges in both directions!
+        # For each edge pair that connect same nodes: mean logits or probabilities?
+        # logits probably best, but then randomness should probably be added per edge pair instead of edge?
+        # -> randomness of w_ij.size()/2
+
+
+
+
         return edge_ij
     
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

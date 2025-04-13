@@ -1,0 +1,251 @@
+TODO:
+
+COMBINE_EDGE_WEIGHTS (Where?)
+topK does not perfectly identify topK edges, because of bidirectional edges!!! If same value edge weights at threshold different edges might be selected instead of always two belonging ones.
+To fix: Maybe extract one direction of edges from edge_index and edge weights accordingly before evaluating/processing? Mean belonging edges!
+
+
+Tree-Cycles with all cycle nodes
+
+Try Tree-Grid on "middle" nodes of Motif
+Play around with motif nodes for Tree-Grid? Get better results with only on node per motif that covers complete motif?
+
+BA-2Motif: weight norm into forward of explainer?
+
+EVALUATE EFFECT OF ONES/0.1s AS FEATURES FURTHER
+
+Try LayerNorm/different normalization
+
+
+How to batch node data? Possible?
+K_hop_subgraph can be calculate batch wise, but prediction of downstream task has to be calced node wise?!
+
+
+Performance improvement: Instead of k graphs for loop scale edge_ij, predictions?
+
+
+
+Sweep BA-2Motif
+SWEEP ALL AGAIN?!
+
+QUALITATIVE EVALUATION FOR BEST AUC MODELS!
+TRY current effect of loss regularization terms?
+
+---------------------------------------------------------------------------------------
+DONE RELEVANT:
+
+-------CURRENT!-------
+DOWNSTREAM TASK LAST TRAINED (10.04.):
+GraphConv with BN after ⅔ hidden layers
+
+BA-2Motif: 1.0, 1.0, 1.0
+MUTAG (Dropout 0.1): 0.86, 0.86, 0.82
+
+BA-Shapes: 1.0, 1.0, 0.97
+BA-Community (Dropout 0.1): 0.92, 0.87, 0.89
+Tree-Cycles: 1.0, 1.0, 0.99
+Tree-Grid: 0.99, 0.99, 0.99
+
+
+Original Loss and Paper Loss seem to achieve same result
+DOWNSTREAM TASK MODELS WERE OVERFIT!??!?! -> Used last trained model instead of earlier model that achieved highest val/accuracy
+BA-Community explainer now performs well for frst tested seed
+BA-2Motif worse now, still achieves decent AUC if DT trained with 0.1 features and explainer uses ones features!
+
+
+Node tasks no more stable and never smaller roc than 0.5 -> Good
+
+Graph tasks now completely collapse!?
+
+
+------ BA-2Motif feature importance (RESULTS FROM OVERFIT MODELS)--------
+BA-2Motif explainer works almost perfect for trained BA-2Motif model, if dataset uses features of ones. BA-2Motif model was trained on 0.1 features though and achieves poor accuracy of 0.5 on data with ones features!!!
+Trained BA-2Motif model with ones -> Explainer on same data performs relatively poor
+    -> Explainer with 0.1 as features performs even worse (NOTE THAT THIS VERSION LEADS TO A SMOOTH LOSS!)
+
+Trained on BA-2Motif with original 0.1 features and same data in explainer -> Starts out really well (0.9) but decreases to 0.65
+    -> Explainer with ones as achieves outstanding auc (0.98) (Does not make sense, explains data that the DT did not learn) (NOTE THAT THIS VERSION LEADS TO A SMOOTH LOSS!)
+
+Similar to the Batchnorm behaviour with different presence in training and evaluation in explainer
+
+
+
+
+Added edge weights of one of none given to node downstream task. 
+
+
+Prediction of graph with edge_weights edge_ij is ALWAYS 0!
+Using GCNConv instead of GraphConv gets at least some 1 class predictions
+
+
+BA2-Motif working!?
+-No combine edge weights
+-No normalization in ds task
+-No argmax for Loss
+-Loss from paper
+-BA-2Motif latest model (no normalization!?)
+
+BUT runs where AUC goes from 99 to 90% and back up to 95%
+
+Vermutung: Use normalize during training, but not during explainer training?!
+-> This leads to bad accuracy outside of training!
+
+
+
+BA-2Motif problem:
+
+Predictions of sampled graphs do not really make sense. The edges probabilities are fine and seem well distributed, but the predictions seem to stagnate
+
+[[0.4585, 0.5415], [0.4604, 0.5396], [0.4527, 0.5473], [0.4566, 0.5434], [0.4617, 0.5383], [0.4666, 0.5334], [0.4573, 0.5427], [0.4607, 0.5393], [0.4527, 0.5473], [0.4574, 0.5426], [0.4583, 0.5417], [0.4540, 0.5460], [0.4603, 0.5397], [0.4609, 0.5391], [0.4614, 0.5386], [0.4579, 0.5421]] 
+
+
+
+Tree-Grid experiment ran on 511, 800, 9 with 512,800, 9 eval.
+Compare to original 511, 800, 1!
+
+Original seems to be worse?
+
+
+BA-2Motif needs ones as features!!!!!! nevermind!?!??!?! After significant changes the first run seems to be doing good, but then it gets worse?!
+
+
+
+Differences GPU CPU training:
+
+BA-Shapes: identical
+Ba-Community: very slightly better on CPU?!
+Tree-Cycles: identical
+Tree-Grid: very slightly better on CPU?!
+BA-2Motif: stable on GPU, instable on CPU -> RESULT OF DIFFERENCE IN DATASET ON CPU/GPU (FIXED)
+MUTAG: identical
+
+
+Sweep BA-Shapes:
+
+LR 0.0003 too low with 10 epochs, discarded fast.
+
+
+
+Tree-Cycles with all cycle nodes does not work good, at least on „old“ config
+
+BUT: clear observation, runs converge consantly to 0.5 -> random guessing. In original we have very high variance between runs/seeds!
+
+Maybe try sweeping with all nodes?
+
+
+
+Compare GPU CPU runs to determine which datasets can be swept on cpu -> Should not make much of a difference
+
+Run train split version and compare? On Tree-Cycles very high in variance ->  WE WANT TRAIN/TEST SPLIT FOR GLOBAL EXPLANATIONS
+
+Check values of edge weights -> e.g. Tree-Cycles between -2 and 25?
+
+
+
+Current State (PRE USING EARLIER DT MODELS):
+USE TRAIN SPLIT!
+BA-Shapes: very robust, works well
+BA-Community: Qualitative explanations suck
+Tree-Cycles: Does not make sense anymore. AllMotif now also either very high or very low?
+Tree-Grid: Okayish, not perfect
+
+BA-2Motif: Works very well with 1s as features
+MUTAG: Lowkey sucks, runs all increase but are incredibly high in variance
+
+
+
+Explainer loss should probably use argmax for original prediction, as discrete case?
+-> No, Last loss equation in paper uses conditional probability of each class, so no argmax?!
+
+
+
+Currently re running all quant experiments with configs from sweeps and train/val/test split. Inference time included for test data.
+
+---------------------------------------------------------------------------------------
+DONE IRRELEVANT:
+
+
+Re run dt on data splits to get accuracies? -> Wrote down recent ones
+
+Cannot reproduce Tree-Cycles runs stored in wandb, maybe redo. Train split plus all nodes also generates either good or bad runs?
+
+
+Current „Problems“:
+BA-Shapes: Weird Loss
+BA-Community, Tree-Grid: Look stable
+Tree-Cycles: VERY high Variance in sampledEdgeSum and AUC       DID NOT USE PYTORCH CONFIGS
+BA-2Motif: Scuffed Loss, high AUC variance, AUC decreasing!     DID NOT USE PYTORCH CONFIGS
+MUTAG: Loss a bit jumpy                                         DID NOT USE PYTORCH CONFIGS
+
+
+
+
+MUTAG seems to be doing good now? Try a few runs
+
+BUT: AUC decreases over epochs(sometimes). Constant around 70-75%. Validate auc metric in general! GT seems to constantly be the highest weighted edges
+
+
+
+TreeGrid seems to work
+TreeCycles seems to work relatively good, between 60 and 80%?
+
+
+TRIED REMOVING COMBINE_EDGE_WEIGHTS
+
+BA-2Motif:
+Almost all weights tend to turn negative over time, between -0.5 and -0.08. At start all weights positive
+
+Prediction of graph with edge_weights edge_ij is ALWAYS 0!
+
+Using GCNConv instead of GraphConv gets at least some 1 class predictions. AUC at 27%
+
+
+
+Normalize added to graph downstream task:
+AUC decreases to 0 really fast. Learns the wrong way, but very accurate!!!!
+
+Layer norm in Node Task(Tree-Cycles) leads to better performance in explainer, but also learns to predict minimal weights!
+BatchNorm with bad validation values leads to auc of 0.5?! Second run 0.7 but decreases ti 0.5 during later epochs.
+USE 2 DIFFERENT BN LAYERS! -> Leads to AUC of 0.05, but increases slightly. LEARNS LOWEST
+
+Tree-Grid learns with same 2 bn layers architecture highest edge weights?! Nearly perfect
+Was lucky/random? Second run only around 0.58
+Validation quite well though, seems to work well overall
+
+
+
+
+BA-2Motif:
+Added weight norm intro forward of explainer. ROC increases to around 90%! Does not steadily increase though and goes up and down.
+Cheating?
+Houses are detected perfectly, but only gives 5 instead of 6 ndoes. Circle does not work too well, 2 nodes are detected outside?
+Seems like that was coincidence ☹️
+
+Weight norm Leads to horrible performance on Tree-Cycles
+Init weights for explainer seems to be a bad idea!
+
+Tree-Cycle model without weight norm and init went from AUC of 1 to AUC of 0.5
+
+
+
+
+BA-Shapes only has auc problems when additional motif node in graph
+BA-Community around 60%, same problem as BA-Shapes(AUC increases if using edge weights instead of topK to 80%. AUC does not improve over epochs). Relatively high probabilies?
+Tree-Cycles: Stable around 60%, seems to be missing connectivity constraint! Predicts 4/6 edges correctly, but prefers other tri connected node edges over „base“ motif node edges. CONNECTIVITY CONSTRAINT NOT USED IN OG!?
+
+BA-2Motif: Same as MUTAG, just inverted. All weights are around 0. AUC decreases a lot
+MUTAG: Ground truth still messed up + all edge probabilites 1
+
+
+Swapped pOriginal and pSample in Loss.
+
+BA-Shapes works well
+BA-Community is inefficient!
+Tree-Cycles does not work, stuck around 50
+Tree-Grid does not work, stuck around 50
+ Works well if only trained on „middle“ nodes of  Motif (Apparently not anymore)
+BA-2Motif decreases AUC during training?!
+ From 60% down to 40%
+-> PROBLEM WITH NEGATIVE WEIGHTS -> Highest probabilites are 0?!
+(Maybe graph impl. problem)
+MUTAG is bad, because of bugged ground truth!!
