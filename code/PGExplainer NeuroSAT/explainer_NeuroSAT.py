@@ -284,7 +284,7 @@ class MLP_SAT(nn.Module):
         
         # TODO: ADD hard constraint for network to learn to include all edges of each clause
         batch_clauses = torch.tensor(problem.batch_edges[:, 1])
-        clauses = torch.unique(batch_clauses)
+        clauses, inverse_indices = torch.unique(batch_clauses, dim=0, return_inverse=True)
         
         for clause_id in clauses:
             # apply i-th edge mask to the current_batch_edges to get connections for clause i
@@ -296,7 +296,7 @@ class MLP_SAT(nn.Module):
                 clause_mean_weight = torch.mean(clause_edge_probs)
                 w_ij[mask] = clause_mean_weight
         
-        return w_ij
+        return w_ij, clauses, inverse_indices
 
 
     # current_batch_edges contains batch_edges for the current sub_problem/graph
@@ -436,7 +436,7 @@ class MLP_SAT(nn.Module):
         return embCat
     
 
-    def sampleGraph(self, w_ij, temperature=1):
+    def sampleGraph(self, w_ij, clauses, inverse_indices, temperature=1):
         """Implementation of the reparametrization trick to sample edges from the edge weights. 
         If evaluating we only apply Sigmoid to get predictions from weights while eliminating randomness.
 
@@ -449,8 +449,9 @@ class MLP_SAT(nn.Module):
         """
         if self.training:
             # TODO: Try sampling randomness for all clause edges collectively instead of per each edge?
-            unique_vals, inverse_indices = torch.unique(w_ij, return_inverse=True)
-            rand_vals = torch.rand(len(unique_vals), device=w_ij.device) + 1e-8
+            # FIXME: unique W-ij does not guarantee randomness per edge pair, as multiple edge pairs might have same logit
+            #unique_vals, inverse_indices = torch.unique(w_ij, return_inverse=True)
+            rand_vals = torch.rand(len(clauses), device=w_ij.device) + 1e-8
             epsilon = rand_vals[inverse_indices].reshape(w_ij.shape)
             
             epsilon = torch.rand(w_ij.size()).to(device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
