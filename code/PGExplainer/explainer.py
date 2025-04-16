@@ -27,6 +27,8 @@ class MLP(nn.Module):
                 nn.init.xavier_uniform_(layer.weight)  # Xavier for weights
                 if layer.bias is not None:
                     nn.init.zeros_(layer.bias)  # Zero for bias
+                    
+        print(f"MLP weights initialized:{self.model[0].weight.mean()}, {self.model[0].weight.std()}")
 
             
     def forward(self, modelGraphGNN, x, edge_index, nodeToPred=None):
@@ -100,7 +102,7 @@ class MLP(nn.Module):
         return w_ij, unique_pairs, inverse_indices
 
 
-    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0):
+    def loss(self, pOriginal, pSample, edge_ij, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConnect=0.0, paperLoss = True):
         """Loss of explanation model for singular (sampled) instance(graph)
 
         Args:
@@ -130,14 +132,20 @@ class MLP(nn.Module):
 
             l2norm = coefficientL2Reg * l2norm
 
-        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
-        #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
-        #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?
+        if paperLoss: 
+            Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm              # use sum to get values for all class labels
+            #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
+            #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?
         
-        """if self.graphTask:
-            origninal_preds = torch.argmax(pOriginal, dim=1)
-            rows_pSample = torch.arange(pSample.size(0))
-            Loss = -torch.sum(torch.log(pSample[rows_pSample, origninal_preds] + 1e-8))+ entropyReg + sizeReg + l2norm"""
+        else:
+            if self.graphTask:
+                origninal_preds = torch.argmax(pOriginal, dim=1)
+                rows_pSample = torch.arange(pSample.size(0))
+                Loss = -torch.sum(torch.log(pSample[rows_pSample, origninal_preds] + 1e-8))+ entropyReg + sizeReg + l2norm
+            else:
+                original_pred = torch.argmax(pOriginal)
+                Loss = -torch.sum(torch.log(pSample[original_pred] + 1e-8))+ entropyReg + sizeReg + l2norm
+        
         return Loss
     
     
@@ -173,7 +181,7 @@ class MLP(nn.Module):
         return embCat
     
 
-    def sampleGraph(self, w_ij, unique_pairs, inverse_indices, temperature=1):
+    def sampleGraph(self, w_ij, unique_pairs, inverse_indices, temperature=1, sample_bias=0.0):
         """Implementation of the reparametrization trick to sample edges from the edge weights. 
         If evaluating we only apply Sigmoid to get predictions from weights while eliminating randomness.
 
@@ -185,8 +193,13 @@ class MLP(nn.Module):
             float tensor: Probability of edge i,j to be in the explanation, Sigmoid applied
         """
         if self.training:
-            rand_vals = torch.rand(len(unique_pairs), device=w_ij.device) + 1e-8
+            if sample_bias > 0:
+                rand_vals = torch.empty(len(unique_pairs), device=w_ij.device).uniform_(sample_bias, 1-sample_bias)
+            else:
+                rand_vals = torch.rand(len(unique_pairs), device=w_ij.device) + 1e-8
             epsilon = rand_vals[inverse_indices].reshape(w_ij.shape)
+            
+            #print(f"Randomness during sampling: {epsilon.mean(), epsilon.std()}")
 
             #epsilon = torch.rand(w_ij.size(), device=device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
 

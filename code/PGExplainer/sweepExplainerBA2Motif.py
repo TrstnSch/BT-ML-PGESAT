@@ -17,7 +17,7 @@ datasetType = ['BA-2Motif','MUTAG', 'BA-Shapes', 'BA-Community', 'Tree-Cycles', 
 
 
 def trainExplainer () :
-    dataset="Tree-Grid"
+    dataset="BA-2Motif"
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
@@ -28,7 +28,7 @@ def trainExplainer () :
 
     # Config for sweep
     # This works, BUT cannot pass arguments. Dataset therefore has to be hardcoded or passed otherwise?!
-    wandb.init(project="Explainer-Tree-Grid-Sweep-Fin", config=wandb.config)
+    wandb.init(project="Explainer-BA-2Motif-Sweep-Fin", config=wandb.config)
     seed.seed_everything(wandb.config.seed)
     
     params = configOG['params']
@@ -42,6 +42,8 @@ def trainExplainer () :
     coefficient_L2_reg = params['coefficient_L2_reg']
     num_explanation_edges = params['num_explanation_edges']
     lr_mlp = wandb.config.lr_mlp
+    sample_bias = wandb.config.sample_bias
+    batch_size = wandb.config.batch_size
 
 
     MUTAG = True if dataset == "MUTAG" else False
@@ -67,7 +69,7 @@ def trainExplainer () :
             data = selected_data
         
         train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
-        train_loader = DataLoader(train_dataset, params['batch_size'], True)
+        train_loader = DataLoader(train_dataset, batch_size, True)
     else:
         if dataset == "BA-Community":
             single_label = data.y
@@ -124,7 +126,7 @@ def trainExplainer () :
             loss = torch.FloatTensor([0]).to(device)
             
             for k in range(0, sampled_graphs):
-                edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices, temperature)
+                edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices, temperature, sample_bias)
             
                 # TODO: Check if current_data.batch works with nodes! Add batch support for nodes? Batch has to contain map for edge_index?
                 pOriginal = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, current_data.batch), dim=1)

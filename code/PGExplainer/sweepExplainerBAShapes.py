@@ -28,15 +28,15 @@ def trainExplainer () :
 
     # Config for sweep
     # This works, BUT cannot pass arguments. Dataset therefore has to be hardcoded or passed otherwise?!
-    wandb.init(project="Explainer-MUTAG-Sweep", config=wandb.config)
+    wandb.init(project="Explainer-BA-Shapes-Sweep-Fin", config=wandb.config)
     seed.seed_everything(wandb.config.seed)
     
     params = configOG['params']
     graph_task = params['graph_task']
-    epochs = params['epochs']
+    epochs = wandb.config.epochs
     t0 = params['t0']
     tT = wandb.config.tT
-    sampled_graphs = params['sampled_graphs']
+    sampled_graphs = wandb.config.sampled_graphs
     coefficient_size_reg = wandb.config.size_reg
     coefficient_entropy_reg = wandb.config.entropy_reg
     coefficient_L2_reg = params['coefficient_L2_reg']
@@ -48,6 +48,9 @@ def trainExplainer () :
     hidden_dim = 64 # Make loading possible
     clip_grad_norm = 2 # Make loading possible
     min_clip_value = -2
+    
+    generator_seed = 43
+    generator1 = torch.Generator().manual_seed(generator_seed)
     
     data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
     
@@ -62,25 +65,18 @@ def trainExplainer () :
                     selected_data.append(data[i])
         
             data = selected_data
-
-        graph_dataset_seed = 43
-        generator1 = torch.Generator().manual_seed(graph_dataset_seed)
-        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
         
+        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
         train_loader = DataLoader(train_dataset, params['batch_size'], True)
-        #val_loader = DataLoader(val_dataset, params['batch_size'], False)
-        #test_loader = DataLoader(test_dataset, params['batch_size'])
     else:
         if dataset == "BA-Community":
             single_label = data.y
-            motifNodesOriginal = [i for i in range(single_label.shape[0]) if single_label[i] != 0 and single_label[i] != 4]
-            
-            allNodes = [i for i in range(len(data.x))]
-            
-            motifNodes = motifNodesOriginal
+            motifNodes = [i for i in range(single_label.shape[0]) if single_label[i] != 0 and single_label[i] != 4]
         else:
             motif_node_indices = params['motif_node_indices']
             motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
+        
+        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [0.8, 0.1, 0.1], generator1)
 
 
     # TODO: Instead of loading static one, pass model as argument?
@@ -97,7 +93,7 @@ def trainExplainer () :
     for param in downstreamTask.parameters():
         param.requires_grad = False
 
-    training_iterator = train_loader if graph_task else motifNodes
+    training_iterator = train_loader if graph_task else train_nodes
     
     for epoch in range(0, epochs) :
         mlp.train()
@@ -122,13 +118,13 @@ def trainExplainer () :
             current_edge_index = current_edge_index.to(device)
 
             # MLP forward
-            w_ij = mlp.forward(downstreamTask, current_data.x.to(device), current_edge_index, nodeToPred=node_to_predict)
+            w_ij, unique_pairs, inverse_indices = mlp.forward(downstreamTask, current_data.x.to(device), current_edge_index, nodeToPred=node_to_predict)
 
             sampleLoss = torch.FloatTensor([0]).to(device)
             loss = torch.FloatTensor([0]).to(device)
             
             for k in range(0, sampled_graphs):
-                edge_ij = mlp.sampleGraph(w_ij, temperature)
+                edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices, temperature)
             
                 # TODO: Check if current_data.batch works with nodes! Add batch support for nodes? Batch has to contain map for edge_index?
                 pOriginal = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, current_data.batch), dim=1)
@@ -136,13 +132,15 @@ def trainExplainer () :
                 
                 if graph_task:
                     # For graph
-                    for graph_index in range(current_data.num_graphs):
+                    """for graph_index in range(current_data.num_graphs):
                         node_mask = current_data.batch == graph_index
                         edge_mask = (node_mask[current_edge_index[0]] & node_mask[current_edge_index[1]])
 
                         # TODO: VALIDATE pOriginal and pSample pass both label predictions, not just correct one
                         currLoss = mlp.loss(pOriginal[graph_index], pSample[graph_index], edge_ij[edge_mask], coefficient_size_reg, coefficient_entropy_reg)
-                        sampleLoss += currLoss
+                        sampleLoss += currLoss"""
+                    currLoss = mlp.loss(pOriginal, pSample, edge_ij, coefficient_size_reg, coefficient_entropy_reg)
+                    sampleLoss += currLoss
                 else:
                     # For node
                     currLoss = mlp.loss(pOriginal[node_to_predict], pSample[node_to_predict], edge_ij, coefficient_size_reg, coefficient_entropy_reg, coefficient_L2_reg)
@@ -166,17 +164,29 @@ def trainExplainer () :
 
         mlp.eval()
         
+        print("---------------- TRAIN AUC ----------------")
         if graph_task:
-            meanAuc = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
+            trainAUC, individual_aurocs_train, trainInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, train_dataset, num_explanation_edges)
         else:
-            meanAuc = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges)
-            #print(f"Mean auc epoch {epoch+1}: {meanAuc}")
-    
-        wandb.log({"train/Loss": loss, "val/mean_AUC": meanAuc, "val/temperature": temperature})
-
-        """for name, param in mlp.named_parameters():
-            if param.requires_grad:
-                print(f"{name}: {param.grad}")"""
+            trainAUC, individual_aurocs_train, trainInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, train_nodes, num_explanation_edges)
+        
+        #Evaluation on validation set
+        print("---------------- VAL AUC ----------------")
+        if graph_task:
+            valAUC, individual_aurocs_val, valInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
+        else:
+            valAUC, individual_aurocs_val, valInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, val_nodes, num_explanation_edges)
+            
+        wandb.log({"train/Loss": loss, "train/AUC": trainAUC, "train/mean_ind_AUC": torch.tensor(individual_aurocs_train).mean(), "val/AUC": valAUC, "val/mean_ind_AUC": torch.tensor(individual_aurocs_val).mean()})
+        
+    print("---------------- TEST AUC ----------------")
+    # Evaluation on test set
+    if graph_task:
+        testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, test_dataset, num_explanation_edges)
+    else:
+        testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
+        
+    wandb.log({"test/AUC": testAUC, "test/mean_ind_AUC": torch.tensor(individual_aurocs_test).mean(), "test/mean_infTime": testInfTime})
 
     wandb.finish()
     

@@ -3,14 +3,13 @@ import torch.nn as nn
 import utils
 import random
 import datasetLoader
-from torcheval.metrics.aggregation.auc import AUC
-from torchmetrics.functional import roc
 from torch_geometric.loader import DataLoader
 from torcheval.metrics import BinaryAUROC
 from sklearn.metrics import roc_auc_score
 from torch_geometric.utils import k_hop_subgraph
 import numpy as np
 import time
+from torcheval.metrics.functional import binary_auroc
 
 
 def evaluateGraphGNN(gnn, data_loader):
@@ -68,14 +67,16 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, num_explanation_edges=5):
     
     reals = []
     preds = []
+    
+    individual_aurocs = []
 
     infTimes = []
     
     for batch_index, data in enumerate(AUCLoader):
         startTime = time.time()
-        w_ij = mlp.forward(modelGraphGNN, data.x, data.edge_index)
+        w_ij, unique_pairs, inverse_indices = mlp.forward(modelGraphGNN, data.x, data.edge_index)
 
-        edge_ij = mlp.sampleGraph(w_ij, 1).detach()
+        edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices).detach()
         infTime = time.time() - startTime
         infTimes.append(infTime)
         
@@ -91,22 +92,32 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, num_explanation_edges=5):
         """if len(torch.unique(topEdgesMask)) == 1 or len(torch.unique(groundTruthMask)) == 1:
             print("AUC not computable")
         else:"""
-        metric2.update(edge_ij, groundTruthMask.float())
+        metric2.update(edge_ij, (~groundTruthMask).float())
         
         reals.append(groundTruthMask.flatten().numpy())
         preds.append(edge_ij.cpu().flatten().numpy())
+        
+        # TODO: SKIP GROUND TRUTHS THAT ARE ALL 0 OR ALL 1?
+        if len(torch.unique(groundTruthMask)) == 1:
+            print("AUC not computable")
+        else:
+            # Sets AUROC to 0.5 when the target contains all ones or all zeros.
+            ind_auroc = binary_auroc(edge_ij, groundTruthMask.float())
+        
+            individual_aurocs.append(ind_auroc.item())
             
     # Convert the lists to numpy arrays and calculate the roc_auc_score
     reals = np.concatenate(reals)  # Flatten the list of arrays
     preds = np.concatenate(preds)  # Flatten the list of arrays
-    roc_auc = roc_auc_score(reals, preds)
+    global_roc_auc = roc_auc_score(reals, preds)
     
-    print(f"BinaryAUROC: {metric2.compute().item()}")
-    print(f"roc_auc_score: {roc_auc}")
+    print(f"BinaryAUROC WITH FLIPPED GT MASK!: {metric2.compute().item()}")
+    print(f"roc_auc_score: {global_roc_auc}")
+    print(f"Mean individual BinaryAUROC: {torch.tensor(individual_aurocs).mean()}")
     
     meanInferenceTime = np.mean(np.array(infTimes))
     
-    return roc_auc, meanInferenceTime
+    return global_roc_auc, individual_aurocs, meanInferenceTime
     
     
 def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanation_edges=6):
@@ -117,6 +128,8 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanatio
     reals = []
     preds = []
     
+    individual_aurocs = []
+    
     infTimes = []
     
     for currentNode in evalNodes:
@@ -124,8 +137,8 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanatio
         subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=currentNode, num_hops=3, edge_index=data.edge_index, relabel_nodes=False)
 
         startTime = time.time()
-        w_ij = mlp.forward(modelNodeGNN, data.x, edge_index_hop, currentNode)
-        edge_ij = mlp.sampleGraph(w_ij, 1).detach()
+        w_ij, unique_pairs, inverse_indices = mlp.forward(modelNodeGNN, data.x, edge_index_hop, currentNode)
+        edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices, 1).detach()
         
         infTime = time.time() - startTime
         infTimes.append(infTime)
@@ -151,19 +164,28 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanatio
         reals.append(subgraph_ground_truth.flatten().numpy())
         preds.append(edge_ij.cpu().flatten().numpy())
         
+        if len(torch.unique(subgraph_ground_truth)) == 1:
+            print("AUC not computable")
+        else:
+            # Sets AUROC to 0.5 when the target contains all ones or all zeros.
+            ind_auroc = binary_auroc(edge_ij, subgraph_ground_truth.float())
+            
+            individual_aurocs.append(ind_auroc.item())
+        
     binaryAUROC = metric2.compute().item()
     
     # Convert the lists to numpy arrays and calculate the roc_auc_score
     reals = np.concatenate(reals)  # Flatten the list of arrays
     preds = np.concatenate(preds)  # Flatten the list of arrays
-    roc_auc = roc_auc_score(reals, preds)
+    global_roc_auc = roc_auc_score(reals, preds)
     
     print(f"BinaryAUROC: {binaryAUROC}")
-    print(f"roc_auc_score: {roc_auc}")
+    print(f"roc_auc_score: {global_roc_auc}")
+    print(f"Mean individual BinaryAUROC: {torch.tensor(individual_aurocs).mean()}")
     
     meanInferenceTime = np.mean(np.array(infTimes))
     
-    return roc_auc, meanInferenceTime
+    return global_roc_auc, individual_aurocs, meanInferenceTime
 
 
 
@@ -194,7 +216,7 @@ def evaluate (datasetName, mlp, downstreamTask):
         
             data = selected_data
         
-        meanAuc, infTime = evaluateExplainerAUC(mlp, downstreamTask, data, num_explanation_edges=num_explanation_edges)
+        meanAuc, individual_aurocs, infTime = evaluateExplainerAUC(mlp, downstreamTask, data, num_explanation_edges=num_explanation_edges)
         
         # For showExplanation, pass random graph from data
         data = data[random.choice(range(0,len(data)))]
@@ -210,10 +232,10 @@ def evaluate (datasetName, mlp, downstreamTask):
             motif_node_indices = params['motif_node_indices']
             motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
         
-        meanAuc, infTime = evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges=num_explanation_edges)
+        meanAuc, individual_aurocs, infTime = evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges=num_explanation_edges)
         
         randomAucNode = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graph_task)
-        auc, infTime_ = evaluateNodeExplainerAUC(mlp, downstreamTask, data, [randomAucNode], num_explanation_edges=num_explanation_edges)
+        auc, individual_aurocs, infTime_ = evaluateNodeExplainerAUC(mlp, downstreamTask, data, [randomAucNode], num_explanation_edges=num_explanation_edges)
         print(f"AUC for random Node: {auc}")
         
-    return meanAuc, infTime
+    return meanAuc, individual_aurocs, infTime
