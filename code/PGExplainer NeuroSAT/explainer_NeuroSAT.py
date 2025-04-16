@@ -22,9 +22,9 @@ class MLP(nn.Module):
         )
         
         """nn.Linear(256, hidden_dim),
-        nn.ReLU(),
-        nn.Linear(hidden_dim, 20),
-        nn.ReLU(),"""
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 20),
+            nn.ReLU(),"""
             
         
         self.init_weights()
@@ -227,25 +227,31 @@ class MLP(nn.Module):
     
 
 class MLP_SAT(nn.Module):
+    """This model predicts clauses in the form of edges belonging to each clause. Therefore, edge logits are meaned for all edges that belong to the same clause.
+    Also, during the sampling the randomness is added per clause instead of per edge.
+
+    Args:
+        nn (_type_): _description_
+    """
     def __init__(self, GraphTask=True, hidden_dim=64, emb_dim=128):
         super(MLP_SAT, self).__init__()
         
         self.graphTask = GraphTask
         
-        #self.inputSize = 2 * 20 if GraphTask else 3 * 60
-        # emb*dim * 2 for both nodes per edge, * 3 since we take embeddings from 3 iterations
-        self.inputSize = 2 * emb_dim# * 3
+        # emb*dim * 2 for both nodes per edge; * 3 since we take embeddings from 3 iterations
+        self.inputSize = 2 * emb_dim * 3
 
         self.model = nn.Sequential(
-            nn.Linear(self.inputSize, hidden_dim),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
+            nn.Linear(self.inputSize, 256),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
             nn.ReLU(),
-            nn.Linear(hidden_dim, 1)                        # Linear Fully connected (20, 1)
-        )
-        
-        """nn.ReLU(),
             nn.Linear(256, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, 20),"""
+            nn.Linear(hidden_dim, 20),
+            nn.ReLU(),
+            nn.Linear(20, 1)                        # Linear Fully connected (20, 1)
+        )
+        
+        """"""
             
         self.init_weights()
 
@@ -334,25 +340,26 @@ class MLP_SAT(nn.Module):
         # My idea
         consistencyLoss = 0.0
         
-        current_batch_clauses = torch.tensor(current_batch_edges[:, 1])
-        clauses = torch.unique(current_batch_clauses)
-        
-        for clause_id in clauses:
-            # apply i-th edge mask to the current_batch_edges to get connections for clause i
-            mask = current_batch_clauses == clause_id
-            #clause_edges = current_batch_edges[mask]
-            clause_edge_probs = edge_ij[mask]
+        if coefficientConsistency > 0.0:
+            current_batch_clauses = torch.tensor(current_batch_edges[:, 1])
+            clauses = torch.unique(current_batch_clauses)
             
-            if len(clause_edge_probs) > 1:
-                clauses_var = torch.var(clause_edge_probs)
-                consistencyLoss += clauses_var
+            for clause_id in clauses:
+                # apply i-th edge mask to the current_batch_edges to get connections for clause i
+                mask = current_batch_clauses == clause_id
+                #clause_edges = current_batch_edges[mask]
+                clause_edge_probs = edge_ij[mask]
                 
-                mean_prob = clause_edge_probs.mean()
-                deviation = ((clause_edge_probs - mean_prob) ** 2).mean()  # MSE within group
-                # Confidence to reinforce learning close to 0 or 1?
-                confidence = ((mean_prob - 0) * (mean_prob - 1)) ** 2
-                
-                consistencyLoss += deviation + confidence
+                if len(clause_edge_probs) > 1:
+                    clauses_var = torch.var(clause_edge_probs)
+                    consistencyLoss += clauses_var
+                    
+                    mean_prob = clause_edge_probs.mean()
+                    deviation = ((clause_edge_probs - mean_prob) ** 2).mean()  # MSE within group
+                    # Confidence to reinforce learning close to 0 or 1?
+                    confidence = ((mean_prob - 0) * (mean_prob - 1)) ** 2
+                    
+                    consistencyLoss += deviation + confidence
             
         if bce is True:
             Loss = torch.nn.functional.binary_cross_entropy(pSample, pOriginal) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency
@@ -396,19 +403,16 @@ class MLP_SAT(nn.Module):
         l_emb = all_l_emb[-1]           # Shape: (n_literals, emb_dim=128)
         c_emb = all_c_emb[-1]           # Shape: (n_clauses, emb_dim=128)
         
-        l_embs_cat = all_l_emb[-1]           # Shape: (n_literals, emb_dim=128)
-        c_embs_cat = all_c_emb[-1]           # Shape: (n_clauses, emb_dim=128)
-        
         iterations = downstreamTask.opts['iterations']
         
-        #l_emb_interm1 = all_l_emb[math.floor(iterations * 0.5)]           # Shape: (n_literals, emb_dim=128)
-        #c_emb_interm1 = all_c_emb[math.floor(iterations * 0.5)]           # Shape: (n_clauses, emb_dim=128)
+        l_emb_interm1 = all_l_emb[math.floor(iterations * 0.5)]           # Shape: (n_literals, emb_dim=128)
+        c_emb_interm1 = all_c_emb[math.floor(iterations * 0.5)]           # Shape: (n_clauses, emb_dim=128)
         
-        #l_emb_interm2 = all_l_emb[math.floor(iterations * 0.75)]           # Shape: (n_literals, emb_dim=128)
-        #c_emb_interm2 = all_c_emb[math.floor(iterations * 0.75)]           # Shape: (n_clauses, emb_dim=128)
+        l_emb_interm2 = all_l_emb[math.floor(iterations * 0.75)]           # Shape: (n_literals, emb_dim=128)
+        c_emb_interm2 = all_c_emb[math.floor(iterations * 0.75)]           # Shape: (n_clauses, emb_dim=128)
         
-        #l_embs_cat = torch.cat([l_emb, l_emb_interm1, l_emb_interm2], dim=1)
-        #c_embs_cat = torch.cat([c_emb, c_emb_interm1, c_emb_interm2], dim=1)
+        l_embs_cat = torch.cat([l_emb, l_emb_interm1, l_emb_interm2], dim=1)
+        c_embs_cat = torch.cat([c_emb, c_emb_interm1, c_emb_interm2], dim=1)
         
         # This does not grant larger edge weights
         """l_emb = F.normalize(all_l_emb[-1], p=2, dim=1)  # L2 normalization
@@ -430,7 +434,9 @@ class MLP_SAT(nn.Module):
             """embCat = torch.cat([emb[i], emb[j], emb[nodeToPred].repeat(len(i), 1)], dim=1)"""
         else:
             """embCat = torch.cat([emb[i], emb[j]], dim=1)"""
+            # For using only last emb
             #embCat = torch.cat([l_emb[i], c_emb[j]], dim=1)
+            # For also using intermediate embs
             embCat = torch.cat([l_embs_cat[i], c_embs_cat[j]], dim=1)
             
         return embCat
@@ -454,7 +460,7 @@ class MLP_SAT(nn.Module):
             rand_vals = torch.rand(len(clauses), device=w_ij.device) + 1e-8
             epsilon = rand_vals[inverse_indices].reshape(w_ij.shape)
             
-            epsilon = torch.rand(w_ij.size()).to(device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
+            #epsilon = torch.rand(w_ij.size()).to(device) + 1e-8                   # shape: ~50 X 1 = EdgesOG X epsilon
 
             edge_ij = nn.Sigmoid()((torch.log(epsilon)-torch.log(1-epsilon)+w_ij)/temperature)    # shape: ~50 X 1 = EdgesOG X SampledEdgesProbability
         else:

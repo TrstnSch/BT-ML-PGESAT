@@ -24,6 +24,7 @@ def storeGTforData (eval_problem, batch_size, output_directory):
         musx = MUSX(cnf, verbosity=0)
         # mus contains list of relative clause numbers for the current problem e.g. [4, 7, ..., 53], starting at 1
         mus = musx.compute()
+        
         eval_batch_mask = utils.get_batch_mask(torch.tensor(eval_problem.batch_edges), batch_idx=current_batch_num, batch_size=batch_size, n_variables=eval_problem.n_variables)
         masked_batch_edges = torch.tensor(eval_problem.batch_edges[eval_batch_mask])
         
