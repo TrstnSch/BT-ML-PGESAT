@@ -219,9 +219,77 @@ Predict clauses instead of edges, adapt framework to carry clause weights on con
 
 ------------------------------
 
+Evaluation with MUS instead of random UNSAT core
+
+NeuroSAT added hard constraint
+1. logits are meaned for edges of same clause
+2. same logic used to draw randomness per clause instead per edge -> makes sense?
+
+AUROC calculated for each sub_problem and meaned
+
+- first small sweeps, no reliable results to increase performance -> Currently sitting slightly above 0.5
+=> Draw conclusion that GNN does not rely on MUSs from this?
+
+OVERFIT NEUROSAT! (HOW? MODEL DOES NOT LEARN WITH GT!)
+
+Direct comparison of 3 embedding input and 1 embedding input on same setup for one seed: (NeuroSAT-HARD-CONSTRAINT-HARD-SAMPLING: winter-river-16(3embs) and devout-energy-15)
+
+3 embedding input loss is smoother and steadily decreasing; AUROC not above 0.55, decreasing for both models for current config t oaround 0.52.
+-> Both no good result
+
+Same for network with 3emb and larger architecture? (grateful-microwave-18)
+-> AUROC starts lower but quickly reaches and stays around .53?
+
+=> For all runs: Highest auc qualitative analysis only contains one or two of the clauses that are part of the MUS
+
+
+
+
 Downstream task training: Use first model that achieves 1.0 val accuracy or last model that also decreases the val loss?
 
 For original:
 Undirected graphs have two edge embeddings since treated as directed graph with edges in both directions.
 Idea: Similar to NeuroSAT: Mean explainer logits for each edge pair? How to treat randomness?
-Add one random value to each edge pair instead of to each edge?
+Add one random value to each edge pair instead of to each edge? -> Seems to add slight improvement/stability
+
+
+AUROC Evaluation:
+- original skips tasks where gt only ones or zeros. Torch binaryAUROC return 0.5 for these cases. Skip or calc with 0.5?
+
+
+Tree-Cycles
+-> Many hyperparam configs that lead to AUROC of 0 or 1, "only" depending on seed -> GOOD OR BAD?
+What does seed affect? Xavier init and randomness in sampling!?
+=> Variance over seeds can only be affected by initalisation of layers??
+
+Observed effect on "best" parameters from sweep (Seed-effects: 25-27 and 31-33): 
+- Good initalization leads to almost perfect instant auroc, stays there. sum_sampled_edges decreases
+- Bad init leads to very slow start (Increase in AUROC only after 10 epochs) that converges to 0.5 instead of 1. sum_sampled_edges increases
+=> Model muss sich fangen, da in lokalem maximum?? und kann dann allerdings nicht mehr lernen die kanten wieder zu minimieren, daher maximum 0.5???
+
+
+
+
+Optional sampling with sample_bias and different loss: Name in Theory part of PGExplainer e.g. add additional formula for loss, or later in reimplementation or in attachments?
+
+
+For litearture/PGExplainer theory: Active speech? -> "This is used in PGExplainer to allow for efficiently optimizing the objective function with gradient-based methods"
+
+Verteidigung wann?
+
+generative probabilistic model for graph data relevant in context of Gilbert random graph; Enough to mention random graph is a kind of generative probabilistic model for graph data or further explain?
+
+How to evaluate wandb sweep?
+
+To reparam trick:
+$\omega_{ij} \in \mathbb{R}$ is the parameter/explainer logit for the corresponding edge (edge_ij == importance score?)
+
+
+What does this mean?
+Since $P(e_{ij} = 1) = \theta_{ij}$, choosing $\omega_{ij} = \log\frac{\theta_{ij}}{1-\theta_{ij}}$ leads to $\lim_{\tau\rightarrow 0}\hat{G}_s = G_s$
+
+
+"K is the number of total sampled graphs" -> Does this mean all graphs in the training set and therefore the loss is defined for the complete training set?
+Or is the loss/learning objective defined for each graph individually? -> Algorithm contains "k sampled graphs per each graph G(i)"
+
+learning objective should be over all samples or per sample?

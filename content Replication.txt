@@ -1,38 +1,78 @@
 TODO:
 
-COMBINE_EDGE_WEIGHTS (Where?)
-topK does not perfectly identify topK edges, because of bidirectional edges!!! If same value edge weights at threshold different edges might be selected instead of always two belonging ones.
-To fix: Maybe extract one direction of edges from edge_index and edge weights accordingly before evaluating/processing? Mean belonging edges!
+DIFFERENT MOTIF NODE SELECTION LOGIC LEADS TO CALCULATION DIFFERENCE: If only motif in k-hop-graph -> GT only 1s -> If viewed individually, no auc possbile/0.5, but if calced globally -> Inflationary?
+-> Probably best to do as in original and skip explanations with gt only 0/1
 
-
-Tree-Cycles with all cycle nodes
+Tree-Cycles with all cycle nodes -> SEEMS TO BE BETTER NOW!? CAREFUL WITH INFLATIONARY GTS! IF K-HOP GRAPH ONLY GT NODES -> AUC SHOULD NOT BE COMPUTED?!
 
 Try Tree-Grid on "middle" nodes of Motif
 Play around with motif nodes for Tree-Grid? Get better results with only on node per motif that covers complete motif?
 
-BA-2Motif: weight norm into forward of explainer?
 
-EVALUATE EFFECT OF ONES/0.1s AS FEATURES FURTHER
-
+------- OPT -------
 Try LayerNorm/different normalization
 
 
 How to batch node data? Possible?
 K_hop_subgraph can be calculate batch wise, but prediction of downstream task has to be calced node wise?!
 
-
 Performance improvement: Instead of k graphs for loop scale edge_ij, predictions?
+------- OPT -------
+
+
+SWEEP ALL AGAIN!!
+- BA-Shapes DONE
+
+- Tree-Cycles -> AUROC EITHER ALMOST 1 OR ALMOST 0 + HIGHLY DEPENDANT ON SEED (SEED INFLUENCES RANDOMNESS OF SAMPLING!)
+lr_mlp:0.003 and tT = 5 with t0 = 1 and entropy reg 10.0 leads to 0.5 AUROC (MIX OF HIGH ENTROPY AND LR?)
+-> Many hyperparam configs that lead to AUROC of 0 or 1, "only" depending on seed -> GOOD OR BAD?
+lr 0.0003 too low? AUROC decreases from 1 to 0 with speed depending on seed??? LEARNS OPPOSITE PREDICTIONS?!!??!!? WHY???
+"WRONG" TEMPERATURE USED!?
+
+-> SEEMS TO DEPEND ON TEMPERATURE!!!! FOR t0 = 1 seed 76 reaches 1, 74 and 75 reach 0.5. For t=0 all reach 0.5
+
+USE SAMPLE_BIAS ON Tree-Cycles to remove seed randomness! -> Leads to "same" values/curves, just later (I guess the "true" randomness enhances earlier finding of a good starting point?)
+=> Variance over seeds can only be affected by initalization of layers??
+
+Observed effect on "best" parameters from sweep (Seed-effects: 25-27 and 31-33): 
+- Good initalization leads to almost perfect instant auroc, stays there. sum_sampled_edges decreases
+- Bad init leads to very slow start (Increase in AUROC only after 10 epochs) that converges to 0.5 instead of 1. sum_sampled_edges increases
+=> Model muss sich fangen, da in lokalem minimum und kann dann allerdings nicht mehr lernen die kanten wieder zu minimieren, daher maximum 0.5???
+
+- Tree-Grid (all motif nodes) DONE
+
+- BA-Community (all motif nodes) DONBE - USES sample_bias of 0.5 in original code (not mentioned in paper?)
+
+- BA-2Motif DONE (Works "well" but predicts opposite labels for reason unknown) -> No model achieved positive AUROC, hyperparams before seemed to be almost perfect if inspecting flipped auroc
+
+- MUTAG DONE
 
 
 
-Sweep BA-2Motif
-SWEEP ALL AGAIN?!
+EVAL EFFECTS OF SEED! -> Not due to DT embs (Fixed across seeds, as wanted), also not due to randomness in sampling, since still existent with sample_bias
+
+paper loss seemed to be better for Tree-Cycles than code loss
+
+
+REPLICATION + !Compute mean and stddev with torch and log to wandb!
++
+EXPERIMENTS FOR STANDARDIZATION/IMPROVEMENT
+- Tree-Cycles all nodes
+- Tree-Grid only select nodes ! (to "Fit" logic of og BA-Shapes and Tree-Cycles)
+- BA-2Motif reverse classifier?
+- BA-2Motif reversed features
+
+
+EVALUATE EFFECT OF ONES/0.1s AS FEATURES FURTHER
 
 QUALITATIVE EVALUATION FOR BEST AUC MODELS!
-TRY current effect of loss regularization terms?
+TRY current effect of loss regularization terms? -> Done by sweeps? Maybe evaluate for qual. to track probability ranges?
 
 ---------------------------------------------------------------------------------------
 DONE RELEVANT:
+
+
+COMBINE_EDGE_WEIGHTS (Where?) -> ADDED to forward pass and to randomness in sampling. Seems to increase auc for BA-Shapes!! Lead to decrease in BA-2Motif (ALMOST PERFECT OPPOSITE PREDICTIONS!?)
 
 -------CURRENT!-------
 DOWNSTREAM TASK LAST TRAINED (10.04.):
@@ -161,6 +201,10 @@ Explainer loss should probably use argmax for original prediction, as discrete c
 
 Currently re running all quant experiments with configs from sweeps and train/val/test split. Inference time included for test data.
 
+
+??
+BA-2Motif: weight norm into forward of explainer?
+??
 ---------------------------------------------------------------------------------------
 DONE IRRELEVANT:
 

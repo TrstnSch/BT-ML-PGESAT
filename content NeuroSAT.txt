@@ -139,6 +139,17 @@ Loss seems to be identical when calced at once instead of for each singular prob
 
 Probably smart to store gt in data batch first -> Done
 
+
+
+Direct comparison of 3 embedding input and 1 embedding input on same setup for one seed: (NeuroSAT-HARD-CONSTRAINT-HARD-SAMPLING: winter-river-16(3embs) and devout-energy-15)
+
+3 embedding input loss is smoother and steadily decreasing; AUROC not above 0.55, decreasing for both models for current config t oaround 0.52.
+-> Both no good result
+
+Same for network with 3emb and larger architecture? (grateful-microwave-18)
+-> AUROC starts lower but quickly reaches and stays around .53?
+
+=> For all runs: Highest auc qualitative analysis only contains one or two of the clauses that are part of the MUS
 ---------------------------------------------------------------------------------------
 DONE IRRELEVANT:
 
