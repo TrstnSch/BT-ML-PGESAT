@@ -107,6 +107,10 @@ We additionally define bipartite graphs according to Asratian et al.\cite{asrati
 \end{figure}
 
 \subsection{Random Graphs}
+\label{sec:random-graphs}
+TODO: generative probabilistic model for graph data
+Gilbert random graph is example of generative model for graph data
+
 %Gilbert\cite{} describes the process of generating a random graph of order $N$ by assigning a common probability to exist in the graph to each potential edge between two nodes. Note that these random selections are made independently of each other, effectively drawing from a Bernoulli distribution. \\
 Gilbert\cite{gilbert1959random} describes the process of generating a random graph of order $N$ by assigning a common probability to each potential edge between two nodes for existing in the graph. Note that these random selections are made independently of each other and effectively drawn from a Bernoulli distribution. \\
 %by performing independent experiments for each potential edge between two nodes of the graph. Since these experiments share a common probability, the process can be described as drawing from a Bernoulli distribution. \\
@@ -125,7 +129,7 @@ TODO: This is probably unnecessary for PGE.
 \begin{equation}
     E(G) = \{e | \omega(e) = 1_e\}
 \end{equation}
-E(G) = Edges of G. G is called a random graph on V with egde probability p. \bigskip
+E(G) = Edges of G. G is called a random graph on V with edge probability $p$. \bigskip
 
 % TODO: Gilberts idea also assigns the same probability across all edges, so probably best to explain the general idea as presented in Diestel. Then explain the difference in PGE? PGEs appraoch mainly inspired by probabilistic graphical model/bayesian networks. Gilbert model mainly baseline for probabilistic graphs. PGExplainer mainly inspired by Gilbert, but "required" concept is PGM.
 
@@ -148,12 +152,13 @@ The log is to the base $e$ and entropy is measured in nats in our case. TODO: DE
 %\begin{equation}
 %    H(X,Y)=-\sum_{x \in \mathcal{X}} \sum_{y \in \mathcal{Y}} p(x,y) \log p(x,y).
 %\end{equation}
-The conditional entropy of $Y$ given $X$ is defined as the expected value of the entropies of the conditional distributions, averaged over the conditioning random variable. If $(X,Y) \sim p(x,y)$ for a pair of discrete random variables $(X,Y)$ with joint distribution $p(x,y)$, the conditional entropy is defined as \\
+The conditional entropy of $Y$ given $X$ is defined as the expected value of the entropies of the conditional distributions, averaged over the conditioning random variable. If $(X,Y) \sim p(x,y)$ for a pair of discrete random variables $(X,Y)$ with joint distribution $p(x,y)$, the conditional entropy is defined as
 \begin{align}
     H(Y|X)&= -\sum_{x \in \mathcal{X}} p(x) H(Y|X=x) \\
     &= - \sum_{x \in \mathcal{X}} \sum_{y \in \mathcal{Y}}p(x,y) \log p(y|x) \\
-    &= -E \log p(Y|X) \text{ with E = Expectation}.
+    &= -\mathbb{E} \log p(Y|X),
 \end{align}
+with $\mathbb{E} =$ Expectation.
 
 \subsection{Relative Entropy and Cross-Entropy}
 %Elements of Information Theory: equation 2.26 describes KL distance/relative entropy \bigskip
@@ -195,7 +200,7 @@ We derive for the discrete case with mass probability functions $p, q$ defined o
 
 \subsection{Mutual Information}
 %(see Cover et al.\cite{Cover2005}[p.19])
-Another closely related concept is mutual information. It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other.
+Another closely related concept is mutual information. It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other. TODO: HIGH MI means Information of one variable can be won by the other
 Let $X$ and $Y$ be two random variables with the joint probability mass function $p(x,y)$ and marginal probability mass functions $p(x)$ and $p(y)$. Mutual information $I(X;Y)$ is the relative entropy between the joint distribution and the product distribution $p(x)p(y)$: 
 \begin{align}
     I(X;Y)&=\sum_{x \in \mathcal{X}}\sum_{y \in \mathcal{Y}} p(x,y)\log \frac{p(x,y)}{p(x)p(y)} \\
@@ -242,9 +247,10 @@ Explain? Used in architecture of downstream task, only slightly relevant \\
 GCN, GraphSAGE?
 
 \section{Perturbation-based Explainability in GNNs}
+\label{sec:perturbation-based_explainability}
 Methods in DL have seen growth in performance in many tasks of artificial intelligence, including GNNs. However, the interpretability of these models is often limited due to their black-box design. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields. There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into gradients/feature-based, perturbation-based, decomposition methods and surrogate methods. Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations. \\
 In this work we focus on the perturbation-based approach, more specifically the PGExplainer\cite{luo2020parameterized}, that aims to evaluate the change of prediction with respect to input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. \\
-It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. \\
+It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. TODO: Expand on reparameterization trick?\\
 Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al.\cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. \bigskip
 
 TODO: \\
