@@ -212,9 +212,9 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
     randomAUCNode = 1
 
     if graphTask:
-        w_ij = mlp.forward(downstreamTask, data.x, data.edge_index)
+        w_ij, unique_pairs, inverse_indices = mlp.forward(downstreamTask, data.x, data.edge_index)
 
-        edge_ij = mlp.sampleGraph(w_ij)
+        edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices)
 
         _, top_k_indices = torch.topk(edge_ij, k=num_explanation_edges*2, largest=True)
 
@@ -260,14 +260,14 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
         print("-----------------Original Computational Graph-----------------")
         pos = plotGraphAll(G_hop)
 
-        w_ij = mlp.forward(downstreamTask, data.x[subset], edge_index_hop, indexNodeToPred)
+        w_ij, unique_pairs, inverse_indices = mlp.forward(downstreamTask, data.x[subset], edge_index_hop, indexNodeToPred)
 
         # Min-Max Normalization. This works pretty well
         weights_min = w_ij.min()
         weights_max = w_ij.max()
         weights_norm = (w_ij - weights_min) / (weights_max - weights_min)
 
-        edge_ij = mlp.sampleGraph(w_ij)
+        edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices)
 
         ## REMOVE IF SIGMOID WANTED
         edge_ij = weights_norm
