@@ -29,6 +29,8 @@
 \usetikzlibrary{decorations.pathreplacing}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{intersections, positioning}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{fit, backgrounds}
 % \usepackage{pgfplots}
 
 % Bibliography

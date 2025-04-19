@@ -1,4 +1,4 @@
-\chapter{Background}
+\chapter{Theoretical Background}
 \label{ch:Background}
 In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT).
 
@@ -71,6 +71,9 @@ be the sum to estimate with $p$ being a probability distribution over a random v
 TODO: edge weights, k-hop/computational graph? \bigskip
 
 These definitions will loosely follow Liu et al.\cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. An edge $e=(u,v)$ connects nodes $u$ and $v$, making them neighbours. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v$ is the number of edges connected to $v$ and denoted by $d(v)$. $G$ can be described by an adjacency matrix $A \in \mathbb{R}^{n \times n}$, where
+
+Nodes in V are associated with the d-dimensional
+features, denoted by X RN d
 \begin{equation*}
     A_{ij}=\begin{cases}
         1 & \text{if } \{v_i,v_j\}\in E \text{ and } i \neq j, \\
@@ -214,7 +217,7 @@ Graph Neural Networks(GNNs)\cite{4700287} are a DL-based approach that operates 
 Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements a classifier on complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
 The supervised GNN model by Scarselli et a.\cite{4700287} tries to preserve the important,  structural information of graphs by encoding their topological relationships among nodes.
 
-A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^S$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al.\cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the features of each node and $x_e$ the optional features of each edge. $co[v]$ and $ne[v]$ denote the set of edges and neighbors of node $v$ respectively. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
+A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^S$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al.\cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the $d$-dimensional features of each node and $x_e$ the optional features of each edge. $co[v]$ and $ne[v]$ denote the set of edges and neighbors of node $v$ respectively. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
 \begin{equation}
     \mathbf{h}_v = f(\mathbf{x}_v, \mathbf{x}_{co[v]}, \mathbf{h}_{ne[v]}, \mathbf{x}_{ne[v]}),
     \label{eq:gnn_state_local}
@@ -239,19 +242,41 @@ To learn the parameters of this GNN, with target information $t_v$ for a specifi
 \begin{equation}
     loss = \sum_{i=1}^p (t_i-\mathbf{o},)
 \end{equation}
-where $p$ are the supervised nodes. A gradient-descent strategy is utilized in the learning algorithm, which consist of the following three steps: the states $h_v^t$ are updated iteratively using equation \eqref{eq:gnn_state_local} until time step $T$. We then obtain an approximate fixed point solution of equation \eqref{eq:gnn_state_global}: $\mathbf{H}(T)\approx\mathbf{H}$. For the next step the gradients of the weights $W$ are calculated from the loss. Finally, the weights $W$ are updated according to the computed gradient. This allows us to train a model for specific supervised or semi-supervised tasks and get hidden states of nodes in a graph. \bigskip
+where $p$ are the supervised nodes. A gradient-descent strategy is utilized in the learning algorithm, which consist of the following three steps: the states $h_v^t$ are updated iteratively using equation \eqref{eq:gnn_state_local} until time step $T$. We then obtain an approximate fixed point solution of equation \eqref{eq:gnn_state_global}: $\mathbf{H}(T)\approx\mathbf{H}$. For the next step the gradients of the weights $W$ are calculated from the loss. Finally, the weights $W$ are updated according to the computed gradient. This allows us to train a model for specific supervised or semi-supervised tasks, referred to as downstream task, and get hidden states of nodes in a graph. \bigskip
 
 TODO: include figure of graph with neighborhood?
-\subsection{Convolutional Graph Neural Networks}
-Explain? Used in architecture of downstream task, only slightly relevant \\
-GCN, GraphSAGE?
+\subsection{TODO Convolutional Graph Neural Networks}
+Explain? Used in architecture of target model\\
+Explain concrete layers used in original/replication and our version: \\
+
+\textbf{Graph Convolutional Network} \\
+Kipf et al.\cite{kipf2016semi}
+multi-layer Graph Convolutional Network (GCN) with the following layer-wise propagation rule:
+\begin{equation}
+    Z = \hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}X\Theta
+\end{equation}
+or
+\begin{equation}
+    H^{l+1} = \sigma(\hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}H^{(l)}W^{(l)})
+\end{equation}
+$\hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}$ is a normalization of the adjacency matrix
+
+\textbf{Weisfeiler and Leman Go Neural} \\
+Morris et al.\cite{morris2019weisfeiler}
+A basic GNN model can be implemented as follows (Hamilton, Ying, and Leskovec 2017b)
+\begin{equation}
+    x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j
+\end{equation}
 
 \section{Perturbation-based Explainability in GNNs}
 \label{sec:perturbation-based_explainability}
 Methods in DL have seen growth in performance in many tasks of artificial intelligence, including GNNs. However, the interpretability of these models is often limited due to their black-box design. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields. There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into gradients/feature-based, perturbation-based, decomposition methods and surrogate methods. Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations. \\
 In this work we focus on the perturbation-based approach, more specifically the PGExplainer\cite{luo2020parameterized}, that aims to evaluate the change of prediction with respect to input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. \\
-It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. TODO: Expand on reparameterization trick?\\
+It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. %TODO: Expand on reparameterization trick?
+
 Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al.\cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. \bigskip
+
+To fully trust the explanations provided by an explainer model, they must satisfy certain criteria, since there often is a mismatch between the optimizable metrics like accuracy and the actual metric of interest, which may not be measurable (see Ribeiro et al.\cite{ribeiro2016should}). First and foremost, an explanation should be \textbf{interpretable} and therefore provide qualitative, human-understandable interpretations, that also consider the possibility of limited user knowledge. Additionally, \textbf{local fidelity} asserts that explanations should be faithful in a local context and consider the models' behavior in the vicinity of predicted instances. Explainers that treat the model to be explained as a black-box are \textbf{model-agnostic} and should therefore be able to explain any model. Lastly, a \textbf{global perspective} is needed to explain a model fully, allowing us to take sample explanations of individual predictions that serve as representation of the model.
 
 TODO: \\
 Variation in perturbation approaches lie in: mask gen. alg., type of mask, objective function.

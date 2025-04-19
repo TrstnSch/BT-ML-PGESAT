@@ -1,0 +1,19 @@
+\chapter{Related Work}
+
+\textbf{PGExplainer} \\
+Original work by Luo et al.\cite{luo2020parameterized}; Original PGExplainer? SHORT SUMMARY. We seek to provide a reimplementation using PyG framework and reproduce the results, while also applying the framework to another domain, namely SAT problem in the form of bipartite graphs.\bigskip
+
+\textbf{GNNExplainer} \\
+Baseline for PGExplainer by Yuan et al.\cite{ying2019gnnexplainer}; DIFFERENCE TO PGEXPLAINER
+
+\textbf{RE-PGExplainer} \\
+Replication study of PGExplainer using pytorch by Holdijk et al.\cite{holdijk2021re};
+Unable to achieve results of original implementation. Improvement on some datasets, considerable deterioration on BA-2Motif. Criticize approach of original and lacklustre documentation as well as differences between codebase and paper.
+We try own reimplementation that follows the original paper, as well as code and reimplementation for uncertainties + use a slightly different architecture in underlying GNN + Hyperparameter search of combination of parameters used in original and repication. Treated as additional baseline\bigskip
+
+\textbf{Taxonomy paper?}
+Taxonomy paper evaluates PGExplainer on Fidelty and achieves low scores, sides with reproducibility paper above: "is not performing as promising as its original
+reported results". Propose only using PGExplainer for Node classification task.\bigskip
+
+\textbf{NeuroSAT} \\
+NeuroSAT as target model for SAT experiments with PGExplainer. PyG reimplementation code provided by Rodhi. We create required data with provided methods, add unsat cores and MUSs as gt and adapt the NeuroSAT model to allow passing edge weights into the adjacency matrix. PGExplainer adapted for SAT data, NeuroSAT embeddings and evaluation.

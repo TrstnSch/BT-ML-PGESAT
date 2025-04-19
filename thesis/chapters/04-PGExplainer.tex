@@ -1,0 +1,457 @@
+\chapter{PGExplainer - Main part}
+\label{ch:PGExplainer}
+TODO: This can be understood as an extension of the theoretical background?
+
+V1: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models for any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. This approach seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}.
+
+V2: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models that have proven to learn the concise underlying structures of GNNs most relevant to their predictions. This approach may be applied to any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. PGExplainer seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}. This means that all edges in the dataset are predicted by the same model, which leads to a global understanding of the DT.
+
+V3: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of edge distributions or soft masks using a probabilistic generative model for graph data, known for being able to learn the concise underlying structures from the observed graph data. The explainer uncovers said underlying structures, believed to have the biggest impact on the prediction of a GNNs, as explanations. This approach may be applied to any trained GNN model, henceforth referred to as the target model (TM). 
+By utilizing a deep neural network to parameterize the generation process, the explainer learns to collectively explain multiple instances of a model. Since the parameters of the neural network are shared across the population of explained instance, PGExplainer provides "model-level explanations for each instance with a global view of the GNN model". Furthermore, this approach cannot only be used in a transductive setting, but also in an inductive setting, where explanations for unexplained nodes can be generated without retraining the explanation model. This improves the generalizability compared to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}.
+
+The focus in this approach lies in explaining the graph structure, rather than the graph features, as feature explanations are already common in non-graph neural networks. \\
+
+Transductive/Inductive explanation? \\
+
+We then describe our reimplementation in detail (Section 3.2), including the changes made and difficulties during the process. \\
+
+In Section 3.3 we present the idea of applying PGExplainer on the NeuroSAT framework to generate explanations for the machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores and backbone variables. 
+%Usable in transductive and inductive settings, the latter being the reason for better generalizability, as the explainer model does not have to be retrained to infer explanations of unexplained nodes.
+\section{Theory}
+We follow the structure of the original paper\cite{} and start by describing the learning objective (Section 3.1.1), the reparameterization trick (Section 3.1.2), the global explanations (Section 3.1.3) and regularization terms (Section 3.1.4).
+
+\subsection{Learning Objective}
+To explain the predictions made by a GNN model for an original input graph $G_o$ with $m$ edges we first define the graph as a combination of two subgraphs: $G_o = G_s + \Delta G$, where $G_s$ represents the subgraph holding the most relevant information for the prediction of a GNN, referred to as explanatory graph. $\Delta G$ contains the remaining edges that are deemed irrelevant for the prediction of the GNN. Inspired by GNNexplainer\cite{ying2019gnnexplainer}, the PGExplainer then finds $G_s$ by maximizing the mutual information between the predictions of the target model and the underlying $G_s$:
+\begin{equation}
+    \max_{G_s} I(Y_o;G_s) = H(Y_o) - H(Y_o|G=G_s),
+\end{equation} 
+where $Y_o$ is the prediction of the target model with $G_o$ as input. This quantifies the probability of prediction $Y_o$ when the input graph is restricted to the explanatory graph $G_s$, as in the case of $I(Y_o;G_s) = 1$, knowing the explanatory graph $G_s$ gives us complete information about $Y_o$, and vice versa. Intuitively, if removing an edge $(i,j)$ changes the prediction of a GNN drastically, this edge is considered important and should therefore be included in $G_s$. This idea originates from traditional forward propagation based methods for whitebox explanations (see Dabkowski et al.\cite{dabkowski2017real}).
+It is important to note that $H(Y_o)$ is only related to the target model with fixed parameters during the evaluation/explanation stage. This leads to the objective being equivalent to minimizing the conditional entropy $H(Y_o|G=G_s)$.
+
+To optimize this function a relaxation is applied for the edges, since normally there would be $2^m$ candidates for $G_s$. The explanatory graph is henceforth assumed to be a Gilbert random graph, where the selections of edges from $G_o$ are conditionally independent to each other. However, the authors describe a random graph with each edge having its own probability, rather than a shared probability as described in \ref{sec:random-graphs}, as follows: Let $e_{ij}\in V \times V$ be the binary variable indicating whether the edge is selected, with $e_{ij} = 1$ if edge $(i,j)$ is selected to be in the graph, and 0 otherwise. For the random graph variable $G$ the probability of a graph $G$ can be factorized as 
+\begin{equation}
+    P(G) = \prod_{(i,j)\in E}P(e_{ij}).
+\end{equation}
+TODO: Inhomogeneous Erdos Renyi model? Mention that this is a generative model?
+ $P(e_{ij})$ is instantiated with the Bernoulli distribution $e_{ij} \sim Bern(\theta_{ij})$, where $P(e_{ij} = 1) = \theta_{ij}$ is the probability that edge $(i,j)$ exists in $G$.
+After this relaxation the learning objective becomes:
+\begin{equation}
+    \label{eq:init_learning_obj}
+    \min_{G_s}H(Y_o|G = G_s) = \min_{G_s} \mathbb{E}_{G_s}[H(Y_o|G = G_s)] \approx \min_{\Theta} \mathbb{E}_{G_s \sim q(\Theta)}[H(Y_o|G = G_s)],
+\end{equation}
+where $q(\Theta)$ is the distribution of the explanatory graph that is parameterized by $\Theta$'s.
+
+\subsection{Reparameterization Trick}
+As described in section \ref{sec:perturbation-based_explainability}, a reparameterization trick can be utilized to relax discrete edge weights to continuous variables in the range $(0,1)$. PGExplainer uses the reparameterizable Gumbel-Softmax estimator\cite{jang2016categorical} to allow for efficiently optimizing the objective function with gradient-based methods. This method introduces the Gumbel-Softmax distribution, a continuous distribution used to approximate samples from a categorical distribution. A temperature $\tau$ is used to control the approximation, usually starting from a high value and annealing to a small, non-zero value. Samples with $\tau > 0$ are not identical to samples from the corresponding continuous distribution, but are differentiable and therefore allow back-propagation. The sampling process $G_s \sim q(\Theta)$ of PGExplainer is therefore approximated with a determinant function that takes as input the parameters $\Omega$, a temperature $\tau$ and an independent random variable $\epsilon$: $G_s \approx \hat{G}=f_\Omega(G_o,\tau,\epsilon)$. The binary concrete distribution\cite{maddison2016concrete}, also referred to as Gumbel-Softmax distribution, is utilized as an instantiation for the sampling, yielding the weight $\hat{e}_{ij} \in (0,1)$ for edge $(i,j)$ in $\hat{G}_s$, computed by:
+\begin{equation}
+    \label{eq:reparam_trick}
+    \epsilon \sim \text{Uniform}(0,1), \qquad \hat{e}_{ij}=\sigma((\log \epsilon - \log(1-\epsilon)+\omega_{ij}/\tau),
+\end{equation}
+where $\sigma(\cdot)$ is the Sigmoid function and $\omega_{ij} \in \mathbb{R}$ is an explainer logit for the corresponding edge used as a parameter. When $\tau \rightarrow 0$, e.g. during the explanation stage, the weight $\hat{e}_{ij}$ is binarized with the sigmoid function $\lim_{\tau\rightarrow 0}P(\hat{e}_{ij} = 1) = \frac{\exp (\omega{ij})}{1+\exp (\omega{ij})}$. Since $P(e_{ij} = 1) = \theta_{ij}$, choosing $\omega_{ij} = \log\frac{\theta_{ij}}{1-\theta_{ij}}$ leads to $\lim_{\tau\rightarrow 0}\hat{G}_s = G_s$ and justifies the approximation of the Bernoulli distribution with the binary concrete distribution. During training, when $\tau > 0$, the objective function in \eqref{eq:init_learning_obj} is smoothed with a well-defined gradient $\frac{\partial\hat{e}_{ij}}{\partial\omega_{ij}}$ and becomes:
+\begin{equation}
+    \min_\Omega \mathbb{E}_{\epsilon \sim \text{Uniform}(0,1)}H(Y_o| G = \hat{G}_s)
+\end{equation}
+
+The authors follow the approach of GNNExplainer\cite{ying2019gnnexplainer} and modify the objective by replacing the conditional entropy with cross entropy between the label class and the prediction of the target model. This is justified by the greater importance of understanding the model's prediction of a certain class, rather than providing an explanation based solely on its confidence.
+
+With the modification to cross-entropy $H(Y_o, \hat{Y}_s)$, where $\hat{Y}_s$ is the prediction of the target model when $\hat{G}_s$ is given as input, as well as the adaption of Monte Carlo sampling, the learning objective becomes:
+TODO: ONE LABEL FOR BOTH EQUATIONS!?
+\begin{align}
+    \label{eq:monte_carlo}
+    &\min_\Omega\mathbb{E}_{\epsilon\sim\text{Uniform}(0,1)}H(Y_o, \hat{Y}_s) \approx \min_\Omega -\frac{1}{K}\sum_{k=1}^K\sum_{c=1}^C P(Y_o = c) \log P(\hat{Y}_s = c) \\
+    = &\min_\Omega -\frac{1}{K}\sum_{k=1}^K\sum_{c=1}^C P_\Phi (Y_o = c|G = G_o) \log P_\Phi(\hat{Y}_s = c|G=\hat{G}_s^{(k)}).
+\end{align}
+$\Phi$ denotes the parameters in the target model, $K$ is the number of total sampled graphs, $C$ is the number of class labels, and $\hat{G}_s^{(k)}$ denotes the $k$-th graph sampled with equation \ref{eq:reparam_trick}, parameterized by $\Omega$. %Note that this objective is defined per explainable instance.
+
+
+
+%The approach in PGExplainer is a common approach in ML for simplifying objectives? FIND LITERATURE THAT EXPLAINS APPROXIMATION OF COND. ENTROPY WITH CROSS ENTROPY. Explanation as simple as one formula for one graph variable example, cross entropy applied to whole distribution? \bigskip
+
+
+\subsection{Global Explanations}
+The novelty of PGExplainer lies in the ability to generate explanations for graph data with a global perspective, that allow for understanding the general picture of a model across a population. This saves resources when analyzing large graph datasets, as new instances can be explained without retraining the model, and can also be helpful for establishing the users' trust in these explanations. To achieve this the authors propose the use of a parameterized network that learns to generate explanations from the target model, which also apply to not yet explained instances. PGExplainer hence explains predictions of the target model over multiple instances collectively (TODO: Cut this sentence?).
+
+Since GNNs apply two functions $F$ and $G$ to calculate the global state embeddings and downstream task outputs respectively, we denote these two functions as $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$ for any GNN in the context of PGExplainer. For models without explicit classification layers the last layer is used to compute the output instead. It follows
+\begin{equation}
+    \mathbf{Z} = \text{GNNE}_{\Phi_0}(G_o, \mathbf{X}), \qquad Y = \text{GNNC}_{\Phi_1}(\mathbf{Z}),
+\end{equation}
+where $\mathbf{Z}$ denotes the matrix of final node representations $z$, referred to as node embeddings, and the initial state is $G_o$. TODO: (Because of focus on graph structure rather than features?) For generalizability across different GNN layers the output is only dependent on the node representation, that encapsulates both features and structure of the input graph. This representation also serves as the input for the explainer network $g$, defined as:
+TODO: Rename g?
+\begin{equation}
+    \label{eq:explainer_network}
+    \Omega = g_\Psi(G_o,\mathbf{Z}).
+\end{equation}
+$\Psi$ denotes the parameters in the explanation network and the output $\Omega$ is treated as parameter in equation \ref{eq:monte_carlo}. Since $\Psi$ is shared by all edges among the population, PGExplainer collectively provides explanations for multiple instances. Thus, the learning objective in a collective setting with $\mathcal{I}$ being the set of instances becomes:
+\begin{equation}
+    \min_\Psi -\frac{1}{K}\sum_{i\in \mathcal{I}}\sum_{k=1}^K\sum_{c=1}^C P_\Phi (Y_o = c|G = G_o^{(i)}) \log P_\Phi(\hat{Y}_s = c|G=\hat{G}_s^{(i,k)}).
+\end{equation}
+Consequently, $G^{(i)}$ and $G_s^{(i,k)}$ denote the input graph and the $k$-th graph sampled with equation \ref{eq:reparam_trick} in \ref{eq:explainer_network} respectively for instance $i$. The authors propose two slightly different instantiations for node classification and graph classification tasks. \bigskip
+
+\textbf{Explanation network for node classification}
+%Since explanations for different nodes may not share a common explanation pattern, especially for nodes with different labels, ... DOES THIS NOT ALSO APPLY FOR GRAPHS?!
+TODO: Motivate the difference between these two tasks? Not done by authors \bigskip
+
+Let an edge $(i,j)$ be considered relevant for the prediction of a node $u$, but irrelevant for the prediction of a node $v$. To explain the prediction of node $v$ we specify the network in \ref{eq:explainer_network} as:
+\begin{equation}
+    \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j\oplus\mathbf{z}_v]).
+\end{equation}
+$\text{MLP}_\Psi$ is an MLP (TODO see \ref{} for implementation details) parameterized with $\Psi$ and $\oplus$ denotes the concatenation operation. Thus, a concatenation of the node embeddings of nodes $i, j$ and $v$ respectively is fed through the network. The output $\omega_{ij}$ is therefore an edge logit, which serves as a parameter in the sampling process.
+
+Note that in their codebase the authors use a concatenation of all hidden representations instead of final node embeddings for node level tasks.
+For a target GNN consisting of multiple graph layers with
+\begin{align*}
+    \mathbf{H}_1 &= F_1(G_o, \mathbf{X}), \\
+    \mathbf{H}_2 &= F_2(\mathbf{H}_1, \mathbf{X}), \\
+    &\vdots \\
+    \mathbf{H}_L &= F_L(\mathbf{H}_{L-1}, \mathbf{X}), \\
+\end{align*}
+this leads to $Z$ being the matrix of node embeddings $z$ that are computed as:
+\begin{equation}
+    z_i = h_{1,i} \oplus h_{2,i} \oplus ... \oplus h_{L,i}
+\end{equation}
+
+\textbf{Explanation network for graph classification}
+For graph level tasks the authors consider each graph to be an instance, regardless of specific nodes. The specification for the network thus becomes:
+\begin{equation}
+    \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j]),
+\end{equation}
+where for each edge in $G_o$ a concatenation of both its nodes is fed through the MLP.\bigskip
+
+TODO: Include computational complexity of PGE in comparison to GNN?
+
+This leads to an improved computational complexity when compared to their baseline GNNExplainer, since for one the number of parameters in the explainer does no longer depend on the size of the input graph and since the explainer does not have to be retrained for every unexplained instance.
+
+TODO: Include algorithms?
+
+\tikzstyle{process} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30, font=\small]
+\tikzstyle{module} = [rectangle, rounded corners, minimum width=3cm, minimum height=1.2cm, text centered, draw=black, fill=gray!30, font=\small]
+\tikzstyle{data} = [rectangle, sharp corners, minimum width=1.5cm, minimum height=1cm, text centered, draw=black, fill=cyan!30, font=\small]
+\tikzstyle{emb} = [rectangle, sharp corners, minimum width=1.5cm, minimum height=1cm, text centered, draw=black, fill=yellow!30, font=\small]
+\tikzstyle{arrow} = [very thick,->,>=Stealth]    %very thick
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[node distance=0.9cm and 1.2cm]
+
+\tikzset{
+  mymini/.pic={
+    \node[circle, draw, fill=black, inner sep=2pt] (x) at (0,0) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (y) at (0.5,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (a) at (0,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (b) at (0,-0.5 ) {};
+    \draw[-] (x) -- (y);
+    \draw[-] (a) -- (y);
+    \draw[-] (b) -- (x);
+    \draw[-] (a) -- (x);
+  }
+}
+
+\tikzset{
+  mymini3/.pic={
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$z_i$] (x) at (0,0) {};
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=above:$z_j$] (y) at (0.5,0.5) {};
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$z_k$] (a) at (0,0.5) {};
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$z_l$] (b) at (0,-0.5) {};
+    \draw[-] (x) -- (y);
+    \draw[-] (a) -- (y);
+    \draw[-] (b) -- (x);
+    \draw[-] (a) -- (x);
+  }
+}
+
+\tikzset{
+  mymini2/.pic={
+    \node[circle, draw, fill=black, inner sep=2pt] (x) at (0,0) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (y) at (0.5,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (a) at (0,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (b) at (0,-0.5 ) {};
+    \draw[-] (x) -- node[midway, right, font=\scriptsize] {$0.9$} (y);
+    \draw[-] (a) -- node[midway, above, font=\scriptsize] {$0.8$}(y);
+    \draw[-] (b) -- node[midway, left, font=\scriptsize] {$0.1$}(x);
+    \draw[-] (a) -- node[midway, left, font=\scriptsize] {$0.9$}(x);
+  }
+}
+
+\tikzset{
+  mymini4/.pic={
+    \node[circle, draw, fill=black, inner sep=2pt] (x) at (0,0) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (y) at (0.5,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (a) at (0,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (b) at (0,-0.5 ) {};
+    \draw[-] (x) -- node[midway, right, font=\scriptsize] {$z_{ij}$} (y);
+    \draw[-] (a) -- node[midway, above, font=\scriptsize] {$z_{jk}$}(y);
+    \draw[-] (b) -- node[midway, left, font=\scriptsize] {$z_{il}$}(x);
+    \draw[-] (a) -- node[midway, left, font=\scriptsize] {$z_{ik}$}(x);
+  }
+}
+
+\tikzset{
+  mymini5/.pic={
+    \node[circle, draw, fill=black, inner sep=2pt] (x) at (0,0) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (y) at (0.5,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (a) at (0,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt] (b) at (0,-0.5 ) {};
+    \draw[-] (x) -- (y);
+    \draw[-] (a) -- (y);
+    \draw[-] (a) -- (x);
+  }
+}
+
+
+% Nodes
+\node (input) [data] {\small Input Graph $G_o$};
+\pic at ([xshift=7cm]input.center) {mymini};
+\node (target) [module, below=of input] {Target GNN};
+\node (embeddings) [emb, below=of target] {Node Embeddings $\mathbf{Z}$ of $G_o$};
+\node[anchor=center] at ([xshift=4cm]embeddings.center) 
+ (node_embs) 
+ {$\begin{bmatrix} z_i \\ z_j \\ \vdots \end{bmatrix}$};
+\node[right=0.01cm of node_embs, anchor=west] 
+ {\scriptsize $[|V(G_o)|]$};
+\pic at ([xshift=7cm]embeddings.center) {mymini3};
+\node (embedding_transformation) [process, below=of embeddings] {Edge Embedding Transformation};
+\node (edge_embeddings) [emb, below=of embedding_transformation] {Edge Embeddings of $G_o$};
+\node[anchor=center] at ([xshift=4cm]edge_embeddings.center) 
+ (edge_embs) 
+ {$\begin{bmatrix} z_{ij} \\ z_{jk} \\ \vdots \end{bmatrix}$};
+\node[right=0.01cm of edge_embs, anchor=west] 
+ {\scriptsize $[|E(G_o)|]$};
+\pic at ([xshift=7cm]edge_embeddings.center) {mymini4};
+\node (explainer) [module, below=of edge_embeddings] {PGExplainer MLP};
+\node (logits) [emb, below=of explainer] {Edge Logits/Latent variables $\Omega$};
+\node[anchor=center] at ([xshift=4cm]logits.center) 
+ (omega) 
+ {$\begin{bmatrix} \omega_{ij} \\ \omega_{jk} \\ \vdots \end{bmatrix}$};
+\node[right=0.01cm of omega, anchor=west] 
+ {\scriptsize $[|E(G_o)|]$};
+\node (trick) [process, below=of logits] {Reparameterization Trick};
+\node (weights) [emb, below=of trick] {Sampled edge importance weights};
+\node[anchor=center] at ([xshift=4cm]weights.center) 
+ (edge_score) 
+ {$\begin{bmatrix} \hat{e}_{ij} \\ \hat{e}_{jk} \\ \vdots \end{bmatrix}$};
+\node[right=0.01cm of edge_score, anchor=west] 
+ {\scriptsize $[|E(G_o)|]$};
+
+\node (sampled_graph) [data, below= of weights] {Sampled graph $\hat{G}_s$};
+\pic at ([xshift=7cm]sampled_graph.center) {mymini2};
+
+\node (sample_target) [module, below=of sampled_graph] {Target GNN};
+\node (original_target) [module, left=2cm of sample_target] {Target GNN};
+\node (sample_prediction) [data, below=of sample_target] {$\hat{Y}_s$};
+\pic at ([xshift=7cm]sample_prediction.center) {mymini5};
+\node (original_prediction) [data, below=of original_target] {$Y_o$};
+
+\node (topK) [process, right=of sample_target] {Sample top-$k$ edges};
+\node (explanation) [data, below=of topK] {$G_s$};
+
+%\node[draw=red, thick, dashed, fit=(input) (target) (embeddings), label=above:input Block] {};
+
+%\begin{pgfonlayer}{background}
+%    \node[draw=gray, thick, rounded corners, fit=(edge_embeddings) (weights), fill=blue!10, label=above:Sampling of PGExplainer] {};
+%\end{pgfonlayer}
+
+\begin{pgfonlayer}{background}
+    \node[draw=gray, thick, rounded corners, fit=(original_target) (sample_target) (original_prediction) (sample_prediction), fill=orange!30, label=above:Training] {};
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{background}
+    \node[draw=gray, thick, rounded corners, fit=(topK) (explanation), fill=green!30, label=above:Evaluation] {};
+\end{pgfonlayer}
+
+\coordinate (weight_sample_mid) at ($ (weights)!0.5!(sampled_graph) $);
+\coordinate (left_of_input) at ($ (input) + (-3.5cm, 0) $);
+\coordinate (right_of_input) at ($ (original_target |- input) $);
+\coordinate (drop) at (left_of_input |- weight_sample_mid);
+\coordinate (right_of_sampled_graph) at ($ (topK |- sampled_graph) $);
+
+% Arrows
+\draw [arrow] (input) -- (target);
+\draw [arrow] (target) -- (embeddings);
+\draw [arrow] (embeddings) -- (embedding_transformation);
+\draw [arrow] (embedding_transformation) -- (edge_embeddings);
+\draw [arrow] (edge_embeddings) -- (explainer);
+\draw [arrow] (explainer) -- (logits);
+\draw [arrow] (logits) -- (trick);
+\draw [arrow] (trick) -- (weights);
+
+%\draw [arrow] (input.west) --  ++(-2cm,0) -- ($ (input) + (-2cm,0) $ |- sampled_graph) -- (sampled graph.west);
+\draw [arrow] (weights) -- (sampled_graph);
+
+\draw[arrow] 
+  (input) -- (left_of_input) 
+       -- (drop) 
+       -- (weight_sample_mid);
+
+\draw[arrow] 
+  (left_of_input) -- (right_of_input) 
+       -- (original_target);
+
+\draw [arrow] (sampled_graph) -- (sample_target);
+\draw [arrow] (sample_target) -- (sample_prediction);
+
+\draw [arrow] (original_target) -- (original_prediction);
+
+\draw [arrow] (sampled_graph) -- (right_of_sampled_graph) -- (topK);
+
+\draw [arrow] (topK) -- (explanation);
+
+\draw [<->, dashed] (sample_prediction) -- node[midway, above, font=\scriptsize] {$\min_\Omega H(Y_o,\hat{Y}_s)$} (original_prediction);
+
+\end{tikzpicture}
+\caption{Test}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    
+    \node (node_emb_i1) [data] {$z_i$};
+    \node (node_emb_j1) [data, right=0.5cm of node_emb_i1] {$z_j$};
+    
+    \coordinate (i_j_mid) at ($ (node_emb_i1)!0.5!(node_emb_j1) $);
+    
+    \node (concat) at ($(i_j_mid) + (0,-1)$) {\Large $\oplus$};
+    
+    \node (edge_emb_ij) [data] at ($(i_j_mid) + (0,-2)$) {Edge Embedding of $(i,j)$};
+    
+    
+    \node (node_emb_i2) [data, right=3cm of node_emb_j1] {$z_i$};
+    \node (node_emb_j2) [data, right=0.5cm of node_emb_i2] {$z_j$};
+    \node (node_emb_v2) [data, right=0.5cm of node_emb_j2] {$z_v$};
+    
+    \coordinate (i_v_mid) at ($ (node_emb_i2)!0.5!(node_emb_v2) $);
+    
+    \node (concat2) at ($(i_v_mid) + (0,-1)$) {\Large $\oplus$};
+    
+    \node (edge_emb_ijv) [data] at ($(i_v_mid) + (0,-2)$) {Edge Embedding of $(i,j)$ with target node $v$};
+
+
+    \node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
+
+    \node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
+    \node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
+    \node (h_3) [data, right=0.5cm of h_2] {$h_{3,i}$};
+ 
+    \node (O) [module, above=1cm of h_2] {$O$};
+    \node (F_3) [module, above=0.2cm of O] {$F_3$};
+    \node (F_2) [module, above=0.2cm of F_3] {$F_2$};
+    \node (F_1) [module, above=0.2cm of F_2] {$F_1$};
+    \node (H_2) [data, right=0.5cm of F_2] {$H_2 = [h_{2,i}, h_{2,j},...]$};
+    \node (H_1) [data, right=0.5cm of F_1] {$H_1 = [h_{1,i}, h_{1,j},...]$};
+    \node (H_3) [data, right=0.5cm of F_3] {$H_3 = [h_{3,i}, h_{3,j},...]$};
+
+    \node (input) [data, above=1cm of F_1] {$G_o$};
+
+    \node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
+
+    \begin{pgfonlayer}{background}
+        \node[draw=gray, thick, rounded corners, fit=(F_1) (O) (H_1), fill=gray!30, inner sep=20pt, label=above:\text{Target GNN}] {};
+    \end{pgfonlayer}
+
+
+
+    \begin{pgfonlayer}{background}
+        \node[draw=purple, dashed, rounded corners, fit=(node_emb_i1) (node_emb_j1) (node_emb_i2)(node_emb_v2) (edge_emb_ijv), inner sep=20pt, label=above:\text{Edge Embedding Transformation}] {};
+    \end{pgfonlayer}
+    
+    \begin{pgfonlayer}{background}
+        \node[draw=gray, thick, rounded corners, fit=(node_emb_i1) (node_emb_j1) (edge_emb_ij), fill=red!30, label=above:Graph Task] {};
+    \end{pgfonlayer}
+    
+    \begin{pgfonlayer}{background}
+        \node[draw=gray, thick, rounded corners, fit=(node_emb_i2) (node_emb_v2) (edge_emb_ijv), fill=orange!30, label=above:Node Task] {};
+    \end{pgfonlayer}
+\end{tikzpicture}
+\caption{Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the target model the created edge embedding differs slightly.}
+\end{figure}
+
+\subsection{Regularization Terms}
+To enhance the preservation of desired properties of explanations the authors propose various regularization terms. These are added to the learning objective, depending on the specific downstream task at hand.\bigskip
+
+\textbf{Size and entropy constraints}
+
+Inspired by GNNExplainer\cite{ying2019gnnexplainer}, to obtain compact and precise explanations, a constraint on the size of the explanations is added in the form of $||\Omega||_1$, the $l_1$ norm on latent variables $\Omega$. Additionally, to encourage the discreteness of edge weights, element-wise entropy is added as a constraint:
+\begin{equation}
+    H_{\hat{G}_s} = -\frac{1}{|\varepsilon|}\sum_{(i,j)\in \varepsilon} (\hat{e}_{ij}\log \hat{e}_{ij} + (1-\hat{e}_{ij})\log(1-\hat{e}_{ij})),
+\end{equation}
+for one explanatory graph $\hat{G_s}$ with $\varepsilon$ edges. For the collective setting, this is added as a mean over all instances in $\mathcal{I}$. \bigskip
+
+Note that the following two constraints are not used in the original experimental setup, but serve as inspiration for constraints introduced in our NeuroSAT application\ref{} and are therefore included. \bigskip
+
+\textbf{Budget constraint}
+
+The authors propose the modification of the size constraint to a budget constraint, for a predefined available budget $B$. Let $|\hat{G}_s| \leq B$, then the budget regularization is defined as:
+\begin{equation}
+    R_b = \text{ReLU}(\sum_{(i,j)\in \varepsilon}\hat{e}_{ij}-B).
+\end{equation}
+Note that $R_b = 0$ when the explanatory graph is smaller than the budget. When out of budget, the regularization is similar to that of the size constraint. \bigskip
+
+\textbf{Connectivity constraint}
+
+To enhance the effect of the explainer detecting a small, connected subgrap, motivated through real-life motifs being inherently connected, the authors suggest adding the cross-entropy of adjacent edges. Let $(i,j)$ and $(i,k)$ be two edges that both connect to the node $i$, then $(i,k)$ should rather be included in the explanatory graph if the edge $(i,j)$ is selected to be included. This is formally defined as:
+\begin{equation}
+    H(\hat{e}_{ij},\hat{e}_{ik}) = -[1-\hat{e}_{ij}\log(1-\hat{e}_{ik})+\hat{e}_{ij}\log \hat{e}_{ik}].
+\end{equation}
+We note that in practice this is implemented only for the two highest edge weights for each edge. The definition therefore would change to $(i,j)$ and $(i,k)$ being the top two edges that connect to node $i$.
+
+
+\section{Reimplementation}
+Notes on Original code of target model: Not clearly specified in paper, but according to code:
+- No specific args set for layers etc., except hyperparameters for different datasets (see sweeps)
+- Therefore, assuming default settings for layers -> Graph conv layer uses ReLu activation (done), bias initialized with zeroes (done), no dropout(partially done), and embedding normalization! (TODO), default order 'AW', weight init 'glorot' (Done with Xavier)
+- WE USED PyG GraphConv since it allows for bipartite+edge weights; but compare to layer close to original!!\bigskip
+
+Concrete graph layer used in original code is very similar to the semi-supervised layer\ref{}:
+\begin{equation}
+    Z = \hat{A}XW
+\end{equation}
+Note that a pytorch implementation of the semi-supervised layer is used in the replication paper:
+\begin{equation}
+    X' = \hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}X\Theta
+\end{equation}
+We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer:
+\begin{equation}
+    x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j
+\end{equation}
+
+TODO: Maybe separate the theory of PGE from our own work more strictly? E.g. 3. PGE theory, 4. PGE reimplementation and NeuroSAT application? \\
+Implementation details:
+\begin{itemize}
+    \item Started by reimplementing the downstream tasks used in og paper for node and graph class.
+    \item Node datasets taken from original and transformed to a "pyg format", to keep original structure and ground truths
+    \item Graph: BA-2Motif from pyg library with self generated gt, MUTAG dataset taken from pyg and added gt-labels that were added in original dataset
+    \item Created pytorch/pytorch geometric implementation of 3-layer graph conv networks
+    \item architecture as described in paper: ReLu activation, Pooling for graph net
+    \item Xavier initialization for all layers
+    \item Same hyperparameters?(Adam, $1*10^-3$ lr, 1000 epochs)/experimental setup?
+    \item ADDED Dropout(0.1) to improve performance/overfitting on node tasks
+    \item Fully connected layer: torch geometric GraphConv to allow passing of edge weights(+ bipartite)!?
+    \item Original references sageConv in paper, pyG impl. does not allow edge weights, verify!
+    \item GATConv for Graph attention(referenced by original)
+    \item Alternatives: GCNConv(edge weights, no bipartite graphs)
+    \item 80/10/10 split
+    \item => Similar accuracies achieved
+\end{itemize}
+ 
+
+ Explainer:
+ This is irrelevant for paper, description of why reparameterization trick necessary
+ - First approach tried passing a masked edge index to downstream task with edge weights > 0.5
+ => Unable to learn with hard cut-off (bad for gradients). (Same with TopK probably?!)
+ - Pass calculated edge weights to downstream task for learning. If no edge weights are passed(downstream task), all edge weights are initialized with one to represent all edges beeing relevant
+ 
+%\section{Benchmarking}
+%\section{Application on Bipartite Graphs?}#
+
+\section{Application on NeuroSAT}
+Reimplementation of NeuroSAT provided by Rodhi. As the code used for NeuroSAT can also be found in our Repository, we stress that only the changes described in the following chapter are part of our work. \\
+
+What did we do? What did we change for NeuroSAT? What data was used? How did we adapt PGExplainer? \\
+
+Only change in NeuroSAT: pass edge weights into adjacency matrix. Calculates .... \\
+Generated batches of unsat problems that "turned" unsat because of last added clause. 10 literals per problem. Only unsat to test for unsat cores, that only apply for unsat problems. Calculated unsat cores with solver xy by adding negative assumption literals per clause and passing these as assumption for calulation. The edges of the clauses present in the unsat core were treated as ground truth. \\
+
+Changes for explainer:
+Edge embeddings calced by DS and passed to explainer. Calculated edge embeddings by concatenating node embeddings for connected nodes, similar to original. Embeddings fed into MLP, weights sampled with reparam. trick to get edge "probabilities", passed as "unbatched" sampled graph into NeuroSAT predictor. Visualization of SAT problems with edge weights, ands gts. \\
+For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
+For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
