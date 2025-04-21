@@ -245,6 +245,8 @@ Same for network with 3emb and larger architecture? (grateful-microwave-18)
 
 
 
+
+
 Downstream task training: Use first model that achieves 1.0 val accuracy or last model that also decreases the val loss?
 
 For original:
@@ -262,6 +264,8 @@ Tree-Cycles
 What does seed affect? Xavier init and randomness in sampling!?
 => Variance over seeds can only be affected by initalisation of layers??
 
+-> Try weight decay or different optimizer
+
 Observed effect on "best" parameters from sweep (Seed-effects: 25-27 and 31-33): 
 - Good initalization leads to almost perfect instant auroc, stays there. sum_sampled_edges decreases
 - Bad init leads to very slow start (Increase in AUROC only after 10 epochs) that converges to 0.5 instead of 1. sum_sampled_edges increases
@@ -275,7 +279,7 @@ Optional sampling with sample_bias and different loss: Name in Theory part of PG
 
 For litearture/PGExplainer theory: Active speech? -> "This is used in PGExplainer to allow for efficiently optimizing the objective function with gradient-based methods"
 
-Verteidigung wann?
+Verteidigung wann? 2-4 Wochen nach abgabe, gerne im Voraus absprechen
 
 generative probabilistic model for graph data relevant in context of Gilbert random graph; Enough to mention random graph is a kind of generative probabilistic model for graph data or further explain?
 

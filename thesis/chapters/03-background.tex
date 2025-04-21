@@ -235,6 +235,7 @@ with $\mathbf{x}$ denoting input features and $\mathbf{h}$ the hidden state. $\m
 \end{equation}
 Note that $F$ is assumed to be a contraction map and the value of $\mathbf{H}$ is the fixed point of equation \eqref{eq:gnn_state_global}. To compute the state the iterative scheme
 \begin{equation}
+    \label{eq:GNN_iterations}
     \mathbf{H}^{t+1} = F(\mathbf{H}^t, \mathbf{X})
 \end{equation}
 is used with $\mathbf{H}^t$ denoting iteration t of $\mathbf{H}$. The computations of $f$ and $g$ can be understood as the feedforward neural network. \\
@@ -246,20 +247,20 @@ where $p$ are the supervised nodes. A gradient-descent strategy is utilized in t
 
 TODO: include figure of graph with neighborhood?
 \subsection{TODO Convolutional Graph Neural Networks}
-Explain? Used in architecture of target model\\
-Explain concrete layers used in original/replication and our version: \\
+Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. We present two select models that are used in the course of this work.
 
 \textbf{Graph Convolutional Network} \\
-Kipf et al.\cite{kipf2016semi}
-multi-layer Graph Convolutional Network (GCN) with the following layer-wise propagation rule:
+Kipf et al.\cite{kipf2016semi} introduce a simple, layer-wise propagation rule for multi-layer GCNs as follows:
+\begin{equation}
+    H^{l+1} = \sigma(\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}),
+\end{equation}
+where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}_{ii} = \sum_j \tilde{A}_{ij}$ and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{N\times D}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$.
+
+$\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ is a normalization of the adjacency matrix
+
 \begin{equation}
     Z = \hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}X\Theta
 \end{equation}
-or
-\begin{equation}
-    H^{l+1} = \sigma(\hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}H^{(l)}W^{(l)})
-\end{equation}
-$\hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}$ is a normalization of the adjacency matrix
 
 \textbf{Weisfeiler and Leman Go Neural} \\
 Morris et al.\cite{morris2019weisfeiler}
