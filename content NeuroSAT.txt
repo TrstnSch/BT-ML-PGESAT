@@ -3,28 +3,26 @@ TODO:
 Display negative literals correctly in visualisation, index +-1?
 
 GTs vary in size, general problematic for Explainer?
-
+-> Try calcing explanation threshhold individually:
+    Implemented knee locator -> Lead to smaller sub problem that was still solveable for one example
 
 TODO: Find a clean way to seperate the problem batches into train/val/test
 
-Sweep
-
-Node prediction? NeuroSAT not really meant for that?
-
-
-OVERFIT NEUROSAT! (HOW? MODEL DOES NOT LEARN WITH GT!)
-
-
-Fix edge probabilite values for NeuroSAT!
-
+Fix edge probabilite values for NeuroSAT! (Depend on hyperparam settings)
 
 Use current version of NeuroSAT to sweep over multiple architectures, hyperparameters and maybe even loss?
 
-Think on adding the clause meaning after the sampling randomness? ADDED TO RANDOMNESS AS WELL
 
 
+Node prediction? NeuroSAT not really meant for that?
+OVERFIT NEUROSAT! (HOW? MODEL DOES NOT LEARN WITH GT!)
 ---------------------------------------------------------------------------------------
 DONE RELEVANT:
+
+Think on adding the clause meaning after the sampling randomness? ADDED TO RANDOMNESS AS WELL AS MLP
+
+
+
 
 NeuroSAT:
 Are problems batches of one big problem?! If so, explainer probably has to unpack batches and view complete problem! -> Problem is batch of multiple sub_problems

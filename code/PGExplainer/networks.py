@@ -98,7 +98,7 @@ class GraphGNN(nn.Module):
         edge_weights = edge_weights.to(device)
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
-        #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)              # This improves model!? Used to normalize edge embeddings for graphs task, as they else get too high/low for BA-2Motif in explainer
+        #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)              # THIS IS USED IN RE-PAPER SINCE ORIGINAL LAYER CONTAINS EMBEDDING NORMALIZATION!
         if self.BN: emb1 = self.bn1(emb1)
         emb1 = self.relu(emb1)
         emb1 = self.dropout(emb1)
@@ -196,12 +196,14 @@ class NodeGNN(nn.Module):
         edge_weights = edge_weights.to(device)
             
         emb1 = self.hidden1(x, edge_index, edge_weights)
+        #emb1 = torch.nn.functional.normalize(emb1, p=2, dim=1)
         # We add bn before the activation, unlike original
         if self.BN: emb1 = self.bn1(emb1)
         emb1 = self.relu(emb1)
         emb1 = self.dropout(emb1)
         
         emb2 = self.hidden2(emb1, edge_index, edge_weights)
+        #emb2 = torch.nn.functional.normalize(emb2, p=2, dim=1)
         # We add bn before the activation, unlike original
         if self.BN: emb2 = self.bn2(emb2)
         emb2 = self.relu(emb2)
@@ -209,6 +211,7 @@ class NodeGNN(nn.Module):
         
         # OG does not use bn for last hidden layer
         emb3 = self.hidden3(emb2, edge_index, edge_weights)
+        #emb3 = torch.nn.functional.normalize(emb3, p=2, dim=1)
         emb3 = self.relu(emb3)
         emb3 = self.dropout(emb3)
 

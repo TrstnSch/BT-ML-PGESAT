@@ -120,13 +120,6 @@ class MLP(nn.Module):
             if len(clause_edge_probs) > 1:
                 clauses_var = torch.var(clause_edge_probs)
                 consistencyLoss += clauses_var
-                
-                mean_prob = clause_edge_probs.mean()
-                deviation = ((clause_edge_probs - mean_prob) ** 2).mean()  # MSE within group
-                # Confidence to reinforce learning close to 0 or 1?
-                confidence = ((mean_prob - 0) * (mean_prob - 1)) ** 2
-                
-                consistencyLoss += deviation + confidence
             
         Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency               # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
@@ -353,13 +346,6 @@ class MLP_SAT(nn.Module):
                 if len(clause_edge_probs) > 1:
                     clauses_var = torch.var(clause_edge_probs)
                     consistencyLoss += clauses_var
-                    
-                    mean_prob = clause_edge_probs.mean()
-                    deviation = ((clause_edge_probs - mean_prob) ** 2).mean()  # MSE within group
-                    # Confidence to reinforce learning close to 0 or 1?
-                    confidence = ((mean_prob - 0) * (mean_prob - 1)) ** 2
-                    
-                    consistencyLoss += deviation + confidence
             
         if bce is True:
             Loss = torch.nn.functional.binary_cross_entropy(pSample, pOriginal) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency
