@@ -25,7 +25,7 @@ A classical DL model is the multilayer perceptron (MLP) with the general goal of
 
 A linear layer for our model with parameters $\Theta$ consisting of weight $w$ and bias $b$ can be described as $f(x; w,b)=x^Tw+b$ for an input vector $x$. To keep the model from strictly learning a linear function of its inputs we can calculate the values of a layer $h$ by applying an activation function $g$ to its output to describe the features. This results in our hidden layer $h=g(W^Tx+c)$, with $W$ containing the weights of a linear transformation and $c$ the biases.
 
-The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity (see GNN book \cite{Liu2020}). Examples are the Sigmoid function
+The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity (see Liu et al.\cite{Liu2020}). Examples are the Sigmoid function
 
 %GNN BOOK: \\
 %initiated with random weights or values, updated in each neuron with backpropagation. Learned knowledge stored in connections digitally. \\
@@ -46,13 +46,53 @@ and the Rectified Linear Unit (ReLU)
 
 \subsection{Backpropagation}
 The back propagation algorithm is commonly used during neural network training. It optimizes the network parameters by leveraging gradient descent. It first calculates the values for each unit in the network given the input and a set of parameters in a forward order. Then the error for each variable to be optimized is calculated, and the parameters are updated according to their corresponding partial derivative backwards. These two steps will repeat until reaching the optimization target. \\
-TODO: Concrete formulas with chain rule?
+TODO: Concrete formulas with chain rule of calculus? 
 
-\subsection{Computational graph}
+\subsection{TODO: Regularization}
+"A central problem in machine learning is how to make an algorithm that will
+perform well not just on the training data, but also on new inputs. Many strategies
+used in machine learning are explicitly designed to reduce the test error, possibly
+at the expense of increased training error. These strategies are known collectively
+as regularization."
 
-\subsection{Regularization}
+Parameter Norm Penalties (e.g. Weight decay)
+%"Many regularization approaches are based on limiting the capacity of models, such as neural networks, linear regression, or logistic regression, by adding a parameter norm penalty Ω(θ) to the objective function J. We denote the regularized objective function by ˜ J: J˜(θ; X, y) = J(θ; X, y) + αΩ(θ)
+%where α ∈ [0, ∞) is a hyperparameter that weights the relative contribution of the norm penalty term, Ω, relative to the standard objective function J. Setting α to 0 results in no regularization. Larger values of α correspond to more regularization. When our training algorithm minimizes the regularized objective function J˜ it will decrease both the original objective J on the training data and some measure of the size of the parameters θ (or some subset of the parameters). Different choices for the parameter norm Ω can result in different solutions being preferred. In this section, we discuss the effects of the various norms when used as penalties on the model parameters." e.g. L1 or L2 norm
 
-\subsection{Batchnorm, LayerNorm, ...}
+Early stopping
+"When training large models with sufficient representational capacity to overfit
+the task, we often observe that training error decreases steadily over time, but
+validation set error begins to rise again."
+"This means we can obtain a model with better validation set error (and thus,
+hopefully better test set error) by returning to the parameter setting at the point in
+time with the lowest validation set error."
+"Every time the error on the validation set
+improves, we store a copy of the model parameters. When the training algorithm
+terminates, we return these parameters, rather than the latest parameters."
+"algorithm terminates when no parameters have improved over the best recorded
+validation error for some pre-specified number of iterations. "
+
+Dropout
+
+\subsection{Batch Normalization}
+In deep models composed of several layers the gradient tells us how to update each parameter assuming that the other layers do not change. Since in practice all layers are updated simultaneously, this may lead to unexpected results. Batch normalization is an optimization technique that can be applied to any input or hidden layer to reduce the aforementioned problem\cite{Goodfellow-et-al-2016}.
+
+Let $\mathbf{B}$ be a minibatch of activations of the layer to normalize, in the form of a design matrix with rows of activations. To normalize $\mathbf{B}$, it is replaced by
+\begin{equation}
+    \mathbf{B}' = \frac{\mathbf{B} - \boldsymbol{\mu}}{\boldsymbol{\sigma}},
+\end{equation}
+where $\boldsymbol{\mu}$ is a vector containing the mean of each unit and $\boldsymbol{\sigma}$ is a vector containing the standard deviation of each unit. Each activation is normalized individually with the $\boldsymbol{\mu}$ and $\boldsymbol{\sigma}$ corresponding to its row. The network processes $\mathbf{B}'$ as functionally equivalent to $\mathbf{B}$. During training,
+\begin{equation}
+    \boldsymbol{\mu} = \frac{1}{m}\sum_i \mathbf{B}_i
+\end{equation}
+and
+\begin{equation}
+    \boldsymbol{\sigma} = \sqrt{\delta + \frac{1}{m} \sum_i (\mathbf{B}_i - \boldsymbol{\mu})^2},
+\end{equation}
+
+where $\delta$ is a small positive value introduced to avoid $\sqrt{z}$ at $z = 0$ and $m$ is the number of elements in the batch. It is important to note that back propagation is performed through all three operations, to prevent the gradient from proposing an operation that solely increases the mean and standard deviation of the output of a layer. Batch normalization therefore reparameterizes the model to include some units that are standardized by definition.
+
+When testing the model, we replace $\boldsymbol{\mu}$ and $\boldsymbol{\sigma}$ with running averages that were collected during training, to enable the evaluation of individual examples outside minibatches.
 
 \subsection{Monte Carlo Sampling}
 In order to best approximate a randomized algorithm we can make use of Monte Carlo methods as described in Goodfellow et al.\cite{Goodfellow-et-al-2016}[p.590]. A common practice in ML is to draw samples from a probability distribution and using these to form a Monte Carlo estimate of some quantity. This can be used to train a model that can then sample from a probability distribution itself. \\
@@ -68,9 +108,7 @@ be the sum to estimate with $p$ being a probability distribution over a random v
 
 
 \section{Graph Theory}
-TODO: edge weights, k-hop/computational graph? \bigskip
-
-These definitions will loosely follow Liu et al.\cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. An edge $e=(u,v)$ connects nodes $u$ and $v$, making them neighbours. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v$ is the number of edges connected to $v$ and denoted by $d(v)$. $G$ can be described by an adjacency matrix $A \in \mathbb{R}^{n \times n}$, where
+These definitions will loosely follow Liu et al.\cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel\cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as $G$ on $V$. An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v$ is the number of edges connected to $v$ and denoted by $d(v)$. $G$ can be described by an adjacency matrix $A \in \mathbb{R}^{n \times n}$, where
 
 Nodes in V are associated with the d-dimensional
 features, denoted by X RN d
@@ -88,7 +126,12 @@ Alternatively an undirected graph $ G=(V, E)$ with $n$ nodes and $m$ edges can b
         0 & \text{otherwise.}
     \end{cases}
 \end{equation*}
-We adopt the conventions from Diestel\cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as $G$ on $V$. $G$ is called a subgraph of another graph $G'=(V',E')$ if $V(G) \subseteq V(G')$ and $E(G) \subseteq E(G')$. This is denoted as $H \subseteq G$. The number of nodes in a graph $|V|$ is its order and the number of edges $|E|$ is its size.
+The diagonal degree matrix $D\in \mathbb{R}^{n\times n}$ of $G$ is defined via:
+\begin{equation*}
+    D_{ii} = d(v_i).
+\end{equation*}
+
+$G$ is called a subgraph of another graph $G'=(V',E')$ if $V(G) \subseteq V(G')$ and $E(G) \subseteq E(G')$. This is denoted as $H \subseteq G$. The number of nodes in a graph $|V|$ is its order and the number of edges $|E|$ is its size (see Diestel\cite{Diestel2017}).
 We additionally define bipartite graphs according to Asratian et al.\cite{asratian1998}: A graph $G$ is bipartite if the set of nodes $V$ can be partitioned into two sets $V_1$ and $V_2$ so that no two nodes from the same set are adjacent. The sets $V_1$ and $V_2$ are called colour classes and $(V_1, V_2)$ is a bipartition of $G$. This means that if a graph is bipartite all nodes in $V$ can be coloured by at most two colours so that no two adjacent nodes share the same colour.\\
 \begin{figure}[h]
     \centering
@@ -105,36 +148,33 @@ We additionally define bipartite graphs according to Asratian et al.\cite{asrati
         \draw (1) -- (4);
         \draw (2) -- (5);
     \end{tikzpicture}
-    \caption{A simple undirected graph $G$ with $V=\{1,...,5\}$ and $E=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$.}
+    \caption{A simple undirected graph $G$ with $V=\{1,2,4,5\}$ and $E=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$.}
     \label{fig:graph-example}
 \end{figure}
 
-\subsection{Random Graphs}
+\textbf{Random Graphs}
 \label{sec:random-graphs}
-TODO: generative probabilistic model for graph data
-Gilbert random graph is example of generative model for graph data
 
 %Gilbert\cite{} describes the process of generating a random graph of order $N$ by assigning a common probability to exist in the graph to each potential edge between two nodes. Note that these random selections are made independently of each other, effectively drawing from a Bernoulli distribution. \\
-Gilbert\cite{gilbert1959random} describes the process of generating a random graph of order $N$ by assigning a common probability to each potential edge between two nodes for existing in the graph. Note that these random selections are made independently of each other and effectively drawn from a Bernoulli distribution. \\
-%by performing independent experiments for each potential edge between two nodes of the graph. Since these experiments share a common probability, the process can be described as drawing from a Bernoulli distribution. \\
-%TODO:  Introduce change of assigning different probabilities to each edge in PGE
-Version 1 (probability space for PGE not needed, definition for one random graph suffices?): \\
-A random graph is further described by Diestel\cite{Diestel2017}[p.323] as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. Our goal is to define the set $\mathcal{G}$ of all graphs on $V$ as a probability space, which allows us to ask whether a Graph $G \in \mathcal{G}$ has a certain property. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$.
+Gilbert\cite{gilbert1959random} describes the process of generating a random graph of order $N$ by assigning a common probability of existence to each potential edge between any two nodes. For each of these potential edges an experiment is performed independently to determine whether it shall be included in the resulting graph. Note that this process can be modeled using a Bernoulli distribution.
+%The actual edges in the graph are then selected by performing random experiments, made independently of each other, and can therefore be described by a Bernoulli distribution.
+%Note that these random selections are made independently of each other and effectively drawn from a Bernoulli distribution.
+
+%Version 1 (probability space for PGE not needed, definition for one random graph suffices?): \\
+A random graph is further described by Diestel\cite{Diestel2017}[p.323] as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. Say we want to define the set $\mathcal{G}$ of all graphs on $V$ as a probability space, which allows us to ask whether a Graph $G \in \mathcal{G}$ has a certain property. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$.
 \bigskip
 
-Version 2: \\
-A random graph is further described by Diestel\cite{Diestel2017}[p.323] as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$. It follows our desired probability space $\mathcal{G}=(n,p)$ as the product space
-\begin{equation}
-    \Omega := \prod_{e \in [V]^2} \Omega_e
-\end{equation}
-with $\Omega_e := \{0_e,1_e\}$, $\mathbb{P}_e(\{1_e\}) := p$ and $\mathbb{P}_e(\{0_e\}) := q$.
-TODO: This is probably unnecessary for PGE.
-\begin{equation}
-    E(G) = \{e | \omega(e) = 1_e\}
-\end{equation}
-E(G) = Edges of G. G is called a random graph on V with edge probability $p$. \bigskip
-
-% TODO: Gilberts idea also assigns the same probability across all edges, so probably best to explain the general idea as presented in Diestel. Then explain the difference in PGE? PGEs appraoch mainly inspired by probabilistic graphical model/bayesian networks. Gilbert model mainly baseline for probabilistic graphs. PGExplainer mainly inspired by Gilbert, but "required" concept is PGM.
+%Version 2: \\
+%A random graph is further described by Diestel\cite{Diestel2017}[p.323] as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$. It follows our desired probability space $\mathcal{G}=(n,p)$ as the product space
+%\begin{equation}
+%    \Omega := \prod_{e \in [V]^2} \Omega_e
+%\end{equation}
+%with $\Omega_e := \{0_e,1_e\}$, $\mathbb{P}_e(\{1_e\}) := p$ and $\mathbb{P}_e(\{0_e\}) := q$.
+%TODO: This is probably unnecessary for PGE.
+%\begin{equation}
+%    E(G) = \{e | \omega(e) = 1_e\}
+%\end{equation}
+%E(G) = Edges of G. G is called a random graph on V with edge probability $p$. \bigskip
 
 \section{Information Theory}
 To fully understand the learning objective of PGExplainer it is necessary to define the concepts of entropy and mutual information. We follow the definitions by Cover et al.\cite{Cover2005}[p.13] if not stated otherwise.
@@ -161,7 +201,7 @@ The conditional entropy of $Y$ given $X$ is defined as the expected value of the
     &= - \sum_{x \in \mathcal{X}} \sum_{y \in \mathcal{Y}}p(x,y) \log p(y|x) \\
     &= -\mathbb{E} \log p(Y|X),
 \end{align}
-with $\mathbb{E} =$ Expectation.
+with expectation $\mathbb{E}$.
 
 \subsection{Relative Entropy and Cross-Entropy}
 %Elements of Information Theory: equation 2.26 describes KL distance/relative entropy \bigskip
@@ -203,7 +243,8 @@ We derive for the discrete case with mass probability functions $p, q$ defined o
 
 \subsection{Mutual Information}
 %(see Cover et al.\cite{Cover2005}[p.19])
-Another closely related concept is mutual information. It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other. TODO: HIGH MI means Information of one variable can be won by the other
+Another closely related concept is mutual information. It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other. A high mutual information therefore implies that the information of one variable can be gathered from the other.
+
 Let $X$ and $Y$ be two random variables with the joint probability mass function $p(x,y)$ and marginal probability mass functions $p(x)$ and $p(y)$. Mutual information $I(X;Y)$ is the relative entropy between the joint distribution and the product distribution $p(x)p(y)$: 
 \begin{align}
     I(X;Y)&=\sum_{x \in \mathcal{X}}\sum_{y \in \mathcal{Y}} p(x,y)\log \frac{p(x,y)}{p(x)p(y)} \\
@@ -211,8 +252,9 @@ Let $X$ and $Y$ be two random variables with the joint probability mass function
 \end{align}
 
 \section{Graph Neural Networks}
+TODO: DOES THIS CONVEY MESSAGE PASSING???
 
-Graph Neural Networks(GNNs)\cite{4700287} are a DL-based approach that operates on graphs. Due to their unique non-Euclidean property, they find usage in classification, link prediction, and clustering tasks. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks\cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings\cite{cai2018comprehensive} to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu et al.\cite{Liu2020}).\bigskip
+Graph Neural Networks(GNNs)\cite{4700287} are a DL-based approach that operates on graphs. Due to their unique non-Euclidean property, they find usage in classification, link prediction, and clustering tasks. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks\cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings\cite{cai2018comprehensive} (TODO: NON-EXISTENT?) to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu et al.\cite{Liu2020}).\bigskip
 
 Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements a classifier on complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
 The supervised GNN model by Scarselli et a.\cite{4700287} tries to preserve the important,  structural information of graphs by encoding their topological relationships among nodes.
@@ -245,46 +287,39 @@ To learn the parameters of this GNN, with target information $t_v$ for a specifi
 \end{equation}
 where $p$ are the supervised nodes. A gradient-descent strategy is utilized in the learning algorithm, which consist of the following three steps: the states $h_v^t$ are updated iteratively using equation \eqref{eq:gnn_state_local} until time step $T$. We then obtain an approximate fixed point solution of equation \eqref{eq:gnn_state_global}: $\mathbf{H}(T)\approx\mathbf{H}$. For the next step the gradients of the weights $W$ are calculated from the loss. Finally, the weights $W$ are updated according to the computed gradient. This allows us to train a model for specific supervised or semi-supervised tasks, referred to as downstream task, and get hidden states of nodes in a graph. \bigskip
 
-TODO: include figure of graph with neighborhood?
-\subsection{TODO Convolutional Graph Neural Networks}
-Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. We present two select models that are used in the course of this work.
+A common practice is stacking $k$ GNN layers so that each node is able to aggregate information from nodes within its $k$-hop neighborhood, seeking an increase in performance. It is important to note that this approach may also increase the noisy information spread by the exponentially increasing neighborhood nodes\cite{Liu2020}. In the following, we briefly present two models that are used in the course of this work.
+
+TODO: include figure of graph with neighborhood? \bigskip
 
 \textbf{Graph Convolutional Network} \\
-Kipf et al.\cite{kipf2016semi} introduce a simple, layer-wise propagation rule for multi-layer GCNs as follows:
+Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. An example is the model proposed by Kipf et al.\cite{kipf2016semi} that introduces a simple, layer-wise propagation rule for multi-layer GCNs as
 \begin{equation}
     H^{l+1} = \sigma(\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}),
 \end{equation}
-where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}_{ii} = \sum_j \tilde{A}_{ij}$ and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{N\times D}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$.
+where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}$ is the degree matrix and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$. $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix.
 
-$\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ is a normalization of the adjacency matrix
-
+TODO: generalization to signal X?
 \begin{equation}
     Z = \hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}X\Theta
 \end{equation}
 
-\textbf{Weisfeiler and Leman Go Neural} \\
-Morris et al.\cite{morris2019weisfeiler}
-A basic GNN model can be implemented as follows (Hamilton, Ying, and Leskovec 2017b)
+\textbf{Higher-order GNN} \\
+TODO: A basic GNN model can be implemented as follows (Hamilton, Ying, and Leskovec 2017b)
+Morris et al.\cite{morris2019weisfeiler} propose an implementation for a GNN model consisting of stacked neural network layers, that each aggregate the local neighborhood information of a node and pass it to the next one. This network is defined specifically for graphs that can be partitioned into $r$ color classes and therefore applicable to bipartite graphs. The new features of node $i$ are then computed with:
 \begin{equation}
-    x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j
+    x_i^{(l)} = \sigma(W_1^{(l)}x_i^{(l-1)}+W_2^{(l)}\cdot\sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j^{(l-1)}),
 \end{equation}
+where $W_1^{(l)}$ and $W_2^{(l)}$ are two layer-specific trainable weight matrices.
 
 \section{Perturbation-based Explainability in GNNs}
 \label{sec:perturbation-based_explainability}
 Methods in DL have seen growth in performance in many tasks of artificial intelligence, including GNNs. However, the interpretability of these models is often limited due to their black-box design. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields. There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into gradients/feature-based, perturbation-based, decomposition methods and surrogate methods. Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations. \\
-In this work we focus on the perturbation-based approach, more specifically the PGExplainer\cite{luo2020parameterized}, that aims to evaluate the change of prediction with respect to input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. \\
+In this work we focus on the perturbation-based approach, more specifically the PGExplainer\cite{luo2020parameterized}, that aims to evaluate the change of prediction with respect to input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. These different approaches mostly differ in the specific mask generation algorithm, the type of mask used and the objective function. \\
 It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. %TODO: Expand on reparameterization trick?
 
-Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al.\cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. \bigskip
+Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al.\cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. TODO: Other metrics include fidelity, results of taxonomy propose only using PGExplainer for Node Classification as it achieves low fidelity on Graph tasks
 
 To fully trust the explanations provided by an explainer model, they must satisfy certain criteria, since there often is a mismatch between the optimizable metrics like accuracy and the actual metric of interest, which may not be measurable (see Ribeiro et al.\cite{ribeiro2016should}). First and foremost, an explanation should be \textbf{interpretable} and therefore provide qualitative, human-understandable interpretations, that also consider the possibility of limited user knowledge. Additionally, \textbf{local fidelity} asserts that explanations should be faithful in a local context and consider the models' behavior in the vicinity of predicted instances. Explainers that treat the model to be explained as a black-box are \textbf{model-agnostic} and should therefore be able to explain any model. Lastly, a \textbf{global perspective} is needed to explain a model fully, allowing us to take sample explanations of individual predictions that serve as representation of the model.
-
-TODO: \\
-Variation in perturbation approaches lie in: mask gen. alg., type of mask, objective function.
-
-Differentiate between "interpretable" and "explainable"? Model itself provides human-understandable interpretations vs model still black box with explanations by post-hoc model.
-
-- Other metric includes fidelity, results of taxonomy propose only using PGExplainer for Node Classification as it achieves low fidelity on Graph tasks
 
 TODO: figure of perturbation pipeline?
 
@@ -349,11 +384,3 @@ where $0$ denotes a zero matrix in the shape of their subscript (see Sun et al.\
 
 \subsection{Unsatisfiable Cores}
 The core of an unsatisfiable formula in CNF is a subset of the formula that is also unsatisfiable. Every unsatisfiable formula therefore is a core on its own, but can be broken down into smaller cores. The smaller a core the more significance it holds. A minimal unsatisfiable core is also referred to as a minimal unsatisfiable subset (MUS). SAT solvers like minisat\cite{een2003extensible} are able to compute unsatisfiable cores but do not generally provide a MUS due to high computational cost. However, several deletion-based algorithms exist for computing MUSs (see Torlak et al.\cite{10.1007/978-3-540-68237-0_23}).
-
-\subsection{Backbones}
-Leave out for now.
-
-\section{TODO NeuroSAT}
-ML approach for SAT solving using message passing neural network.
-NeuroSAT\cite{selsam2018learning}: Messages are passed between clauses and literals, as well as literals and their complement. 1. Clause receives from neighboring literals 2. Literals receive from clauses and complement. \\
-(Define flip function that swaps literal row with row of its negation; relevant for NeuroSAT)

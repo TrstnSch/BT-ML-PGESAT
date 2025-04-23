@@ -6,8 +6,8 @@ V1: In the following chapter, we introduce the PGExplainer\cite{luo2020parameter
 
 V2: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models that have proven to learn the concise underlying structures of GNNs most relevant to their predictions. This approach may be applied to any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. PGExplainer seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}. This means that all edges in the dataset are predicted by the same model, which leads to a global understanding of the DT.
 
-V3: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of edge distributions or soft masks using a probabilistic generative model for graph data, known for being able to learn the concise underlying structures from the observed graph data. The explainer uncovers said underlying structures, believed to have the biggest impact on the prediction of a GNNs, as explanations. This approach may be applied to any trained GNN model, henceforth referred to as the target model (TM). 
-By utilizing a deep neural network to parameterize the generation process, the explainer learns to collectively explain multiple instances of a model. Since the parameters of the neural network are shared across the population of explained instance, PGExplainer provides "model-level explanations for each instance with a global view of the GNN model". Furthermore, this approach cannot only be used in a transductive setting, but also in an inductive setting, where explanations for unexplained nodes can be generated without retraining the explanation model. This improves the generalizability compared to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}.
+V3: In the following chapter, we introduce the PGExplainer by Luo et al.\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of edge distributions or soft masks using a probabilistic generative model for graph data, known for being able to learn the concise underlying structures from the observed graph data. The explainer uncovers said underlying structures, believed to have the biggest impact on the prediction of a GNNs, as explanations. This approach may be applied to any trained GNN model, henceforth referred to as the target model (TM). 
+By utilizing a deep neural network to parameterize the generation process, the explainer learns to collectively explain multiple instances of a model. Since the parameters of the neural network are shared across the population of explained instance, PGExplainer provides "model-level explanations for each instance with a global view of the GNN model". Furthermore, this approach cannot only be used in a transductive setting, but also in an inductive setting, where explanations for unexplained nodes can be generated without retraining the explanation model. This improves the generalizability compared to previous works, particularly the GNNExplainer by Ying et al.\cite{ying2019gnnexplainer}.
 
 The focus in this approach lies in explaining the graph structure, rather than the graph features, as feature explanations are already common in non-graph neural networks. \\
 
@@ -32,7 +32,8 @@ To optimize this function a relaxation is applied for the edges, since normally 
 \begin{equation}
     P(G) = \prod_{(i,j)\in E}P(e_{ij}).
 \end{equation}
-TODO: Inhomogeneous Erdos Renyi model? Mention that this is a generative model?
+TODO: Inhomogeneous Erdos Renyi model? Mention that this is a generative model? (A Gilbert random graph is an example of a generative probabilistic model on graph data?)
+
  $P(e_{ij})$ is instantiated with the Bernoulli distribution $e_{ij} \sim Bern(\theta_{ij})$, where $P(e_{ij} = 1) = \theta_{ij}$ is the probability that edge $(i,j)$ exists in $G$.
 After this relaxation the learning objective becomes:
 \begin{equation}
@@ -89,7 +90,6 @@ Consequently, $G^{(i)}$ and $G_s^{(i,k)}$ denote the input graph and the $k$-th 
 
 \textbf{Explanation network for node classification}
 %Since explanations for different nodes may not share a common explanation pattern, especially for nodes with different labels, ... DOES THIS NOT ALSO APPLY FOR GRAPHS?!
-TODO: Motivate the difference between these two tasks? Not done by authors \bigskip
 
 Let an edge $(i,j)$ be considered relevant for the prediction of a node $u$, but irrelevant for the prediction of a node $v$. To explain the prediction of node $v$ we specify the network in \ref{eq:explainer_network} as:
 \begin{equation}
@@ -298,7 +298,7 @@ TODO: Include algorithms?
 \draw [<->, dashed] (sample_prediction) -- node[midway, above, font=\scriptsize] {$\min_\Omega H(Y_o,\hat{Y}_s)$} (original_prediction);
 
 \end{tikzpicture}
-\caption{Test}
+\caption{The complete pipeline of PGExplainer.}
 \end{figure}
 
 \begin{figure}
@@ -362,7 +362,7 @@ TODO: Include algorithms?
         \node[draw=gray, thick, rounded corners, fit=(node_emb_i2) (node_emb_v2) (edge_emb_ijv), fill=orange!30, label=above:Node Task] {};
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the target model the created edge embedding differs slightly.}
+\caption{TODO: Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the target model the created edge embedding differs slightly.}
 \end{figure}
 
 \subsection{Regularization Terms}
@@ -444,6 +444,12 @@ Implementation details:
 %\section{Application on Bipartite Graphs?}#
 
 \section{Application on NeuroSAT}
+NeuroSAT: Messages are passed between clauses and literals, as well as literals and their complement. 1. Clause receives from neighboring literals 2. Literals receive from clauses and complement. \\
+(Define flip function that swaps literal row with row of its negation; relevant for NeuroSAT)
+
+We create required data with provided methods, add unsat cores and MUSs as gt and adapt the NeuroSAT model to allow passing edge weights into the adjacency matrix. PGExplainer adapted for SAT data, NeuroSAT embeddings and evaluation.
+
+
 Reimplementation of NeuroSAT provided by Rodhi. As the code used for NeuroSAT can also be found in our Repository, we stress that only the changes described in the following chapter are part of our work. \\
 
 What did we do? What did we change for NeuroSAT? What data was used? How did we adapt PGExplainer? \\
@@ -455,3 +461,35 @@ Changes for explainer:
 Edge embeddings calced by DS and passed to explainer. Calculated edge embeddings by concatenating node embeddings for connected nodes, similar to original. Embeddings fed into MLP, weights sampled with reparam. trick to get edge "probabilities", passed as "unbatched" sampled graph into NeuroSAT predictor. Visualization of SAT problems with edge weights, ands gts. \\
 For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
 For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
+
+
+\textbf{Soft modified connectivity constraint}
+
+To account for the definition of UNSAT cores, that consist of sub-clauses of the original combination of clauses in the problem, we add a constraint that reinforces the prediction of complete clauses. Therefore, if the explainer assigns a high score to an edge $(i,j)$, all edges $(j,k)$ that also connect to the clause node $j$ should receive a high score. Therefore, we introduce a soft constraint that punishes varying edge weights for the same clause. For our sampled bipartite Graph $\hat{G}_s$ with node sets $L$ and $C$ containing literal nodes and clause nodes respectively, we define:
+\begin{equation*}
+    R_c = \sum_{c \in C}  \text{Var}(E_c) = \sum_{c \in C} \frac{1}{|E(c)|} \sum_{e \in E(c)} (e - \bar{E_c})^2
+\end{equation*}
+where $E_c = \{\hat{e}_{i,j} \mid j=c\}$ is the set of edge weights of edges that connect to clause $c$ and $\bar{E_c}$ denotes the mean of $E_c$.
+
+
+\textbf{Hard constraint}
+
+Define PGE formulas over grouped clause edges rather than all edges.
+
+The reparameterization trick is still applied for each edge, but $\epsilon_c$ is sampled per clause instead of per edge, so that all edges that connect to a clause are forced to not only bear the same logit, but also the exact same weight during training.
+\begin{equation}
+    \epsilon_c \sim \text{Uniform}(0,1), \qquad \hat{e}_{l,c}=\sigma((\log \epsilon_c - \log(1-\epsilon_c)+\omega_{ij}/\tau),
+\end{equation}
+
+Additionally, we restrain the edge logits $\omega_{i,j}$ calculated by the MLP to be identical for all edges that connect to the same clause. Let $\Omega_c = \{\hat{\omega}_{i,c} \mid (i,c)\in E\}$ denote the set of logits corresponding to the edges connected to node $c$. We update these logits with:
+\begin{equation}
+    \mu_c = \frac{1}{|\Omega_c|} \sum_{\hat{\omega}_{i,c} \in \Omega_c} \hat{\omega}_{i,c}
+\end{equation}
+We calculate the mean logit $\mu_c$ for all edges that connect to node $c$ with
+\begin{equation}
+    \mu_c = \frac{1}{|E_c|} \sum_{(i,j)\in E_c}\omega_{i,j}.
+\end{equation}
+The update rule is then defined as 
+\begin{equation}
+    \omega_{i,j}' =\mu_c, \qquad \forall(i,j) \in E_c
+\end{equation}
