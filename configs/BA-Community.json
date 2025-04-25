@@ -12,6 +12,7 @@
         "coefficient_L2_reg": 0.0,
         "sample_bias": 0.0,
         "num_explanation_edges": 6,
+        "num_training_instances" : 30,
         "t0": 1.0,
         "tT": 1.0
     }

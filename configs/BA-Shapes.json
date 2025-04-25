@@ -13,6 +13,7 @@
         "sample_bias": 0.0,
         "num_explanation_edges": 6,
         "motif_node_indices": [400,700,5],
+        "num_training_instances" : 30,
         "t0": 5.0,
         "tT": 2.0
     }

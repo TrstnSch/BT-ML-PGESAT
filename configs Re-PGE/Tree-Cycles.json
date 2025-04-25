@@ -12,6 +12,7 @@
         "coefficient_L2_reg": 0.0,
         "num_explanation_edges": 6,
         "motif_node_indices": [511,871,6],
+        "num_training_instances" : 0,
         "t0": 1.0,
         "tT": 5.0
     }

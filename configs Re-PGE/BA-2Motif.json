@@ -11,6 +11,7 @@
         "coefficient_entropy_reg": 0.01,
         "coefficient_L2_reg": 0.0,
         "num_explanation_edges": 5,
+        "num_training_instances" : 0,
         "t0": 5.0,
         "tT": 1.0
     }
