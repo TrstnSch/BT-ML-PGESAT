@@ -297,3 +297,28 @@ Since $P(e_{ij} = 1) = \theta_{ij}$, choosing $\omega_{ij} = \log\frac{\theta_{i
 Or is the loss/learning objective defined for each graph individually? -> Algorithm contains "k sampled graphs per each graph G(i)"
 
 learning objective should be over all samples or per sample?
+
+
+------------------------------
+
+tikz graphs
+
+How do I proceed: original PGExplainer was used in collective setting -> Trained on test data
+
+Possible to compare their inductive setting results to their collective baseline?
+
+We test in indictive setting, hard to compare. Newer Paper provides inductive results in the form of plots
+
+"This can be understood as an extension of the theoretical background? Since the paper differs from the codebase and is imprecise about certain descriptions (see Holdijk), we aim to give a thorough introduction that regards everything."
+
+
+Since sweeps take ages:
+Correct approach to use general settings of PGE with different GNN architecture inductive.
+-> SWEEP THIS -> BASELINE Best AUROC accuracies over 10 seeds for all datasets (roughly comparable to new PGE)
+
+THEN evaluate effects of different selected nodes etc. on same parameters for comparison?
+Comparisons have to be made on same set of hyperparams with only one thing changed!?
+
+IF Downstream task changes -> Explainer has to be swept again, correct? Since internal calculations change/scale
+
+=>

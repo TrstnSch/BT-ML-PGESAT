@@ -31,6 +31,7 @@
 \usetikzlibrary{intersections, positioning}
 \usetikzlibrary{shapes.geometric}
 \usetikzlibrary{fit, backgrounds}
+\usepackage{tabularx} % Add this to your preamble if not already included
 % \usepackage{pgfplots}
 
 % Bibliography

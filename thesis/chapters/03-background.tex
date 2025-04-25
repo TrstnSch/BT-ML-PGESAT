@@ -1,31 +1,62 @@
 \chapter{Theoretical Background}
 \label{ch:Background}
-In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT).
+In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT). We start by giving an introduction to deep learning in section \ref{sec:deep_learning}, including a specific architecture and regularization techniques. In section \ref{sec:graph_theory} we define the necessary graph theory, including bipartite graphs and random graphs. To understand the motivation behind the objective of PGExplainer we outline the relevant concepts of information theory, namely entropy, cross-entropy and mutual information, in section \ref{sec:information_theory}. Since the explainer model operates on Graph Neural networks, we introduce the historically relevant GNN model by Scarselli et al.\cite{4700287} in section \ref{sec:gnns}, as well as two succeeding models. After introducing the most relevant concepts, in section \ref{sec:gnn_explainability} we briefly discuss the field of explainability in graph neural networks to motivate the selection of this approach for our work. Lastly, in section \ref{sec:SAT} we describe the boolean satisfiability problem that motivates this work.
 
 \section{Deep learning}
+\label{sec:deep_learning}
+TODO: Hyperparameters and train/val/test somewhere!
+
+
+TODO: Generally more examples, sources etc., to convey broad knowledge in the field
+
 In this chapter we introduce Deep Learning (DL) in the context of Machine Learning (ML) and their concepts required for this work. The definitions in this chapter loosely follow Goodfellow et al.\cite{Goodfellow-et-al-2016}.
 
-An ML algorithm generally learns to perform a certain task from data. Common ML tasks include classification, where the goal is to assign an input to one of $k$ categories, and regression, where the program shall predict a numeric value given some input. 
-
-ML algorithms can be broadly divided into supervised and unsupervised learning. In this work, we focus on supervised learning, meaning that the algorithm learns from a dataset containing both features and labels or targets that the algorithm is supposed to predict. In other words, the algorithm learns from a training set of inputs $x$ and outputs $y$ to associate another unseen input with some output.
+ML algorithms generally learn to perform certain tasks from data that can broadly be divided into supervised and unsupervised learning. In this work, we focus on supervised learning, meaning that the algorithm learns from a dataset containing both features and labels or targets that the algorithm is supposed to predict. In other words, the algorithm learns from a training set of input examples, defined as vectors $\mathbf{x} \in \mathbb{R}^n$, with entries $x_i$ denoting features, and output examples $\mathbf{y}$, whose shape depends on the task at hand, to associate another unseen input with some target output.
+Common supervised ML tasks include classification, where the goal is to assign an input to one of $k$ categories, and regression, where the program shall predict a numeric value given some input. 
+TODO: WHAT IS A MODEL?
 
 %Deep learning entails adding more layers and units to the model used in our algorithm to allow for representations of functions with increasing complexity.
 
-DL entails expanding the size of the model used in our algorithm to allow for representations of functions with increasing complexity. This enables many human-solvable tasks that consist of mapping an input vector to an output vector to be performed with DL, given sufficiently large models and datasets.
+DL entails expanding the size of the model used in our algorithm to allow for representations of functions with increasing complexity. This enables many human-solvable tasks that consist of mapping an input vector to an output vector to be performed with DL, given sufficiently large models and datasets. Most notably, Krizhevsky et al.\cite{krizhevsky2012imagenet} achieved record-breaking results by using a large, deep convolutional network for image classification.
 
-In many cases DL involves optimizing a function, usually by minimizing $f(x)$. This objective function is also referred to as loss function in the context of minimization. %We denote $x^*=\text{arg min} f(x)$.
-To minimize a function $f(x)$ we make use of the derivative $f'(x)$ that tells us how to change $x$ in order to get an improvement in $y$. We can reduce $f(x)$ by moving $x$ in the direction opposite of the sign of its derivative, since $f(x-\epsilon \text{ sign}(f'(x))) < f(x)$ for small enough $\epsilon$. This technique is called gradient descent (see Cauchy\cite{cauchy1847methode}).
+However, increasing the size of a model comes with new challenges. Since models become more complex with increasing number of layers, subnetworks and parameters, they are commonly treated as "black box", as it is difficult to explain their decision-making process\cite{noor2024survey}. Thus, the need for methods that can explain and interpret such models arises. Furthermore, the increasing number of parameters directly raises the computational complexity, resulting in longer training times and higher hardware requirements. This may also impose limitations when deploying the model on low-resourced end-devices.
 
-Furthermore, a DL algorithm typically consists of the following components: a dataset specification, an objective function, an optimization procedure, like gradient descent, and a model. %5.10
+TODO: Formally define objective? What exactly does it do?
+In many cases DL involves optimizing an objective function, usually by minimizing $f(x)$, that guides the model. This objective function is also referred to as loss function in the context of minimization. %We denote $x^*=\text{arg min} f(x)$.
+To minimize a function $y = f(x)$, where $y,x \in \mathbb{R}$, we make use of the derivative $f'(x)$ that tells us how to change $x$ in order to get an improvement in $y$. We can reduce $f(x)$ by moving $x$ in the direction opposite of the sign of its derivative, since $f(x-\epsilon \text{ sign}(f'(x))) < f(x)$ for small enough $\epsilon$. Since we usually want to minimize a function with multiple inputs, we let $\mathbf{x} \in \mathbb{R}^n$ be a vector with $n$ elements. The partial derivative $\frac{\partial}{\partial x_i}f(\mathbf{x})$ is utilized, telling us how $f$ changes when only $x_i$ increases at point $\mathbf{x}$. To generalize this to a vector, the gradient $\nabla_xf(\mathbf{x})$ of $f$ is defined as the vector containing all partial derivatives. The aforementioned technique used to minimize a function is hence called gradient descent (see Cauchy\cite{cauchy1847methode}).
+
+Ultimately, a DL algorithm typically consists of the following components: a dataset, an objective function, an optimization procedure like gradient descent, and a model. %5.10
 
 \subsection{Multilayer Perceptron}
-A classical DL model is the multilayer perceptron (MLP) with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\Theta)$ and learns the value of the parameters $\Theta$ that best approximate the function. These models are also referred to as feedforward neural networks, as they process information from $x$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(x)))$ that consists of input layer $f^{(1)}$, hidden layer $f^{(2)}$ and output layer $f^{(3)}$. The length of this chain of functions is called depth and origin of the term "deep learning". The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(x)$ at different points in the training and labels $y\approx f^*(x)$. These training examples dictate the output layer to generate a value close to $y$ for each $x$. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued with each vector element, referred to as unit, loosely taking the role of a neuron in neuroscience. Models are therefore also referred to as neural networks.
+TODO: Bishop 1995 for MLP?
+
+
+A classical DL model is the multilayer perceptron (MLP) with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\Theta)$ and learns the value of the parameters $\Theta$ that best approximate the function. These models are also referred to as feedforward neural networks, as they process information from $x$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(x)))$ that consists of input layer $f^{(1)}$, hidden layer $f^{(2)}$ and output layer $f^{(3)}$. The length of this chain of functions defines the depth of a model, coining the term "deep learning". The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(x)$ at different points in the training and labels $y\approx f^*(x)$. These training examples dictate the output layer to generate a value close to $y$ for each input $x$, or to produce a higher-level representation that can be used for subsequent tasks. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued with each vector element, referred to as unit, TODO: ANALOGY!!! loosely taking the role of a neuron in neuroscience. Models are therefore also referred to as neural networks.
 
 %We use non-linear activation functions in layers to describe features and keep the model from learning a strictly linear transformation of its inputs. Result for a layer is vector of hidden units $h=g(W^Tx+b)$, where $W$ contains the weights of a linear transformation and b the biases. x is the input vector. $g$ is the activation function that is usually applied element-wise, such as ReLU or Sigmoid.
 
-A linear layer for our model with parameters $\Theta$ consisting of weight $w$ and bias $b$ can be described as $f(x; w,b)=x^Tw+b$ for an input vector $x$. To keep the model from strictly learning a linear function of its inputs we can calculate the values of a layer $h$ by applying an activation function $g$ to its output to describe the features. This results in our hidden layer $h=g(W^Tx+c)$, with $W$ containing the weights of a linear transformation and $c$ the biases.
+An input or intermediate layer for our model could be defined as:
+\begin{equation}
+    f^{(i)}(\mathbf{x}; \mathbf{W},\mathbf{c})=\mathbf{W}^\top\mathbf{x}+\mathbf{c},
+\end{equation}
+where $\mathbf{W} \in \mathbb{R}^{m\times n}$ contains the weight matrix for $m$ units with $n$ features and $\mathbf{c}\in \mathbb{R}^m$ is a vector of bias terms.
+To keep the model from strictly learning a linear function of its inputs we can calculate the vector of hidden units $\mathbf{h}$ by applying an activation function $g$ to the output of the linear layer:
+\begin{align}
+    \mathbf{h} = g(f^{(i)}(\mathbf{x}; \mathbf{W},\mathbf{c})).
+\end{align}
+The activation function $g$ is typically applied element-wise to describe the features of a hidden layer:
+\begin{equation}
+    h_i = g(\mathbf{x}^\top\mathbf{W}_{:,i}+c_i).
+\end{equation}
+The hidden units $\mathbf{h}$ can then serve as input to the next hidden layer or directly to the output layer.
 
-The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity (see Liu et al.\cite{Liu2020}). Examples are the Sigmoid function
+An example for a linear output layer that calculates a scalar for an input vector $\mathbf{h}$ is
+\begin{equation}
+    f^{(i+1)}(\mathbf{h}; \mathbf{w},b)=\mathbf{h}^\top\mathbf{w}+b,
+\end{equation}
+with weight vector $\mathbf{w} \in \mathbb{R}^n$ and bias $b \in \mathbb{R}$ as parameters. This would define our model consisting of the two defined layers as $f(x;\theta)$ with parameters $\theta = (\mathbf{W}, \mathbf{c}, \mathbf{w}, b)$. The learning algorithm would thus adapt the parameters $\theta$ to approximate the target function as close as possible.
+
+The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron (TODO: ANALOGY). We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity (see Liu et al.\cite{Liu2020}). Examples are the Sigmoid function
 
 %GNN BOOK: \\
 %initiated with random weights or values, updated in each neuron with backpropagation. Learned knowledge stored in connections digitally. \\
@@ -44,38 +75,40 @@ and the Rectified Linear Unit (ReLU)
 
 %To minimize a function $f(x)$ we make use of the derivative $f'(x)$ that tells us how to change $x$ in order to get an improvement in $y$. We can reduce $f(x)$ by moving $x$ in the direction opposite of the sign of its derivative, since $f(x-\epsilon \text{sign}(f'(x))) < f(x)$ for small enough $\epsilon$. This technique is called gradient descent (see Cauchy\cite{cauchy1847methode}).
 
-\subsection{Backpropagation}
-The back propagation algorithm is commonly used during neural network training. It optimizes the network parameters by leveraging gradient descent. It first calculates the values for each unit in the network given the input and a set of parameters in a forward order. Then the error for each variable to be optimized is calculated, and the parameters are updated according to their corresponding partial derivative backwards. These two steps will repeat until reaching the optimization target. \\
-TODO: Concrete formulas with chain rule of calculus? 
+\textbf{Backpropagation}
+
+The back propagation algorithm is commonly used during neural network training. It optimizes the network parameters by leveraging gradient descent. It first calculates the values for each unit in the network given the input and a set of parameters in a forward order. Then the error for each variable to be optimized is calculated, and the parameters are updated according to their corresponding partial derivative backwards. These two steps will repeat until reaching the optimization target.
 
 \subsection{TODO: Regularization}
-"A central problem in machine learning is how to make an algorithm that will
-perform well not just on the training data, but also on new inputs. Many strategies
-used in machine learning are explicitly designed to reduce the test error, possibly
-at the expense of increased training error. These strategies are known collectively
-as regularization."
+A central problem of not only deep learning but machine learning in general is the creation of an algorithm that generalizes well, therefore performing not only on training data, but also on unseen test inputs. There exists many strategies that aim to reduce the test error, sometimes at the expense of an increase in training error. These strategies are known as regularization. We introduce a few of these strategies that are relevant in the course of this work.
+
+\textbf{Parameter Norm Penalties}
+
+
 
 Parameter Norm Penalties (e.g. Weight decay)
 %"Many regularization approaches are based on limiting the capacity of models, such as neural networks, linear regression, or logistic regression, by adding a parameter norm penalty Ω(θ) to the objective function J. We denote the regularized objective function by ˜ J: J˜(θ; X, y) = J(θ; X, y) + αΩ(θ)
 %where α ∈ [0, ∞) is a hyperparameter that weights the relative contribution of the norm penalty term, Ω, relative to the standard objective function J. Setting α to 0 results in no regularization. Larger values of α correspond to more regularization. When our training algorithm minimizes the regularized objective function J˜ it will decrease both the original objective J on the training data and some measure of the size of the parameters θ (or some subset of the parameters). Different choices for the parameter norm Ω can result in different solutions being preferred. In this section, we discuss the effects of the various norms when used as penalties on the model parameters." e.g. L1 or L2 norm
 
-Early stopping
-"When training large models with sufficient representational capacity to overfit
-the task, we often observe that training error decreases steadily over time, but
-validation set error begins to rise again."
-"This means we can obtain a model with better validation set error (and thus,
-hopefully better test set error) by returning to the parameter setting at the point in
-time with the lowest validation set error."
-"Every time the error on the validation set
-improves, we store a copy of the model parameters. When the training algorithm
-terminates, we return these parameters, rather than the latest parameters."
-"algorithm terminates when no parameters have improved over the best recorded
-validation error for some pre-specified number of iterations. "
 
-Dropout
+Norm Penalties as Constrained Optimization
 
-\subsection{Batch Normalization}
-In deep models composed of several layers the gradient tells us how to update each parameter assuming that the other layers do not change. Since in practice all layers are updated simultaneously, this may lead to unexpected results. Batch normalization is an optimization technique that can be applied to any input or hidden layer to reduce the aforementioned problem\cite{Goodfellow-et-al-2016}.
+
+
+\textbf{Early stopping}
+
+When training a deep model, a commonly observable problem is the training error steadily decreasing over time, but the validation set error rising after some time, indicating that the model is overfitting to the train data. To obtain a better model we may then return to a parameter setting at an earlier point in the training, where the validation set error was at its lowest. In practice, we store a copy of the model parameters at any point in training where the validation error decreases. Thus, when the training is concluded we return the stored set of parameters, rather than the latest one. Additionally, we may stop our algorithm early if the validation error does not decrease over a set period of iterations.
+
+\textbf{Dropout}
+
+Dropout \cite{hinton2012improving} is a regularization technique used to prevent a neural network from "overfitting" to the training data, which occurs due to feature detectors (TODO!?) of models being tuned to the training data, but not to the unseen test data. This is done by randomly omitting each hidden unit from the network with a common probability $p$ for each presentation of each training instance, to avoid hidden units relying on the presence of other hidden units. Usually, to reduce the error on a test set, an average of the predictions of multiple networks is consulted, which requires training many separate networks. Random dropout provides a computationally cheap alternative to this approach. Effectively, at each presentation of each training instance a different network is used, but the present hidden units share the same weights across all these networks.
+
+At test time, the "mean network" is used, that contains all hidden units with their outgoing weights scaled by the factor $\frac{1}{1-p}$, to account for more hidden units being present during this stage.
+
+\textbf{Batch Normalization}
+
+While not strictly a regularization technique, batch normalization\cite{ioffe2015batch} often serves a similar purpose in practice by improving generalization.
+In deep models composed of several layers the gradient tells us how to update each parameter assuming that the other layers do not change. Since in practice all layers are updated simultaneously, this may lead to unexpected results. Batch normalization is an optimization technique that can be applied to any input or hidden layer to reduce the aforementioned problem. We follow the definition by Goodfellow et al.\cite{Goodfellow-et-al-2016}.
 
 Let $\mathbf{B}$ be a minibatch of activations of the layer to normalize, in the form of a design matrix with rows of activations. To normalize $\mathbf{B}$, it is replaced by
 \begin{equation}
@@ -96,60 +129,97 @@ When testing the model, we replace $\boldsymbol{\mu}$ and $\boldsymbol{\sigma}$ 
 
 \subsection{Monte Carlo Sampling}
 In order to best approximate a randomized algorithm we can make use of Monte Carlo methods as described in Goodfellow et al.\cite{Goodfellow-et-al-2016}[p.590]. A common practice in ML is to draw samples from a probability distribution and using these to form a Monte Carlo estimate of some quantity. This can be used to train a model that can then sample from a probability distribution itself. \\
-More specifically, the idea of Monte Carlo sampling is to view a sum as if it was an expectation under some distribution and to approximate this estimate with a corresponding average.
+More specifically, the idea of Monte Carlo sampling is to view a sum of function evaluations, such as those of a loss function, as if it was an expectation under some probability distribution. This estimate is approximated with a corresponding average.
 Let 
 \begin{equation}
-    s = \sum_x p(x)f(x)=E_p[f(x)]
+    s = \sum_x p(x)f(x)=\mathbb{E}_p[f(x)]
 \end{equation}
-be the sum to estimate with $p$ being a probability distribution over a random variable $x$. Then $s$ can be approximated by drawing $n$ samples from $p$ and constructing the empirical average 
+be the sum to estimate with $p$ being a probability distribution over a random variable $x$ and $\mathbb{E}$ denoting the expectation. Then $s$ can be approximated by drawing $n$ samples from $p$ and constructing the empirical average 
 \begin{equation}
     \hat{s}_n=\frac{1}{n}\sum_{i=1}^n f(x^{(i)}).
 \end{equation}
 
 
 \section{Graph Theory}
-These definitions will loosely follow Liu et al.\cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel\cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as $G$ on $V$. An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v$ is the number of edges connected to $v$ and denoted by $d(v)$. $G$ can be described by an adjacency matrix $A \in \mathbb{R}^{n \times n}$, where
-
-Nodes in V are associated with the d-dimensional
-features, denoted by X RN d
+\label{sec:graph_theory}
+These definitions will loosely follow Liu et al.\cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel\cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as "$G$ on $V$". An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We denote the set of edges that are incident to $u$ as $E(u) = \{(v,u) \in E(G) \mid v \in \mathcal{N}(u)\}$. Additionally, we define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v \in V(G)$ is the number of edges connected to $v$ and denoted by $d(v) = |\{(u,v) \in E(G) \mid u \in V(G)\}|$. $G$ can be described by an adjacency matrix $A \in \mathbb{R}^{n \times n}$, where
 \begin{equation*}
     A_{ij}=\begin{cases}
         1 & \text{if } \{v_i,v_j\}\in E \text{ and } i \neq j, \\
         0 & \text{otherwise.}
     \end{cases}
 \end{equation*}
-If $G$ is an undirected Graph the adjacency matrix will be symmetrical. \\
-Alternatively an undirected graph $ G=(V, E)$ with $n$ nodes and $m$ edges can be represented as an incidence matrix $M \in \mathbb{R}^{n \times m}$, where
-\begin{equation*}
-    M_{ij}=\begin{cases}
-        1 & \text{if } \exists k \text{ s.t. } e_j = \{v_j, v_k\}, \\
-        0 & \text{otherwise.}
-    \end{cases}
-\end{equation*}
-The diagonal degree matrix $D\in \mathbb{R}^{n\times n}$ of $G$ is defined via:
+If $G$ is an undirected Graph the adjacency matrix will be symmetrical, as seen in figure \ref{fig:graph-example}. \\
+%Alternatively an undirected graph $ G=(V, E)$ with $n$ nodes and $m$ edges can be represented as an incidence matrix $M \in \mathbb{R}^{n \times m}$, where
+%\begin{equation*}
+%    M_{ij}=\begin{cases}
+%        1 & \text{if } \exists k \text{ s.t. } e_j = \{v_j, v_k\}, \\
+%        0 & \text{otherwise.}
+%    \end{cases}
+%\end{equation*}
+The diagonal degree matrix $D\in \mathbb{R}^{n\times n}$ of $G$ is defined as:
 \begin{equation*}
     D_{ii} = d(v_i).
 \end{equation*}
 
 $G$ is called a subgraph of another graph $G'=(V',E')$ if $V(G) \subseteq V(G')$ and $E(G) \subseteq E(G')$. This is denoted as $H \subseteq G$. The number of nodes in a graph $|V|$ is its order and the number of edges $|E|$ is its size (see Diestel\cite{Diestel2017}).
-We additionally define bipartite graphs according to Asratian et al.\cite{asratian1998}: A graph $G$ is bipartite if the set of nodes $V$ can be partitioned into two sets $V_1$ and $V_2$ so that no two nodes from the same set are adjacent. The sets $V_1$ and $V_2$ are called colour classes and $(V_1, V_2)$ is a bipartition of $G$. This means that if a graph is bipartite all nodes in $V$ can be coloured by at most two colours so that no two adjacent nodes share the same colour.\\
+We additionally define bipartite graphs according to Asratian et al.\cite{asratian1998}: A graph $G$ is bipartite if the set of nodes $V$ can be partitioned into two disjoint sets $V_1$ and $V_2$ such that: $V = V_1 \cup V_2, V_1 \cap V_2 = \emptyset$ and $\forall (i,j) \in E(G): (i \in V_1 \land j \in V_2) \lor (i \in V_2 \land j \in V_1)$. This formalizes that no two nodes from the same set are adjacent. The sets $V_1$ and $V_2$ are called colour classes and $(V_1, V_2)$ is a bipartition of $G$. This means that if a graph is bipartite all nodes in $V$ can be coloured by at most two colours so that no two adjacent nodes share the same colour.\\
 \begin{figure}[h]
     \centering
-    \begin{tikzpicture}[node distance=1.5cm, every node/.style={draw, circle}]
-        % Define Nodes
-        \node (1) {1};
-        \node (2) [right of=1] {2};
-        \node (4) [below of=2] {4};
-        \node (5) [right of=2] {5};
-        
-        % Draw Edges
-        \draw (1) -- (2);
-        \draw (2) -- (4);
-        \draw (1) -- (4);
-        \draw (2) -- (5);
-    \end{tikzpicture}
-    \caption{A simple undirected graph $G$ with $V=\{1,2,4,5\}$ and $E=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$.}
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \begin{tikzpicture}[node distance=1.5cm, every node/.style={draw, circle}]
+            % Define Nodes
+            \node (1) {1};
+            \node (2) [right of=1] {2};
+            \node (4) [below of=2] {4};
+            \node (5) [right of=2] {5};
+            
+            % Draw Edges
+            \draw (1) -- (2);
+            \draw (2) -- (4);
+            \draw (1) -- (4);
+            \draw (2) -- (5);
+        \end{tikzpicture}
+    \end{minipage}%
+    \begin{minipage}{0.45\textwidth}
+        \vspace*{0.1cm} % Adjust this value to fine-tune vertical alignment
+        \[
+        A = \begin{bmatrix}
+            0 & 1 & 1 & 0 \\
+            1 & 0 & 1 & 1 \\
+            1 & 1 & 0 & 0 \\
+            0 & 1 & 0 & 0 \\
+        \end{bmatrix}
+        \]
+    \end{minipage}
+    \caption{A simple undirected graph $G$ on $V=\{1,2,4,5\}$ with $E=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$ (left), and its adjacency matrix A (right).}
     \label{fig:graph-example}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        every node/.style={circle, draw, minimum size=1cm},
+        on grid,
+        node distance=2cm
+    ]
+        % Define nodes in two color classes
+        \node[fill=blue!20] (u1) at (0,0) {1};
+        \node[fill=blue!20] (u2) at (2,0) {2};
+        \node[fill=blue!20] (u3) at (4,0) {3};
+
+        \node[fill=red!20] (v1) at (1,-2) {a};
+        \node[fill=red!20] (v2) at (3,-2) {b};
+
+        % Edges between classes
+        \draw (u1) -- (v1);
+        \draw (u1) -- (v2);
+        \draw (u2) -- (v1);
+        \draw (u3) -- (v2);
+    \end{tikzpicture}
+    \caption{A bipartite graph with color classes $V_1 = \{1,2,3\}$ (blue) and $V_2=\{a,b\}$ (red).}
+    \label{fig:bipartite-colored}
 \end{figure}
 
 \textbf{Random Graphs}
@@ -177,6 +247,7 @@ A random graph is further described by Diestel\cite{Diestel2017}[p.323] as follo
 %E(G) = Edges of G. G is called a random graph on V with edge probability $p$. \bigskip
 
 \section{Information Theory}
+\label{sec:information_theory}
 To fully understand the learning objective of PGExplainer it is necessary to define the concepts of entropy and mutual information. We follow the definitions by Cover et al.\cite{Cover2005}[p.13] if not stated otherwise.
 
 \subsection{Entropy}
@@ -199,13 +270,12 @@ The conditional entropy of $Y$ given $X$ is defined as the expected value of the
 \begin{align}
     H(Y|X)&= -\sum_{x \in \mathcal{X}} p(x) H(Y|X=x) \\
     &= - \sum_{x \in \mathcal{X}} \sum_{y \in \mathcal{Y}}p(x,y) \log p(y|x) \\
-    &= -\mathbb{E} \log p(Y|X),
+    &= -\mathbb{E} \log p(Y|X).
 \end{align}
-with expectation $\mathbb{E}$.
 
 \subsection{Relative Entropy and Cross-Entropy}
 %Elements of Information Theory: equation 2.26 describes KL distance/relative entropy \bigskip
-The relative entropy between two distributions is a measure of "distance" between the two. It measures the inefficiency of assuming a distribution to be $q$ when the true distribution is $p$. It is not a true measure of distance as it is among other things not symmetrical. The relative entropy takes a value of $0$ only if $p = q$.
+The relative entropy between two distributions is a measure of "distance" between the two. It measures the inefficiency of assuming a distribution to be $q$ when the true distribution is $p$. Note that it is not a true measure of distance as it is not symmetrical. The relative entropy takes a value of $0$ only if $p = q$.
 We define the KL divergence or relative entropy between two probability mass functions $p(x), q(x)$ as
 \begin{equation}
     D_{KL}(p||q) = \sum_{x \in \mathcal{X}} p(x)\log \frac{p(x)}{q(x)}
@@ -234,7 +304,7 @@ Suppose we know the true distribution $p$ of our random variable. We could then 
 %    &= H(P) + D_{KL}(P||Q)
 %\end{align}
 
-We derive for the discrete case with mass probability functions $p, q$ defined on the same support $\mathcal{X}$:
+Since this is later applied in the PGExplainer\ref{}, we derive for the discrete case with mass probability functions $p, q$ defined on the same support $\mathcal{X}$:
 \begin{align}
     H(p,q) = H(p) + D_{KL}(p||q) &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x)\log \frac{p(x)}{q(x)} \\
     &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x) \log p(x) -\sum_{x \in \mathcal{X}} p(x) \log q(x) \\
@@ -243,7 +313,7 @@ We derive for the discrete case with mass probability functions $p, q$ defined o
 
 \subsection{Mutual Information}
 %(see Cover et al.\cite{Cover2005}[p.19])
-Another closely related concept is mutual information. It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other. A high mutual information therefore implies that the information of one variable can be gathered from the other.
+A closely related concept is mutual information. It measures the amount of information that one random variable contains about another or the reduction in uncertainty of said variable due to knowing the other. A high mutual information therefore implies that the information of one variable can be gathered from the other.
 
 Let $X$ and $Y$ be two random variables with the joint probability mass function $p(x,y)$ and marginal probability mass functions $p(x)$ and $p(y)$. Mutual information $I(X;Y)$ is the relative entropy between the joint distribution and the product distribution $p(x)p(y)$: 
 \begin{align}
@@ -252,22 +322,24 @@ Let $X$ and $Y$ be two random variables with the joint probability mass function
 \end{align}
 
 \section{Graph Neural Networks}
+\label{sec:gnns}
 TODO: DOES THIS CONVEY MESSAGE PASSING???
 
-Graph Neural Networks(GNNs)\cite{4700287} are a DL-based approach that operates on graphs. Due to their unique non-Euclidean property, they find usage in classification, link prediction, and clustering tasks. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks\cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings\cite{cai2018comprehensive} (TODO: NON-EXISTENT?) to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu et al.\cite{Liu2020}).\bigskip
+Graph Neural Networks(GNNs)\cite{4700287} are a DL-based approach that operates on graphs. Due to their unique non-Euclidean property they find usage in many areas, including node classification \cite{gao2019graph}, graph classification\cite{xu2018powerful} and link prediction tasks\cite{zhang2018link}. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks\cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings\cite{cai2018comprehensive} (TODO: NON-EXISTENT?) to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu et al.\cite{Liu2020}).\bigskip
 
+TODO: CONCRETELY DEFINE NODE AND GRAPH TASKS!
 Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements a classifier on complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
-The supervised GNN model by Scarselli et a.\cite{4700287} tries to preserve the important,  structural information of graphs by encoding their topological relationships among nodes.
+The study of GNNs was first introduced in \cite{gori2005new} and refined in \cite{4700287}. Thus, we describe the supervised GNN model by Scarselli et al.\cite{4700287} that aims to preserve the important, structural information of graphs by encoding their topological relationships among nodes. 
 
-A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^S$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al.\cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the $d$-dimensional features of each node and $x_e$ the optional features of each edge. $co[v]$ and $ne[v]$ denote the set of edges and neighbors of node $v$ respectively. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
+A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^S$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al.\cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the $d$-dimensional features of each node and $x_e$ the optional features of each edge. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
 \begin{equation}
-    \mathbf{h}_v = f(\mathbf{x}_v, \mathbf{x}_{co[v]}, \mathbf{h}_{ne[v]}, \mathbf{x}_{ne[v]}),
+    \mathbf{h}_v = f(\mathbf{x}_v, \mathbf{x}_{E(v)}, \mathbf{h}_{\mathcal{N}(v)}, \mathbf{x}_{\mathcal{N}(v)}),
     \label{eq:gnn_state_local}
 \end{equation}
 \begin{equation}
     \mathbf{o}_v = g(\mathbf{h}_v, \mathbf{x}_v),
 \end{equation}
-with $\mathbf{x}$ denoting input features and $\mathbf{h}$ the hidden state. $\mathbf{x}_v, \mathbf{x}_{co[v]}, \mathbf{h}_{ne[v]}, \mathbf{x}_{ne[v]}$ denote the features of the node $v$ and of its edges, as well as the states and features of its neighboring nodes, respectively. We define $\mathbf{H}, \mathbf{O}, \mathbf{X} \text{ and  }\mathbf{X}_N$ as the matrices that are constructed by stacking all states, outputs, features, and node features, respectively. This allows us to define with the global transition function $F$ and the global output function $G$, which are stacked versions of their local equivalent for all nodes in a graph: 
+with $\mathbf{x}$ denoting input features and $\mathbf{h}$ the hidden state. $\mathbf{x}_v, \mathbf{x}_{E(v)}, \mathbf{h}_{\mathcal{N}(v)}, \mathbf{x}_{\mathcal{N}(v)}$ denote the features of the node $v$ and of its incident edges, as well as the states and features of its neighboring nodes, respectively. We define $\mathbf{H}, \mathbf{O}, \mathbf{X} \text{ and  }\mathbf{X}_N$ as the matrices that are constructed by stacking all states, outputs, features, and node features, respectively. This allows us to define with the global transition function $F$ and the global output function $G$, which are stacked versions of their local equivalent for all nodes in a graph: 
 \begin{equation}
     \mathbf{H} = F(\mathbf{H}, \mathbf{X}),
     \label{eq:gnn_state_global}
@@ -311,19 +383,36 @@ Morris et al.\cite{morris2019weisfeiler} propose an implementation for a GNN mod
 \end{equation}
 where $W_1^{(l)}$ and $W_2^{(l)}$ are two layer-specific trainable weight matrices.
 
-\section{Perturbation-based Explainability in GNNs}
-\label{sec:perturbation-based_explainability}
-Methods in DL have seen growth in performance in many tasks of artificial intelligence, including GNNs. However, the interpretability of these models is often limited due to their black-box design. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields. There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into gradients/feature-based, perturbation-based, decomposition methods and surrogate methods. Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations. \\
-In this work we focus on the perturbation-based approach, more specifically the PGExplainer\cite{luo2020parameterized}, that aims to evaluate the change of prediction with respect to input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. These different approaches mostly differ in the specific mask generation algorithm, the type of mask used and the objective function. \\
-It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. %TODO: Expand on reparameterization trick?
+\section{Explainability in GNNs}
+\label{sec:gnn_explainability}
+Methods in DL have seen growth in performance in many tasks of artificial intelligence, including GNNs, since graphs are able to capture real-world data such as social networks or chemical molecules\cite{ying2018graph},\cite{ma2021deep}. However, the interpretability of these models is often limited due to their black-box design\cite{noor2024survey}. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields\cite{ribeiro2016should}.
 
-Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al.\cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. TODO: Other metrics include fidelity, results of taxonomy propose only using PGExplainer for Node Classification as it achieves low fidelity on Graph tasks
+There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al. \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into four branches. Gradients/feature-based methods use gradients as approximations of importance scores. Sensitivity Analysis\cite{baldassarre2019explainability} is an example that directly uses squared values of gradients as importance scores of input features. This enables the scores to be calculated directly with back-propagation.
+
+Perturbation-based approaches like GNNExplainer\cite{ying2019gnnexplainer} and PGExplainer\cite{luo2020parameterized} study the variation of the output with regard to different input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. PGExplainer aims to improve the GNNExplainer by providing a way of generating explanations with a global understanding of the GNN, significantly improving the computational cost. Another approach is SubgraphX\cite{yuan2021explainability}, which utilizes Monte Carlo Tree search to generate subgraph-level explanations. This does however entail a higher computational cost. 
+
+Surrogate methods for deep graph models are inspired by surrogate methods for image data, that rely on neighboring areas of an input. Since graph data is concrete and contains topological information it is difficult to define the neighboring regions of an input graph. The idea is to obtain a local dataset containing neighboring data objects and predictions and fitting a simple, interpretable surrogate model to learn the local dataset. The explanations of the surrogate model are then regarded as the explanations of the original model. GraphLime\cite{huang2022graphlime} is an example that considers the $N$-hop neighboring nodes of a target node as the local dataset, where $N$ may be the number of GNN-layers. The weighted features of a non-linear surrogate model are then regarded as explanations. However, this method only explains node features, rather than the graph structure.
+
+Decomposition methods, also motivated by success in the image domain, aim to measure input feature importance by decomposing the prediction into several terms, regarded as feature dependant importance score. Approaches for deep graph neural networks, like Layer-wise Relevance Propagation\cite{baldassarre2019explainability}, decompose the output prediction score to node importance scores. The decomposition rule is based on hidden features and weights, only enabling the study of node importance rather than graph structures.
+
+Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations.
+
 
 To fully trust the explanations provided by an explainer model, they must satisfy certain criteria, since there often is a mismatch between the optimizable metrics like accuracy and the actual metric of interest, which may not be measurable (see Ribeiro et al.\cite{ribeiro2016should}). First and foremost, an explanation should be \textbf{interpretable} and therefore provide qualitative, human-understandable interpretations, that also consider the possibility of limited user knowledge. Additionally, \textbf{local fidelity} asserts that explanations should be faithful in a local context and consider the models' behavior in the vicinity of predicted instances. Explainers that treat the model to be explained as a black-box are \textbf{model-agnostic} and should therefore be able to explain any model. Lastly, a \textbf{global perspective} is needed to explain a model fully, allowing us to take sample explanations of individual predictions that serve as representation of the model.
+
+TODO: Claims to satisfy?
+Since the perturbation-based PGExplainer\cite{luo2020parameterized} claims to satisfy all the criteria, while also maintaining reasonable computational cost, we select this model for the course of this study. It is furthermore able to generate explanations in an inductive setting, which we aim to do in \ref{}.
+
+The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. 
+
+These different approaches mostly differ in the specific mask generation algorithm, the type of mask used and the objective function. It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al.\cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. %TODO: Expand on reparameterization trick?
+
+Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al.\cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. TODO: Other metrics include fidelity, results of taxonomy propose only using PGExplainer for Node Classification as it achieves low fidelity on Graph tasks
 
 TODO: figure of perturbation pipeline?
 
 \section{Boolean Satisfiability Problem}
+\label{sec:SAT}
 We define the Boolean Satisfiability Problem (SAT) according to Guo et al.\cite{guo2023machine}[p.641]: \\
 A Boolean formula is constructed from Boolean variables, that only evaluate to True (1) or False (0), and the three logic operators conjunction ($\wedge$), disjunction ($\vee$) and negation ($\neg$). SAT aims to evaluate whether there exists a variable assignment for a formula constructed of said parts so that it evaluates to True. If so, the formula is said to be satisfiable or unsatisfiable otherwise. Every propositional formula can be converted into an equivalent formula in conjunctive normal form (CNF), which consists of a conjunction of one or more clauses. These clauses must contain only disjunctions of at least one literal (a variable or its negation). In this work we consider only formulas in CNF, as NeuroSAT\cite{selsam2018learning} assumes SAT problems to be in CNF. An example of a satisfiable formula in CNF over the set of variables $V=\{x_1,x_2\}$ is 
 $$\psi(V) = (x_1) \land (\neg x_1 \lor x_2) \land (\neg x_2 \lor x_2)$$
@@ -333,14 +422,14 @@ with satisfying assignment $A:\{x_1 \mapsto 1, x_2 \mapsto 1\}$. Furthermore, SA
 SAT has extensively been studied in the form of graphs. Guo et al.\cite{guo2023machine} describe four different types of graph representations for CNF formulae with varying complexity and information compression. Since we want to minimize the loss of information for SAT we adapt the information-richest form of a literal-clause graph (LCG). 
 A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in.
 The resulting graph can formally be described by a biadjacency matrix $B$ of shape $l \times c$. \\
-Let $A \in \mathbb{R}^{l+c \times l+c}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $l$ and $c$, the adjacency matrix can be represented as
+Following Sun et al.\cite{articleBiadjacency}, let $A \in \mathbb{R}^{l+c \times l+c}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $l$ and $c$, the adjacency matrix can be represented as
 \begin{equation}
     A(i,j) = \begin{bmatrix}
         0_{l \times l} & B \\
         B^T & 0_{c \times c}
     \end{bmatrix},
 \end{equation}
-where $0$ denotes a zero matrix in the shape of their subscript (see Sun et al.\cite{articleBiadjacency}). \bigskip
+where $0$ denotes a zero matrix in the shape of their subscript. \bigskip
 
 \begin{figure}[h]
     \centering

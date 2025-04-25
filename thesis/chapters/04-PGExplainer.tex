@@ -1,10 +1,10 @@
 \chapter{PGExplainer - Main part}
 \label{ch:PGExplainer}
-TODO: This can be understood as an extension of the theoretical background?
+TODO: This can be understood as an extension of the theoretical background? Since the paper differs from the codebase and is imprecise about certain descriptions (see Holdijk), we aim to give a thorough introduction that regards everything.
 
-V1: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models for any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. This approach seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}.
+%V1: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models for any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. This approach seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}.
 
-V2: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models that have proven to learn the concise underlying structures of GNNs most relevant to their predictions. This approach may be applied to any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. PGExplainer seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}. This means that all edges in the dataset are predicted by the same model, which leads to a global understanding of the DT.
+%V2: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models that have proven to learn the concise underlying structures of GNNs most relevant to their predictions. This approach may be applied to any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. PGExplainer seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}. This means that all edges in the dataset are predicted by the same model, which leads to a global understanding of the DT.
 
 V3: In the following chapter, we introduce the PGExplainer by Luo et al.\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of edge distributions or soft masks using a probabilistic generative model for graph data, known for being able to learn the concise underlying structures from the observed graph data. The explainer uncovers said underlying structures, believed to have the biggest impact on the prediction of a GNNs, as explanations. This approach may be applied to any trained GNN model, henceforth referred to as the target model (TM). 
 By utilizing a deep neural network to parameterize the generation process, the explainer learns to collectively explain multiple instances of a model. Since the parameters of the neural network are shared across the population of explained instance, PGExplainer provides "model-level explanations for each instance with a global view of the GNN model". Furthermore, this approach cannot only be used in a transductive setting, but also in an inductive setting, where explanations for unexplained nodes can be generated without retraining the explanation model. This improves the generalizability compared to previous works, particularly the GNNExplainer by Ying et al.\cite{ying2019gnnexplainer}.
@@ -18,7 +18,7 @@ We then describe our reimplementation in detail (Section 3.2), including the cha
 In Section 3.3 we present the idea of applying PGExplainer on the NeuroSAT framework to generate explanations for the machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores and backbone variables. 
 %Usable in transductive and inductive settings, the latter being the reason for better generalizability, as the explainer model does not have to be retrained to infer explanations of unexplained nodes.
 \section{Theory}
-We follow the structure of the original paper\cite{} and start by describing the learning objective (Section 3.1.1), the reparameterization trick (Section 3.1.2), the global explanations (Section 3.1.3) and regularization terms (Section 3.1.4).
+We follow the structure of the original paper\cite{luo2020parameterized} and start by describing the learning objective (Section 3.1.1), the reparameterization trick (Section 3.1.2), the global explanations (Section 3.1.3) and regularization terms (Section 3.1.4).
 
 \subsection{Learning Objective}
 To explain the predictions made by a GNN model for an original input graph $G_o$ with $m$ edges we first define the graph as a combination of two subgraphs: $G_o = G_s + \Delta G$, where $G_s$ represents the subgraph holding the most relevant information for the prediction of a GNN, referred to as explanatory graph. $\Delta G$ contains the remaining edges that are deemed irrelevant for the prediction of the GNN. Inspired by GNNexplainer\cite{ying2019gnnexplainer}, the PGExplainer then finds $G_s$ by maximizing the mutual information between the predictions of the target model and the underlying $G_s$:
@@ -396,9 +396,11 @@ We note that in practice this is implemented only for the two highest edge weigh
 
 
 \section{Reimplementation}
+TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer. INDUCTIVE SETTING EXPERIMENTS ALSO PERFORMED IN PGEXPLAINER!
+
 Notes on Original code of target model: Not clearly specified in paper, but according to code:
 - No specific args set for layers etc., except hyperparameters for different datasets (see sweeps)
-- Therefore, assuming default settings for layers -> Graph conv layer uses ReLu activation (done), bias initialized with zeroes (done), no dropout(partially done), and embedding normalization! (TODO), default order 'AW', weight init 'glorot' (Done with Xavier)
+- Therefore, assuming default settings for layers -> Graph conv layer uses ReLu activation (done), bias initialized with zeroes (done), no dropout(partially done), and embedding normalization! (TODO), default order 'AW'(see 4.17), weight init 'glorot' (Done with Xavier)
 - WE USED PyG GraphConv since it allows for bipartite+edge weights; but compare to layer close to original!!\bigskip
 
 Concrete graph layer used in original code is very similar to the semi-supervised layer\ref{}:
@@ -413,6 +415,45 @@ We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer:
 \begin{equation}
     x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j
 \end{equation}
+
+
+
+\textbf{Datasets}
+For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. We will give a short description of each dataset.
+
+Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree\ref{albert2002statistical}.
+
+BA-Shapes is the first node dataset that consists of a single BA-graph with 300 nodes and 80 "house" motifs - five nodes resembling the shape of a house (TODO: see xy). Base graph nodes are labeled with 0 while nodes at the top/middle/bottom of the "house" are labeled with 1,2,3, respectively. The top node of each house motif is attached to a random base graph node. Additional edges are added for perturbation. Each node is assigned a 10-dimensional feature vector of 1s.
+BA-Community consists of two unified BA-Shapes graphs (TODO: connected how). The features of the nodes are sampled from two Gaussian distributions. Nodes are labeled as in BA-Shapes for each community respectively, leading to 8 classes in total.
+Tree-Cycles uses an 8-level balanced binary tree as a base graph. 80 cycle motifs, consisting of a 6 node cycle, are attached to random nodes from the base graph. Node features are assigned as a 10-dimensional vector of 1s. A node of the base graph is labeled as 0 and a motif node is labeled as 1.
+The Tree-Grid dataset is assembled in the same way as Tree-Cycles, with the difference that the motifs are 3-by-3 grids. Node features and labels also follow the same procedure.
+BA-2Motif is the first graph dataset with 800 graphs. Each of these graphs is obtained by attaching either a "house" or a cycle as a motif to a base BA graph with 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 and 1 implying a house and circle, respectively (TODO: CHECK).
+The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned to one of 2 classes, depending on the molecules mutagenic effect \ref{}. Following \ref{}, carbon rings with chemical groups $NH_2$ or $NO_2$ are known to be mutagenic, with carbon rings in general existing in both mutagenic and non-mutagenic graphs. The authors thus propose treating the carbon ring as a shared base graph and $NH_2$ and $NO_2$ as motifs for mutagenic graphs. Since there are no explicit motifs for the non-mutagenic graphs, these grapgs are not considered in PGExplainer.
+
+NOTE that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. In the node classification experiments the node sets used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This is also left unexplained by the authors.
+
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \begin{tabular}{l|cccc|cc}
+    \hline
+    \textbf{} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2motifs} & \textbf{MUTAG} \\
+    \hline
+    \#graphs & 1 & 1 & 1 & 1 & 1,000 & 4,337 \\
+    \#nodes  & 700 & 1,400 & 871 & 1,231 & 25,000 & 131,488 \\
+    \#edges  & 4,110 & 8,920 & 1,950 & 3,410 & 51,392 & 266,894 \\
+    \#labels & 4 & 8 & 2 & 2 & 2 & 2 \\
+    \hline
+    \end{tabular}
+    \caption{Dataset statistics for Node and Graph Classification tasks.}
+    \label{tab:dataset-statistics}
+    \end{table}
+
+\bigskip
+
+
+\textbf{Hyperparameter search}
+As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter setting on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow \ref{} to perform grid-searches over the parameter space that we define as an extended combination of the setting used in the original\ref{}, as well as the configs provided in Replication study by Holdijk et al.\ref{}. More details can be found in Appendix\ref{}.
 
 TODO: Maybe separate the theory of PGE from our own work more strictly? E.g. 3. PGE theory, 4. PGE reimplementation and NeuroSAT application? \\
 Implementation details:
@@ -493,3 +534,23 @@ The update rule is then defined as
 \begin{equation}
     \omega_{i,j}' =\mu_c, \qquad \forall(i,j) \in E_c
 \end{equation}
+
+
+
+RESULTS OBTAINED IN COLLECTIVE SETTING:
+
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{l|X X X X|X X}
+    \hline
+    \textbf{Accuracy} & \textbf{BA-S} & \textbf{BA-C} & \textbf{Tree-C} & \textbf{Tree-G} & \textbf{BA-2m} & \textbf{MUTAG} \\
+    \hline
+    \textbf{Training}   & 0.98 & 0.99 & 0.99 & 0.92 & 1.00 & 0.87 \\
+    \textbf{Validation} & 1.00 & 0.88 & 1.00 & 0.94 & 1.00 & 0.89 \\
+    \textbf{Testing}    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
+    \hline
+    \end{tabularx}
+    \caption{Compact accuracy table for Node and Graph Classification.}
+    \label{tab:compact-accuracy}
+    \end{table}

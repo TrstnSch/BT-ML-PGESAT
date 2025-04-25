@@ -1,17 +1,17 @@
 \chapter{Introduction}
 \label{ch:Introduction}
 
-SAT motivation: Advancements in deep learning SAT solving, e.g. NeuroSAT. Need for evaluation of these models! use of GNN explainers, since SAT can be reduced to graph domain. GOAL: Application of PGExplainer on NeruoSAT to generate explanations. Explanations need gt to be evaluated on accuracy. Use concepts like unsat cores and backbones as gt and compare to explanations provided by PGExplainer to see whether NeuroSAT explanations align with "human-observable" principles.
+SAT motivation: Advancements in deep learning SAT solving, e.g. NeuroSAT. Need for evaluation of these models! use of GNN explainers, since SAT can be reduced to graph domain. GOAL: Application of PGExplainer on NeruoSAT to generate explanations. Explanations need gt to be evaluated on accuracy. Use concepts like unsat cores as gt and compare to explanations provided by PGExplainer to see whether NeuroSAT explanations align with "human-observable" principles.
 Concrete: Graph task: Prediction of UNSAT and unsat cores as gt. Node task: Difficult with NeuroSAT?\bigskip
 
 Therefore explanation and replication of PGExplainer. After successful replication, application on NeuroSAT. \bigskip
 
-PGExplainer claims to be model-agnostic - Works for any GNN\bigskip
+PGExplainer claims to be model-agnostic - Works for any GNN. Additionally, able to generate explanations in an inductive setting, which is what we want to do.\bigskip
 
-Since our goal is application on a bipartite problem, reimplementation of PGExplainer that changes architecture of target GNN to a PyG layer that works on bipartite graphs and also allows passing of edge weights (required for PGE)\bigskip
+Since our goal is application on a bipartite problem, reimplementation of PGExplainer that changes architecture of target GNN to a PyG layer that works on bipartite graphs and also allows passing of edge weights (required for PGE).\bigskip
 
 Pytorch reimplemenations already exist, eg. Replication study RE-PGE that focuses on orginal code to replicate results. We follow paper as close as possible, and also conduct the code to try different settings/hyperparameters for our changed GNN - OUR FOCUS: Evaluate whether PGExplainer still applicable for our slightly changed GNN model!\bigskip
 
-Therefore, use PGExplainer and Repliaction paper as baselines to compare our results \bigskip
+Therefore, use PGExplainer and Repliaction paper as baselines to compare our results (INDUCTIVE SETTING!) \bigskip
 
-Lastly, apply PGExplainer NeuroSAT, a solver for bipartite graph problem SAT
+Lastly, apply PGExplainer NeuroSAT, a solver for bipartite graph problem SAT inductively
