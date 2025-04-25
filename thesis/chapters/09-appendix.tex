@@ -2,4 +2,51 @@
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
-\section*{Experiment XY}
+\section*{PGExlpainer algorithms}
+
+\begin{algorithm}
+    \caption{Training Algorithm for Explaining Node Classification.}
+    \begin{algorithmic}[1]
+    \REQUIRE Input graph $G_0 = (\mathcal{V}, \mathcal{E})$, node features $X$, node labels $Y$, set of instances to be explained $\mathcal{I}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
+    \FOR{each node $i \in \mathcal{I}$}
+        \STATE $G^{(i)}_0 \leftarrow$ extract the computation graph for node $i$.
+        \STATE $Z^{(i)} \leftarrow \text{GNNE}_{\Phi_0}(G^{(i)}_0, X)$.
+        \STATE $Y^{(i)} \leftarrow \text{GNNC}_{\Phi_1}(Z^{(i)})$.
+    \ENDFOR
+    \FOR{each epoch}
+        \FOR{each node $i \in \mathcal{I}$}
+            \STATE $\Omega \leftarrow$ latent variables calculated with (10).
+            \FOR{$k \leftarrow 1$ to $K$}
+                \STATE $G^{(i,k)}_s \leftarrow$ sampled from (4).
+                \STATE $\hat{Y}^{(i,k)}_s \leftarrow \text{GNNC}_{\Phi_1}(\text{GNNE}_{\Phi_0}(G^{(i,k)}_s, X))$.
+            \ENDFOR
+        \ENDFOR
+        \STATE Compute loss with (9).
+        \STATE Update parameters $\Psi$ with backpropagation.
+    \ENDFOR
+    \end{algorithmic}
+    \end{algorithm}
+    
+    \vspace{0.5cm}
+    
+    \begin{algorithm}
+    \caption{Training Algorithm for Explaining Graph Classification.}
+    \begin{algorithmic}[1]
+    \REQUIRE A set of input graphs with $i$-th graph represented by $G^{(i)}_0$, node features $X^{(i)}$, label $Y^{(i)}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
+    \FOR{each graph $G^{(i)}_0$}
+        \STATE $Z^{(i)} \leftarrow \text{GNNE}_{\Phi_0}(G^{(i)}_0, X^{(i)})$.
+        \STATE $Y^{(i)} \leftarrow \text{GNNC}_{\Phi_1}(Z^{(i)})$.
+    \ENDFOR
+    \FOR{each epoch}
+        \FOR{each graph $G^{(i)}_0$}
+            \STATE $\Omega \leftarrow$ latent variables calculated with (11).
+            \FOR{$k \leftarrow 1$ to $K$}
+                \STATE $G^{(i,k)}_s \leftarrow$ sampled from (4).
+                \STATE $\hat{Y}^{(i,k)}_s \leftarrow \text{GNNC}_{\Phi_1}(\text{GNNE}_{\Phi_0}(G^{(i,k)}_s, X^{(i)}))$.
+            \ENDFOR
+        \ENDFOR
+        \STATE Compute loss with (9).
+        \STATE Update parameters $\Psi$ with backpropagation.
+    \ENDFOR
+    \end{algorithmic}
+    \end{algorithm}
