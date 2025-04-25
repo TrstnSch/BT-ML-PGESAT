@@ -6,26 +6,25 @@ TODO: This can be understood as an extension of the theoretical background? Sinc
 
 %V2: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models that have proven to learn the concise underlying structures of GNNs most relevant to their predictions. This approach may be applied to any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. PGExplainer seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}. This means that all edges in the dataset are predicted by the same model, which leads to a global understanding of the DT.
 
-V3: In the following chapter, we introduce the PGExplainer by Luo et al.\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of edge distributions or soft masks using a probabilistic generative model for graph data, known for being able to learn the concise underlying structures from the observed graph data. The explainer uncovers said underlying structures, believed to have the biggest impact on the prediction of a GNNs, as explanations. This approach may be applied to any trained GNN model, henceforth referred to as the target model (TM). 
-By utilizing a deep neural network to parameterize the generation process, the explainer learns to collectively explain multiple instances of a model. Since the parameters of the neural network are shared across the population of explained instance, PGExplainer provides "model-level explanations for each instance with a global view of the GNN model". Furthermore, this approach cannot only be used in a transductive setting, but also in an inductive setting, where explanations for unexplained nodes can be generated without retraining the explanation model. This improves the generalizability compared to previous works, particularly the GNNExplainer by Ying et al.\cite{ying2019gnnexplainer}.
+In the following chapter, we introduce the PGExplainer by Luo et al. \cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of edge distributions or soft masks using a probabilistic generative model for graph data, known for being able to learn the concise underlying structures from the observed graph data. The explainer uncovers said underlying structures, believed to have the biggest impact on the prediction of a GNNs, as explanations. This approach may be applied to any trained GNN model, henceforth referred to as the target model (TM). 
+By utilizing a deep neural network to parameterize the generation process, the explainer learns to collectively explain multiple instances of a model. Since the parameters of the neural network are shared across the population of explained instance, PGExplainer provides "model-level explanations for each instance with a global view of the GNN model" \cite{luo2020parameterized}. Furthermore, this approach cannot only be used in a collective setting, but also in an inductive setting, where explanations for unexplained nodes can be generated without retraining the explanation model. This improves the generalizability compared to previous works, particularly the GNNExplainer by Ying et al. \cite{ying2019gnnexplainer}.
 
 The focus in this approach lies in explaining the graph structure, rather than the graph features, as feature explanations are already common in non-graph neural networks. \\
-
-Transductive/Inductive explanation? \\
 
 We then describe our reimplementation in detail (Section 3.2), including the changes made and difficulties during the process. \\
 
 In Section 3.3 we present the idea of applying PGExplainer on the NeuroSAT framework to generate explanations for the machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores and backbone variables. 
-%Usable in transductive and inductive settings, the latter being the reason for better generalizability, as the explainer model does not have to be retrained to infer explanations of unexplained nodes.
+
 \section{Theory}
-We follow the structure of the original paper\cite{luo2020parameterized} and start by describing the learning objective (Section 3.1.1), the reparameterization trick (Section 3.1.2), the global explanations (Section 3.1.3) and regularization terms (Section 3.1.4).
+We follow the structure of the original paper \cite{luo2020parameterized} and start by describing the learning objective in \ref{sec:learning_objective}, the utilized reparameterization trick in \ref{sec:Reparameterization_Trick}, the idea of global explanations in \ref{sec:Global_Explanations} and finally the applied regularization terms in \ref{sec:Regularization_Terms}.
 
 \subsection{Learning Objective}
-To explain the predictions made by a GNN model for an original input graph $G_o$ with $m$ edges we first define the graph as a combination of two subgraphs: $G_o = G_s + \Delta G$, where $G_s$ represents the subgraph holding the most relevant information for the prediction of a GNN, referred to as explanatory graph. $\Delta G$ contains the remaining edges that are deemed irrelevant for the prediction of the GNN. Inspired by GNNexplainer\cite{ying2019gnnexplainer}, the PGExplainer then finds $G_s$ by maximizing the mutual information between the predictions of the target model and the underlying $G_s$:
+\label{sec:learning_objective}
+To explain the predictions made by a GNN model for an original input graph $G_o$ with $m$ edges we first define the graph as a combination of two subgraphs: $G_o = G_s + \Delta G$, where $G_s$ represents the subgraph holding the most relevant information for the prediction of a GNN, referred to as explanatory graph. $\Delta G$ contains the remaining edges that are deemed irrelevant for the prediction of the GNN. Inspired by GNNexplainer \cite{ying2019gnnexplainer}, the PGExplainer then finds $G_s$ by maximizing the mutual information between the predictions of the target model and the underlying $G_s$:
 \begin{equation}
-    \max_{G_s} I(Y_o;G_s) = H(Y_o) - H(Y_o|G=G_s),
+    \max_{G_s} MI(Y_o;G_s) = H(Y_o) - H(Y_o|G=G_s),
 \end{equation} 
-where $Y_o$ is the prediction of the target model with $G_o$ as input. This quantifies the probability of prediction $Y_o$ when the input graph is restricted to the explanatory graph $G_s$, as in the case of $I(Y_o;G_s) = 1$, knowing the explanatory graph $G_s$ gives us complete information about $Y_o$, and vice versa. Intuitively, if removing an edge $(i,j)$ changes the prediction of a GNN drastically, this edge is considered important and should therefore be included in $G_s$. This idea originates from traditional forward propagation based methods for whitebox explanations (see Dabkowski et al.\cite{dabkowski2017real}).
+where $Y_o$ (TODO: $\in (0,1)^c$) is the prediction of the target model with $G_o$ as input and number of possible classes $c$. This quantifies the probability of prediction $Y_o$ when the input graph is restricted to the explanatory graph $G_s$, as in the case of $I(Y_o;G_s) = 1$, knowing the explanatory graph $G_s$ gives us complete information about $Y_o$, and vice versa. Intuitively, if removing an edge $(i,j)$ changes the prediction of a GNN drastically, this edge is considered important and should therefore be included in $G_s$. This idea originates from traditional forward propagation based methods for whitebox explanations (see Dabkowski et al. \cite{dabkowski2017real}).
 It is important to note that $H(Y_o)$ is only related to the target model with fixed parameters during the evaluation/explanation stage. This leads to the objective being equivalent to minimizing the conditional entropy $H(Y_o|G=G_s)$.
 
 To optimize this function a relaxation is applied for the edges, since normally there would be $2^m$ candidates for $G_s$. The explanatory graph is henceforth assumed to be a Gilbert random graph, where the selections of edges from $G_o$ are conditionally independent to each other. However, the authors describe a random graph with each edge having its own probability, rather than a shared probability as described in \ref{sec:random-graphs}, as follows: Let $e_{ij}\in V \times V$ be the binary variable indicating whether the edge is selected, with $e_{ij} = 1$ if edge $(i,j)$ is selected to be in the graph, and 0 otherwise. For the random graph variable $G$ the probability of a graph $G$ can be factorized as 
@@ -43,7 +42,8 @@ After this relaxation the learning objective becomes:
 where $q(\Theta)$ is the distribution of the explanatory graph that is parameterized by $\Theta$'s.
 
 \subsection{Reparameterization Trick}
-As described in section \ref{sec:perturbation-based_explainability}, a reparameterization trick can be utilized to relax discrete edge weights to continuous variables in the range $(0,1)$. PGExplainer uses the reparameterizable Gumbel-Softmax estimator\cite{jang2016categorical} to allow for efficiently optimizing the objective function with gradient-based methods. This method introduces the Gumbel-Softmax distribution, a continuous distribution used to approximate samples from a categorical distribution. A temperature $\tau$ is used to control the approximation, usually starting from a high value and annealing to a small, non-zero value. Samples with $\tau > 0$ are not identical to samples from the corresponding continuous distribution, but are differentiable and therefore allow back-propagation. The sampling process $G_s \sim q(\Theta)$ of PGExplainer is therefore approximated with a determinant function that takes as input the parameters $\Omega$, a temperature $\tau$ and an independent random variable $\epsilon$: $G_s \approx \hat{G}=f_\Omega(G_o,\tau,\epsilon)$. The binary concrete distribution\cite{maddison2016concrete}, also referred to as Gumbel-Softmax distribution, is utilized as an instantiation for the sampling, yielding the weight $\hat{e}_{ij} \in (0,1)$ for edge $(i,j)$ in $\hat{G}_s$, computed by:
+\label{sec:Reparameterization_Trick}
+As described in section \ref{sec:gnn_explainability}, a reparameterization trick can be utilized to relax discrete edge weights to continuous variables in the range $(0,1)$. PGExplainer uses the reparameterizable Gumbel-Softmax estimator \cite{jang2016categorical} to allow for efficiently optimizing the objective function with gradient-based methods. This method introduces the Gumbel-Softmax distribution, a continuous distribution used to approximate samples from a categorical distribution. A temperature $\tau$ is used to control the approximation, usually starting from a high value and annealing to a small, non-zero value. Samples with $\tau > 0$ are not identical to samples from the corresponding continuous distribution, but are differentiable and therefore allow back-propagation. The sampling process $G_s \sim q(\Theta)$ of PGExplainer is therefore approximated with a determinant function that takes as input the parameters $\Omega$, a temperature $\tau$ and an independent random variable $\epsilon$: $G_s \approx \hat{G}=f_\Omega(G_o,\tau,\epsilon)$. The binary concrete distribution \cite{maddison2016concrete}, also referred to as Gumbel-Softmax distribution, is utilized as an instantiation for the sampling, yielding the weight $\hat{e}_{ij} \in (0,1)$ for edge $(i,j)$ in $\hat{G}_s$, computed by:
 \begin{equation}
     \label{eq:reparam_trick}
     \epsilon \sim \text{Uniform}(0,1), \qquad \hat{e}_{ij}=\sigma((\log \epsilon - \log(1-\epsilon)+\omega_{ij}/\tau),
@@ -53,15 +53,16 @@ where $\sigma(\cdot)$ is the Sigmoid function and $\omega_{ij} \in \mathbb{R}$ i
     \min_\Omega \mathbb{E}_{\epsilon \sim \text{Uniform}(0,1)}H(Y_o| G = \hat{G}_s)
 \end{equation}
 
-The authors follow the approach of GNNExplainer\cite{ying2019gnnexplainer} and modify the objective by replacing the conditional entropy with cross entropy between the label class and the prediction of the target model. This is justified by the greater importance of understanding the model's prediction of a certain class, rather than providing an explanation based solely on its confidence.
+The authors follow the approach of GNNExplainer \cite{ying2019gnnexplainer} and modify the objective by replacing the conditional entropy with cross entropy between the label class and the prediction of the target model. This is justified by the greater importance of understanding the model's prediction of a certain class, rather than providing an explanation based solely on its confidence.
 
 With the modification to cross-entropy $H(Y_o, \hat{Y}_s)$, where $\hat{Y}_s$ is the prediction of the target model when $\hat{G}_s$ is given as input, as well as the adaption of Monte Carlo sampling, the learning objective becomes:
-TODO: ONE LABEL FOR BOTH EQUATIONS!?
-\begin{align}
+\begin{equation}
     \label{eq:monte_carlo}
-    &\min_\Omega\mathbb{E}_{\epsilon\sim\text{Uniform}(0,1)}H(Y_o, \hat{Y}_s) \approx \min_\Omega -\frac{1}{K}\sum_{k=1}^K\sum_{c=1}^C P(Y_o = c) \log P(\hat{Y}_s = c) \\
-    = &\min_\Omega -\frac{1}{K}\sum_{k=1}^K\sum_{c=1}^C P_\Phi (Y_o = c|G = G_o) \log P_\Phi(\hat{Y}_s = c|G=\hat{G}_s^{(k)}).
-\end{align}
+    \begin{aligned}
+        \min_\Omega\mathbb{E}_{\epsilon\sim\text{Uniform}(0,1)}H(Y_o, \hat{Y}_s) &\approx \min_\Omega -\frac{1}{K}\sum_{k=1}^K\sum_{c=1}^C P(Y_o = c) \log P(\hat{Y}_s = c) \\
+        &= \min_\Omega -\frac{1}{K}\sum_{k=1}^K\sum_{c=1}^C P_\Phi (Y_o = c|G = G_o) \log P_\Phi(\hat{Y}_s = c|G=\hat{G}_s^{(k)}).
+    \end{aligned}
+    \end{equation}
 $\Phi$ denotes the parameters in the target model, $K$ is the number of total sampled graphs, $C$ is the number of class labels, and $\hat{G}_s^{(k)}$ denotes the $k$-th graph sampled with equation \ref{eq:reparam_trick}, parameterized by $\Omega$. %Note that this objective is defined per explainable instance.
 
 
@@ -70,6 +71,7 @@ $\Phi$ denotes the parameters in the target model, $K$ is the number of total sa
 
 
 \subsection{Global Explanations}
+\label{sec:Global_Explanations}
 The novelty of PGExplainer lies in the ability to generate explanations for graph data with a global perspective, that allow for understanding the general picture of a model across a population. This saves resources when analyzing large graph datasets, as new instances can be explained without retraining the model, and can also be helpful for establishing the users' trust in these explanations. To achieve this the authors propose the use of a parameterized network that learns to generate explanations from the target model, which also apply to not yet explained instances. PGExplainer hence explains predictions of the target model over multiple instances collectively (TODO: Cut this sentence?).
 
 Since GNNs apply two functions $F$ and $G$ to calculate the global state embeddings and downstream task outputs respectively, we denote these two functions as $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$ for any GNN in the context of PGExplainer. For models without explicit classification layers the last layer is used to compute the output instead. It follows
@@ -97,6 +99,8 @@ Let an edge $(i,j)$ be considered relevant for the prediction of a node $u$, but
 \end{equation}
 $\text{MLP}_\Psi$ is an MLP (TODO see \ref{} for implementation details) parameterized with $\Psi$ and $\oplus$ denotes the concatenation operation. Thus, a concatenation of the node embeddings of nodes $i, j$ and $v$ respectively is fed through the network. The output $\omega_{ij}$ is therefore an edge logit, which serves as a parameter in the sampling process.
 
+TODO: "In GNNs with message passing mechanisms, the prediction at a node v is fully determined by its local computation graph, which is defined by its L-hop neighborhoods, with L being the number of GNN layers." (Source GNNExplainer)
+
 Note that in their codebase the authors use a concatenation of all hidden representations instead of final node embeddings for node level tasks.
 For a target GNN consisting of multiple graph layers with
 \begin{align*}
@@ -105,23 +109,34 @@ For a target GNN consisting of multiple graph layers with
     &\vdots \\
     \mathbf{H}_L &= F_L(\mathbf{H}_{L-1}, \mathbf{X}), \\
 \end{align*}
-this leads to $Z$ being the matrix of node embeddings $z$ that are computed as:
+this leads to $Z \in \mathbb{R}^{V(G_o)\times Ld}$ being the matrix of node embeddings $z$ that are computed as:
 \begin{equation}
     z_i = h_{1,i} \oplus h_{2,i} \oplus ... \oplus h_{L,i}
 \end{equation}
 
 \textbf{Explanation network for graph classification}
+
 For graph level tasks the authors consider each graph to be an instance, regardless of specific nodes. The specification for the network thus becomes:
 \begin{equation}
     \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j]),
 \end{equation}
 where for each edge in $G_o$ a concatenation of both its nodes is fed through the MLP.\bigskip
 
-TODO: Include computational complexity of PGE in comparison to GNN?
+TODO: ALGORITHMS IN APPENDIX
 
-This leads to an improved computational complexity when compared to their baseline GNNExplainer, since for one the number of parameters in the explainer does no longer depend on the size of the input graph and since the explainer does not have to be retrained for every unexplained instance.
+\textbf{Collective and inductive setting}
 
-TODO: Include algorithms?
+Due to the nature of its predecessor GNNExplainer, the authors main focus was the application in a collective setting, where the goal is to explain a full population of instances by training on all these and thus being able to provide explanations for every single one. However, since the PGExplainer utilizes a deep neural network to parameterize the generation process of explanations for a population, it can be utilized in an inductive setting, unlike its predecessor. This means, that explanations can be generated for instances from the same population, that have not been seen during training. Thus, it is not necessary to retrain the explainer for new instances of the same population, effectively reducing the computational complexity by the training time when compared to the GNNExplainer.
+
+We discuss the results of the inductive performance study by the authors in \ref{}.
+
+
+"How to explain predictions of GNNs on a set of instances collectively and easily generalize the learned explainer model to other instances in the inductive setting remains largely unexplored in the literature." (This is what PGE fills?!)
+
+
+%"PGExplainer learns a latent variable for each edge in the original input graph with a neural network parameterized by Ψ, which is shared by all edges in the population of input graphs." "In GNNExplainer, the parameter size is linear to the number of edges"
+
+This leads to an improved computational complexity when compared to their baseline GNNExplainer, since for one the number of parameters in the explainer does no longer depend on the size of the input graph and since for another the explainer does not have to be retrained for every unexplained instance.
 
 \tikzstyle{process} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30, font=\small]
 \tikzstyle{module} = [rectangle, rounded corners, minimum width=3cm, minimum height=1.2cm, text centered, draw=black, fill=gray!30, font=\small]
@@ -366,11 +381,12 @@ TODO: Include algorithms?
 \end{figure}
 
 \subsection{Regularization Terms}
+\label{sec:Regularization_Terms}
 To enhance the preservation of desired properties of explanations the authors propose various regularization terms. These are added to the learning objective, depending on the specific downstream task at hand.\bigskip
 
 \textbf{Size and entropy constraints}
 
-Inspired by GNNExplainer\cite{ying2019gnnexplainer}, to obtain compact and precise explanations, a constraint on the size of the explanations is added in the form of $||\Omega||_1$, the $l_1$ norm on latent variables $\Omega$. Additionally, to encourage the discreteness of edge weights, element-wise entropy is added as a constraint:
+Inspired by GNNExplainer \cite{ying2019gnnexplainer}, to obtain compact and precise explanations, a constraint on the size of the explanations is added in the form of $||\Omega||_1$, the $l_1$ norm on latent variables $\Omega$. Additionally, to encourage the discreteness of edge weights, element-wise entropy is added as a constraint:
 \begin{equation}
     H_{\hat{G}_s} = -\frac{1}{|\varepsilon|}\sum_{(i,j)\in \varepsilon} (\hat{e}_{ij}\log \hat{e}_{ij} + (1-\hat{e}_{ij})\log(1-\hat{e}_{ij})),
 \end{equation}
@@ -392,11 +408,13 @@ To enhance the effect of the explainer detecting a small, connected subgrap, mot
 \begin{equation}
     H(\hat{e}_{ij},\hat{e}_{ik}) = -[1-\hat{e}_{ij}\log(1-\hat{e}_{ik})+\hat{e}_{ij}\log \hat{e}_{ik}].
 \end{equation}
-We note that in practice this is implemented only for the two highest edge weights for each edge. The definition therefore would change to $(i,j)$ and $(i,k)$ being the top two edges that connect to node $i$.
+We note that in practice this is implemented only for the two highest edge weights for each edge. The definition therefore would change to $(i,j)$ and $(i,k)$ being the edges carrying the top two edge weights from the nodes connecting to node $i$.
 
 
 \section{Reimplementation}
 TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer. INDUCTIVE SETTING EXPERIMENTS ALSO PERFORMED IN PGEXPLAINER!
+
+%"In this section, we empirically demonstrate the effectiveness of PGExplainer in the inductive setting. In the inductive setting, we select α instances for training, (N − α)/2 for validation, and the rest for testing. α is ranged from [1,2,3,4,5,30]. Note that, with α =1, our method degenerates to the single-instance explanation method. Recall that to explain a set of instances, GNNExplainer first detects a reference node and then computes the explanation for the reference node. The explanation is then generalized to other nodes with graph alignment(SOURCE GNNExplainer)"
 
 Notes on Original code of target model: Not clearly specified in paper, but according to code:
 - No specific args set for layers etc., except hyperparameters for different datasets (see sweeps)
@@ -421,7 +439,7 @@ We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer:
 \textbf{Datasets}
 For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. We will give a short description of each dataset.
 
-Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree\ref{albert2002statistical}.
+Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree \cite{albert2002statistical}.
 
 BA-Shapes is the first node dataset that consists of a single BA-graph with 300 nodes and 80 "house" motifs - five nodes resembling the shape of a house (TODO: see xy). Base graph nodes are labeled with 0 while nodes at the top/middle/bottom of the "house" are labeled with 1,2,3, respectively. The top node of each house motif is attached to a random base graph node. Additional edges are added for perturbation. Each node is assigned a 10-dimensional feature vector of 1s.
 BA-Community consists of two unified BA-Shapes graphs (TODO: connected how). The features of the nodes are sampled from two Gaussian distributions. Nodes are labeled as in BA-Shapes for each community respectively, leading to 8 classes in total.
@@ -453,7 +471,34 @@ NOTE that in the collective setting used in the original paper the explainer is 
 
 
 \textbf{Hyperparameter search}
-As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter setting on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow \ref{} to perform grid-searches over the parameter space that we define as an extended combination of the setting used in the original\ref{}, as well as the configs provided in Replication study by Holdijk et al.\ref{}. More details can be found in Appendix\ref{}.
+
+As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter setting on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original\ref{}, as well as the configs provided in Replication study by Holdijk et al.\ref{}. More details can be found in Appendix\ref{}.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Parameter} & \textbf{Values} \\ \hline
+    epochs & 20 \\ \hline
+    paper\_loss & True, False \\ \hline
+    tT & 1.0, 5.0 \\ \hline
+    size\_reg & 0.03 \\ \hline
+    entropy\_reg & 0.01 \\ \hline
+    lr\_mlp & 0.003, 0.0003 \\ \hline
+    sampled\_graphs & 10 \\ \hline
+    sample\_bias & 0.0, 0.5 \\ \hline
+    batch\_size & 16, 64 \\ \hline
+    seed & 74, 75, 76 \\ \hline
+    \end{tabular}
+    \caption{Grid Search Sweep Configuration}
+    \label{tab:sweep_config}
+\end{table}
+
+
+
+
+
+
 
 TODO: Maybe separate the theory of PGE from our own work more strictly? E.g. 3. PGE theory, 4. PGE reimplementation and NeuroSAT application? \\
 Implementation details:
