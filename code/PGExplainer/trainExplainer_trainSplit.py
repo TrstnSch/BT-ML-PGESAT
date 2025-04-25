@@ -60,6 +60,7 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     num_explanation_edges = params['num_explanation_edges']
     lr_mlp = params['lr_mlp']
     sample_bias = params['sample_bias']
+    num_training_instances = params['num_training_instances']
 
     wandb.init(project=wandb_project, config=params)
 
@@ -91,6 +92,8 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     
     data, labels = datasetLoader.loadGraphDataset(dataset) if graph_task else datasetLoader.loadOriginalNodeDataset(dataset)
     
+    
+    
     if graph_task:
         # FOR MUTAG: SELECT GRAPHS WITH GROUND TRUTH
         if MUTAG:
@@ -102,8 +105,19 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
                     selected_data.append(data[i])
         
             data = selected_data
+            
+        total_size = len(data)
+        remaining = total_size - num_training_instances
+        # To prevent an impossible absolute selection of training instance, default to 0.8,0.1,0.1
+        if remaining < 2 or remaining == total_size:
+            num_training_instances = 0.8
+            num_val = 0.1
+            num_test = 0.1
+        else:
+            num_val = remaining // 2
+            num_test = remaining - num_val  # In case of odd number
         
-        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
+        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [num_training_instances, num_val, num_test], generator1)
         train_loader = DataLoader(train_dataset, params['batch_size'], True)
     else:
         if dataset == "BA-Community":
@@ -113,7 +127,18 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             motif_node_indices = params['motif_node_indices']
             motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
         
-        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [0.8, 0.1, 0.1], generator1)
+        total_size = len(motifNodes)
+        remaining = total_size - num_training_instances
+        # To prevent an impossible absolute selection of training instance, default to 0.8,0.1,0.1
+        if remaining < 2 or remaining == total_size:
+            num_training_instances = 0.8
+            num_val = 0.1
+            num_test = 0.1
+        else:
+            num_val = remaining // 2
+            num_test = remaining - num_val  # In case of odd number
+            
+        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [0.08, 0.46, 0.46], generator1)
     
 
     # TODO: Instead of loading static one, pass model as argument?
