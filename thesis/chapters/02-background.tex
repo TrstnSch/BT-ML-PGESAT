@@ -206,7 +206,7 @@ We additionally define bipartite graphs according to Asratian et al. \cite{asrat
         \end{bmatrix}
         \]
     \end{minipage}
-    \caption{A simple undirected graph $G$ on $V=\{1,2,4,5\}$ with $E=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$ (left), and its adjacency matrix A (right).}
+    \caption{A simple undirected graph $G$ on $V$, with $V=\{1,2,4,5\}$ and $E(G)=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$ (left), and its adjacency matrix A (right).}
     \label{fig:graph-example}
 \end{figure}
 
@@ -373,13 +373,50 @@ To learn the parameters of this GNN, with target information $t_v$ for a specifi
 \end{equation}
 where $p$ are the supervised nodes. A gradient-descent strategy is utilized in the learning algorithm, which consist of the following three steps: the states $h_v^t$ are updated iteratively using equation \eqref{eq:gnn_state_local} until time step $T$. We then obtain an approximate fixed point solution of equation \eqref{eq:gnn_state_global}: $\mathbf{H}(T)\approx\mathbf{H}$. For the next step the gradients of the weights $W$ are calculated from the loss. Finally, the weights $W$ are updated according to the computed gradient. This allows us to train a model for specific supervised or semi-supervised tasks, referred to as downstream task, and get hidden states of nodes in a graph. \bigskip
 
-Though the architecture proposed by Scarselli et al. \cite{4700287} proved to be powerful for modeling structural data, this initial approach suffers from a few limitations. Most notably, it uses the same parameters in the iteration, while nowadays it is common practice to use different parameters in different layers. Stacking $k$ GNN layers allows each node to aggregate information from nodes within its $k$-hop neighborhood, seeking an increase in performance. It is important to note that this approach may also increase the noisy information spread by the exponentially increasing neighborhood nodes \cite{Liu2020}.
+Though the architecture proposed by Scarselli et al. \cite{4700287} proved to be powerful for modeling structural data, this initial approach suffers from a few limitations. Most notably, it uses the same parameters in the iteration, while nowadays it is common practice to use different parameters in different layers. Stacking $k$ GNN layers allows each node to aggregate information from nodes within its $k$-hop neighborhood, represented in figure \ref{fig:k-hop}, seeking an increase in performance. It is important to note that this approach may also increase the noisy information spread by the exponentially increasing neighborhood nodes \cite{Liu2020}.
 
 Another drawback is the computational inefficiency, as hidden states have to be updated $T$ times until reaching the fixed point. A relaxation of the fixed point assumption enables multi-layer GNNs to provide stable representations of the node and its neighborhood \cite{li2015gated}. Additionally, this architecture is unable to model informative edge features, which limits its capacity to learn meaningful hidden representations for edges.
 
 Therefore, we briefly present two subsequent models that are used in the course of this work.
 
-TODO: include figure of graph with neighborhood? \bigskip
+
+\tikzstyle{texts} = [text centered, font=\small, draw=none]
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[scale=1.2, every node/.style={circle, draw, minimum size=8mm, inner sep=1pt}]
+        % Central node
+        \node[fill=blue!30] (u) at (0,0) {$u$};
+    
+        % 1-hop neighbors (green)
+        \foreach \i/\name in {0/v1, 90/v2, 180/v3, 270/v4} {
+            \node[fill=green!30] (\name) at (\i:2) {$\name$};
+            \draw (u) -- (\name);
+        }
+    
+        % 2-hop neighbors (yellow)
+        \foreach \i/\name in {20/w1, 110/w3, 160/w4, 200/w5, 250/w6, 290/w7, 340/w8} {
+            \node[fill=yellow!30] (\name) at (\i:3.5) {$\name$};
+        }
+    
+        % Connections from 1-hop to 2-hop
+        \foreach \parent/\child in {v1/w1, v2/w3, v2/w4, v3/w5, v3/w6, v4/w7, v4/w8} {
+            \draw (\parent) -- (\child);
+        }
+
+        % Highlight 2-hop neighborhood
+        \begin{scope}[on background layer]
+            \fill[yellow!10] (0,0) circle (4);
+            \fill[green!10] (0,0) circle (2.4);
+        \end{scope}
+
+        % Labels directly on the rings
+        \node[texts, font=\small] at (45:2.4) {1-hop neighborhood};
+        \node[texts, font=\small] at (45:4) {2-hop neighborhood};
+        
+    \end{tikzpicture}
+    \caption{Visualization of the $k$-hop neighborhood of $u$.}
+    \label{fig:k-hop}
+\end{figure}
 
 \textbf{Graph Convolutional Network} \\
 Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. An example is the model proposed by Kipf et al. \cite{kipf2016semi} that introduces a simple, layer-wise propagation rule for multi-layer GCNs as
@@ -403,33 +440,6 @@ where $W_1^{(l)}$ and $W_2^{(l)}$ are two layer-specific trainable weight matric
 
 TODO: MORE MOTIVATION FOR THIS!
 
-\section{Explainability in GNNs}
-\label{sec:gnn_explainability}
-Methods in DL have seen growth in performance in many tasks of artificial intelligence, including GNNs, since graphs are able to capture real-world data such as social networks or chemical molecules \cite{ying2018graph}, \cite{ma2021deep}. However, the interpretability of these models is often limited due to their black-box design \cite{noor2024survey}. Explainability methods aim to bypass this limitation by designing post-hoc techniques that provide insights into the decision-making process in the form of explanations. Such human-intelligible explanations are crucial for deploying models in real-world applications, especially when applied in interdisciplinary fields \cite{ribeiro2016should}.
-
-There exist several different approaches for explaining predictions of deep graph models, that can be categorized into instance-level methods and model-level methods (see Yuan et al.  \cite{yuan2022explainability}). Instance-level methods aim to explain each input-graph by identifying important input features for its prediction, leading to input-dependent explanations. These can further be grouped by their importance score calculation into four branches. Gradients/feature-based methods use gradients as approximations of importance scores. Sensitivity Analysis \cite{baldassarre2019explainability} is an example that directly uses squared values of gradients as importance scores of input features. This enables the scores to be calculated directly with back-propagation.
-
-Perturbation-based approaches like GNNExplainer \cite{ying2019gnnexplainer} and PGExplainer \cite{luo2020parameterized} study the variation of the output with regard to different input perturbations. The intuition behind this is that when input information crucial to the prediction is kept, the new prediction should roughly align with the prediction from the original input. PGExplainer aims to improve the GNNExplainer by providing a way of generating explanations with a global understanding of the GNN, significantly improving the computational cost. Another approach is SubgraphX \cite{yuan2021explainability}, which utilizes Monte Carlo Tree search to generate subgraph-level explanations. This does however entail a higher computational cost. 
-
-Surrogate methods for deep graph models are inspired by surrogate methods for image data, that rely on neighboring areas of an input. Since graph data is concrete and contains topological information it is difficult to define the neighboring regions of an input graph. The idea is to obtain a local dataset containing neighboring data objects and predictions and fitting a simple, interpretable surrogate model to learn the local dataset. The explanations of the surrogate model are then regarded as the explanations of the original model. GraphLime \cite{huang2022graphlime} is an example that considers the $N$-hop neighboring nodes of a target node as the local dataset, where $N$ may be the number of GNN-layers. The weighted features of a non-linear surrogate model are then regarded as explanations. However, this method only explains node features, rather than the graph structure.
-
-Decomposition methods, also motivated by success in the image domain, aim to measure input feature importance by decomposing the prediction into several terms, regarded as feature dependant importance score. Approaches for deep graph neural networks, like Layer-wise Relevance Propagation \cite{baldassarre2019explainability}, decompose the output prediction score to node importance scores. The decomposition rule is based on hidden features and weights, only enabling the study of node importance rather than graph structures.
-
-Model-level methods, on the other hand, aim to explain GNNS without considering specific inputs, leading to input-independent, high-level explanations.
-
-
-To fully trust the explanations provided by an explainer model, they must satisfy certain criteria, since there often is a mismatch between the optimizable metrics like accuracy and the actual metric of interest, which may not be measurable (see Ribeiro et al. \cite{ribeiro2016should}). First and foremost, an explanation should be \textbf{interpretable} and therefore provide qualitative, human-understandable interpretations, that also consider the possibility of limited user knowledge. Additionally, \textbf{local fidelity} asserts that explanations should be faithful in a local context and consider the models' behavior in the vicinity of predicted instances. Explainers that treat the model to be explained as a black-box are \textbf{model-agnostic} and should therefore be able to explain any model. Lastly, a \textbf{global perspective} is needed to explain a model fully, allowing us to take sample explanations of individual predictions that serve as representation of the model.
-
-TODO: Claims to satisfy?
-Since the perturbation-based PGExplainer \cite{luo2020parameterized} claims to satisfy all the criteria, while also maintaining reasonable computational cost, we select this model for the course of this study. It is furthermore able to generate explanations in an inductive setting, which we aim to do in \ref{}.
-
-The general pipeline for different perturbation based approaches can be described as follows: First, the important features from the input graph are converted into a mask by our generation algorithm, depending on the explanation task at hand. These masks are applied to the input graph to highlight said features. Lastly, the masked graph is fed into the trained GNN to evaluate the mask and update the mask generation algorithm according to the similarity of the predictions. 
-
-These different approaches mostly differ in the specific mask generation algorithm, the type of mask used and the objective function. It is important to distinguish between soft masks, discrete masks and approximated discrete masks. Soft masks take continuous values between $[0,1]$ which enables the graph algorithm to be updated via backpropagation. A downside of soft masks is that they suffer from the "introduced evidence" problem (see Dabkowski et al. \cite{dabkowski2017real}). Any mask value that is non-zero or non-one may add new semantic meaning or noise to the input graph, since graph edges are by nature discrete. Discrete masks however always rely on non-differentiable operations, e.g. sampling. Thus, the approximated discrete masks utilize reparameterization tricks to avoid the "introduced evidence" problem while also enabling back-propagation. %TODO: Expand on reparameterization trick?
-
-Explanations can on the one hand be evaluated by visualizing the graph and considering the "human-comprehensibility". Since this requires a ground truth, is prone to the subjective understanding and is usually performed for a few random samples, it is important to apply stable evaluation metrics. One relevant accuracy metric for synthetic datasets with ground truths is the Area Under the Receiver Operating Characteristic Curve (ROC-AUC) (see Richardson et al. \cite{RICHARDSON2024100994}). The Receiver Operating Characteristic (ROC) curve plots the False Positive Rate (FPR) on the x-axis against the True Positive Rate (TPR), across different classification thresholds. The area under the curve (AUC) is calculated for said curve, resulting in the ROC-AUC. It is important to note, that a value of $0.5$ equals random guessing, while a score of $1.0$ indicates perfect classification. TODO: Other metrics include fidelity, results of taxonomy propose only using PGExplainer for Node Classification as it achieves low fidelity on Graph tasks
-
-TODO: figure of perturbation pipeline?
 
 \section{Boolean Satisfiability Problem}
 \label{sec:SAT}
@@ -440,13 +450,13 @@ with satisfying assignment $A:\{x_1 \mapsto 1, x_2 \mapsto 1\}$. Furthermore, SA
 
 \subsection{Representation as Bipartite Graph}
 SAT has extensively been studied in the form of graphs. Guo et al. \cite{guo2023machine} describe four different types of graph representations for CNF formulae with varying complexity and information compression. Since we want to minimize the loss of information for SAT we adapt the information-richest form of a literal-clause graph (LCG). 
-A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in.
-The resulting graph can formally be described by a biadjacency matrix $B$ of shape $l \times c$. \\
-Following Sun et al. \cite{articleBiadjacency}, let $A \in \mathbb{R}^{l+c \times l+c}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $l$ and $c$, the adjacency matrix can be represented as
+A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in (see figure \ref{fig:lcg-sat}).
+The resulting graph $G_b$ can formally be described by a biadjacency matrix $B$ of shape $L \times C$, with $(L,C)$ being a bipartition of the $G_b$ into literals and clauses. \\
+Following Sun et al. \cite{articleBiadjacency}, let $A \in \mathbb{R}^{(L+C) \times (L+C)}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $L$ and $C$, the adjacency matrix can be represented as
 \begin{equation}
     A(i,j) = \begin{bmatrix}
-        0_{l \times l} & B \\
-        B^T & 0_{c \times c}
+        0_{L \times L} & B \\
+        B^T & 0_{C \times C}
     \end{bmatrix},
 \end{equation}
 where $0$ denotes a zero matrix in the shape of their subscript. \bigskip

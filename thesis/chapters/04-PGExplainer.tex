@@ -1,4 +1,4 @@
-\chapter{PGExplainer - Main part}
+\chapter{PGExplainer - Main part - Methodology}
 \label{ch:PGExplainer}
 TODO: This can be understood as an extension of the theoretical background? Since the paper differs from the codebase and is imprecise about certain descriptions (see Holdijk), we aim to give a thorough introduction that regards everything.
 
@@ -11,11 +11,15 @@ By utilizing a deep neural network to parameterize the generation process, the e
 
 The focus in this approach lies in explaining the graph structure, rather than the graph features, as feature explanations are already common in non-graph neural networks. \\
 
-We then describe our reimplementation in detail (Section 3.2), including the changes made and difficulties during the process. \\
+In Section 4.2 we present the idea of applying PGExplainer on the NeuroSAT framework to generate explanations for the machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores and backbone variables. 
 
-In Section 3.3 we present the idea of applying PGExplainer on the NeuroSAT framework to generate explanations for the machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores and backbone variables. 
+We then describe our reimplementation in detail (Section 4.3), including the changes made and difficulties during the process. \\
 
-\section{Theory}
+In section 4.4 we describe the experimental setup used for both the replication of the PGExplainer in the inductive setting, as well the application on NeuroSAT.
+
+
+
+\section{Theoretical Foundations of PGExplainer}
 We follow the structure of the original paper \cite{luo2020parameterized} and start by describing the learning objective in \ref{sec:learning_objective}, the utilized reparameterization trick in \ref{sec:Reparameterization_Trick}, the idea of global explanations in \ref{sec:Global_Explanations} and finally the applied regularization terms in \ref{sec:Regularization_Terms}.
 
 \subsection{Learning Objective}
@@ -411,142 +415,22 @@ To enhance the effect of the explainer detecting a small, connected subgrap, mot
 We note that in practice this is implemented only for the two highest edge weights for each edge. The definition therefore would change to $(i,j)$ and $(i,k)$ being the edges carrying the top two edge weights from the nodes connecting to node $i$.
 
 
-\section{Reimplementation}
-TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer. INDUCTIVE SETTING EXPERIMENTS ALSO PERFORMED IN PGEXPLAINER!
+\section{TODO: Extension to application on NeuroSAT}
+In this section we propose additional restraints to fit the explanations of PGExplainer to the structure SAT problems. We start by giving a short introduction to NeuroSAT and how it may function as a downstream model.
 
-%"In this section, we empirically demonstrate the effectiveness of PGExplainer in the inductive setting. In the inductive setting, we select α instances for training, (N − α)/2 for validation, and the rest for testing. α is ranged from [1,2,3,4,5,30]. Note that, with α =1, our method degenerates to the single-instance explanation method. Recall that to explain a set of instances, GNNExplainer first detects a reference node and then computes the explanation for the reference node. The explanation is then generalized to other nodes with graph alignment(SOURCE GNNExplainer)"
+TODO: BASIC INTRODUCTION/SUMMARY OF NEUROSAT, WHAT DOES IT DO.
 
-Notes on Original code of target model: Not clearly specified in paper, but according to code:
-- No specific args set for layers etc., except hyperparameters for different datasets (see sweeps)
-- Therefore, assuming default settings for layers -> Graph conv layer uses ReLu activation (done), bias initialized with zeroes (done), no dropout(partially done), and embedding normalization! (TODO), default order 'AW'(see 4.17), weight init 'glorot' (Done with Xavier)
-- WE USED PyG GraphConv since it allows for bipartite+edge weights; but compare to layer close to original!!\bigskip
-
-Concrete graph layer used in original code is very similar to the semi-supervised layer\ref{}:
-\begin{equation}
-    Z = \hat{A}XW
-\end{equation}
-Note that a pytorch implementation of the semi-supervised layer is used in the replication paper:
-\begin{equation}
-    X' = \hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}X\Theta
-\end{equation}
-We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer:
-\begin{equation}
-    x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j
-\end{equation}
-
-
-
-\textbf{Datasets}
-For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. We will give a short description of each dataset.
-
-Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree \cite{albert2002statistical}.
-
-BA-Shapes is the first node dataset that consists of a single BA-graph with 300 nodes and 80 "house" motifs - five nodes resembling the shape of a house (TODO: see xy). Base graph nodes are labeled with 0 while nodes at the top/middle/bottom of the "house" are labeled with 1,2,3, respectively. The top node of each house motif is attached to a random base graph node. Additional edges are added for perturbation. Each node is assigned a 10-dimensional feature vector of 1s.
-BA-Community consists of two unified BA-Shapes graphs (TODO: connected how). The features of the nodes are sampled from two Gaussian distributions. Nodes are labeled as in BA-Shapes for each community respectively, leading to 8 classes in total.
-Tree-Cycles uses an 8-level balanced binary tree as a base graph. 80 cycle motifs, consisting of a 6 node cycle, are attached to random nodes from the base graph. Node features are assigned as a 10-dimensional vector of 1s. A node of the base graph is labeled as 0 and a motif node is labeled as 1.
-The Tree-Grid dataset is assembled in the same way as Tree-Cycles, with the difference that the motifs are 3-by-3 grids. Node features and labels also follow the same procedure.
-BA-2Motif is the first graph dataset with 800 graphs. Each of these graphs is obtained by attaching either a "house" or a cycle as a motif to a base BA graph with 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 and 1 implying a house and circle, respectively (TODO: CHECK).
-The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned to one of 2 classes, depending on the molecules mutagenic effect \ref{}. Following \ref{}, carbon rings with chemical groups $NH_2$ or $NO_2$ are known to be mutagenic, with carbon rings in general existing in both mutagenic and non-mutagenic graphs. The authors thus propose treating the carbon ring as a shared base graph and $NH_2$ and $NO_2$ as motifs for mutagenic graphs. Since there are no explicit motifs for the non-mutagenic graphs, these grapgs are not considered in PGExplainer.
-
-NOTE that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. In the node classification experiments the node sets used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This is also left unexplained by the authors.
-
-\begin{table}[h]
-    \centering
-    \scriptsize
-    \begin{tabular}{l|cccc|cc}
-    \hline
-    \textbf{} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2motifs} & \textbf{MUTAG} \\
-    \hline
-    \#graphs & 1 & 1 & 1 & 1 & 1,000 & 4,337 \\
-    \#nodes  & 700 & 1,400 & 871 & 1,231 & 25,000 & 131,488 \\
-    \#edges  & 4,110 & 8,920 & 1,950 & 3,410 & 51,392 & 266,894 \\
-    \#labels & 4 & 8 & 2 & 2 & 2 & 2 \\
-    \hline
-    \end{tabular}
-    \caption{Dataset statistics for Node and Graph Classification tasks.}
-    \label{tab:dataset-statistics}
-    \end{table}
-
-\bigskip
-
-
-\textbf{Hyperparameter search}
-
-As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter setting on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original\ref{}, as well as the configs provided in Replication study by Holdijk et al.\ref{}. More details can be found in Appendix\ref{}.
-
-\begin{table}[h!]
-    \centering
-    \begin{tabular}{|l|l|}
-    \hline
-    \textbf{Parameter} & \textbf{Values} \\ \hline
-    epochs & 20 \\ \hline
-    paper\_loss & True, False \\ \hline
-    tT & 1.0, 5.0 \\ \hline
-    size\_reg & 0.03 \\ \hline
-    entropy\_reg & 0.01 \\ \hline
-    lr\_mlp & 0.003, 0.0003 \\ \hline
-    sampled\_graphs & 10 \\ \hline
-    sample\_bias & 0.0, 0.5 \\ \hline
-    batch\_size & 16, 64 \\ \hline
-    seed & 74, 75, 76 \\ \hline
-    \end{tabular}
-    \caption{Grid Search Sweep Configuration}
-    \label{tab:sweep_config}
-\end{table}
-
-
-
-
-
-
-
-TODO: Maybe separate the theory of PGE from our own work more strictly? E.g. 3. PGE theory, 4. PGE reimplementation and NeuroSAT application? \\
-Implementation details:
-\begin{itemize}
-    \item Started by reimplementing the downstream tasks used in og paper for node and graph class.
-    \item Node datasets taken from original and transformed to a "pyg format", to keep original structure and ground truths
-    \item Graph: BA-2Motif from pyg library with self generated gt, MUTAG dataset taken from pyg and added gt-labels that were added in original dataset
-    \item Created pytorch/pytorch geometric implementation of 3-layer graph conv networks
-    \item architecture as described in paper: ReLu activation, Pooling for graph net
-    \item Xavier initialization for all layers
-    \item Same hyperparameters?(Adam, $1*10^-3$ lr, 1000 epochs)/experimental setup?
-    \item ADDED Dropout(0.1) to improve performance/overfitting on node tasks
-    \item Fully connected layer: torch geometric GraphConv to allow passing of edge weights(+ bipartite)!?
-    \item Original references sageConv in paper, pyG impl. does not allow edge weights, verify!
-    \item GATConv for Graph attention(referenced by original)
-    \item Alternatives: GCNConv(edge weights, no bipartite graphs)
-    \item 80/10/10 split
-    \item => Similar accuracies achieved
-\end{itemize}
- 
-
- Explainer:
- This is irrelevant for paper, description of why reparameterization trick necessary
- - First approach tried passing a masked edge index to downstream task with edge weights > 0.5
- => Unable to learn with hard cut-off (bad for gradients). (Same with TopK probably?!)
- - Pass calculated edge weights to downstream task for learning. If no edge weights are passed(downstream task), all edge weights are initialized with one to represent all edges beeing relevant
- 
-%\section{Benchmarking}
-%\section{Application on Bipartite Graphs?}#
-
-\section{Application on NeuroSAT}
 NeuroSAT: Messages are passed between clauses and literals, as well as literals and their complement. 1. Clause receives from neighboring literals 2. Literals receive from clauses and complement. \\
-(Define flip function that swaps literal row with row of its negation; relevant for NeuroSAT)
-
-We create required data with provided methods, add unsat cores and MUSs as gt and adapt the NeuroSAT model to allow passing edge weights into the adjacency matrix. PGExplainer adapted for SAT data, NeuroSAT embeddings and evaluation.
+(Define flip function that swaps literal row with row of its negation; relevant for NeuroSAT) \bigskip
 
 
-Reimplementation of NeuroSAT provided by Rodhi. As the code used for NeuroSAT can also be found in our Repository, we stress that only the changes described in the following chapter are part of our work. \\
+TODO: What changes in the context of NeuroSAT? How did we adapt PGExplainer?
 
-What did we do? What did we change for NeuroSAT? What data was used? How did we adapt PGExplainer? \\
 
-Only change in NeuroSAT: pass edge weights into adjacency matrix. Calculates .... \\
-Generated batches of unsat problems that "turned" unsat because of last added clause. 10 literals per problem. Only unsat to test for unsat cores, that only apply for unsat problems. Calculated unsat cores with solver xy by adding negative assumption literals per clause and passing these as assumption for calulation. The edges of the clauses present in the unsat core were treated as ground truth. \\
+Since PGExplainer generates edge wise explanations, and we want to evaluate the SAT problem evaluations with UNSAT cores as ground truth, we need to adapt the framework to account for the definition of UNSAT cores. Since a core is a subset of clauses, predicting singular edges may not provide sufficient results in the sense of human understandable explanations. Therefore, we propose a soft and a hard restraint that encourage the explainer to predict sets of edges that belong to the same node $c$, approximating a complete clause. \bigskip
 
 Changes for explainer:
-Edge embeddings calced by DS and passed to explainer. Calculated edge embeddings by concatenating node embeddings for connected nodes, similar to original. Embeddings fed into MLP, weights sampled with reparam. trick to get edge "probabilities", passed as "unbatched" sampled graph into NeuroSAT predictor. Visualization of SAT problems with edge weights, ands gts. \\
-For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
-For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
+Edge embeddings calced by DS and passed to explainer. Calculated edge embeddings by concatenating node embeddings for connected nodes, similar to original. Embeddings fed into MLP, weights sampled with reparam. trick to get edge "probabilities", passed as "unbatched" sampled graph into NeuroSAT predictor. Visualization of SAT problems with edge weights, and gts. 
 
 
 \textbf{Soft modified connectivity constraint}
@@ -582,20 +466,195 @@ The update rule is then defined as
 
 
 
-RESULTS OBTAINED IN COLLECTIVE SETTING:
+
+\section{Implementation details}
+In the following, we provide the implementation details needed reproduce our results. This includes the general replication of the PGExplainer in section \ref{sec:Replication_of_PGExplainer} and the specifics for the adaptation on NeuroSAT in section \ref{sec:Application_to_NeuroSAT}.
+
+
+\subsection{Replication of PGExplainer}
+\label{sec:Replication_of_PGExplainer}
+
+General description: What framework (e.g., PyTorch, TensorFlow, scikit-learn) and tools you used.
+
+Architecture specifics: Model structures, key layers, differences from the original paper.
+
+Hyperparameters (default ones): E.g., activation functions, optimizer choice, learning rate (but not tuned values yet).
+
+Extension description: What exactly you changed/extended compared to the original work, and how you did it technically.
+
+Preprocessing: If you had to massage or transform input data before feeding it to the model.
+
+Reproducibility: Seed setting, tricks to make the results reproducible.
+
+Challenges: Brief notes if you faced and solved technical issues during reimplementation (e.g., missing details in the original paper).
+
+
+TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer. INDUCTIVE SETTING EXPERIMENTS ALSO PERFORMED IN PGEXPLAINER!
+
+%"In this section, we empirically demonstrate the effectiveness of PGExplainer in the inductive setting. In the inductive setting, we select α instances for training, (N − α)/2 for validation, and the rest for testing. α is ranged from [1,2,3,4,5,30]. Note that, with α =1, our method degenerates to the single-instance explanation method. Recall that to explain a set of instances, GNNExplainer first detects a reference node and then computes the explanation for the reference node. The explanation is then generalized to other nodes with graph alignment(SOURCE GNNExplainer)"
+
+Notes on Original code of target model: Not clearly specified in paper, but according to code:
+- No specific args set for layers etc., except hyperparameters for different datasets (see sweeps)
+- Therefore, assuming default settings for layers -> Graph conv layer uses ReLu activation (done), bias initialized with zeroes (done), no dropout(partially done), and embedding normalization! (TODO), default order 'AW'(see 4.17), weight init 'glorot' (Done with Xavier)
+- WE USED PyG GraphConv since it allows for bipartite+edge weights; but compare to layer close to original!!\bigskip
+
+Concrete graph layer used in original code is very similar to the semi-supervised layer\ref{}:
+\begin{equation}
+    Z = \hat{A}XW
+\end{equation}
+Note that a pytorch implementation of the semi-supervised layer is used in the replication paper:
+\begin{equation}
+    X' = \hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}X\Theta
+\end{equation}
+We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer:
+\begin{equation}
+    x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j
+\end{equation}
+
 
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabularx}{\linewidth}{l|X X X X|X X}
+    \begin{tabular}{l|cccc|cc}
     \hline
-    \textbf{Accuracy} & \textbf{BA-S} & \textbf{BA-C} & \textbf{Tree-C} & \textbf{Tree-G} & \textbf{BA-2m} & \textbf{MUTAG} \\
+    \textbf{} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2motifs} & \textbf{MUTAG} \\
     \hline
-    \textbf{Training}   & 0.98 & 0.99 & 0.99 & 0.92 & 1.00 & 0.87 \\
-    \textbf{Validation} & 1.00 & 0.88 & 1.00 & 0.94 & 1.00 & 0.89 \\
-    \textbf{Testing}    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
+    \#graphs & 1 & 1 & 1 & 1 & 1,000 & 4,337 \\
+    \#nodes  & 700 & 1,400 & 871 & 1,231 & 25,000 & 131,488 \\
+    \#edges  & 4,110 & 8,920 & 1,950 & 3,410 & 51,392 & 266,894 \\
+    \#labels & 4 & 8 & 2 & 2 & 2 & 2 \\
     \hline
-    \end{tabularx}
-    \caption{Compact accuracy table for Node and Graph Classification.}
-    \label{tab:compact-accuracy}
+    \end{tabular}
+    \caption{Dataset statistics for Node and Graph Classification tasks.}
+    \label{tab:dataset-statistics}
     \end{table}
+
+\bigskip
+
+
+
+TODO: Maybe separate the theory of PGE from our own work more strictly? E.g. 3. PGE theory, 4. PGE reimplementation and NeuroSAT application? \\
+Implementation details:
+\begin{itemize}
+    \item Started by reimplementing the downstream tasks used in og paper for node and graph class.
+    \item Node datasets taken from original and transformed to a "pyg format", to keep original structure and ground truths
+    \item Graph: BA-2Motif from pyg library with self generated gt, MUTAG dataset taken from pyg and added gt-labels that were added in original dataset
+    \item Created pytorch/pytorch geometric implementation of 3-layer graph conv networks
+    \item architecture as described in paper: ReLu activation, Pooling for graph net
+    \item Xavier initialization for all layers
+    \item Same hyperparameters?(Adam, $1*10^-3$ lr, 1000 epochs)/experimental setup?
+    \item ADDED Dropout(0.1) to improve performance/overfitting on node tasks
+    \item Fully connected layer: torch geometric GraphConv to allow passing of edge weights(+ bipartite)!?
+    \item Original references sageConv in paper, pyG impl. does not allow edge weights, verify!
+    \item GATConv for Graph attention(referenced by original)
+    \item Alternatives: GCNConv(edge weights, no bipartite graphs)
+    \item 80/10/10 split
+    \item => Similar accuracies achieved
+\end{itemize}
+ 
+
+ Explainer:
+ This is irrelevant for paper, description of why reparameterization trick necessary
+ - First approach tried passing a masked edge index to downstream task with edge weights > 0.5
+ => Unable to learn with hard cut-off (bad for gradients). (Same with TopK probably?!)
+ - Pass calculated edge weights to downstream task for learning. If no edge weights are passed(downstream task), all edge weights are initialized with one to represent all edges beeing relevant
+ 
+%\section{Benchmarking}
+%\section{Application on Bipartite Graphs?}#
+
+\subsection{Application to NeuroSAT}
+\label{sec:Application_to_NeuroSAT}
+and adapt the NeuroSAT model to allow passing edge weights into the adjacency matrix. PGExplainer adapted for SAT data, NeuroSAT embeddings and evaluation.
+
+
+Reimplementation of NeuroSAT provided by Rodhi. As the code used for NeuroSAT can also be found in our Repository, we stress that only the changes described in the following chapter are part of our work. \\
+
+
+Only change in NeuroSAT: pass edge weights into adjacency matrix. Calculates .... \\
+
+
+
+
+\section{Experimental setup}
+In this section we describe the setup for the experiments that we perform on PGExplainer. We start with the utilization of PGExplainer in the inductive setting, similar to the study performed by the authors. Additionally, we include experiments on the performance in the collective setting for the sake of completeness. Lastly, we present our approach for generating bipartite explanations for NeuroSAT \cite{} predictions of SAT problems.
+
+
+
+Datasets used: Name, origin, train/test/validation split (or cross-validation if you use it).
+
+Training procedures: How long you trained, on which hardware (especially if relevant), early stopping criteria, etc.
+
+Evaluation metrics: E.g., accuracy, F1-score, BLEU, MSE, depending on your task.
+
+Hyperparameter tuning: If you did hyperparameter search, describe how (grid search, random search, Bayesian optimization?).
+
+Baselines: Which models/versions you are comparing against (e.g., original model, your extension, ablation studies).
+
+Experimental protocol: How many runs you did to account for randomness (e.g., averaged over 5 seeds).
+
+Visualization tools: If you generated plots/graphs during experiments (like loss curves), you can briefly mention this.
+
+\subsection{PGExplainer in the inductive setting}
+
+\textbf{Datasets}
+For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. We will give a short description of each dataset.
+
+Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree \cite{albert2002statistical}.
+
+BA-Shapes is the first node dataset that consists of a single BA-graph with 300 nodes and 80 "house" motifs - five nodes resembling the shape of a house (TODO: see xy). Base graph nodes are labeled with 0 while nodes at the top/middle/bottom of the "house" are labeled with 1,2,3, respectively. The top node of each house motif is attached to a random base graph node. Additional edges are added for perturbation. Each node is assigned a 10-dimensional feature vector of 1s.
+BA-Community consists of two unified BA-Shapes graphs (TODO: connected how). The features of the nodes are sampled from two Gaussian distributions. Nodes are labeled as in BA-Shapes for each community respectively, leading to 8 classes in total.
+Tree-Cycles uses an 8-level balanced binary tree as a base graph. 80 cycle motifs, consisting of a 6 node cycle, are attached to random nodes from the base graph. Node features are assigned as a 10-dimensional vector of 1s. A node of the base graph is labeled as 0 and a motif node is labeled as 1.
+The Tree-Grid dataset is assembled in the same way as Tree-Cycles, with the difference that the motifs are 3-by-3 grids. Node features and labels also follow the same procedure.
+BA-2Motif is the first graph dataset with 800 graphs. Each of these graphs is obtained by attaching either a "house" or a cycle as a motif to a base BA graph with 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 and 1 implying a house and circle, respectively (TODO: CHECK).
+The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned to one of 2 classes, depending on the molecules mutagenic effect \ref{}. Following \ref{}, carbon rings with chemical groups $NH_2$ or $NO_2$ are known to be mutagenic, with carbon rings in general existing in both mutagenic and non-mutagenic graphs. The authors thus propose treating the carbon ring as a shared base graph and $NH_2$ and $NO_2$ as motifs for mutagenic graphs. Since there are no explicit motifs for the non-mutagenic graphs, these grapgs are not considered in PGExplainer.
+
+NOTE that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. In the node classification experiments the node sets used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This is also left unexplained by the authors.
+
+\textbf{Hyperparameter search}
+
+As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter setting on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original\ref{}, as well as the configs provided in Replication study by Holdijk et al.\ref{}. More details can be found in Appendix\ref{}.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Parameter} & \textbf{Values} \\ \hline
+    epochs & 20 \\ \hline
+    paper\_loss & True, False \\ \hline
+    tT & 1.0, 5.0 \\ \hline
+    size\_reg & 0.03 \\ \hline
+    entropy\_reg & 0.01 \\ \hline
+    lr\_mlp & 0.003, 0.0003 \\ \hline
+    sampled\_graphs & 10 \\ \hline
+    sample\_bias & 0.0, 0.5 \\ \hline
+    batch\_size & 16, 64 \\ \hline
+    seed & 74, 75, 76 \\ \hline
+    \end{tabular}
+    \caption{Grid Search Sweep Configuration}
+    \label{tab:sweep_config}
+\end{table}
+
+
+
+
+We follow the experimental setup from the PGExplainer as closely as possible. Since the textual description refers to the setup from GNNExplainer and is lacking in some aspects, we extract the missing information from the codebase. As the hyperparameters are unclear or not comprehensible for some tasks we also draw information from the configs of PYTORCH REIMPL. \\
+
+
+
+Additionally, experiment in the collective setting with the configuration and setup described for inductive setting - difference lies test data seen during training. Used for fair comparison with the original paper and the replication paper.
+
+
+
+
+\subsection{PGExplainer applied to NeuroSAT}
+
+We create required data with provided methods, add unsat cores and MUSs as gt
+
+
+Generated batches of unsat problems that "turned" unsat because of last added clause. 10 literals per problem. Only unsat to test for unsat cores, that only apply for unsat problems. Calculated unsat cores with solver xy by adding negative assumption literals per clause and passing these as assumption for calulation. The edges of the clauses present in the unsat core were treated as ground truth. \\
+
+
+For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
+For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
+
+

@@ -1,8 +1,9 @@
 \chapter{Results}
 \label{ch:Results}
 
-Experimental Setup:
-We follow the experimental setup from the PGExplainer as closely as possible. Since the textual description refers to the setup from GNNExplainer and is lacking in some aspects, we extract the missing information from the codebase. As the hyperparameters are unclear or not comprehensible for some tasks we also draw information from the configs of PYTORCH REIMPL. \\
+\section{PGExplainer in the inductive setting}
+
+HERE GO THE RESULTS OF THE EXPERIMENTS, ALSO COMPARED TO THE OTHER PAPERS. INCLUDES, TABLES, PLOTS ETC.
 
 We use normalization in our downstream models, though it is not described in the paper, since it is used in the code. We also experimented with the effects of the use of normalization since it seems to be relevant to the performance of the explainer. \\
 The explainer is trained and evaluated on the same data. We also run experiments with added train/test splits TODO! \\
@@ -42,3 +43,29 @@ MUTAG: Low lr -> 0.0003; low entropy reg(high impact, but highest AUC runs vary)
 
 
  Effects of selected motif nodes for Node task: Compare Tree-Grid/Tree-Cycles performance when using all/one node per motif...
+
+
+
+
+
+ RESULTS OBTAINED IN COLLECTIVE SETTING:
+
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{l|X X X X|X X}
+    \hline
+    \textbf{Accuracy} & \textbf{BA-S} & \textbf{BA-C} & \textbf{Tree-C} & \textbf{Tree-G} & \textbf{BA-2m} & \textbf{MUTAG} \\
+    \hline
+    \textbf{Training}   & 0.98 & 0.99 & 0.99 & 0.92 & 1.00 & 0.87 \\
+    \textbf{Validation} & 1.00 & 0.88 & 1.00 & 0.94 & 1.00 & 0.89 \\
+    \textbf{Testing}    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
+    \hline
+    \end{tabularx}
+    \caption{Compact accuracy table for Node and Graph Classification.}
+    \label{tab:compact-accuracy}
+\end{table}
+
+
+
+\section{PGExplainer applied to NeuroSAT}
