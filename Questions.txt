@@ -326,3 +326,9 @@ IF Downstream task changes -> Explainer has to be swept again, correct? Since in
 ------------------------------
 
 Rosenblatt for MLP idea?
+
+TODO: WE ONLY CONSIDER UNDIRECTED GRAPHS IN THIS WORK, THEREFORE ADAPT GRAPH DEFINITIONS?!
+
+e_{i,j} or e_{ij}?
+
+$\hat{E}_c$. or $\mu_{\hat{e}_c}$
