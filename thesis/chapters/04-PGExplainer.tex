@@ -101,6 +101,7 @@ The authors propose two slightly different instantiations of $\Omega$ for node c
 
 For graph level tasks, the authors consider each graph to be an instance, independent  of specific nodes. The output $\Omega$ of the network in \ref{eq:explainer_network} is thus specified as:
 \begin{equation}
+    \label{eq:mlp_graph_input}
     \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j]),
 \end{equation}
 where $\text{MLP}_\Psi$ is an MLP ( see \ref{} for implementation details) parameterized with $\Psi$ and $\oplus$ denotes the concatenation operation. Effectively, for each edge in $G_o$ a concatenation of both its nodes is fed through the MLP. The output $\omega_{ij}$ is therefore an edge logit (TODO: NOT IN GENERAL? ONLY FOR THE LATER SPECIFIED MLP?), which serves as a parameter in the sampling process.
@@ -424,41 +425,30 @@ We note that in practice this is implemented only for the two highest edge weigh
 
 
 \section{Extension to application on NeuroSAT}
-In this section we propose additional restraints to fit the explanations of PGExplainer to the structure of SAT problems. We start by giving a short introduction to NeuroSAT\cite{selsam2018learning} and how it may function as a downstream model.
+In this section we propose additional restraints to fit the explanations of PGExplainer to the structure of SAT formulae. We start by giving a short introduction to NeuroSAT\cite{selsam2018learning} and how it may function as a downstream model.
 
-TODO: BASIC INTRODUCTION/SUMMARY OF NEUROSAT, WHAT DOES IT DO.
+ \bigskip
+Proposed by Selsam et al. \cite{selsam2018learning}, NeuroSAT utilizes a MPNN, generally utilized to express GNNS, to solve SAT formulae. It is able to generalize in the sense that it may solve substantially larger and more difficult formulae than seen during training by running for more iterations. Though it may be used to calculate variable assignments that satisfy a formula, it is unable to provide proofs for formulae that are unsatisfiable.
 
-NeuroSAT: Messages are passed between clauses and literals, as well as literals and their complement. 1. Clause receives from neighboring literals 2. Literals receive from clauses and complement. \\
-(Define flip function that swaps literal row with row of its negation; relevant for NeuroSAT) \bigskip
-Proposed by Selsam et al. in \cite{}, NeuroSAT utilizes a message passing neural network, generally utilized in GNNS, to solve SAT problems. It is able to generalize in the sense that it may solve substantially larger and more difficult problems than seen during training by running for more iterations. Though it may be used to calculate variable assignments that satisfy a problem, it is unable to provide proofs for problems that are unsatisfiable. In a separate experiment the authors were able to make NeuroSAT identify specific unsatisfiable cores, however this is assumed to be due to the network memorizing the subgraphs rather than learning a generic procedure that proves unsatisfiability. To verify this we aim to generate explanations for unsatisfiable problems processed by a trained NeuroSAT model.
+In a separate experiment the authors were able to make NeuroSAT identify specific unsatisfiable cores, however this is assumed to be due to the network memorizing the subgraphs rather than learning a generic procedure that proves unsatisfiability. To verify this we aim to generate explanations for unsatisfiable formulae processed by a trained NeuroSAT model.
 
+%Let $n$ denote the number of variables in a SAT formula and $m$ the number of clauses.
+Since the following restraints are tailored to the application on bipartite graphs representing SAT formulae, we have to define the specifics of the input graph. A formula is encoded as an undirected bipartite graph $G_b$, with bipartition $(L,C)$. It contains one node for every literal $l \in L$, one for every clause $c \in C$ and edges for all combinations $(l,c)$ where $l$ appears in clause $c$. Additionally, connections exist between each literal and its negation, since messages are also passed along these (TODO: RELEVANT?). Note that these edges are not present in the biadjacency matrix $\mathbf{B}\in (0,1)^{L\times C}$. $\mathbf{B}$ is used as input for the NeuroSAT model, without explicit node features. In the following definitions we let $G_b$ be the original input graph for the PGExplainer, completely defined by its biadjacency matrix $\mathbf{B}$.
 
+%aggregation: sum the outgoing messages of each of a node’s neighbors to form the incoming message
 
+Since PGExplainer generates edge wise explanations, and we want to evaluate the SAT problem evaluations with unsatisfiable cores as ground truth, we need to adapt the framework to account for the definition of unsatisfiable cores. Since a core is a subset of clauses, predicting singular edges that represent a literal being present in a clause, may not provide sufficient results in the sense of human understandable explanations. Therefore, we propose a soft and a hard restraint that encourage the explainer to predict sets of edges that connect to the same node $c$, approximating the prediction of a complete clause.
 
-" A SAT problem is a formula in CNF, where the goal is to determine if the formula is satisfiable, and if so, to produce a satisfying assignment of truth values to variables. We use n to denote the number of variables in a SAT problem, and m to denote the number of clauses."
-
-" Classification task. For a SAT problem P, we define (P) to be true if and only if P is satisfiable. Our first goal is to learn a classifier that approximates . Given a distribution over SAT problems, we can construct datasets Dtrain and Dtest with examples of the form (P (P)) by sampling problems P and computing (P) using an existing SAT solver. At test time, we get only the problem P and the goal is to predict (P), i.e. to determine if P is satisfiable. Ultimately we care about the solving task, which also includes finding solutions to satisfiable problems."
-
-" We encode a SAT problem as an undirected graph with one node for every literal, one node for every clause, an edge between every literal and every clause it appears in, and a different type of edge between each pair of complementary literals (e.g. between xi and xi). NeuroSAT iteratively refines a vector space embedding for each node by passing “messages” back and forth along the edges of the graph as described in Gilmer et al. (2017). At every time step, we have an embedding for every literal and every clause. An iteration consists of two stages. First, each clause receives messages from its neighboring literals and updates its embedding accordingly. Next, each literal receives messages from its neighboring clauses as well as from its complement, then updates its embedding accordingly."
-
-" We stress that none of the learned parameters depend on the size of the SAT problem and that a single model can be trained and tested on problems of arbitrary and varying sizes. At both train and test time, the input to the model is simply any bipartite adjacency matrix M over any number of literals and clauses. The learned parameters only determine how each individual literal and clause behaves in terms of its neighbors in the graph. Variation in problem size is handled by the aggregation operators: we sum the outgoing messages of each of a node’s neighbors to form the incoming message, and we take the mean of the literal votes at the end of message passing to form the logit y(T)."
-
-
-
-
-Since PGExplainer generates edge wise explanations, and we want to evaluate the SAT problem evaluations with unsatisfiable cores as ground truth, we need to adapt the framework to account for the definition of unsatisfiable cores. Since a core is a subset of clauses, predicting singular edges that represent a literal being present in a clause, may not provide sufficient results in the sense of human understandable explanations. Therefore, we propose a soft and a hard restraint that encourage the explainer to predict sets of edges that connect to the same node $c$, approximating the prediction of a complete clause. \bigskip
-
-TODO: CHANGE STYLE OF NODE REPRESENTATIONS TO $\mathbf{h}^t$?
-The remainder of the explainer pipeline stays identical. The downstream task - NeuroSAT - calculates hidden node representations $\mathbf{h}_t$ for the input graph, now modeling a SAT instance, at each iteration $t$. The representations in the last iteration $T$ are extracted as node embeddings $\mathbf{z}$ for clause and literal nodes respectively, and transformed into edge embeddings. Though this is only done for node level tasks in the original, we also consider using a concatenation of multiple hidden representations $\mathbf{h}_{\frac{1}{2}T} \oplus \mathbf{h}_{\frac{3}{4}T} \oplus \mathbf{h}_T$ as node embeddings $\mathbf{z}$. These serve as the input of the explainer MLP and are processed as usual, with either of the following additional limitations.
+The remainder of the explainer pipeline stays identical. The downstream task - NeuroSAT - calculates hidden node representations $\mathbf{h}^t$ for the input graph $G_b$, now modeling a SAT instance, at each iteration $t$. The representations in the last iteration $T$ are extracted as node embeddings $\mathbf{z}$ for clause and literal nodes respectively, and transformed into edge embeddings (see equation \ref{eq:mlp_graph_input}). Though this is only done for node level tasks in the original, we also consider using a concatenation of multiple hidden representations $\mathbf{h}^{\frac{1}{2}T} \oplus \mathbf{h}^{\frac{3}{4}T} \oplus \mathbf{h}^T$ as node embeddings $\mathbf{z}$. These serve as the input of the explainer MLP and are processed as usual, with either of the following additional limitations. \bigskip
 
 
 \textbf{Soft modified connectivity constraint}
 
-To account for the definition of unsatisfiable cores - a subset of clauses in the original formula whose conjunction is still unsatisfiable - we add a constraint that reinforces the prediction of complete clauses. Therefore, if the explainer assigns a high score to an edge $(l_1,c)$, all edges $(l_2,c) \in E(c)$ that also connect to the clause node $c$ should receive a high score. Therefore, we introduce a soft constraint that punishes varying edge weights for the same clause. For our sampled bipartite Graph $\hat{G}_s$ with node sets $L$ and $C$ containing literal nodes and clause nodes respectively, we define:
+To account for the definition of unsatisfiable cores - a subset of clauses in the original formula whose conjunction is still unsatisfiable - we add a constraint that reinforces the prediction of complete clauses. Therefore, if the explainer assigns a high score to an edge $(l_1,c)$, all edges $(l_k,c) \in E(c)$ that also connect to the clause node $c$ should receive a high score. Therefore, we introduce a soft constraint that punishes varying edge weights for the same clause. For our sampled bipartite Graph $\hat{G}_s$ with node sets $L$ and $C$ containing literal nodes and clause nodes respectively, we define:
 \begin{equation*}
     R_C = \sum_{c \in C}  \text{Var}(\hat{E}_c) = \sum_{c \in C} \frac{1}{|E(c)|} \sum_{(l,c) \in E(c)} (\hat{e}_{l,c} - \bar{E_c})^2,
 \end{equation*}
-where $\hat{E}_c = \{\hat{e}_{l,c} \mid (l,c)\in E(\hat{G}_s)\}$ is the set of edge weights corresponding to edges incident to $c$ and $\bar{E_c} = \frac{1}{|\hat{E}_c|}\sum_{\hat{e}_{l,c} \in \hat{E}_c} \hat{e}_{l,c}$ denotes the mean of $\hat{E}_c$. TODO: $\mu_{\hat{e}_c}$ This is added to our objective function during training.
+where $\hat{E}_c = \{\hat{e}_{l,c} \mid (l,c)\in E(\hat{G}_s)\}$ is the set of edge weights corresponding to edges incident to $c$ and $\bar{E_c} = \frac{1}{|\hat{E}_c|}\sum_{\hat{e}_{l,c} \in \hat{E}_c} \hat{e}_{l,c}$ denotes the mean of $\hat{E}_c$. TODO: $\mu_{\hat{e}_c}$ This is added to our objective function during training. \bigskip
 
 
 \textbf{Hard constraint}
@@ -467,7 +457,6 @@ Since the soft constraint only encourages the prediction of entire clauses but d
 %\begin{equation}
 %    \mu_c = \frac{1}{|\Omega_c|} \sum_{\hat{\omega}_{i,c} \in \Omega_c} \hat{\omega}_{i,c}
 %\end{equation}
-Let $G_b$ be a bipartite graph, modeling a SAT problem instance, with bipartition $(L,C)$ and biadjacency matrix $B\in (0,1)^{L\times C}$.
 For all clause nodes $c \in C$, we calculate the mean logit $\mu_c$ (TODO: OR $ \mu_{\omega_c}$) of all edges incident to $c$ with
 \begin{equation}
     \mu_c = \frac{1}{|E(c)|} \sum_{(l,c)\in E(c)}\omega_{l,c}.
@@ -477,9 +466,9 @@ The update rule is then defined as
 %    \omega_{l,c}' =\mu_c, \qquad \forall(l,c) \in E(c) \mid 
 %\end{equation}
 \begin{equation}
-    \omega_{l,c}'= \mu_c,
+    \omega_{l,c}'\leftarrow \mu_c,
 \end{equation}
-since edges in the biadjacency matrix are from litrals to clauses at all times.
+since edges in the biadjacency matrix are from literals to clauses at all times.
 
 
 The reparameterization trick is still applied for each edge, but $\epsilon_c$ is sampled per clause instead of per edge, so that all edges that connect to a clause are forced to not only bear the same logit, but also the same importance score during training. The equation \ref{eq:reparam_trick} thus changes to:
@@ -499,24 +488,33 @@ TODO: Here? Since the paper differs from the codebase and is imprecise about cer
 
 TODO: ALGORITHMS IN APPENDIX
 
-General description: What framework (e.g., PyTorch, TensorFlow, scikit-learn) and tools you used.
+\textbf{General description}: What framework (e.g., PyTorch, TensorFlow, scikit-learn) and tools you used.
 
-Architecture specifics: Model structures, key layers, differences from the original paper.
+\textbf{Architecture specifics}: Model structures, key layers, differences from the original paper.
+- Architecture of MLP - Linear(input, 64), ReLU, Linear(64,c);
+ Original paper: Linear(input, 64), ReLU, Linear(20,c) (Unclear, but code same as ours), Paper: input = 60 for node classification, 40 for graph classification
+ OG Code, which we adapt: input = 180 for node classification, 40 for graph classification
+ - Xavier initialization for all layers, biases of zero
 
-Hyperparameters (default ones): E.g., activation functions, optimizer choice, learning rate (but not tuned values yet).
+\textbf{Hyperparameters} (default ones):
+- temperature schedule: $\tau^{(t) = \tau_0(\frac{\tau_T}{\tau_0})^t}$, initial temperature $\tau_0$, final temperature $\tau_T$. Small temperature leads to more discrete graphs, may hinder backprop optimization
+- Adam optimizer
+- Hyperparams according to paper: $3*10^{-3}$ LR, size reg 0.5, entropy reg 1.0, 30 epochs, $\tau_0 = 5.0$, $\tau_T = 2.0$ HYPERPARAMS VARY IN ACTUAL CODE, OVERSIMPLIFIED IN PAPER (contact with Holdijk)
+RE-Paper settings tuned for each dataset. We conduct a search ourselves over both provided settings in experiments
 
-Extension description: What exactly you changed/extended compared to the original work, and how you did it technically.
+\textbf{Extension description}: What exactly you changed/extended compared to the original work, and how you did it technically.
 
-Preprocessing: If you had to massage or transform input data before feeding it to the model.
+\textbf{Preprocessing}: If you had to massage or transform input data before feeding it to the model.
 
-Reproducibility: Seed setting, tricks to make the results reproducible.
+\textbf{Reproducibility}: Seed setting, tricks to make the results reproducible.
+ - Adapted ability to set seeds from RE-PGE for reproducibility
+ - Hard seeded train/eval/test split for data in inductive setting
 
-Challenges: Brief notes if you faced and solved technical issues during reimplementation (e.g., missing details in the original paper).
+\textbf{Challenges}: Brief notes if you faced and solved technical issues during reimplementation (e.g., missing details in the original paper).
 
+\textbf{Downstream model specifics}:
 
-TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer. INDUCTIVE SETTING EXPERIMENTS ALSO PERFORMED IN PGEXPLAINER!
-
-%"In this section, we empirically demonstrate the effectiveness of PGExplainer in the inductive setting. In the inductive setting, we select α instances for training, (N − α)/2 for validation, and the rest for testing. α is ranged from [1,2,3,4,5,30]. Note that, with α =1, our method degenerates to the single-instance explanation method. Recall that to explain a set of instances, GNNExplainer first detects a reference node and then computes the explanation for the reference node. The explanation is then generalized to other nodes with graph alignment(SOURCE GNNExplainer)"
+Xavier initialization for all layers
 
 Notes on Original code of target model: Not clearly specified in paper, but according to code:
 - No specific args set for layers etc., except hyperparameters for different datasets (see sweeps)
@@ -544,16 +542,12 @@ We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer with 
 \end{align}
 
 
-
-TODO: Maybe separate the theory of PGE from our own work more strictly? E.g. 3. PGE theory, 4. PGE reimplementation and NeuroSAT application? \\
-Implementation details:
 \begin{itemize}
     \item Started by reimplementing the downstream tasks used in og paper for node and graph class.
-    \item Node datasets taken from original and transformed to a "pyg format", to keep original structure and ground truths
+    \item datasets taken from original and transformed to a "pyg format", to keep original structure and ground truths
     \item Graph: BA-2Motif from pyg library with self generated gt, MUTAG dataset taken from pyg and added gt-labels that were added in original dataset
     \item Created pytorch/pytorch geometric implementation of 3-layer graph conv networks
     \item architecture as described in paper: ReLu activation, Pooling for graph net
-    \item Xavier initialization for all layers
     \item Same hyperparameters?(Adam, $1*10^-3$ lr, 1000 epochs)/experimental setup?
     \item ADDED Dropout(0.1) to improve performance/overfitting on node tasks
     \item Fully connected layer: torch geometric GraphConv to allow passing of edge weights(+ bipartite)!?
@@ -586,6 +580,10 @@ Only change in NeuroSAT: pass edge weights into adjacency matrix. Calculates ...
 
 
 
+TODO: NECESSARY?? OR MOVE TO IMPLEMENTATION DETAILS/SETUP??
+Since NeuroSAT can be regarded as a black box model in the context of our work, we only describe how it passes messages superficially. In each iteration, each clause receives messages from its neighboring literals to update its embedding. Then, each literal receives messages not only from its neighboring clauses, but also from its complementary literal, to update its embedding.
+
+
 
 \section{Experimental setup}
 In this section we describe the setup for the experiments that we perform on PGExplainer. We start with the utilization of PGExplainer in the inductive setting, similar to the study performed by the authors. Additionally, we include experiments on the performance in the collective setting for the sake of completeness. Lastly, we present our approach for generating bipartite explanations for NeuroSAT \cite{} predictions of SAT problems.
@@ -596,17 +594,22 @@ Datasets used: Name, origin, train/test/validation split (or cross-validation if
 
 Training procedures: How long you trained, on which hardware (especially if relevant), early stopping criteria, etc.
 
-Evaluation metrics: E.g., accuracy, F1-score, BLEU, MSE, depending on your task.
+Evaluation metrics: AUROC score evaluation for quantitative evaluation; Paper does not describe calculation, code varies between datasets. Since explanations are collective, calculating global AUROC is valid, because all edges share the same network parameters (?). We propose consistently calculating local AUROC for each instance and meaning over the dataset, as we use inductive setting. Additionally, AUROC for (sub-)graphs that contain only or no motif edges cannot be calculated individually and is usually excluded/skipped. This is not regarded in the global calculation. This is not discussed in the original paper.
 
-Hyperparameter tuning: If you did hyperparameter search, describe how (grid search, random search, Bayesian optimization?).
+Hyperparameter tuning: Hyperparameter tuning using grid search for each dataset
 
-Baselines: Which models/versions you are comparing against (e.g., original model, your extension, ablation studies).
+Baselines: Original in both inductive and collective setting, RE-PGE in collective setting
 
-Experimental protocol: How many runs you did to account for randomness (e.g., averaged over 5 seeds).
+Experimental protocol: Averaged over 10 seeds account for randomness, similar to original.
 
 Visualization tools: If you generated plots/graphs during experiments (like loss curves), you can briefly mention this.
 
 \subsection{PGExplainer in the inductive setting}
+
+
+TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer. INDUCTIVE SETTING EXPERIMENTS ALSO PERFORMED IN PGEXPLAINER!
+
+%"In this section, we empirically demonstrate the effectiveness of PGExplainer in the inductive setting. In the inductive setting, we select α instances for training, (N − α)/2 for validation, and the rest for testing. α is ranged from [1,2,3,4,5,30]. Note that, with α =1, our method degenerates to the single-instance explanation method. Recall that to explain a set of instances, GNNExplainer first detects a reference node and then computes the explanation for the reference node. The explanation is then generalized to other nodes with graph alignment(SOURCE GNNExplainer)"
 
 \textbf{Datasets}
 For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. Statistics of each dataset can be found in table \ref{tab:dataset-statistics}. We will give a short description of each dataset.

@@ -156,9 +156,9 @@ be the sum to estimate with $p$ being a probability distribution over a random v
 \section{Graph Theory}
 \label{sec:graph_theory}
 TODO: WE ONLY CONSIDER UNDIRECTED GRAPHS IN THIS WORK, THEREFORE ADAPT GRAPH DEFINITIONS?!
-These definitions will loosely follow Liu et al. \cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel \cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as "$G$ on $V$". An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We denote the set of edges that are incident to $u$ as $E(u) = \{(v,u) \in E(G) \mid v \in \mathcal{N}(u)\}$. Additionally, we define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v \in V(G)$ is the number of edges connected to $v$ and denoted by $d(v) = |\{(u,v) \in E(G) \mid u \in V(G)\}|$. $G$ can be described by an adjacency matrix $A \in \mathbb{R}^{n \times n}$, where
+These definitions will loosely follow Liu et al. \cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel \cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as "$G$ on $V$". An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We denote the set of edges that are incident to $u$ as $E(u) = \{(v,u) \in E(G) \mid v \in \mathcal{N}(u)\}$. Additionally, we define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v \in V(G)$ is the number of edges connected to $v$ and denoted by $d(v) = |\{(u,v) \in E(G) \mid u \in V(G)\}|$. $G$ can be described by an adjacency matrix $\mathbf{A} \in \mathbb{R}^{n \times n}$, where
 \begin{equation*}
-    A_{ij}=\begin{cases}
+    \mathbf{A}_{ij}=\begin{cases}
         1 & \text{if } \{v_i,v_j\}\in E \text{ and } i \neq j, \\
         0 & \text{otherwise.}
     \end{cases}
@@ -199,7 +199,7 @@ We additionally define bipartite graphs according to Asratian et al. \cite{asrat
     \begin{minipage}{0.45\textwidth}
         \vspace*{0.1cm} % Adjust this value to fine-tune vertical alignment
         \[
-        A = \begin{bmatrix}
+        \mathbf{A} = \begin{bmatrix}
             0 & 1 & 1 & 0 \\
             1 & 0 & 1 & 1 \\
             1 & 1 & 0 & 0 \\
@@ -207,7 +207,7 @@ We additionally define bipartite graphs according to Asratian et al. \cite{asrat
         \end{bmatrix}
         \]
     \end{minipage}
-    \caption{A simple undirected graph $G$ on $V$, with $V=\{1,2,4,5\}$ and $E(G)=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$ (left), and its adjacency matrix A (right).}
+    \caption{A simple undirected graph $G$ on $V$, with $V=\{1,2,4,5\}$ and $E(G)=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$ (left), and its adjacency matrix $\mathbf{A}$ (right).}
     \label{fig:graph-example}
 \end{figure}
 
@@ -338,9 +338,6 @@ Let $X$ and $Y$ be two random variables with the joint probability mass function
 
 \section{Graph Neural Networks}
 \label{sec:gnns}
-TODO: DOES THIS CONVEY MESSAGE PASSING???
-https://arxiv.org/abs/1810.00826 (used in PGE)
-https://arxiv.org/abs/1704.01212 (used in PGE AND NeuroSAT)
 
 Graph Neural Networks(GNNs) \cite{4700287} are a DL-based approach that operates on graphs. Due to their unique non-Euclidean property they find usage in many areas, including node classification \cite{gao2019graph}, graph classification \cite{xu2018powerful} and link prediction tasks \cite{zhang2018link}. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks \cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings \cite{cai2018comprehensive} to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu et al. \cite{Liu2020}).\bigskip
 
@@ -379,6 +376,37 @@ where $p$ are the supervised nodes. A gradient-descent strategy is utilized in t
 Though the architecture proposed by Scarselli et al. \cite{4700287} proved to be powerful for modeling structural data, this initial approach suffers from a few limitations. Most notably, it uses the same parameters in the iteration, while nowadays it is common practice to use different parameters in different layers. Stacking $k$ GNN layers allows each node to aggregate information from nodes within its $k$-hop neighborhood, represented in figure \ref{fig:k-hop}, seeking an increase in performance. It is important to note that this approach may also increase the noisy information spread by the exponentially increasing neighborhood nodes \cite{Liu2020}.
 
 Another drawback is the computational inefficiency, as hidden states have to be updated $T$ times until reaching the fixed point. A relaxation of the fixed point assumption enables multi-layer GNNs to provide stable representations of the node and its neighborhood \cite{li2015gated}. Additionally, this architecture is unable to model informative edge features, which limits its capacity to learn meaningful hidden representations for edges.
+
+
+TODO: MOVE AFTER TWO SPECIFIC LAYERS? DEFINE GCN AS MPNN AS EXAMPLE, EVEN IF NOT USED? MAINLY NEEDED FOR RATIONALITY OF NEUROSAT BEING GNN
+
+The Message Passing Neural Network (MPNN) proposed by Gilmer et al. \cite{gilmer2017neural} seeks to unify GNN models, by providing a general framework for supervised learning on GNNs, since many existing models operate similarly. Typically, messages derived from node features are passed along edges of a graph to be able to learn meaningful graph and node representations that can be used for downstream tasks \cite{kipf2016semi} \cite{4700287} \cite{velivckovic2017graph} \cite{xu2018powerful}. Therefore, GNNs may be expressed as MPPNs, where the forward pass consist of a message passing phase and a readout phase. The message passing phase runs for $T$ time steps and is defined by the message function $M_t$, as well as the node update function $U_t$. At each time step $t$, the hidden state $\mathbf{h}_v^{t+1}$ of a node $v$ in the graph $G$ is updated based on the message $\mathbf{m}_v^{t+1}$, which aggregates information from the previous hidden states of its neighbors according to the message function $M_t$. Formally, this is defined as
+
+\begin{align}
+    \mathbf{m}_v^{t+1} &= \sum_{w \in \mathcal{N}(v)} M_t\left(\mathbf{h}_v^t, \mathbf{h}_w^t, \mathbf{e}_{v,w}\right) \tag{1} \\
+    \mathbf{h}_v^{t+1} &= U_t\left(\mathbf{h}_v^t, \mathbf{m}_v^{t+1}\right) \tag{2},
+\end{align}
+where $\mathbf{e}_{v,w}$ denotes possible edge features of edge $(v,w)$.
+In the readout phase a feature vector $\hat{\mathbf{y}}$ is computed for the entire graph from the final node states  using a readout function $R$:
+\begin{equation}
+    \hat{\mathbf{y}} = R\left(\{ \mathbf{h}_v^T \mid v \in G \}\right) \tag{3}.
+\end{equation}
+Note that the three functions $M_t$, $U_t$ and $R_t$ are learned and differentiable.
+    
+Example Kipf and Welling:
+\begin{equation}
+    M_t(\mathbf{h}_v^t, \mathbf{h}_w^t) = c_{v,w}\mathbf{h}_w^t,
+\end{equation}
+with $c_{v,w} = (d(v)d(w))^{-\frac{1}{2}}\mathbf{A}_{v,w}$.
+\begin{equation}
+    U_v^t(\mathbf{h}_v^t, \mathbf{m}_w^{t+1}) = \text{ReLU}(\mathbf{W}^t\mathbf{m}_v^{t+1}).
+\end{equation}
+
+
+
+
+
+
 
 Therefore, we briefly present two subsequent models that are used in the course of this work.
 
@@ -454,15 +482,15 @@ with satisfying assignment $A:\{x_1 \mapsto 1, x_2 \mapsto 1\}$. Furthermore, SA
 \subsection{Representation as Bipartite Graph}
 SAT has extensively been studied in the form of graphs. Guo et al. \cite{guo2023machine} describe four different types of graph representations for CNF formulae with varying complexity and information compression. Since we want to minimize the loss of information for SAT we adapt the information-richest form of a literal-clause graph (LCG). 
 A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in (see figure \ref{fig:lcg-sat}).
-The resulting graph $G_b$ can formally be described by a biadjacency matrix $B$ of shape $L \times C$, with $(L,C)$ being a bipartition of the $G_b$ into literals and clauses. \\
-Following Sun et al. \cite{articleBiadjacency}, let $A \in \mathbb{R}^{(L+C) \times (L+C)}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $L$ and $C$, the adjacency matrix can be represented as
+The resulting graph $G_b$ can formally be described by a biadjacency matrix $\mathbf{B}$ of shape $L \times C$, with $(L,C)$ being a bipartition of the $G_b$ into literals and clauses. \\
+Following Sun et al. \cite{articleBiadjacency}, let $\mathbf{A} \in \mathbb{R}^{(L+C) \times (L+C)}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $L$ and $C$, the adjacency matrix can be represented as
 \begin{equation}
-    A(i,j) = \begin{bmatrix}
-        0_{L \times L} & B \\
-        B^T & 0_{C \times C}
+    \mathbf{A}(i,j) = \begin{bmatrix}
+        \mathbf{0}_{L \times L} & \mathbf{B} \\
+        \mathbf{B}^T & \mathbf{0}_{C \times C}
     \end{bmatrix},
 \end{equation}
-where $0$ denotes a zero matrix in the shape of their subscript. \bigskip
+where $\mathbf{0}$ denotes a zero matrix in the shape of their subscript. \bigskip
 
 \begin{figure}[h]
     \centering
