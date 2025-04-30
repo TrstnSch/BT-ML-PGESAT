@@ -345,3 +345,9 @@ What plots are relevant for experiments?? Train/Val loss of each run of each dat
 
 Indcutive experiment of paper evaluates different training set sizes. Replicate this exactly for 1,2,5,... and plot for exact comparison?
 OR only perform for 30 training instances and compare with results taken from plots?
+
+Compare my inductive results to their collective results + put PGE inductive plots in appendix?
+
+Structure:
+    5. General experiments
+        subchapter per experiment with experimental setup + evaluation
