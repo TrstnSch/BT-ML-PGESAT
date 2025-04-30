@@ -488,7 +488,7 @@ TODO: Here? Since the paper differs from the codebase and is imprecise about cer
 
 TODO: ALGORITHMS IN APPENDIX
 
-\textbf{General description}: What framework (e.g., PyTorch, TensorFlow, scikit-learn) and tools you used.
+\textbf{General description}: PyTorch and PyTorch-geometric used for the reimplementation of the framework. TorchEval used to calculate the ROC-AUC metric. WandB used for evaluating hyperparameters. 
 
 \textbf{Architecture specifics}: Model structures, key layers, differences from the original paper.
 - Architecture of MLP - Linear(input, 64), ReLU, Linear(64,c);
@@ -497,20 +497,25 @@ TODO: ALGORITHMS IN APPENDIX
  - Xavier initialization for all layers, biases of zero
 
 \textbf{Hyperparameters} (default ones):
-- temperature schedule: $\tau^{(t) = \tau_0(\frac{\tau_T}{\tau_0})^t}$, initial temperature $\tau_0$, final temperature $\tau_T$. Small temperature leads to more discrete graphs, may hinder backprop optimization
+- temperature schedule: $\tau^{(t) = \tau_0(\frac{\tau_T}{\tau_0})^t}$, initial temperature $\tau_0$, final temperature $\tau_T$. Small temperature leads to more discrete graphs, may hinder backprop optimization, therefore ANNEALING schedule
+NOTE: In original code the authors calculate the temp with epoch starting at 0. This leads to the temperature starting at $t0$ but never exactly reaching $t_t$.
 - Adam optimizer
-- Hyperparams according to paper: $3*10^{-3}$ LR, size reg 0.5, entropy reg 1.0, 30 epochs, $\tau_0 = 5.0$, $\tau_T = 2.0$ HYPERPARAMS VARY IN ACTUAL CODE, OVERSIMPLIFIED IN PAPER (contact with Holdijk)
+- Hyperparams according to paper: $3*10^{-3}$ LR, size reg 0.5, entropy reg 1.0, 30 epochs, $\tau_0 = 5.0$, $\tau_T = 2.0$ HYPERPARAMS VARY IN ACTUAL CODE, OVERSIMPLIFIED IN PAPER (Holdijk contact with authors)
+- SAMPLED GRAPHS K?!?!?
 RE-Paper settings tuned for each dataset. We conduct a search ourselves over both provided settings in experiments
 
-\textbf{Extension description}: What exactly you changed/extended compared to the original work, and how you did it technically.
+\textbf{Preprocessing}: We use the original datasets that are provided in the PGExplainer codebase. We transform the data to fit our PyTorch-geometric framework. Each graph is stored as a torch-geometric Data object. This holds the $d$-dimensional node features as tensors, the graph label in the form of a long or all node labels in the form of a tensor of class indices, a ground truth mask that contains the motif edges, as well as training, evaluation and test node masks for training the downstream model. Edges are stored in the edge-index format, used in PyTorch-geometric, as a COO tensor of shape $[2, \text{number-edges}]$. This is computed from the adjacency matrix $A$ as follows: (see pytorch Sparse COO tensors)TODO: adj.nonzero().t().contiguous(). Therefore, we only transform the data without changing the content.
+TODO: This is not really Preprocessing
+The node sets of motif nodes used for training and evaluating the explainer are extracted from the codebase. The same is done for the mutagenic graphs with existing ground truth, namely TODO.
 
-\textbf{Preprocessing}: If you had to massage or transform input data before feeding it to the model.
+\textbf{Extension description}: What exactly you changed/extended compared to the original work, and how you did it technically.
+This is not described in the original paper, but since undirected graphs contain bidirectional edges, effectively each edge carries two logits/weights. Thus, we mean the logits of each pair of bidirectional edges after the MLP output has been calculated. We implement the logic of combining/meaning the edge logits as follows: All edges pairs from the edge-index that connect the same two nodes, e.g. $(i,j)$ and $(j,i)$, are treated as a unique pair. For each of these unique pairs the mean of the logits $\omega_{i,j}$ and $\omega_{j,i}$ corresponding to its two edges is calculated and used to update each of the two logits.
 
 \textbf{Reproducibility}: Seed setting, tricks to make the results reproducible.
  - Adapted ability to set seeds from RE-PGE for reproducibility
  - Hard seeded train/eval/test split for data in inductive setting
 
-\textbf{Challenges}: Brief notes if you faced and solved technical issues during reimplementation (e.g., missing details in the original paper).
+\textbf{Challenges}: Brief notes if you faced and solved technical issues during reimplementation (e.g., missing details in the original paper). Difficulties getting the code to work, as we started working with the paper only. Found that hyperparameters had to be finetuned, exact downstream model is relevant (e.g. batch norm present or not, overfit models obviously generate bad explanations, need for early stopping). Different loss used in code than in paper; we adapt the loss described in the paper. No documentation of the motif node selection/training only performed on graphs/nodes that contain gt! Imprecise about dataset description (BA-2Motif has different features than the rest of the syn datasets). No description of the AUROC calculation, had to be extracted from code (global vs local)
 
 \textbf{Downstream model specifics}:
 
@@ -543,7 +548,6 @@ We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer with 
 
 
 \begin{itemize}
-    \item Started by reimplementing the downstream tasks used in og paper for node and graph class.
     \item datasets taken from original and transformed to a "pyg format", to keep original structure and ground truths
     \item Graph: BA-2Motif from pyg library with self generated gt, MUTAG dataset taken from pyg and added gt-labels that were added in original dataset
     \item Created pytorch/pytorch geometric implementation of 3-layer graph conv networks
@@ -551,11 +555,8 @@ We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer with 
     \item Same hyperparameters?(Adam, $1*10^-3$ lr, 1000 epochs)/experimental setup?
     \item ADDED Dropout(0.1) to improve performance/overfitting on node tasks
     \item Fully connected layer: torch geometric GraphConv to allow passing of edge weights(+ bipartite)!?
-    \item Original references sageConv in paper, pyG impl. does not allow edge weights, verify!
-    \item GATConv for Graph attention(referenced by original)
-    \item Alternatives: GCNConv(edge weights, no bipartite graphs)
     \item 80/10/10 split
-    \item => Similar accuracies achieved
+    \item Similar accuracies achieved of at least $85\%$, see appendix for details \ref{}
 \end{itemize}
  
 
@@ -570,7 +571,7 @@ We use a pytoch implementation of the Weisfeiler and Leman Go Neural layer with 
 
 \subsection{Application to NeuroSAT}
 \label{sec:Application_to_NeuroSAT}
-and adapt the NeuroSAT model to allow passing edge weights into the adjacency matrix. PGExplainer adapted for SAT data, NeuroSAT embeddings and evaluation.
+Adapt the NeuroSAT model to allow passing edge weights into the biadjacency matrix, weighted matrix used multiplication instead of discrete adjacency matrix. PGExplainer adapted for SAT data, NeuroSAT embeddings and evaluation.
 
 
 Reimplementation of NeuroSAT provided by Rodhi. As the code used for NeuroSAT can also be found in our Repository, we stress that only the changes described in the following chapter are part of our work. \\
@@ -590,19 +591,28 @@ In this section we describe the setup for the experiments that we perform on PGE
 
 
 
-Datasets used: Name, origin, train/test/validation split (or cross-validation if you use it).
+\textbf{Datasets used}: Name, origin, train/test/validation split (or cross-validation if you use it). TRAINING SET SIZE = 30 FOR COMPARABILITY WITH ORIGINAL!
 
-Training procedures: How long you trained, on which hardware (especially if relevant), early stopping criteria, etc.
+\textbf{Training procedures}: How long you trained, on which hardware (especially if relevant), early stopping criteria, etc.
 
-Evaluation metrics: AUROC score evaluation for quantitative evaluation; Paper does not describe calculation, code varies between datasets. Since explanations are collective, calculating global AUROC is valid, because all edges share the same network parameters (?). We propose consistently calculating local AUROC for each instance and meaning over the dataset, as we use inductive setting. Additionally, AUROC for (sub-)graphs that contain only or no motif edges cannot be calculated individually and is usually excluded/skipped. This is not regarded in the global calculation. This is not discussed in the original paper.
+\textbf{Evaluation metrics}: AUROC score evaluation for quantitative evaluation; Paper does not describe calculation, code varies between datasets. Since explanations are collective, calculating global AUROC is valid, because all edges share the same network parameters (?). We propose consistently calculating local AUROC for each instance and meaning over the dataset, as we use inductive setting. Additionally, AUROC for (sub-)graphs that contain only or no motif edges cannot be calculated individually and is usually excluded/skipped. This is not regarded in the global calculation. This is not discussed in the original paper.
 
-Hyperparameter tuning: Hyperparameter tuning using grid search for each dataset
+Qualitative evaluation using the top-$k$ explanation mask edges with highest importance scores. Compared to ground truht that contains $k$ edges. $k$ can be understood as a parameter. For node classification tasks, we only show the computational graph of the node to be explained, as this is known to be relevant for the prediction \cite{}, where the top$-k$ edges are highlighted as explanation.
 
-Baselines: Original in both inductive and collective setting, RE-PGE in collective setting
+Efficiency evaluation performed by authors, big increase in eff. since training time is disregarded when compared to GNNExplainer. However, exact method for this not clear. We follow the calculation of the RE-PGE to compare the average time needed for a trained explainer model to return an explanation for any one instance.
 
-Experimental protocol: Averaged over 10 seeds account for randomness, similar to original.
+\textbf{Hyperparameter tuning}: Hyperparameter tuning using grid search for each dataset
 
-Visualization tools: If you generated plots/graphs during experiments (like loss curves), you can briefly mention this.
+\textbf{Baselines}: Original in both inductive and collective setting, RE-PGE in collective setting
+
+\textbf{Experimental protocol}: Averaged over 10 seeds account for randomness, similar to original.
+
+\textbf{Visualization tools}: Used NetworkX \cite{SciPyProceedings_11} to draw the explained graphs that are used for the qualitative evaluation, as well as seaborn \cite{Waskom2021} for plotting curves.
+For NeuroSAT: Used pyvis \cite{perrone2020network} (TODO: USE THIS SOURCE???) for visualization
+Kneed for evaluation independent from k?
+
+
+We run additional experiments to evaluate the effects of certain inconsistencies. Therefore, we change the motif nodes that are used for training/evaluating to include all or one select motif node, depending on the dataset. We use the same hyperparameters used for the previous experiments. Besides this change, we follow the experimental setup to evaluate whether a reasoning behind the node selection can be made out.
 
 \subsection{PGExplainer in the inductive setting}
 
@@ -646,27 +656,7 @@ NOTE that in the collective setting used in the original paper the explainer is 
 
 \textbf{Hyperparameter search}
 
-As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter setting on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original\ref{}, as well as the configs provided in Replication study by Holdijk et al.\ref{}. More details can be found in Appendix\ref{}.
-
-\begin{table}[h!]
-    \centering
-    \begin{tabular}{|l|l|}
-    \hline
-    \textbf{Parameter} & \textbf{Values} \\ \hline
-    epochs & 20 \\ \hline
-    paper\_loss & True, False \\ \hline
-    tT & 1.0, 5.0 \\ \hline
-    size\_reg & 0.03 \\ \hline
-    entropy\_reg & 0.01 \\ \hline
-    lr\_mlp & 0.003, 0.0003 \\ \hline
-    sampled\_graphs & 10 \\ \hline
-    sample\_bias & 0.0, 0.5 \\ \hline
-    batch\_size & 16, 64 \\ \hline
-    seed & 74, 75, 76 \\ \hline
-    \end{tabular}
-    \caption{Grid Search Sweep Configuration}
-    \label{tab:sweep_config}
-\end{table}
+As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter settings on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original \cite{}, as well as the configs provided in Replication study \cite{}. More details can be found in Appendix\ref{}.
 
 
 
@@ -676,7 +666,6 @@ We follow the experimental setup from the PGExplainer as closely as possible. Si
 
 
 Additionally, experiment in the collective setting with the configuration and setup described for inductive setting - difference lies test data seen during training. Used for fair comparison with the original paper and the replication paper.
-
 
 
 
