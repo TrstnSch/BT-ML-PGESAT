@@ -1,0 +1,66 @@
+{
+    "params": {
+        "architecture": "MLP",
+        "dataset": "SAT",
+        "graph_task": true,
+        "epochs": 30,
+        "batch_size": 1,
+        "lr_mlp": 0.0003,
+        "sampled_graphs": 20,
+        "coefficient_size_reg": 0.001,
+        "coefficient_entropy_reg": 1.0,
+        "coefficient_L2_reg": 0.0,
+        "coefficient_consistency": 0.0,
+        "sample_bias": 0.0,
+        "num_explanation_edges": 0,
+        "num_training_instances" : 30,
+        "t0": 5.0,
+        "tT": 1.0
+    }
+}
+
+{
+    "method": 'grid',                    # random, grid or Bayesian search
+    "metric": {"goal": "maximize", "name": "val/mean_ind_AUC"},
+    "parameters": {
+        'epochs': {                         # 
+            'values': [20]                  #   
+            },
+        'paper_loss': {
+            'values': [1]                   # 
+            },
+        't0': {
+            'values': [5.0]                 #    
+            },
+        'tT': {
+            'values': [1.0, 5.0]            # 
+            },
+        'size_reg': {
+            'values': [0.03]                # 
+            },
+        'entropy_reg': {
+            'values': [0.01]                # 
+            },
+        'L2_reg': {
+            'values': [0.0]                 # 
+            },
+        'lr_mlp':{
+            'values': [0.003, 0.0003]       #       
+            },
+        'sampled_graphs':{
+            'values': [10]                  # 
+            },
+        'sample_bias':{
+            'values': [0.0]                 #  
+            },
+        'batch_size':{
+            'values': [16, 64]              # 
+            },
+        'num_training_instances':{
+            'values': [30]                  # 
+            },
+        'seed':{
+            'values': [74, 75, 76]          # 
+            },
+    },
+}   

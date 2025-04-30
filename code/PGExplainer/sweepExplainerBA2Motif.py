@@ -28,28 +28,28 @@ def trainExplainer () :
 
     # Config for sweep
     # This works, BUT cannot pass arguments. Dataset therefore has to be hardcoded or passed otherwise?!
-    wandb.init(project="Explainer-BA-2Motif-Sweep-Fin", config=wandb.config)
+    wandb.init(project="Explainer-BA-Community-Sweep-Fin", config=wandb.config)
     seed.seed_everything(wandb.config.seed)
     
     params = configOG['params']
     graph_task = params['graph_task']
     epochs = wandb.config.epochs
-    t0 = params['t0']
+    t0 = wandb.config.t0
     tT = wandb.config.tT
     sampled_graphs = wandb.config.sampled_graphs
     coefficient_size_reg = wandb.config.size_reg
     coefficient_entropy_reg = wandb.config.entropy_reg
-    coefficient_L2_reg = params['coefficient_L2_reg']
+    coefficient_L2_reg = wandb.config.L2_reg
     num_explanation_edges = params['num_explanation_edges']
     lr_mlp = wandb.config.lr_mlp
     sample_bias = wandb.config.sample_bias
-    batch_size = wandb.config.batch_size
+    num_training_instances = wandb.config.num_training_instances
 
 
     MUTAG = True if dataset == "MUTAG" else False
     hidden_dim = 64 # Make loading possible
     clip_grad_norm = 2 # Make loading possible
-    min_clip_value = -2
+    min_clip_value = -2 # Not utilized
     
     generator_seed = 43
     generator1 = torch.Generator().manual_seed(generator_seed)
@@ -67,9 +67,20 @@ def trainExplainer () :
                     selected_data.append(data[i])
         
             data = selected_data
+            
+        total_size = len(data)
+        remaining = total_size - num_training_instances
+        # To prevent an impossible absolute selection of training instance, default to 0.8,0.1,0.1
+        if remaining < 2 or remaining == total_size:
+            num_training_instances = 0.8
+            num_val = 0.1
+            num_test = 0.1
+        else:
+            num_val = remaining // 2
+            num_test = remaining - num_val  # In case of odd number
         
-        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [0.8, 0.1, 0.1], generator1)
-        train_loader = DataLoader(train_dataset, batch_size, True)
+        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [num_training_instances, num_val, num_test], generator1)
+        train_loader = DataLoader(train_dataset, params['batch_size'], True)
     else:
         if dataset == "BA-Community":
             single_label = data.y
@@ -78,9 +89,19 @@ def trainExplainer () :
             motif_node_indices = params['motif_node_indices']
             motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
         
-        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [0.8, 0.1, 0.1], generator1)
-
-
+        total_size = len(motifNodes)
+        remaining = total_size - num_training_instances
+        # To prevent an impossible absolute selection of training instance, default to 0.8,0.1,0.1
+        if remaining < 2 or remaining == total_size:
+            num_training_instances = 0.8
+            num_val = 0.1
+            num_test = 0.1
+        else:
+            num_val = remaining // 2
+            num_test = remaining - num_val  # In case of odd number
+            
+        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [0.08, 0.46, 0.46], generator1)
+    
     # TODO: Instead of loading static one, pass model as argument?
     downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = 10, labels=labels)
     downstreamTask.load_state_dict(torch.load(f"models/{dataset}", weights_only=True))
@@ -188,7 +209,21 @@ def trainExplainer () :
     else:
         testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
         
-    wandb.log({"test/AUC": testAUC, "test/mean_ind_AUC": torch.tensor(individual_aurocs_test).mean(), "test/mean_infTime": testInfTime})
+        
+    if graph_task:
+        test_data = test_dataset[-1]
+        w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, test_data.x, test_data.edge_index)
+        edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
+    else:
+        test_node = test_nodes[-1]
+        subset, edge_index_hop_test, mapping, edge_mask = k_hop_subgraph(node_idx=test_node, num_hops=3, edge_index=data.edge_index, relabel_nodes=False)
+
+        w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, data.x, edge_index_hop_test, test_node)
+        edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
+        
+    wandb.log({"test/AUC": testAUC, "test/mean_ind_AUC": torch.tensor(individual_aurocs_test).mean(), 
+               "test/mean_infTime": testInfTime, "edge_importance/min": edge_ij_test.min().item(), "edge_importance/max": edge_ij_test.max().item(),
+               "edge_importance/mean": edge_ij_test.mean().item()})
 
     wandb.finish()
     

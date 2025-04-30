@@ -334,3 +334,14 @@ e_{i,j} or e_{ij}?
 $\hat{E}_c$. or $\mu_{\hat{e}_c}$
 
 What exactly goes into implementation details?
+
+Where do the K=20 sampled graphs come from??? Not at all mentioned in paper?! Did I arbitrarily set it to 20?
+
+Correct way to calculate temp? Count epochs starting at 0 and never reach final temp or start at 1, reaching final temp but never starting with inital emp?
+
+Sweep tables in appendix or results?
+
+What plots are relevant for experiments?? Train/Val loss of each run of each dataset? Curve of AUROC over time?
+
+Indcutive experiment of paper evaluates different training set sizes. Replicate this exactly for 1,2,5,... and plot for exact comparison?
+OR only perform for 30 training instances and compare with results taken from plots?

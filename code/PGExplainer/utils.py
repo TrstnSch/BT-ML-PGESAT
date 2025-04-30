@@ -9,20 +9,30 @@ from pathlib import Path
 import random
 
 # TODO: plotGraph
-def plotGraph (graph, pos=None, color_map=None, edge_weights=False, MUTAG=False):
+def plotGraph (graph, pos=None, color_map=None, edge_weights=False, MUTAG=False, save_path=None):
     if edge_weights: nxGraph = to_networkx(graph, edge_attrs=["edge_attr"], to_undirected=True)
     else: nxGraph = to_networkx(graph, to_undirected=True)
     
     if pos is None: pos = nx.spring_layout(nxGraph)
     if color_map is None and MUTAG is False:
-        color_map = [
+        color_dict = {
+        20: '#c41f1c',
+        21: '#c41f1c',
+        22: '#d3eb0d',
+        23: '#d3eb0d',
+        24: '#28a8ec'
+        }
+        default_color = '#eb790d'
+        color_map = [color_dict.get(node, default_color) for node in nxGraph.nodes()]
+        """color_map = [
             '#c41f1c' if node in [20,21] else 
             '#d3eb0d' if node in [22,23] else 
             '#28a8ec' if node == 24 else
             '#eb790d' 
             for node in nxGraph.nodes()
-        ]
+        ]"""
         
+    
     if color_map is None and MUTAG:
         indices = torch.argmax(graph.x, axis=1)
         colors = ['orange','red','lime','green','blue','orchid','darksalmon','darkslategray','gold','bisque','tan','lightseagreen','indigo','navy']
@@ -33,19 +43,22 @@ def plotGraph (graph, pos=None, color_map=None, edge_weights=False, MUTAG=False)
         
     plt.figure(1)
     nx.draw(nxGraph, pos=pos, node_color=color_map)
-
-    nx.draw_networkx_labels(nxGraph, pos, labels={i: f"{i}" for i in range(graph.x.shape[0])})
+    
+    #nx.draw_networkx_labels(nxGraph, pos, labels={i: f"{i}" for i in range(graph.x.shape[0])})
 
     if edge_weights:
         labels = nx.get_edge_attributes(nxGraph,'edge_attr')
         labels = {edge: f"{weight:.2f}" for edge, weight in nx.get_edge_attributes(nxGraph, 'edge_attr').items()}
         nx.draw_networkx_edge_labels(nxGraph, pos, edge_labels=labels, font_size=6)
  
+    if save_path:
+        plt.savefig(save_path, format="pdf", bbox_inches="tight")
+        
     plt.show()
     return pos
 
 # Edge weights seem to work, at least on graphs. graph needs attribute edge_attr containing weights. TODO: Test on NodeClass
-def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_task=False, MUTAG=False, number_nodes=False):
+def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_task=False, MUTAG=False, number_nodes=False, save_path=None):
     if edge_weights: nxGraph = to_networkx(graph, edge_attrs=["edge_attr"], to_undirected="upper")
     else: nxGraph = to_networkx(graph, to_undirected=True)
     
@@ -87,6 +100,9 @@ def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_tas
         labels = {edge: f"{weight:.2f}" for edge, weight in nx.get_edge_attributes(nxGraph, 'edge_attr').items()}
         nx.draw_networkx_edge_labels(nxGraph, pos, edge_labels=labels, font_size=6)
  
+    if save_path:
+        plt.savefig(save_path, format="pdf", bbox_inches="tight")
+        
     plt.show()
     return pos
 

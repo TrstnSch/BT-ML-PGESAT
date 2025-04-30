@@ -1,0 +1,109 @@
+{
+    "params": {
+        "architecture": "MLP",
+        "dataset": "MUTAG",
+        "graph_task": true,
+        "epochs": 20,
+        "batch_size": 64,
+        "lr_mlp": 0.0003,
+        "sampled_graphs": 20,
+        "coefficient_size_reg": 0.01,
+        "coefficient_entropy_reg": 0.1,
+        "coefficient_L2_reg": 0.0,
+        "sample_bias": 0.0,
+        "num_explanation_edges": 10,
+        "num_training_instances" : 30,
+        "t0": 5.0,
+        "tT": 1.0
+    }
+}
+
+{
+    "method": 'grid',                    # random, grid or Bayesian search
+    "metric": {"goal": "maximize", "name": "val/mean_ind_AUC"},
+    "parameters": {
+        'epochs': {                         # Paper | Code | Replication
+            'values': [10, 20]                  # 30 | 10 | 30     
+            },
+        'paper_loss': {
+            'values': [1]                   # ---  
+            },
+        't0': {
+            'values': [5.0]                 # 5.0 | 5.0 | 5.0     
+            },
+        'tT': {
+            'values': [1.0, 5.0]            # 2.0 | 5.0/1.0 | 5.0     
+            },
+        'size_reg': {
+            'values': [0.005]                # 0.05 | 0.01/0.005 | 0.005     
+            },
+        'entropy_reg': {
+            'values': [0.01]                # 1.0 | 0.01/1.0 | 1.0     
+            },
+        'L2_reg': {
+            'values': [0.0]                 # 0.0 | 0.0 | 0.0     
+            },
+        'lr_mlp':{
+            'values': [0.01, 0.003]       # 0.003 | 0.01 | 0.0003            
+            },
+        'sampled_graphs':{
+            'values': [1, 5, 10]                  # ??? | 1 | 1     
+            },
+        'sample_bias':{
+            'values': [0.0]                 # 0.0 | 0.0 | 0.0     
+            },
+        'batch_size':{
+            'values': [64]              # ---   
+            },
+        'num_training_instances':{
+            'values': [30]                  # 0 | 0 | 0     
+            },
+        'seed':{
+            'values': [74, 75, 76]          # ---    
+            },
+    },
+}   
+
+
+method: grid
+metric:
+  goal: maximize
+  name: val/mean_ind_AUC
+parameters:
+  batch_size:
+    values:
+      - 16
+      - 64 x
+  entropy_reg:
+    values:
+      - 0.1 x
+      - 1
+  epochs:
+    values:
+      - 10 x        # Try 20?
+      - 30
+  lr_mlp:
+    values:
+      - 0.0003
+      - 0.01 x
+  paper_loss:
+    values:
+      - 1
+  sample_bias:
+    values:
+      - 0
+  sampled_graphs:
+    values:
+      - 10
+  seed:
+    values:
+      - 74
+      - 75
+      - 76
+  size_reg:
+    values:
+      - 0.005
+  tT:
+    values:
+      - 1 x
+      - 5

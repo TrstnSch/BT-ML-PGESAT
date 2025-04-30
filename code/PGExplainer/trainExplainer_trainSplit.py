@@ -260,11 +260,24 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
     else:
         testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
         
-    wandb.log({"test/AUC": testAUC, "test/mean_ind_AUC": torch.tensor(individual_aurocs_test).mean(), "test/mean_infTime": testInfTime})
+    if graph_task:
+        test_data = test_dataset[-1]
+        w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, test_data.x, test_data.edge_index)
+        edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
+    else:
+        test_node = test_nodes[-1]
+        subset, edge_index_hop_test, mapping, edge_mask = k_hop_subgraph(node_idx=test_node, num_hops=3, edge_index=data.edge_index, relabel_nodes=False)
+
+        w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, data.x, edge_index_hop_test, test_node)
+        edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
+        
+    wandb.log({"test/AUC": testAUC, "test/mean_ind_AUC": torch.tensor(individual_aurocs_test).mean(), 
+               "test/mean_infTime": testInfTime, "edge_importance/min": edge_ij_test.min().item(), "edge_importance/max": edge_ij_test.max().item(),
+               "edge_importance/mean": edge_ij_test.mean().item(),"test/edge_importance_histogram": wandb.Histogram(edge_ij_test.cpu().numpy())})
     
     if save_model is True:
         torch.save(mlp.state_dict(), f"models/explainer_{dataset}_{testAUC}_{wandb.run.name}")
 
     wandb.finish()
     
-    return mlp, downstreamTask
+    return mlp, downstreamTask, testAUC, individual_aurocs_test, testInfTime

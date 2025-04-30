@@ -1,0 +1,140 @@
+{
+    "params": {
+        "architecture": "MLP",
+        "dataset": "Tree-Cycles",
+        "graph_task": false,
+        "epochs": 30,
+        "batch_size": 1,
+        "lr_mlp": 0.003,
+        "sampled_graphs": 20,
+        "coefficient_size_reg": 0.05,
+        "coefficient_entropy_reg": 10.0,
+        "coefficient_L2_reg": 0.0,
+        "sample_bias": 0.0,
+        "num_explanation_edges": 6,
+        "motif_node_indices": [511,871,6],
+        "num_training_instances" : 30,
+        "t0": 1.0,
+        "tT": 5.0
+    }
+}
+
+{
+    "method": 'grid',                    # random, grid or Bayesian search
+    "metric": {"goal": "maximize", "name": "val/mean_ind_AUC"},
+    "parameters": {
+        'epochs': {                         # Paper | Code | Replication
+            'values': [20]                  # 30 | 20 | 20     
+            },
+        'paper_loss': {
+            'values': [1]                   # ---  
+            },
+        't0': {
+            'values': [5.0]                 # 5.0 | 5.0 | 1.0     not annealing but increasing in rep
+            },
+        'tT': {
+            'values': [1.0, 5.0]            # 2.0 | 5.0 | 5.0     
+            },
+        'size_reg': {
+            'values': [0.0001, 0.1]                # 0.05 | 0.0001 | 0.1     TO BE CHECKED IN REP
+            },
+        'entropy_reg': {
+            'values': [1.0]                # 1.0 | 0.01 | 10.0         TO BE CHECKED IN REP 
+            },
+        'L2_reg': {
+            'values': [0.0]                 # 0.0 | 0.0 | 0.0     
+            },
+        'lr_mlp':{
+            'values': [0.0003]       # 0.003 | 0.003 | 0.003            
+            },
+        'sampled_graphs':{
+            'values': [1, 5, 10]                  # ??? | 1 | 1     
+            },
+        'sample_bias':{
+            'values': [0.0]                 # 0.0 | 0.0 | 0.0     
+            },
+        'batch_size':{
+            'values': [1]              # ---   
+            },
+        'num_training_instances':{
+            'values': [30]                  # 0 | 0 | 0     
+            },
+        'seed':{
+            'values': [74, 75, 76]          # ---    
+            },
+    },
+}   
+
+
+method: grid
+metric:
+  goal: maximize
+  name: val/mean_ind_AUC
+parameters:
+  entropy_reg:
+    values:
+      - 0.01
+  epochs:
+    values:
+      - 20
+  lr_mlp:
+    values:
+      - 0.003
+  paper_loss:
+    values:
+      - 0
+      - 1 x
+  sampled_graphs:
+    values:
+      - 10 x
+      - 20
+  seed:
+    values:
+      - 74
+      - 75
+      - 76
+  size_reg:
+    values:
+      - 0.0001
+  tT:
+    values:
+      - 5
+
+
+      method: grid
+      metric:
+        goal: maximize
+        name: val/mean_ind_AUC
+      parameters:
+        entropy_reg:
+          values:
+            - 10
+            - 1 x 
+            - 0.01 x
+        epochs:
+          values:
+            - 20
+        lr_mlp:
+          values:
+            - 0.003
+            - 0.0003 x
+        paper_loss:
+          values:
+            - 1
+        sampled_graphs:
+          values:
+            - 10
+        seed:
+          values:
+            - 74
+            - 75
+            - 76
+        size_reg:
+          values:
+            - 0.1 x
+            - 0.05 x
+            - 0.0001
+        tT:
+          values:
+            - 1
+            - 5 x
