@@ -3,18 +3,18 @@
         "architecture": "MLP",
         "dataset": "Tree-Cycles",
         "graph_task": false,
-        "epochs": 30,
+        "epochs": 20,
         "batch_size": 1,
-        "lr_mlp": 0.003,
-        "sampled_graphs": 20,
-        "coefficient_size_reg": 0.05,
-        "coefficient_entropy_reg": 10.0,
+        "lr_mlp": 0.0003,
+        "sampled_graphs": 5,
+        "coefficient_size_reg": 0.0001,
+        "coefficient_entropy_reg": 1.0,
         "coefficient_L2_reg": 0.0,
         "sample_bias": 0.0,
         "num_explanation_edges": 6,
         "motif_node_indices": [511,871,6],
         "num_training_instances" : 30,
         "t0": 1.0,
-        "tT": 5.0
+        "tT": 1.0
     }
 }

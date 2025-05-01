@@ -89,7 +89,7 @@ def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_tas
                 color_map.append(colors[j.item()])
         
     
-    node_size = 300 if graph_task else 80
+    node_size = 300 if graph_task else 300
     plt.figure(1, figsize=(10, 10))
     nx.draw(nxGraph, pos=pos, node_size=node_size, node_color=color_map, font_size=8)
 

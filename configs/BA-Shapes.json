@@ -6,7 +6,7 @@
         "epochs": 10,
         "batch_size": 1,
         "lr_mlp": 0.003,
-        "sampled_graphs": 10,
+        "sampled_graphs": 1,
         "coefficient_size_reg": 0.05,
         "coefficient_entropy_reg": 0.1,
         "coefficient_L2_reg": 0.0,
@@ -15,6 +15,6 @@
         "motif_node_indices": [400,700,5],
         "num_training_instances" : 30,
         "t0": 5.0,
-        "tT": 2.0
+        "tT": 1.0
     }
 }

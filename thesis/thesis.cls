@@ -36,6 +36,9 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 
+\usepackage{subcaption}
+\usepackage{float}
+
 % Bibliography
 \usepackage{csquotes}
 \usepackage{biblatex}
