@@ -465,6 +465,7 @@ where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input grap
 TODO: A basic GNN model can be implemented as follows (Hamilton, Ying, and Leskovec 2017b)
 Morris et al. \cite{morris2019weisfeiler} propose an implementation for a GNN model consisting of stacked neural network layers, that each aggregate the local neighborhood information of a node and pass it to the next one. This network is defined specifically for graphs that can be partitioned into $r$ color classes and therefore applicable to bipartite graphs. The new features of node $i$ are then computed with:
 \begin{equation}
+    \label{eq:higher-order-gnn}
     x_i^{(l)} = \sigma(W_1^{(l)}x_i^{(l-1)}+W_2^{(l)}\cdot\sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j^{(l-1)}),
 \end{equation}
 where $W_1^{(l)}$ and $W_2^{(l)}$ are two layer-specific trainable weight matrices.
