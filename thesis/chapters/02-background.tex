@@ -452,6 +452,7 @@ Therefore, we briefly present two subsequent models that are used in the course 
 \textbf{Graph Convolutional Network} \\
 Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. An example is the model proposed by Kipf et al. \cite{kipf2016semi} that introduces a simple, layer-wise propagation rule for multi-layer GCNs as
 \begin{equation}
+    \label{eq:GCN}
     H^{l+1} = \sigma(\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}),
 \end{equation}
 where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}$ is the degree matrix and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$. $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix, referred to as renormalization trick. This architecture aims to alleviate the problem of overfitting on local neighborhood structures for graphs with very wide node degree distributions (TODO: Source).
@@ -470,6 +471,7 @@ Morris et al. \cite{morris2019weisfeiler} propose an implementation for a GNN mo
 \end{equation}
 where $W_1^{(l)}$ and $W_2^{(l)}$ are two layer-specific trainable weight matrices.
 
+%No activation: x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j \\
 TODO: MORE MOTIVATION FOR THIS!
 
 
