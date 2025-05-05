@@ -5,10 +5,10 @@
 \begin{algorithm}
     \caption{Training Algorithm for Explaining Node Classification.}
     \begin{algorithmic}[1]
-    \REQUIRE Input graph $G_0 = (\mathcal{V}, \mathcal{E})$, node features $X$, node labels $Y$, set of instances to be explained $\mathcal{I}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
+    \REQUIRE Input graph $G_o = (\mathcal{V}, \mathcal{E})$, node features $X$, node labels $Y$, set of instances to be explained $\mathcal{I}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
     \FOR{each node $i \in \mathcal{I}$}
-        \STATE $G^{(i)}_0 \leftarrow$ extract the computation graph for node $i$.
-        \STATE $Z^{(i)} \leftarrow \text{GNNE}_{\Phi_0}(G^{(i)}_0, X)$.
+        \STATE $G^{(i)}_o \leftarrow$ extract the computation graph for node $i$.
+        \STATE $Z^{(i)} \leftarrow \text{GNNE}_{\Phi_0}(G^{(i)}_o, X)$.
         \STATE $Y^{(i)} \leftarrow \text{GNNC}_{\Phi_1}(Z^{(i)})$.
     \ENDFOR
     \FOR{each epoch}
@@ -30,13 +30,13 @@
     \begin{algorithm}
     \caption{Training Algorithm for Explaining Graph Classification.}
     \begin{algorithmic}[1]
-    \REQUIRE A set of input graphs with $i$-th graph represented by $G^{(i)}_0$, node features $X^{(i)}$, label $Y^{(i)}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
-    \FOR{each graph $G^{(i)}_0$}
-        \STATE $Z^{(i)} \leftarrow \text{GNNE}_{\Phi_0}(G^{(i)}_0, X^{(i)})$.
+    \REQUIRE A set of input graphs with $i$-th graph represented by $G^{(i)}_o$, node features $X^{(i)}$, label $Y^{(i)}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
+    \FOR{each graph $G^{(i)}_o$}
+        \STATE $Z^{(i)} \leftarrow \text{GNNE}_{\Phi_0}(G^{(i)}_o, X^{(i)})$.
         \STATE $Y^{(i)} \leftarrow \text{GNNC}_{\Phi_1}(Z^{(i)})$.
     \ENDFOR
     \FOR{each epoch}
-        \FOR{each graph $G^{(i)}_0$}
+        \FOR{each graph $G^{(i)}_o$}
             \STATE $\Omega \leftarrow$ latent variables calculated with (11).
             \FOR{$k \leftarrow 1$ to $K$}
                 \STATE $G^{(i,k)}_s \leftarrow$ sampled from (4).
@@ -80,10 +80,10 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
     entropy\_reg & epochs & lr\_mlp & sampled\_graphs & sample\_bias & seed & size\_reg & tT & t0 & num\_training\_instances \\ \hline
     1.0 & 20 & 0.003 & 1 & 0.5 & - & 0.05 & 1.0 & 1.0 & \text{All} \\ \midrule
     \textbf{1.0} & 20 & \textbf{0.003} & 1 & \textbf{0.0} & 74 & 0.05 & 1.0 & 1.0 & 30 \\
-    0.1 &  & 0.0003 & \textbf{5} & 0.5 & 75 & \textbf{0.1} & \textbf{5.0} &  & \textbf{50} \\
+    0.1 &  & 0.0003 & \textbf{5} & 0.5 & 75 & \textbf{0.1} & \textbf{5.0} &  &  \\
      &  &  & 10 &  & 76 &  &  &  &  \\ \hline
     \end{tabular}
-    \caption{BA-Community hyperparameter search configuration. The first row contains the values used in the original code as well as in the replication. Highlighted values are the best performing. Effect of regs and training instances is minimal, lr high!}
+    \caption{BA-Community hyperparameter search configuration. The first row contains the values used in the original code as well as in the replication. Highlighted values are the best performing.}
 \end{table}
 
 
@@ -113,11 +113,11 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
     1.0 & 30 & 0.01 & 1 & 0.0 & - & 0.01 & 5.0 & 5.0 & \text{All} \\ \hline
     1.0 & 30 & 0.003 & 1 & 0.0 & - & 1.0 & 2.0 & 5.0 & \text{All} \\ \midrule
     0.1 & 30 & 0.0003 & 1 & 0.0 & 74 & 0.01 & \textbf{2.0} & 5.0 & 30 \\ 
-    \textbf{1.0} &  & 0.003 & \textbf{5} &  & 75 & \textbf{1.0} & 5.0 &  &  \\ 
-    10 &  & \textbf{0.01} & 10 &  & 76 &  &  &  &  \\
+    \textbf{1.0} &  & \textbf{0.003} & \textbf{5} &  & 75 & \textbf{0.5} & 5.0 &  &  \\ 
+    10 &  & 0.01 & 10 &  & 76 & 1.0 &  &  &  \\
      &  & 0.05 &  &  &  &  &  &  &  \\ \hline
     \end{tabular}
-    \caption{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
+    \caption{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing. size-reg of $0.01$ leads to all edges being one. With original experimental setup, mostly complete randomness}
 \end{table}
 
 \begin{table}[h]
