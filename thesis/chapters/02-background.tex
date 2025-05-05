@@ -1,6 +1,6 @@
 \chapter{Theoretical Background}
 \label{ch:Background}
-In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT). We start by giving an introduction to deep learning in section \ref{sec:deep_learning}, including a specific architecture and regularization techniques. In section \ref{sec:graph_theory} we define the necessary graph theory, including bipartite graphs and random graphs. To understand the motivation behind the objective of PGExplainer we outline the relevant concepts of information theory, namely entropy, cross-entropy and mutual information, in section \ref{sec:information_theory}. Since the explainer model operates on Graph Neural networks, we introduce the historically relevant GNN model by Scarselli et al. \cite{4700287} in section \ref{sec:gnns}, as well as two succeeding models. After introducing the most relevant concepts, in section \ref{sec:gnn_explainability} we briefly discuss the field of explainability in graph neural networks to motivate the selection of this approach for our work. Lastly, in section \ref{sec:SAT} we describe the boolean satisfiability problem that motivates this work.
+In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT). We start by giving an introduction to deep learning in Section \ref{sec:deep_learning}, including a specific architecture and regularization techniques. In Section \ref{sec:graph_theory} we define the necessary graph theory, including bipartite graphs and random graphs. To understand the motivation behind the objective of PGExplainer we outline the relevant concepts of information theory, namely entropy, cross-entropy and mutual information, in Section \ref{sec:information_theory}. Since the explainer model operates on Graph Neural networks, we introduce the historically relevant GNN model by Scarselli et al. \cite{4700287} in Section \ref{sec:gnns}, as well as two succeeding models. After introducing the most relevant concepts, in Section \ref{sec:gnn_explainability} we briefly discuss the field of explainability in graph neural networks to motivate the selection of this approach for our work. Lastly, in Section \ref{sec:SAT} we describe the boolean satisfiability problem that motivates this work.
 
 \section{Deep learning}
 \label{sec:deep_learning}
@@ -163,7 +163,7 @@ These definitions will loosely follow Liu et al. \cite{Liu2020}. A graph is a da
         0 & \text{otherwise.}
     \end{cases}
 \end{equation*}
-If $G$ is an undirected Graph the adjacency matrix will be symmetrical, as seen in figure \ref{fig:graph-example}. \\
+If $G$ is an undirected Graph the adjacency matrix will be symmetrical, as seen in Figure \ref{fig:graph-example}. \\
 %Alternatively an undirected graph $ G=(V, E)$ with $n$ nodes and $m$ edges can be represented as an incidence matrix $M \in \mathbb{R}^{n \times m}$, where
 %\begin{equation*}
 %    M_{ij}=\begin{cases}
@@ -319,7 +319,7 @@ Suppose we know the true distribution $p$ of our random variable. We could then 
 %    &= H(P) + D_{KL}(P||Q)
 %\end{align}
 
-Since this is later applied in the PGExplainer (see equation \ref{eq:monte_carlo}), we derive for the discrete case with mass probability functions $p, q$ defined on the same support $\mathcal{X}$:
+Since this is later applied in the PGExplainer (see Equation \ref{eq:monte_carlo}), we derive for the discrete case with mass probability functions $p, q$ defined on the same support $\mathcal{X}$:
 \begin{align}
     H(p,q) = H(p) + D_{KL}(p||q) &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x)\log \frac{p(x)}{q(x)} \\
     &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x) \log p(x) -\sum_{x \in \mathcal{X}} p(x) \log q(x) \\
@@ -373,7 +373,7 @@ To learn the parameters of this GNN, with target information $t_v$ for a specifi
 \end{equation}
 where $p$ are the supervised nodes. A gradient-descent strategy is utilized in the learning algorithm, which consist of the following three steps: the states $h_v^t$ are updated iteratively using equation \eqref{eq:gnn_state_local} until time step $T$. We then obtain an approximate fixed point solution of equation \eqref{eq:gnn_state_global}: $\mathbf{H}(T)\approx\mathbf{H}$. For the next step the gradients of the weights $W$ are calculated from the loss. Finally, the weights $W$ are updated according to the computed gradient. This allows us to train a model for specific supervised or semi-supervised tasks, referred to as downstream task, and get hidden states of nodes in a graph. \bigskip
 
-Though the architecture proposed by Scarselli et al. \cite{4700287} proved to be powerful for modeling structural data, this initial approach suffers from a few limitations. Most notably, it uses the same parameters in the iteration, while nowadays it is common practice to use different parameters in different layers. Stacking $k$ GNN layers allows each node to aggregate information from nodes within its $k$-hop neighborhood, represented in figure \ref{fig:k-hop}, seeking an increase in performance. It is important to note that this approach may also increase the noisy information spread by the exponentially increasing neighborhood nodes \cite{Liu2020}.
+Though the architecture proposed by Scarselli et al. \cite{4700287} proved to be powerful for modeling structural data, this initial approach suffers from a few limitations. Most notably, it uses the same parameters in the iteration, while nowadays it is common practice to use different parameters in different layers. Stacking $k$ GNN layers allows each node to aggregate information from nodes within its $k$-hop neighborhood, represented in Figure \ref{fig:k-hop}, seeking an increase in performance. It is important to note that this approach may also increase the noisy information spread by the exponentially increasing neighborhood nodes \cite{Liu2020}.
 
 Another drawback is the computational inefficiency, as hidden states have to be updated $T$ times until reaching the fixed point. A relaxation of the fixed point assumption enables multi-layer GNNs to provide stable representations of the node and its neighborhood \cite{li2015gated}. Additionally, this architecture is unable to model informative edge features, which limits its capacity to learn meaningful hidden representations for edges.
 
@@ -455,7 +455,7 @@ Graph convolutional networks (GCNs) aim to generalize the convolution operation 
     \label{eq:GCN}
     H^{l+1} = \sigma(\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}),
 \end{equation}
-where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}$ is the degree matrix and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$. $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix, referred to as renormalization trick. This architecture aims to alleviate the problem of overfitting on local neighborhood structures for graphs with very wide node degree distributions (TODO: Source).
+where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}$ is the degree matrix and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in Equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$. $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix, referred to as renormalization trick. This architecture aims to alleviate the problem of overfitting on local neighborhood structures for graphs with very wide node degree distributions (TODO: Source).
 
 %TODO: generalization to signal X?
 %\begin{equation}
@@ -484,7 +484,7 @@ with satisfying assignment $A:\{x_1 \mapsto 1, x_2 \mapsto 1\}$. Furthermore, SA
 
 \subsection{Representation as Bipartite Graph}
 SAT has extensively been studied in the form of graphs. Guo et al. \cite{guo2023machine} describe four different types of graph representations for CNF formulae with varying complexity and information compression. Since we want to minimize the loss of information for SAT we adapt the information-richest form of a literal-clause graph (LCG). 
-A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in (see figure \ref{fig:lcg-sat}).
+A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in (see Figure \ref{fig:lcg-sat}).
 The resulting graph $G_b$ can formally be described by a biadjacency matrix $\mathbf{B}$ of shape $L \times C$, with $(L,C)$ being a bipartition of the $G_b$ into literals and clauses. \\
 Following Sun et al. \cite{articleBiadjacency}, let $\mathbf{A} \in \mathbb{R}^{(L+C) \times (L+C)}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $L$ and $C$, the adjacency matrix can be represented as
 \begin{equation}
