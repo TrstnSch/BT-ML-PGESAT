@@ -426,6 +426,7 @@ We note that in practice this is implemented only for the two highest edge weigh
 
 
 \section{Extension to application on NeuroSAT}
+\label{sec:NeuroSAT_extension}
 In this section we propose additional restraints to fit the explanations of PGExplainer to the structure of SAT formulae. We start by giving a short introduction to NeuroSAT\cite{selsam2018learning} and how it may function as a downstream model.
 
  \bigskip
@@ -617,11 +618,11 @@ The inference time is measured as the time it takes to generate an explanation f
 \subsection{Application on NeuroSAT}
 \label{sec:Application_to_NeuroSAT}
 
-In this section we describe the necessary changes for explaining predictions of NeuroSAT \cite{} with our PGExplainer framework. We want to stress that the NeuroSAT codebase was provided by a fellow student and only the changes mentioned in this section are part of our work. The original NeuroSAT codebase can be found here (TODO).
+In this section we describe the necessary changes for explaining predictions of NeuroSAT \cite{} with our PGExplainer framework. We want to stress that the NeuroSAT codebase was provided by a fellow student and only the changes mentioned in this section are part of our work. The source code for NeuroSAT is publicly available.\footnote{Daniel Selsam et al. “NeuroSAT” (2018). URL: \url{https://github.com/dselsam/neurosat}}
 
 Since NeuroSAT can be regarded as a black box MPNN in the context of our work, we only describe how it passes messages superficially. In each iteration, each clause receives messages from its neighboring literals to update its embedding. Then, each literal receives messages not only from its neighboring clauses, but also from its complementary literal, to update its embedding. The number of iterations is set to $26$ for the model we are using, which was trained in the standard manner on both satisfiable and unsatisfiable SAT problems - formulae in CNF with the goal of determining whether they are satisfiable. The downstream task of NeuroSAT can hence be understood as a graph classification task.
 
-Besides the prediction of satisfiability, NeuroSAT returns the node embeddings of both clauses and literals at each iteration. We use these to generate edge embeddings for all edges in the biadjacency matrix as input for the explainer MLP, using the same procedure as in the previous replication study (see Section \ref{sec:Replication_of_PGExplainer}). Since the SAT instances are defined as biadjacency matrices, edges only exist in one direction - from literals to clauses. Thus, we dismiss the meaning of edge logits and qualitatively evaluate using the top-$k$ edges, rather than the previous top-$2k$.
+Besides the prediction of satisfiability, NeuroSAT returns the node embeddings of both clauses and literals at each iteration. We use these to generate edge embeddings for all edges in the biadjacency matrix as input for the explainer MLP (see Section \ref{sec:NeuroSAT_extension}), using the same procedure as in the previous replication study (see Section \ref{sec:Replication_of_PGExplainer}). Since the SAT instances are defined as biadjacency matrices, edges only exist in one direction - from literals to clauses. Thus, we dismiss the meaning of edge logits and qualitatively evaluate using the top-$k$ edges, rather than the previous top-$2k$.
 
 The only change we have to make is allowing the NeuroSAT forward pass to receive edge weights as a parameter. If no edge weights are passed, the forward pass behaves as usual and the biadjacency matrix contains discrete values of 0 or 1. However, when predicting sampled graphs from the explainer, we pass the sampled edge weights and multiply these with the biadjacency matrix, to receive a weighted biadjacency matrix. NeuroSAT then calculates the prediction for the weighted matrix. This change is implemented as follows:
 \begin{verbatim}
@@ -636,13 +637,8 @@ Usually, the \verb|connections| tensor - a biadjacency matrix - is initialized w
 
 Furthermore, the input of the explainer changes to a SAT problem instance, containing only the edge-index representation of a SAT formula, as well as a label 1 or 0, denoting satisfiability or unsatisfiability, respectively. Node features are not used in NeuroSAT and therefore irrelevant for the explainer.
 
-
-TODO: NeuroSAT embeddings and evaluation.
-
 TODO: Implementation of constraints?
-To evaluate the explanations provided by the PGExplainer, we require ground truths to calculate the ROC-AUC and understand the visualizations of explanations. Since our goal is testing whether the explanations of the NeuroSAT predictions align with human-understandable concepts, we propose the use of MUSs as ground truth. Therefore, we utilize the deletion-based MUS extractor \verb|MUSX| from PySAT \cite{imms-sat18} to generate a MUS for each unsatisfiable problem. This MUS is transformed to match the corresponding edges of its graph representation and treated as expected ground truth. This allows us to calculate the local ROC-AUC for each SAT problem as described in Section \ref{sec:Replication_of_PGExplainer} and visualize the ground truth to qualitatively evaluate the provided explanations.
 
-\textbf{Explainer architecture}
+To evaluate the explanations provided by the PGExplainer, we require ground truths to calculate the ROC-AUC and understand the visualizations of explanations. Since our goal is testing whether the explanations of the NeuroSAT predictions align with human-understandable concepts, we propose the use of MUSs as ground truth. Therefore, we utilize the deletion-based MUS extractor \verb|MUSX| from PySAT \cite{imms-sat18} to generate a MUS for each unsatisfiable problem. This MUS is transformed to match the corresponding edges of its graph representation and treated as expected ground truth. This allows us to calculate the local ROC-AUC for each SAT problem as described in Section \ref{sec:Replication_of_PGExplainer}. We visualize the provided explanations and ground truths as a pyvis \cite{perrone2020network} \verb|Network| for qualitative evaluation. \bigskip
 
-Two versions? Explain procedure of using concatenation of node embeddings from multiple layers?
-%Besides these changes, the explainer operates as previously explained.
+We adopt the MLP architecture described in Section \ref{sec:Replication_of_PGExplainer}, but also experiment with a more complex architecture (see Section \ref{}). Besides these changes, the explainer operates as previously explained.

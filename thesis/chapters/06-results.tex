@@ -4,11 +4,9 @@
 TODO: In this chapter we introduce all performed experiments. This includes a general experimetal setup, as well as more detailed experiment settings including their results.
 
 \section{Common experimental setup}
-In this section we describe the setup for the experiments that we perform on PGExplainer. We start with the utilization of PGExplainer in the inductive setting, similar to the study performed by the authors. Additionally, we include experiments on the performance in the collective setting for the sake of completeness. Lastly, we present our approach for generating bipartite explanations for NeuroSAT \cite{} predictions of SAT problems.
+In this section we describe the common setup for the experiments that we perform on PGExplainer. We start with the utilization of PGExplainer in the inductive setting, similar to the study performed by the authors. Additionally, we include experiments on the performance in the collective setting for the sake of completeness. Lastly, we present our approach for generating bipartite explanations for NeuroSAT \cite{} predictions of SAT problems.
 
-
-
-\textbf{Datasets/Downstream models used}: Name, origin, train/test/validation split (or cross-validation if you use it). TRAINING SET SIZE = 30 FOR COMPARABILITY WITH ORIGINAL! The node sets of motif nodes used for training and evaluating the explainer are extracted from the codebase. The same is done for the mutagenic graphs with existing ground truth, namely TODO. Similar accuracies achieved of at least $85\%$ (see table \ref{tab:compact-accuracy})
+\textbf{Downstream models used}: train/test/validation split. TRAINING SET SIZE = 30 FOR COMPARABILITY WITH ORIGINAL! The node sets of motif nodes used for training and evaluating the explainer are extracted from the codebase. The same is done for the mutagenic graphs with existing ground truth, namely TODO. Similar accuracies achieved of at least $85\%$ (see table \ref{tab:compact-accuracy})
 
 \textbf{Training procedures}: How long you trained, on which hardware (especially if relevant), early stopping criteria, etc.
 
@@ -186,33 +184,29 @@ Qualitative: Original uses a threshold; we instead take the topK nodes according
 We also discuss if treating the number of k edges as a hyperparameter dependant on the downstream task makes sense and propose having the network learn it, to improve generalizability and allow the explainer to work on data with varying size. \\
 
 CPU vs GPU: \\
-It is important to highlight that our code achieved better and way more stable results for BA-2Motif when trained on a gpu instead of cpu. \\
-Ba-Shapes, Tree-Cycles and MUTAG results achieved were identical. \\
-Ba-Community and Tree-Grid achieved very slightly better results on CPU. \\
+- Effects of using "wrong" node features for downstream task?
 
-Sweeps: (Params ordered by importance)\\
-BA-Shapes: higher size reg -> 0.1; lower entropy reg -> 0.01; lr and tT very low impact but slightly higher -> 0.01 and 5. Note that Loss curve jumps on most runs! (logical-sweep-94 and restful-sweep-92 have clean loss) TRY HIGHER SIZE REG AND LOWER ENTROPY REG \\
-
-BA-Community: lr 0.0001 too low, not working -> 0.003; lower entropy -> 0.1; higher size -> 0.1; TRY MORE SEEDS, LR, EPOCHS? \\
-
-Tree-Cycles: high lr -> 0.01 ; lower entropy reg -> 0.1/0.01; higher size reg -> 0.1/0.01 ; lower tT -> 1. TRY WITH MORE SEEDS FOR ENT, SIZE, TEMP? Confirmed higher size reg -> 0.1; lower entropy reg -> 0.01; temp really low impact, tendency higher. TRY 30 EPOCHS???\\
-
-Tree-Grid: high lr -> 0.01; high size reg -> 1; higher entropy reg? -> 10/1, high tT -> 5. TRY MORE SEEDS FOR ENTROPY REG -> not quite clear, tendency lower; MAYBE EVEN HIGHER LR -> No\\
-
-BA-2Motif: RUN ON GPU - Not the cause. Cause for better results were features of 1 instead of 0.1! However, good results achieved on BA2-Motif dataset from pyg, not original one.\\
 Comparison to orginal one: Original dataset transformed to pytorch performs way worse, for features of 0.1! Mean AUC of about 0.4! \\
 Original dataset with features changed to ones instead of 0.1: Works good as well.
+%It is important to highlight that our code achieved better and way more stable results for BA-2Motif when trained on a gpu instead of cpu. \\
+%Ba-Shapes, Tree-Cycles and MUTAG results achieved were identical. \\
+%Ba-Community and Tree-Grid achieved very slightly better results on CPU. \\
 
-MUTAG: Low lr -> 0.0003; low entropy reg(high impact, but highest AUC runs vary) -> 0.1; low tT -> 1; less epochs -> 20; low size reg -> 0.005(/0.01); Loss is messy and AUC seems to decrease over time! lr 0.0001 worse, entropy reg 0.1/0.01 has zero effect -> 0.1\\
+%Sweeps: (Params ordered by importance)\\
+%BA-Shapes: higher size reg -> 0.1; lower entropy reg -> 0.01; lr and tT very low impact but slightly higher -> 0.01 and 5. Note that Loss curve jumps on most runs! (logical-sweep-94 and restful-sweep-92 have clean loss) TRY HIGHER SIZE REG AND LOWER ENTROPY REG \\
+
+%BA-Community: lr 0.0001 too low, not working -> 0.003; lower entropy -> 0.1; higher size -> 0.1; TRY MORE SEEDS, LR, EPOCHS? \\
+
+%Tree-Cycles: high lr -> 0.01 ; lower entropy reg -> 0.1/0.01; higher size reg -> 0.1/0.01 ; lower tT -> 1. TRY WITH MORE SEEDS FOR ENT, SIZE, TEMP? Confirmed higher size reg -> 0.1; lower entropy reg -> 0.01; temp really low impact, tendency higher. TRY 30 EPOCHS???\\
+
+%Tree-Grid: high lr -> 0.01; high size reg -> 1; higher entropy reg? -> 10/1, high tT -> 5. TRY MORE SEEDS FOR ENTROPY REG -> not quite clear, tendency lower; MAYBE EVEN HIGHER LR -> No\\
+
+%BA-2Motif: RUN ON GPU - Not the cause. Cause for better results were features of 1 instead of 0.1! However, good results achieved on BA2-Motif dataset from pyg, not original one.\\
+
+%MUTAG: Low lr -> 0.0003; low entropy reg(high impact, but highest AUC runs vary) -> 0.1; low tT -> 1; less epochs -> 20; low size reg -> 0.005(/0.01); Loss is messy and AUC seems to decrease over time! lr 0.0001 worse, entropy reg 0.1/0.01 has zero effect -> 0.1\\
 
 
- Effects of selected motif nodes for Node task: Compare Tree-Grid/Tree-Cycles performance when using all/one node per motif...
-
-
-
-
-
- RESULTS OBTAINED IN COLLECTIVE SETTING (ORIGINAL PAPER):
+RESULTS OBTAINED IN COLLECTIVE SETTING (ORIGINAL PAPER):
 
 \begin{table}[h]
     \centering
@@ -261,15 +255,32 @@ BA-Community: SumSampledEdges increases after 6/7 epochs, AUROC reaches peak ear
 \section{PGExplainer in collective setting}
 
 \subsection{Experimental setup}
+Collective setting (ALL instances used for training + testing) with hyperparameters that were found in inductive setting.
 
 \subsection{Results}
 
-\section{PGExplainer in collective setting with Replication hyperparams? Rather No}
-
-\subsection{Experimental setup}
-
-\subsection{Results}
-
+\begin{table}[ht]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\textwidth}{l*{6}{X}}   % 'X' column type from tabularx automatically scales columns
+    \toprule
+    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
+    \cmidrule{2-7}
+    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
+    \midrule
+    PGExplainer (collective) & 0.963$\pm$0.011 & 0.945$\pm$0.019 & 0.987$\pm$0.007 & 0.907$\pm$0.014 & 0.926$\pm$0.021 & 0.873$\pm$0.013 \\
+    \midrule
+    RE-PGExplainer (collective) & 0.999$\pm$0.000 & 0.825$\pm$0.040 & 0.760$\pm$0.014 & 0.679$\pm$0.008 & 0.133$\pm$0.046 & 0.843$\pm$0.084 \\
+    \midrule
+    Our work (collective) & 0.993$\pm$0.001 & 0.831$\pm$0.009 & 0.084$\pm$0.078 & 0.679$\pm$0.032 & 0.018$\pm$0.004 & 0.833$\pm$0.006 \\
+    \midrule
+    \midrule
+    Our work (inductive) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
+    \bottomrule
+    \end{tabularx}
+    \caption{PGExplainer performance in Explanation AUROC in collective setting.}
+    \label{tab:pgexplainer_auc}
+\end{table}
 
 \section{BA-2Motif with flipped GT}
 
@@ -293,7 +304,7 @@ Mean individual AUROC is calculated identical to before, but the ground truth ma
     \label{tab:allmotifnodes_selected}
 \end{table}
 
-Validation Loss curve relatively smooth.
+Validation Loss curve relatively smooth. TODO: INCLUDE
 
 \section{Effects of motif node sets}
 
@@ -365,6 +376,7 @@ Maybe works well because if all motif nodes are used, subgraphs are used where o
 
 
 \section{Training on ALL instances - Evaluation only on motif instances?}
+This probably would not grant any insights, since training on non motif nodes should in theory mostly lead to all edges being irrelevant for prediction?? Bascially most edge could be removed and in theory the prediction of the node should not change at all, therefore no information can be gather from this?
 
 \subsection{Experimental setup}
 
