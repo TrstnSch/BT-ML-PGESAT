@@ -155,7 +155,6 @@ be the sum to estimate with $p$ being a probability distribution over a random v
 
 \section{Graph Theory}
 \label{sec:graph_theory}
-TODO: WE ONLY CONSIDER UNDIRECTED GRAPHS IN THIS WORK, THEREFORE ADAPT GRAPH DEFINITIONS?!
 These definitions will loosely follow Liu et al. \cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel \cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as "$G$ on $V$". An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We denote the set of edges that are incident to $u$ as $E(u) = \{(v,u) \in E(G) \mid v \in \mathcal{N}(u)\}$. Additionally, we define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v \in V(G)$ is the number of edges connected to $v$ and denoted by $d(v) = |\{(u,v) \in E(G) \mid u \in V(G)\}|$. $G$ can be described by an adjacency matrix $\mathbf{A} \in \mathbb{R}^{n \times n}$, where
 \begin{equation*}
     \mathbf{A}_{ij}=\begin{cases}
@@ -207,7 +206,7 @@ We additionally define bipartite graphs according to Asratian et al. \cite{asrat
         \end{bmatrix}
         \]
     \end{minipage}
-    \caption{A simple undirected graph $G$ on $V$, with $V=\{1,2,4,5\}$ and $E(G)=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$ (left), and its adjacency matrix $\mathbf{A}$ (right).}
+    \caption[Example of an undirected graph]{A simple undirected graph $G$ on $V$, with $V=\{1,2,4,5\}$ and $E(G)=\{\{1,2\},\{2,4\},\{1,4\},\{2,5\}\}$ (left), and its adjacency matrix $\mathbf{A}$ (right).}
     \label{fig:graph-example}
 \end{figure}
 
@@ -232,7 +231,7 @@ We additionally define bipartite graphs according to Asratian et al. \cite{asrat
         \draw (u2) -- (v1);
         \draw (u3) -- (v2);
     \end{tikzpicture}
-    \caption{A bipartite graph with color classes $V_1 = \{1,2,3\}$ (blue) and $V_2=\{a,b\}$ (red).}
+    \caption[Example of a bipartite graph]{A bipartite graph with color classes $V_1 = \{1,2,3\}$ (blue) and $V_2=\{a,b\}$ (red).}
     \label{fig:bipartite-colored}
 \end{figure}
 
@@ -273,7 +272,7 @@ The entropy $H(X)$, also written as $H(p)$, is defined as
     H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x).
 \end{equation}
 %TODO: WE USE NATURAL LOGARITHM IN CODE!
-The log is to the base $e$ and entropy is measured in nats in our case. We will use the convention from Cover et al. \cite{Cover2005} that $0 \log 0 = 0$, as terms of zero probability does not change the entropy. %A simple example is tossing two coins: There are four possible outcomes $\mathcal{X}=\{00,10,01,11\}$, 0 for heads and 1 for tails, each with a probability $p=0,25$. The resulting entropy $H(X)=2$ represents that two bits of information can be stored this way. \bigskip
+The log is to the base $e$ and entropy is measured in nats in our case. We will use the convention from Cover et al. \cite{Cover2005} that $0 \log 0 = 0$, as terms of zero probability do not change the entropy. %A simple example is tossing two coins: There are four possible outcomes $\mathcal{X}=\{00,10,01,11\}$, 0 for heads and 1 for tails, each with a probability $p=0,25$. The resulting entropy $H(X)=2$ represents that two bits of information can be stored this way. \bigskip
 \\
 %TODO: DIFFER MORE CLEARLY FROM CROSS? \\
 %Analogously we define the joint entropy $H(X,Y)$ of a pair of discrete random variables $(X,Y)$ with a joint distribution $p(x,y)$ as follows:
@@ -445,7 +444,7 @@ Therefore, we briefly present two subsequent models that are used in the course 
         \node[texts, font=\small] at (45:4) {2-hop neighborhood};
         
     \end{tikzpicture}
-    \caption{Visualization of the $k$-hop neighborhood of $u$.}
+    \caption[$k$-hop neighborhood visualization]{Visualization of the $k$-hop neighborhood of $u$.}
     \label{fig:k-hop}
 \end{figure}
 
@@ -524,7 +523,7 @@ where $\mathbf{0}$ denotes a zero matrix in the shape of their subscript. \bigsk
         \draw[dotted] (x1) -- (notx1);
         \draw[dotted] (x2) -- (notx2);
     \end{tikzpicture}
-    \caption{LCG representation of $\psi(V)$ with dashed lines representing the connection between complementary literals relevant for the message passing in GNNs.}
+    \caption[Bipartite graph in LCG]{LCG representation of $\psi(V)$ with dashed lines representing the connection between complementary literals relevant for the message passing in GNNs.}
     \label{fig:lcg-sat}
 \end{figure}
 

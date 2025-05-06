@@ -3,8 +3,29 @@
 
 TODO: In this chapter we introduce all performed experiments. This includes a general experimetal setup, as well as more detailed experiment settings including their results.
 
-\section{Common experimental setup}
-In this section we describe the common setup for the experiments that we perform on PGExplainer. We start with the utilization of PGExplainer in the inductive setting, similar to the study performed by the authors. Additionally, we include experiments on the performance in the collective setting for the sake of completeness. Lastly, we present our approach for generating bipartite explanations for NeuroSAT \cite{} predictions of SAT problems.
+Since our work is twofold, we start with the experiments regarding the replication of the PGExplainer with a changed downstream model architecture and a focus on the inductive setting in Section \ref{}. Next, we describe the experiments performed on the adapted explainer framework to generate explanations for the NeuroSAT model predictions of unsatisfiable problems in Section \ref{}.
+
+\section{Replication of PGExplainer}
+All experiments regarding the replication of the presented explainer model. This includes a common experimental setup, including the datasets, corresponding downstream models, as well as hyperparameter searches. In Section xy we replicate the experiments in the inductive setting from the original paper. We also include a study of the effect of using a larger set of training data, as the original proposes that only few training instances are necessary for the explainer to generalize well. Furthermore, we perform the original quantitative experiment in the collective setting with the same hyperparameters for better comparability, as this was the core study of the original paper. In Section xy we run an experiment specific to the BA-2Motif dataset, as we found that it behaves opposite to the expectations. Later, we study the effects of the specific node sets that were used in the original codebase in Section xy. Lastly, we qualitatively evaluate the explanations provided by our reimplemented model (see Section xy).
+
+\subsection{Common experimental setup}
+In this section we describe the common setup for the experiments that we perform on PGExplainer.
+
+\textbf{Datasets}
+For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. Statistics of each dataset can be found in table \ref{tab:dataset-statistics}. We will give a short description of each dataset.
+
+Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree \cite{albert2002statistical}.
+
+BA-Shapes is the first node dataset that consists of a single BA-graph with 300 nodes and 80 "house" motifs - five nodes resembling the shape of a house (TODO: see xy). Base graph nodes are labeled with 0 while nodes at the top/middle/bottom of the "house" are labeled with 1,2,3, respectively. The top node of each house motif is attached to a random base graph node. Additional edges are added for perturbation. Each node is assigned a 10-dimensional feature vector of 1s.
+BA-Community consists of two unified BA-Shapes graphs (TODO: connected how). The features of the nodes are sampled from two Gaussian distributions. Nodes are labeled as in BA-Shapes for each community respectively, leading to 8 classes in total.
+Tree-Cycles uses an 8-level balanced binary tree as a base graph. 80 cycle motifs, consisting of a 6 node cycle, are attached to random nodes from the base graph. Node features are assigned as a 10-dimensional vector of 1s. A node of the base graph is labeled as 0 and a motif node is labeled as 1.
+The Tree-Grid dataset is assembled in the same way as Tree-Cycles, with the difference that the motifs are 3-by-3 grids. Node features and labels also follow the same procedure.
+BA-2Motif is the first graph dataset with 800 graphs. Each of these graphs is obtained by attaching either a "house" or a cycle as a motif to a base BA graph with 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 and 1 implying a house and circle, respectively (TODO: CHECK).
+The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned to one of 2 classes, depending on the molecules mutagenic effect \ref{}. Following \ref{}, carbon rings with chemical groups $NH_2$ or $NO_2$ are known to be mutagenic, with carbon rings in general existing in both mutagenic and non-mutagenic graphs. The authors thus propose treating the carbon ring as a shared base graph and $NH_2$ and $NO_2$ as motifs for mutagenic graphs. Since there are no explicit motifs for the non-mutagenic graphs, these grapgs are not considered in PGExplainer.
+
+NOTE that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. In the node classification experiments the node sets used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This is also left unexplained by the authors.
+
+
 
 \textbf{Downstream models used}: train/test/validation split. TRAINING SET SIZE = 30 FOR COMPARABILITY WITH ORIGINAL! The node sets of motif nodes used for training and evaluating the explainer are extracted from the codebase. The same is done for the mutagenic graphs with existing ground truth, namely TODO. Similar accuracies achieved of at least $85\%$ (see table \ref{tab:compact-accuracy})
 
@@ -22,27 +43,9 @@ Efficiency evaluation performed by authors, big increase in eff. since training 
 
 \textbf{Experimental protocol}: Averaged over 10 seeds account for randomness, similar to original.
 
-\textbf{Visualization tools}: Used NetworkX \cite{SciPyProceedings_11} to draw the explained graphs that are used for the qualitative evaluation, as well as seaborn \cite{Waskom2021} for plotting curves.
-For NeuroSAT: Used pyvis \cite{perrone2020network} (TODO: USE THIS SOURCE???) for visualization
-Kneed for evaluation independent from k?
-
 
 We run additional experiments to evaluate the effects of certain inconsistencies. Therefore, we change the motif nodes that are used for training/evaluating to include all or one select motif node, depending on the dataset. We use the same hyperparameters used for the previous experiments. Besides this change, we follow the experimental setup to evaluate whether a reasoning behind the node selection can be made out.
 
-
-\textbf{Datasets}
-For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. Statistics of each dataset can be found in table \ref{tab:dataset-statistics}. We will give a short description of each dataset.
-
-Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree \cite{albert2002statistical}.
-
-BA-Shapes is the first node dataset that consists of a single BA-graph with 300 nodes and 80 "house" motifs - five nodes resembling the shape of a house (TODO: see xy). Base graph nodes are labeled with 0 while nodes at the top/middle/bottom of the "house" are labeled with 1,2,3, respectively. The top node of each house motif is attached to a random base graph node. Additional edges are added for perturbation. Each node is assigned a 10-dimensional feature vector of 1s.
-BA-Community consists of two unified BA-Shapes graphs (TODO: connected how). The features of the nodes are sampled from two Gaussian distributions. Nodes are labeled as in BA-Shapes for each community respectively, leading to 8 classes in total.
-Tree-Cycles uses an 8-level balanced binary tree as a base graph. 80 cycle motifs, consisting of a 6 node cycle, are attached to random nodes from the base graph. Node features are assigned as a 10-dimensional vector of 1s. A node of the base graph is labeled as 0 and a motif node is labeled as 1.
-The Tree-Grid dataset is assembled in the same way as Tree-Cycles, with the difference that the motifs are 3-by-3 grids. Node features and labels also follow the same procedure.
-BA-2Motif is the first graph dataset with 800 graphs. Each of these graphs is obtained by attaching either a "house" or a cycle as a motif to a base BA graph with 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 and 1 implying a house and circle, respectively (TODO: CHECK).
-The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned to one of 2 classes, depending on the molecules mutagenic effect \ref{}. Following \ref{}, carbon rings with chemical groups $NH_2$ or $NO_2$ are known to be mutagenic, with carbon rings in general existing in both mutagenic and non-mutagenic graphs. The authors thus propose treating the carbon ring as a shared base graph and $NH_2$ and $NO_2$ as motifs for mutagenic graphs. Since there are no explicit motifs for the non-mutagenic graphs, these grapgs are not considered in PGExplainer.
-
-NOTE that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. In the node classification experiments the node sets used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This is also left unexplained by the authors.
 
 \begin{table}[h]
     \centering
@@ -57,15 +60,15 @@ NOTE that in the collective setting used in the original paper the explainer is 
     \#labels & 4 & 8 & 2 & 2 & 2 & 2 \\
     \hline
     \end{tabular}
-    \caption{Dataset statistics for Node and Graph Classification tasks.}
+    \caption[Statistics of PGExplainer datasets]{Dataset statistics for Node and Graph Classification tasks.}
     \label{tab:dataset-statistics}
     \end{table}
 
 \bigskip
 
-\section{PGExplainer in the inductive setting}
+\subsection{PGExplainer in the inductive setting}
 
-\subsection{Experimental setup}
+\textbf{Experimental setup}
 
 
 TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer. INDUCTIVE SETTING EXPERIMENTS ALSO PERFORMED IN PGEXPLAINER!
@@ -78,12 +81,12 @@ Experiments ran on AMD Ryzen 7 2700X
 
 NOTE: Tree-Grid with original experimental setup (all motif nodes, 30 training instances) leads to mean of 0.5 for almost all hyperparam settings tried. Size reg of 0.05 (as in original) leads to all edges being assigned a values of one!
 
-We conduct an experiment on the performance with only select motif nodes! only taking 30 random nodes from all motif nodes may lead to a selection of mostly nodes where not even the complete motfi, and even less probable edges outside the motif, are contained.
+We conduct an experiment on the performance with only select motif nodes! only taking 30 random nodes from all motif nodes may lead to a selection of mostly nodes where not even the complete motif, and even less probable edges outside the motif, are contained.
 %"In this section, we empirically demonstrate the effectiveness of PGExplainer in the inductive setting. In the inductive setting, we select α instances for training, (N − α)/2 for validation, and the rest for testing. α is ranged from [1,2,3,4,5,30]. Note that, with α =1, our method degenerates to the single-instance explanation method. Recall that to explain a set of instances, GNNExplainer first detects a reference node and then computes the explanation for the reference node. The explanation is then generalized to other nodes with graph alignment(SOURCE GNNExplainer)"
 
 \textbf{Hyperparameter search}
 
-As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter settings on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original \cite{}, as well as the configs provided in Replication study \cite{}. More details can be found in Appendix\ref{}.
+As found by Holdijk et al.\ref{} the PGExplainer is very sensitive to hyperparameter settings on each dataset. Therefore, we conduct hyperparameter searches for each of the datasets to obtain best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original \cite{}, as well as the configs provided in Replication study \cite{}. More details can be found in Appendix\ref{}. For our hyperparameters $\theta_1,\theta_2,...,\theta_n$ we define corresponding sets $S_1,S_2,...,S_n$ of possible values. The grid search finds the best model with respect to the mean of the local ROC-AUC scores of all validation instances over all combinations $(\theta_1,\theta_2,...,\theta_n) \in S_1\times S_2 \times...\times S_n$. The hyperparameters tested consist of: 
 
 
 
@@ -113,7 +116,7 @@ Additionally, experiment in the collective setting with the configuration and se
     \textit{Inference Time RE-PGExplainer (ms)} & 3.58 & 5.23 & 0.45 & 0.54 & 0.33 & 2.05 \\
     \bottomrule
     \end{tabularx}
-    \caption{PGExplainer performance baselines in collective setting.}
+    \caption[Baseline PGExplainer and RE-PGExplainer]{PGExplainer performance baselines in collective setting.}
     \label{tab:pgexplainer_auc}
 \end{table}
 
@@ -133,7 +136,7 @@ Additionally, experiment in the collective setting with the configuration and se
     \textit{Inference Time (ms)} & 39.0$\pm$1.9 & 25.6$\pm$1.5 & 3.1$\pm$0.3 & 3.4$\pm$0.1 \\
     \bottomrule
     \end{tabularx}
-    \caption{PGExplainer performance WITH $N=0.08$! (4.8, 64, 4.8, 23) (USED IN SWEEP!)}
+    \caption[REMOVE! PGExplainer with $N=0.08$!]{PGExplainer performance WITH $N=0.08$! (4.8, 64, 4.8, 23) (USED IN SWEEP!)}
     \label{tab:pgexplainer_auc}
 \end{table}
 
@@ -159,11 +162,11 @@ Additionally, experiment in the collective setting with the configuration and se
     \textit{Inference Time (ms)} & 37.0$\pm$1.4 & 24.8$\pm$0.1 & 3.0$\pm$0.2 & 2.7$\pm$0.1 & 4.0$\pm$0.3 & 4.0$\pm$0.0 \\
     \bottomrule
     \end{tabularx}
-    \caption{PGExplainer performance in Explanation AUROC compared to baselines ($N=30$).}
+    \caption[Inductive performance of our reimplementation]{PGExplainer performance in Explanation AUROC compared to baselines ($N=30$).}
     \label{tab:pgexplainer_auc}
 \end{table}
 
-\subsection{Results}
+\textbf{Results}
 
 HERE GO THE RESULTS OF THE EXPERIMENTS, ALSO COMPARED TO THE OTHER PAPERS. INCLUDES, TABLES, PLOTS ETC.
 
@@ -213,23 +216,40 @@ RESULTS OBTAINED IN COLLECTIVE SETTING (ORIGINAL PAPER):
     \scriptsize
     \begin{tabularx}{\linewidth}{l|X X X X|X X}
     \hline
-    \textbf{Accuracy} & \textbf{BA-S} & \textbf{BA-C} & \textbf{Tree-C} & \textbf{Tree-G} & \textbf{BA-2m} & \textbf{MUTAG} \\
+    \textbf{Accuracy} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2Motif} & \textbf{MUTAG} \\
+    \hline
+    \textbf{Training}   & 1.00 & 0.92 & 1.00 & 0.99 & 1.00 & 0.86 \\
+    \textbf{Validation} & 1.00 & 0.87 & 1.00 & 0.99 & 1.00 & 0.86 \\
+    \textbf{Testing}    & 0.97 & 0.89 & 0.99 & 0.99 & 1.00 & 0.82 \\
+    \hline
+    \end{tabularx}
+    \caption[Accuracies of higher-order GNN downstream task]{Compact accuracy table for Node and Graph Classification from our reimplementation.}
+    \label{tab:compact-accuracy}
+\end{table}
+
+
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{l|X X X X|X X}
+    \hline
+    \textbf{Accuracy} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2Motif} & \textbf{MUTAG} \\
     \hline
     \textbf{Training}   & 0.98 & 0.99 & 0.99 & 0.92 & 1.00 & 0.87 \\
     \textbf{Validation} & 1.00 & 0.88 & 1.00 & 0.94 & 1.00 & 0.89 \\
     \textbf{Testing}    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
     \hline
     \end{tabularx}
-    \caption{Compact accuracy table for Node and Graph Classification from PGExplainer paper.}
+    \caption[Accuracies of original GNN downstream task]{Compact accuracy table for Node and Graph Classification from ORIGINAL PGExplainer paper.}
     \label{tab:compact-accuracy}
 \end{table}
 
 
-\section{PGExplainer in inductive setting with more training data e.g. 60 training instances}
+\subsection{PGExplainer in inductive setting with more training data e.g. 60 training instances}
 
-\subsection{Experimental setup}
+\textbf{Experimental setup}
 
-\subsection{Results}
+\textbf{Results}
 
 
 BA-Community: SumSampledEdges increases after 6/7 epochs, AUROC reaches peak early but then decreases steadily! (For 30 instances: Both sum sampled egdes and AUROC converge very strongly!) - Apparently less stable on 60 instances (ONLY CHANGE!!!), probably would have to be retuned (BAD!)
@@ -247,17 +267,17 @@ BA-Community: SumSampledEdges increases after 6/7 epochs, AUROC reaches peak ear
     60 train instance & 0.987.$\pm$0.002 & 0.641$\pm$0.045 & 0.144$\pm$0.096 & 0.495$\pm$0.052 & 0.017$\pm$0.004 & 0.895$\pm$0.009 \\
     \bottomrule
     \end{tabularx}
-    \caption{PGExplainer performance in Explanation AUROC ($N=60$).}
+    \caption[Inductive performance with 60 training instances]{PGExplainer performance in Explanation AUROC ($N=60$).}
     \label{tab:pgexplainer_auc}
 \end{table}
 
 
-\section{PGExplainer in collective setting}
+\subsection{PGExplainer in collective setting}
 
-\subsection{Experimental setup}
+\textbf{Experimental setup}
 Collective setting (ALL instances used for training + testing) with hyperparameters that were found in inductive setting.
 
-\subsection{Results}
+\textbf{Results}
 
 \begin{table}[ht]
     \centering
@@ -278,16 +298,16 @@ Collective setting (ALL instances used for training + testing) with hyperparamet
     Our work (inductive) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
     \bottomrule
     \end{tabularx}
-    \caption{PGExplainer performance in Explanation AUROC in collective setting.}
+    \caption[Collective performance of our reimplementation]{PGExplainer performance in Explanation AUROC in collective setting.}
     \label{tab:pgexplainer_auc}
 \end{table}
 
-\section{BA-2Motif with flipped GT}
+\subsection{BA-2Motif with flipped GT}
 
-\subsection{Experimental setup}
+\textbf{Experimental setup}
 Mean individual AUROC is calculated identical to before, but the ground truth masks of each graph are inverted, meaning that edges in the motif now carry a label of $0$ and all other edges a label of $1$. Validation loss is evaluated as well.
 
-\subsection{Results}
+\textbf{Results}
 
 \begin{table}[ht]
     \centering
@@ -300,15 +320,15 @@ Mean individual AUROC is calculated identical to before, but the ground truth ma
         Flipped GT     & 0.985 $\pm$ 0.006 \\
         \bottomrule
     \end{tabularx}
-    \caption{Explanation AUROC for BA-2Motif with flipped GT.}
+    \caption[Inductive performance on BA-2Motif with flipped ground truth]{Explanation AUROC for BA-2Motif with flipped GT.}
     \label{tab:allmotifnodes_selected}
 \end{table}
 
 Validation Loss curve relatively smooth. TODO: INCLUDE
 
-\section{Effects of motif node sets}
+\subsection{Effects of motif node sets}
 
-\subsection{Experimental setup}
+\textbf{Experimental setup}
 
 AllMotifNodes experiment:
 BA-Shapes: All house nodes
@@ -329,7 +349,7 @@ Tree-Grid:
 Maybe works well because if all motif nodes are used, subgraphs are used where only the motif or even only part of the motif is present (Tree-Grid). Thus constantly using one singular same node that contains the complete motif may be better?
 
 
-\subsection{Results}
+\textbf{Results}
 
 \begin{table}[ht]
     \centering
@@ -345,7 +365,7 @@ Maybe works well because if all motif nodes are used, subgraphs are used where o
     AllMotifNodes & 0.959$\pm$0.004 & 0.204$\pm$0.162 \\
     \bottomrule
     \end{tabularx}
-    \caption{Explanation AUROC and inference time for AllMotifNodes on selected datasets.}
+    \caption[Inductive performance using all motif nodes for training]{Explanation AUROC and inference time for AllMotifNodes on selected datasets.}
     \label{tab:allmotifnodes_selected}
 \end{table}
 
@@ -363,30 +383,32 @@ Maybe works well because if all motif nodes are used, subgraphs are used where o
     OneMotifNode & 0.915$\pm$0.003 & 1.0$\pm$0.0 \\
     \bottomrule
     \end{tabularx}
-    \caption{Explanation AUROC and inference time for OneMotifNode on selected datasets.}
+    \caption[Inductive performance using one motif node for training]{Explanation AUROC and inference time for OneMotifNode on selected datasets.}
     \label{tab:allmotifnodes_selected}
 \end{table}
 
 
-\section{Qualitative Analysis}
+\subsection{Qualitative Analysis}
 
-\subsection{Experimental setup}
+\textbf{Experimental setup}
 
-\subsection{Results}
+\textbf{Results}
 
 
-\section{Training on ALL instances - Evaluation only on motif instances?}
-This probably would not grant any insights, since training on non motif nodes should in theory mostly lead to all edges being irrelevant for prediction?? Bascially most edge could be removed and in theory the prediction of the node should not change at all, therefore no information can be gather from this?
+%\subsection{Training on ALL instances - Evaluation only on motif instances?}
+%This probably would not grant any insights, since training on non motif nodes should in theory mostly lead to all edges being irrelevant for prediction?? Bascially most edge could be removed and in theory the prediction of the node should not change at all, therefore no information can be gather from this?
 
-\subsection{Experimental setup}
+%\textbf{Experimental setup}
 
-\subsection{Results}
+%\textbf{Results}
 
 
 
 \section{PGExplainer applied to NeuroSAT}
 
-\subsection{Experimental setup}
+TODO: We present our approach for generating bipartite explanations for NeuroSAT \cite{} predictions of SAT problems.
+
+\subsection{Common experimental setup}
 
 We create required data with provided methods, add unsat cores and MUSs as gt
 
@@ -397,4 +419,7 @@ Generated batches of unsat problems that "turned" unsat because of last added cl
 For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
 For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
 
-\subsection{Results}
+\textbf{Hyperparameter search}
+We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the hard constraints.
+
+\textbf{Results}

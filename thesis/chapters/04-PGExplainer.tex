@@ -6,11 +6,9 @@
 
 In this chapter we present the Methodology (TODO: ?) of our work, as well as the detailed theory of the explainer model used in our approach. Therefore, we start by presenting the concept of the Parameterized explainer for graph neural networks by Luo et al. \cite{luo2020parameterized} in Section \ref{sec:TheoryPGE}.
 
-In Section \ref{} we present our idea of applying the PGExplainer on the NeuroSAT framework to generate explanations for a machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores. 
+In Section \ref{sec:NeuroSAT_extension} we present our idea of applying the PGExplainer on the NeuroSAT framework to generate explanations for a machine learning SAT-solving approach and comparing these to "human-understandable" concepts like UNSAT cores. 
 
-We then describe our imlpementation in detail (see Section \ref{}), including the changes made and difficulties during the process.
-
-In Section \ref{} we describe the experimental setups for both the replication of the PGExplainer in the inductive setting, as well as the application on NeuroSAT.
+We then describe our implementation in detail (see Section \ref{sec:implementation_details}), including the changes made and difficulties during the process, as well as the adaptations for the application on NeuroSAT.
 
 \section{Theoretical Foundations of PGExplainer}
 \label{sec:TheoryPGE}
@@ -326,7 +324,7 @@ This leads to an improved computational complexity when compared to their baseli
 \draw [<->, dashed] (sample_prediction) -- node[midway, above, font=\scriptsize] {$\min_\Omega H(Y_o,\hat{Y}_s)$} (original_prediction);
 
 \end{tikzpicture}
-\caption{TODO: The complete pipeline of PGExplainer.}
+\caption[Pipeline of PGExplainer]{TODO: The complete pipeline of PGExplainer.}
 \label{fig:PGExplainer_pipeline}
 \end{figure}
 
@@ -391,7 +389,7 @@ This leads to an improved computational complexity when compared to their baseli
         \node[draw=gray, thick, rounded corners, fit=(node_emb_i2) (node_emb_v2) (edge_emb_ijv), fill=orange!30, label=above:Node Task] {};
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{TODO: Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the target model the created edge embedding differs slightly.}
+\caption[Visualization of edge embedding transformation]{TODO: Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the target model the created edge embedding differs slightly.}
 \end{figure}
 
 \subsection{Regularization Terms}
@@ -480,6 +478,7 @@ The reparameterization trick is still applied for each edge, but $\epsilon_c$ is
 
 
 \section{Implementation details}
+\label{sec:implementation_details}
 In the following, we provide the implementation details needed to reproduce our results. This includes the general replication of the PGExplainer \cite{} with the adapted downstream models in Section \ref{sec:Replication_of_PGExplainer} and the specifics for the application on NeuroSAT \cite{} in Section \ref{sec:Application_to_NeuroSAT}.
 
 
@@ -488,7 +487,7 @@ In the following, we provide the implementation details needed to reproduce our 
 
 For our replication we try to implement the methods and details as close to the original paper as possible. Thus, we follow the general pseudocode algorithms presented by the authors (TODO: see appendix \ref{}). Since the paper differs from the original codebase and is imprecise about certain descriptions (see Holdijk et al. \cite{holdijk2021re}), we aim to give a thorough description. This includes the tools we used, resulting changes regarding the data processing, the general architecture and hyperparameters of the downstream models, the architecture and hyperparameters of the explainer model, as well as concrete methods implemented in the model. \bigskip
 
-\textbf{Libraries}: To reimplement the framework, we utilize a couple of libraries that we introduce shortly. Most notably, we use PyTorch Geometric \cite{Fey/Lenssen/2019}, a library built upon PyTorch \cite{paszke2019pytorch}, that provides methods to create and train GNNs. For evaluation of the explainer model, specifically for calculating the ROC-AUC score, we use TorchEval, a model evaluation library that is part of PyTorch. Furthermore, we integrate WandB \cite{wandb} to monitor model performance and allow for easy hyperparameter searches. To visualize the graphs and their explanations we employ NetworkX \cite{SciPyProceedings_11}.\bigskip
+\textbf{Libraries}: To reimplement the framework, we utilize a couple of libraries that we introduce shortly. Most notably, we use PyTorch Geometric \cite{Fey/Lenssen/2019}, a library built upon PyTorch \cite{paszke2019pytorch}, that provides methods to create and train GNNs. For evaluation of the explainer model, specifically for calculating the ROC-AUC score, we use TorchEval, a model evaluation library that is part of PyTorch. Furthermore, we integrate WandB \cite{wandb} to monitor model performance and allow for easy hyperparameter searches. To visualize the graphs and their explanations we employ NetworkX \cite{SciPyProceedings_11}. TODO: seaborn \cite{Waskom2021} for plotting curves\bigskip
 
 \textbf{Preprocessing}: We use the original datasets that are provided in the PGExplainer codebase. We transform the data to fit our PyTorch Geometric framework. Each graph is stored as a torch-geometric Data object. This holds the $d$-dimensional node features as tensors, the graph label index in the form of a long or all node labels in the form of a tensor of class indices, a ground truth edge mask that contains the edges present in the motif, as well as training-, evaluation- and test-node-masks for training the downstream model. In PyTorch Geometric edges are stored in the edge-index format as a COO tensor - a PyTorch coordinate format that stores tuples of element indices and their corresponding values. In the context of graph edges in PyTorch Geometric, for an edge $(i,j)$ the element index is the starting node $i$ and the corresponding value its incident node $j$. This is computed from the adjacency matrix $A$ as follows:
 \begin{verbatim}
@@ -640,5 +639,7 @@ Furthermore, the input of the explainer changes to a SAT problem instance, conta
 TODO: Implementation of constraints?
 
 To evaluate the explanations provided by the PGExplainer, we require ground truths to calculate the ROC-AUC and understand the visualizations of explanations. Since our goal is testing whether the explanations of the NeuroSAT predictions align with human-understandable concepts, we propose the use of MUSs as ground truth. Therefore, we utilize the deletion-based MUS extractor \verb|MUSX| from PySAT \cite{imms-sat18} to generate a MUS for each unsatisfiable problem. This MUS is transformed to match the corresponding edges of its graph representation and treated as expected ground truth. This allows us to calculate the local ROC-AUC for each SAT problem as described in Section \ref{sec:Replication_of_PGExplainer}. We visualize the provided explanations and ground truths as a pyvis \cite{perrone2020network} \verb|Network| for qualitative evaluation. \bigskip
+
+TODO: Kneed for evaluation independent from k?
 
 We adopt the MLP architecture described in Section \ref{sec:Replication_of_PGExplainer}, but also experiment with a more complex architecture (see Section \ref{}). Besides these changes, the explainer operates as previously explained.

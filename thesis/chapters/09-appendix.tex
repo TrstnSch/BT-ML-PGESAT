@@ -49,110 +49,145 @@
     \end{algorithmic}
 \end{algorithm}
 
-\section{Dataset visualization}
-
 \section{Replication sweeps}
 TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY, AS WELL AS NODE SETS USED IN ORIGINAL (Tree-Grid only one where AUC not computabel)!?
 
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{BA-Shapes}} \\ \hline
-    entropy\_reg & epochs & lr\_mlp & sampled\_graphs & sample\_bias & seed & size\_reg & tT & t0 & num\_training\_instances \\ \hline
+    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     1.0 & 10 & 0.003 & 1 & 0.0 & - & 0.05 & 0.05 & 1.0 & \text{All} \\ \hline
     1.0 & 10 & 0.003 & 1 & 0.0 & - & 0.05 & 2.0 & 5.0 & \text{All} \\ \midrule
     \textbf{0.1} & 10 & 0.0003 & \textbf{1} & 0.0 & 74 & 0.005 & \textbf{1} & 5.0 & 30 \\ 
     0.5 &  & \textbf{0.003} & 5 &  & 75 & \textbf{0.05} & 2 &  &  \\ 
     1.0 &  &  0.03 & 10 &  & 76 & 0.1 & 5 &  &  \\ \hline
-    \end{tabular}
-    \caption{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
+    \end{tabularx}
+    \caption[BA-Shapes Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
 \end{table}
 
 
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{BA-Community}} \\ \hline
-    entropy\_reg & epochs & lr\_mlp & sampled\_graphs & sample\_bias & seed & size\_reg & tT & t0 & num\_training\_instances \\ \hline
+    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     1.0 & 20 & 0.003 & 1 & 0.5 & - & 0.05 & 1.0 & 1.0 & \text{All} \\ \midrule
     \textbf{1.0} & 20 & \textbf{0.003} & 1 & \textbf{0.0} & 74 & 0.05 & 1.0 & 1.0 & 30 \\
     0.1 &  & 0.0003 & \textbf{5} & 0.5 & 75 & \textbf{0.1} & \textbf{5.0} &  &  \\
      &  &  & 10 &  & 76 &  &  &  &  \\ \hline
-    \end{tabular}
-    \caption{BA-Community hyperparameter search configuration. The first row contains the values used in the original code as well as in the replication. Highlighted values are the best performing.}
+    \end{tabularx}
+    \caption[BA-Community Sweep]{BA-Community hyperparameter search configuration. The first row contains the values used in the original code as well as in the replication. Highlighted values are the best performing.}
 \end{table}
 
 
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{Tree-Cycles}} \\ \hline
-    entropy\_reg & epochs & lr\_mlp & sampled\_graphs & sample\_bias & seed & size\_reg & tT & t0 & num\_training\_instances \\ \hline
+    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     0.01 & 20 & 0.003 & 1 & 0.0 & - & 0.0001 & 5.0 & 5.0 & \text{All} \\ \hline
     10.0 & 20 & 0.003 & 1 & 0.0 & - & 0.1 & 5.0 & 1.0 & \text{All} \\ \midrule
     0.01 & 20 & \textbf{0.0003} & 1 & 0.0 & 74 & \textbf{0.0001} & \textbf{1.0} & 1.0 & 30 \\ 
     \textbf{1.0} &  & 0.003 & \textbf{5} &  & 75 & 0.05 & 5.0 &  &  \\ 
     10.0 &  &  & 10 &  & 76 & 0.1 &  &  &  \\ \hline
-    \end{tabular}
-    \caption{TODO: CONSIDER OPTIMUM TO BE CLASSIFICATION EITHER REALLY HIGH OR REALLY LOW?? First row contains the values used in the original code; second row for replication. Highlighted values are the ones that achieved scores closest to $0$ or $1$, depending on the seed and the "direction" it is learning.}
+    \end{tabularx}
+    \caption[Tree-Cycles Sweep]{TODO: CONSIDER OPTIMUM TO BE CLASSIFICATION EITHER REALLY HIGH OR REALLY LOW?? First row contains the values used in the original code; second row for replication. Highlighted values are the ones that achieved scores closest to $0$ or $1$, depending on the seed and the "direction" it is learning.}
 \end{table}
 
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{Tree-Grid}} \\ \hline
-    entropy\_reg & epochs & lr\_mlp & sampled\_graphs & sample\_bias & seed & size\_reg & tT & t0 & num\_training\_instances \\ \hline
+    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     1.0 & 30 & 0.01 & 1 & 0.0 & - & 0.01 & 5.0 & 5.0 & \text{All} \\ \hline
     1.0 & 30 & 0.003 & 1 & 0.0 & - & 1.0 & 2.0 & 5.0 & \text{All} \\ \midrule
     0.1 & 30 & 0.0003 & 1 & 0.0 & 74 & 0.01 & \textbf{2.0} & 5.0 & 30 \\ 
     \textbf{1.0} &  & \textbf{0.003} & \textbf{5} &  & 75 & \textbf{0.5} & 5.0 &  &  \\ 
     10 &  & 0.01 & 10 &  & 76 & 1.0 &  &  &  \\
      &  & 0.05 &  &  &  &  &  &  &  \\ \hline
-    \end{tabular}
-    \caption{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing. size-reg of $0.01$ leads to all edges being one. With original experimental setup, mostly complete randomness}
+    \end{tabularx}
+    \caption[Tree-Grid Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing. size-reg of $0.01$ leads to all edges being one. With original experimental setup, mostly complete randomness}
 \end{table}
 
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{BA-2Motif}} \\ \hline
-    entropy\_reg & epochs & lr\_mlp & sampled\_graphs & sample\_bias & seed & size\_reg & tT & t0 & num\_training\_instances \\ \hline
+    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     0.0 & 10 & 0.003 & 1 & 0.0 & - & 0.00 & 0.0 & 1.0 & \text{All} \\ \hline
     0.01 & 20 & 0.005 & 1 & 0.0 & - & 0.03 & 1.0 & 5.0 & \text{All} \\ \midrule
     0.01 & 10 & 0.0003 & 1 & 0.0 & 74 & 0.03 & \textbf{1.0} & 5.0 & 30 \\ 
     \textbf{0.1} & \textbf{20} & 0.003 & 5 &  & 75 & & 5.0 &  &  \\ 
     &  & 0.005 & \textbf{10} &  & 76 &  &  &  &  \\
      &  & \textbf{0.01} &  &  &  &  &  &  &  \\ \hline
-    \end{tabular}
-    \caption{First row contains the values used in the original code; second row for replication. Highlighted values are the one that achieve the lowest individual AUROCs, as the explainer seems to learn the opposite for BA-2Motif.}
+    \end{tabularx}
+    \caption[BA-2Motif Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the one that achieve the lowest individual AUROCs, as the explainer seems to learn the opposite for BA-2Motif.}
 \end{table}
 
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{MUTAG}} \\ \hline
-    entropy\_reg & epochs & lr\_mlp & sampled\_graphs & sample\_bias & seed & size\_reg & tT & t0 & num\_training\_instances \\ \hline
+    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     1.0 & 10 & 0.01 & 1 & 0.0 & - & 0.01 & 5.0 & 5.0 & \text{All} \\ \hline
     1.0 & 30 & 0.0003 & 1 & 0.0 & - & 0.005 & 5.0 & 5.0 & \text{All} \\ \midrule
     0.1 & 10 & 0.0003 & 1 & 0.0 & 74 & 0.01 & \textbf{1.0} & 5.0 & 30 \\ 
     \textbf{1.0} & \textbf{20} & 0.003 & 5 &  & 75 & \textbf{0.005} & 5.0 &  & \\ 
      & 30 & \textbf{0.01} & \textbf{10} &  & 76 &  &  &  &  \\ \hline
-    \end{tabular}
-    \caption{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
+    \end{tabularx}
+    \caption[MUTAG Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
 \end{table}
 
+\clearpage
+\section{NeuroSAT explainer sweeps}
+
+sample bias $=0.0$
+training size = num batches -2
+eval size = one batch
+
+
+
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
+    \hline
+    \multicolumn{10}{|c|}{\textbf{Hard constraint explainer}} \\ \hline
+    entropy reg & epochs & lr mlp & sampled graphs & concat embs & seed & size reg & tT & t0 & complex arch. \\ \hline
+    0.1 & \textbf{20} & 0.0003 & 1 & True & 75 & 0.01 & \textbf{1.0} & 5.0 & True \\ 
+    \textbf{1.0} & 30 & 0.003 & 5 & False & 76 & \textbf{0.005} & 5.0 &  & False \\ 
+     &  & \textbf{0.01} &  &  &  &  &  &  &  \\ \hline
+    \end{tabularx}
+    \caption[NeuroSAT hard constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a hard constraint. Highlighted values are the best performing.}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{|Y|c|c|Y|Y|c|c|c|c|Y|Y|}
+    \hline
+    \multicolumn{11}{|c|}{\textbf{Soft constraint explainer}} \\ \hline
+    entropy reg & epochs & lr mlp & sampled graphs & concat embs & seed & size reg & tT & t0 & complex arch. & connect. reg\\ \hline
+    0.1 & \textbf{20} & 0.0003 & 1 & True & 75 & 0.01 & \textbf{1.0} & 5.0 & True & 0.0 \\ 
+    \textbf{1.0} & 30 & 0.003 & 5 & False & 76 & \textbf{0.005} & 5.0 &  & False & \\ 
+     &  & \textbf{0.01} &  &  &  &  &  &  &  & \\ \hline
+    \end{tabularx}
+    \caption[NeuroSAT soft constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Highlighted values are the best performing.}
+\end{table}
 
 \clearpage
 \section{Data visualization}
@@ -193,5 +228,5 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
         \caption{MUTAG}
     \end{subfigure}
 
-    \caption{Visualizations of all six datasets. For node datasets the target node where the computational graph is computed from is colored in light blue.}
+    \caption[Visualization of original PGExplainer datasets]{Visualization of all six datasets. For node datasets the target node where the computational graph is computed from is colored in light blue.}
 \end{figure}
