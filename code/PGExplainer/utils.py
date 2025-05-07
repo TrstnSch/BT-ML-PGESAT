@@ -101,9 +101,11 @@ def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_tas
         nx.draw_networkx_edge_labels(nxGraph, pos, edge_labels=labels, font_size=6)
  
     if save_path:
-        plt.savefig(save_path, format="pdf", bbox_inches="tight")
-        
-    plt.show()
+        plt.savefig(save_path, format="pdf", dpi=300, bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
+
     return pos
 
 
@@ -221,7 +223,7 @@ def loadConfig(dataset):
     return config
 
 
-def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graphTask=True, MUTAG=False):
+def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graphTask=True, MUTAG=False, index=None):
     mlp.eval()
     downstreamTask.eval()
     
@@ -254,7 +256,8 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
         
         print("-----------------Explanation Graph-----------------")
         
-        pos1 = plotGraphAll(G_weights, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG)
+        if index is not None: save_path = f"explanations/graph_{index}_explanation.pdf"
+        pos1 = plotGraphAll(G_weights, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG, save_path=save_path)
 
         print("-----------Original Graph with edge weights-----------")
 
@@ -310,7 +313,8 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
         GtopK = Data(x=G_hop.x, edge_index=edge_index_masked, y=G_hop.y, edge_attr=weights_masked)
 
         print("-----------------Top K Motif Graph-----------------")
-        pos1 = plotGraphAll(GtopK, pos=pos, color_map=None, edge_weights=True)
+        if index is not None: save_path = f"explanations/graph_{index}_explanation.pdf"
+        pos1 = plotGraphAll(GtopK, pos=pos, color_map=None, edge_weights=True, save_path=save_path)
         
         G_gt = Data(x=G_hop.x, edge_index=G_hop.edge_index[:,data.gt_mask[edge_mask]], y=G_hop.y)
         

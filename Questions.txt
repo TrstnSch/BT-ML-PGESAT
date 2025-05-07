@@ -351,3 +351,25 @@ Compare my inductive results to their collective results + put PGE inductive plo
 Structure:
     5. General experiments
         subchapter per experiment with experimental setup + evaluation
+
+
+--------------------------
+
+RENAME $n$ to $N$ for clarity between chapters?! If it is clearly defined in the context not necessary
+
+Okay to use wandb plots? Why not, OR extract values and plot again
+
+Include inference time even though bad? Probably becuase of CPU runs
+
+TOC: Punkt hinter chapter?
+TOC generell okay? Zu viel/groß?
+
+Wo Softmax definition? First used in implementation details
+
+Code example of implementation of soft/hard constraint?
+
+Include difficulties part in implementation details?
+
+
+PGExplainer inductive and collective zusammenfasse als ein "Replication" experiment? Oder trennen?
+Selbes für qual. evaluation

@@ -190,7 +190,7 @@ def evaluateNodeExplainerAUC (mlp, modelNodeGNN, data, evalNodes, num_explanatio
 
 
 
-def evaluate (datasetName, mlp, downstreamTask):
+def evaluate (datasetName, mlp, downstreamTask, index=None):
     config = utils.loadConfig(datasetName)
     if config == -1:
         return
@@ -234,7 +234,7 @@ def evaluate (datasetName, mlp, downstreamTask):
         
         meanAuc, individual_aurocs, infTime = evaluateNodeExplainerAUC(mlp, downstreamTask, data, motifNodes, num_explanation_edges=num_explanation_edges)
         
-        randomAucNode = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graph_task)
+        randomAucNode = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes, graph_task, index=index)
         auc, individual_aurocs, infTime_ = evaluateNodeExplainerAUC(mlp, downstreamTask, data, [randomAucNode], num_explanation_edges=num_explanation_edges)
         print(f"AUC for random Node: {auc}")
         
