@@ -33,7 +33,11 @@ A traditional approach for tuning hyperparameters is the grid search, as describ
 
 \subsection{Multilayer Perceptron}
 TODO: consisting of multiple layers of hidden units and nonlinear activation functions
-A classical DL model is the multilayer perceptron (MLP), first proposed by Rosenblatt \cite{rosenblatt1958perceptron}, with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\boldsymbol{\theta})$ and learns the value of the parameters $\boldsymbol{\theta}$ that best approximate the function. At the start of the training these parameters are initialized randomly or by a smart initialization strategy, like the Glorot/Xavier initialization \cite{glorot2010understanding}. These models are also referred to as feedforward neural networks, as they process information from $x$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(x)))$ that consists of input layer $f^{(1)}$, hidden layer $f^{(2)}$ and output layer $f^{(3)}$. The length of this chain of functions defines the depth of a model, coining the term "deep learning". The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(x)$ at different points in the training and labels $y\approx f^*(x)$. These training examples dictate the output layer to generate a value close to $y$ for each input $x$, or to produce a higher-level representation that can be used for subsequent tasks. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued with each vector element, referred to as unit, loosely taking the role of a neuron in neuroscience. This comparison is a common analogy to convey the idea of information processing. Models are therefore also referred to as neural networks.
+A classical DL model is the multilayer perceptron (MLP), first proposed by Rosenblatt \cite{rosenblatt1958perceptron}, with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\boldsymbol{\theta})$ and learns the value of the parameters $\boldsymbol{\theta}$ that best approximate the function. At the start of the training these parameters are initialized randomly or by a smart initialization strategy, like the Glorot/Xavier initialization \cite{glorot2010understanding}. 
+
+These models are also referred to as feedforward neural networks, as they process information from $x$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(x)))$ that consists of input layer $f^{(1)}$, hidden layer $f^{(2)}$ and output layer $f^{(3)}$. The length of this chain of functions defines the depth of a model, coining the term "deep learning". 
+
+The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(x)$ at different points in the training and labels $y\approx f^*(x)$. These training examples dictate the output layer to generate a value close to $y$ for each input $x$, or to produce a higher-level representation that can be used for subsequent tasks. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued with each vector element, referred to as unit, loosely taking the role of a neuron in neuroscience. This comparison is a common analogy to convey the idea of information processing. Models are therefore also referred to as neural networks.
 
 %We use non-linear activation functions in layers to describe features and keep the model from learning a strictly linear transformation of its inputs. Result for a layer is vector of hidden units $h=g(W^Tx+b)$, where $W$ contains the weights of a linear transformation and b the biases. x is the input vector. $g$ is the activation function that is usually applied element-wise, such as ReLU or Sigmoid.
 
@@ -56,7 +60,7 @@ An example for a linear output layer that calculates a scalar for an input vecto
 \begin{equation}
     f^{(i+1)}(\mathbf{h}; \mathbf{w},b)=\mathbf{h}^\top\mathbf{w}+b,
 \end{equation}
-with weight vector $\mathbf{w} \in \mathbb{R}^n$ and bias $b \in \mathbb{R}$ as parameters. This would define our model consisting of the two defined layers as $f(x;\boldsymbol{\theta})$ with parameters $\boldsymbol{\theta} = (\mathbf{W}, \mathbf{c}, \mathbf{w}, b)$. The learning algorithm would thus adapt the parameters $\theta$ to approximate the target function as close as possible.
+with weight vector $\mathbf{w} \in \mathbb{R}^n$ and bias $b \in \mathbb{R}$ as parameters. This would define our model consisting of the two defined layers as $f(x;\boldsymbol{\theta})$ with parameters $\boldsymbol{\theta} = (\mathbf{W}, \mathbf{c}, \mathbf{w}, b)$. The learning algorithm would thus adapt the parameters $\boldsymbol{\theta}$ to approximate the target function as close as possible.
 
 The activation function typically maps its input to a real number within a specific range, often between $0$ and $1$, conceptually imitating the activation of a biological neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity (see Liu et al. \cite{Liu2020}). Examples are the Sigmoid function
 
@@ -123,17 +127,17 @@ At test time, the "mean network" is used, that contains all hidden units with th
 While not strictly a regularization technique, batch normalization \cite{ioffe2015batch} often serves a similar purpose in practice by improving generalization.
 In deep models composed of several layers the gradient tells us how to update each parameter assuming that the other layers do not change. Since in practice all layers are updated simultaneously, this may lead to unexpected results. Batch normalization is an optimization technique that can be applied to any input or hidden layer to reduce the aforementioned problem. We follow the definition by Goodfellow et al. \cite{Goodfellow-et-al-2016}.
 
-Let $\mathbf{B}$ be a minibatch of activations of the layer to normalize, in the form of a design matrix with rows of activations. To normalize $\mathbf{B}$, it is replaced by
+Let $\mathcal{B}$ be a minibatch of activations of the layer to normalize, in the form of a design matrix with rows of activations. To normalize $\mathcal{B}$, it is replaced by
 \begin{equation}
-    \mathbf{B}' = \frac{\mathbf{B} - \boldsymbol{\mu}}{\boldsymbol{\sigma}},
+    \mathcal{B}' = \frac{\mathcal{B} - \boldsymbol{\mu}}{\boldsymbol{\sigma}},
 \end{equation}
-where $\boldsymbol{\mu}$ is a vector containing the mean of each unit and $\boldsymbol{\sigma}$ is a vector containing the standard deviation of each unit. Each activation is normalized individually with the $\boldsymbol{\mu}$ and $\boldsymbol{\sigma}$ corresponding to its row. The network processes $\mathbf{B}'$ as functionally equivalent to $\mathbf{B}$. During training,
+where $\boldsymbol{\mu}$ is a vector containing the mean of each unit and $\boldsymbol{\sigma}$ is a vector containing the standard deviation of each unit. Each activation is normalized individually with the $\boldsymbol{\mu}$ and $\boldsymbol{\sigma}$ corresponding to its row. The network processes $\mathcal{B}'$ as functionally equivalent to $\mathcal{B}$. During training,
 \begin{equation}
-    \boldsymbol{\mu} = \frac{1}{m}\sum_i \mathbf{B}_i
+    \boldsymbol{\mu} = \frac{1}{m}\sum_i \mathcal{B}_i
 \end{equation}
 and
 \begin{equation}
-    \boldsymbol{\sigma} = \sqrt{\delta + \frac{1}{m} \sum_i (\mathbf{B}_i - \boldsymbol{\mu})^2},
+    \boldsymbol{\sigma} = \sqrt{\delta + \frac{1}{m} \sum_i (\mathcal{B}_i - \boldsymbol{\mu})^2},
 \end{equation}
 
 where $\delta$ is a small positive value introduced to avoid $\sqrt{z}$ at $z = 0$ and $m$ is the number of elements in the batch. It is important to note that back propagation is performed through all three operations, to prevent the gradient from proposing an operation that solely increases the mean and standard deviation of the output of a layer. Batch normalization therefore reparameterizes the model to include some units that are standardized by definition.
@@ -142,7 +146,7 @@ When testing the model, we replace $\boldsymbol{\mu}$ and $\boldsymbol{\sigma}$ 
 
 \subsection{Monte Carlo Sampling}
 In order to best approximate a randomized algorithm we can make use of Monte Carlo methods as described in Goodfellow et al. \cite{Goodfellow-et-al-2016}[p.590]. A common practice in ML is to draw samples from a probability distribution and using these to form a Monte Carlo estimate of some quantity. This can be used to train a model that can then sample from a probability distribution itself. \\
-More specifically, the idea of Monte Carlo sampling is to view a sum of function evaluations, such as those of a loss function, as if it was an expectation under some probability distribution. This estimate is approximated with a corresponding average.
+More specifically, the idea of Monte Carlo sampling is to view a sum of function evaluations, such as those of a loss function, as if it was an expectation under some probability distribution. This estimate is approximated with a corresponding average. TOOD: RENAME $n$ to $N$ for clarity between chapters?!
 Let 
 \begin{equation}
     s = \sum_x p(x)f(x)=\mathbb{E}_p[f(x)]
@@ -266,7 +270,7 @@ To fully understand the learning objective of PGExplainer it is necessary to def
 \subsection{Entropy}
 %TODO: REVISE THIS. Probably best to define with general expactation, for continous and discrete, according to Goodfellow. Derive conditional entropy for general case. Only apply discrete case where needed? (cross entropy in PGE) \bigskip
 
-Entropy is used to describe the uncertainty of a random variable. It measures the amount of information required on average to describe a random variable. Let $X$ be a discrete random variable with alphabet $\mathcal{X}$ and probability mass function $p(x)=Pr\{X=x\}$ for $x\in X$. TODO: EINHEITLICHE DEFINTION! SIMPLY USE THIS DEFINITION IN MONTE CARLO SAMPLING?
+Entropy is used to describe the uncertainty of a random variable. It quantifies the average amount of information produced by the outcomes of that variable. This is commonly illustrated as the average number of bits needed to encode its values if optimal code is used. Let $X$ be a discrete random variable with alphabet $\mathcal{X}$ and probability mass function $p(x)=Pr\{X=x\}$ for $x\in X$. TODO: EINHEITLICHE DEFINTION! SIMPLY USE THIS DEFINITION IN MONTE CARLO SAMPLING?
 The entropy $H(X)$, also written as $H(p)$, is defined as
 \begin{equation}
     H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x).

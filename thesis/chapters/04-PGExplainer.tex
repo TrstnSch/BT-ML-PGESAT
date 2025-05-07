@@ -30,13 +30,13 @@ To explain the predictions made by a GNN model for an original input graph $G_o$
 where $Y_o$ (TODO: $\in (0,1)^c$ ??) is the prediction of the target model with $G_o$ as input and number of possible classes $c$. This quantifies the probability of prediction $Y_o$ when the input graph is restricted to the explanatory graph $G_s$, as in the case of $I(Y_o;G_s) = 1$, knowing the explanatory graph $G_s$ gives us complete information about $Y_o$, and vice versa. Intuitively, if removing an edge $(i,j)$ changes the prediction of a GNN drastically, this edge is considered important and should therefore be included in $G_s$. This idea originates from traditional forward propagation based methods for whitebox explanations (see Dabkowski et al. \cite{dabkowski2017real}).
 It is important to note that $H(Y_o)$ is only related to the target model with fixed parameters during the evaluation/explanation stage. This leads to the objective being equivalent to minimizing the conditional entropy $H(Y_o|G=G_s)$.
 
-To optimize this function a relaxation is applied for the edges, since normally there would be $2^m$ candidates for $G_s$. The explanatory graph is henceforth assumed to be a Gilbert random graph, where the selections of edges from $G_o$ are conditionally independent to each other. However, the authors describe a random graph with each edge having its own probability, rather than a shared probability as described in Section \ref{sec:random-graphs}, as follows: Let $e_{ij}\in V \times V$ be the binary variable indicating whether the edge is selected, with $e_{ij} = 1$ if edge $(i,j)$ is selected to be in the graph, and 0 otherwise. For the random graph variable $G$ the probability of a graph $G$ can be factorized as 
+To optimize this function a relaxation is applied for the edges, since normally there would be $2^m$ candidates for $G_s$. The explanatory graph is henceforth assumed to be a Gilbert random graph, where the selections of edges from $G_o$ are conditionally independent to each other. However, the authors describe a random graph with each edge having its own probability, rather than a shared probability as described in Section \ref{sec:random-graphs}, as follows: Let $e_{i,j}\in V \times V$ be the binary variable indicating whether the edge is selected, with $e_{i,j} = 1$ if edge $(i,j)$ is selected to be in the graph, and 0 otherwise. For the random graph variable $G$ the probability of a graph $G$ can be factorized as 
 \begin{equation}
-    P(G) = \prod_{(i,j)\in E}P(e_{ij}).
+    P(G) = \prod_{(i,j)\in E}P(e_{i,j}).
 \end{equation}
 TODO: Inhomogeneous Erdos Renyi model? Mention that this is a generative model? (A Gilbert random graph is an example of a generative probabilistic model on graph data?)
 
- $P(e_{ij})$ is instantiated with the Bernoulli distribution $e_{ij} \sim Bern(\theta_{ij})$, where $P(e_{ij} = 1) = \theta_{ij}$ is the probability that edge $(i,j)$ exists in $G$.
+ $P(e_{i,j})$ is instantiated with the Bernoulli distribution $e_{i,j} \sim Bern(\theta_{ij})$, where $P(e_{i,j} = 1) = \theta_{ij}$ is the probability that edge $(i,j)$ exists in $G$.
 After this relaxation the learning objective becomes:
 \begin{equation}
     \label{eq:init_learning_obj}
@@ -46,12 +46,12 @@ where $q(\Theta)$ is the distribution of the explanatory graph that is parameter
 
 \subsection{Reparameterization Trick}
 \label{sec:Reparameterization_Trick}
-As described in Section \ref{sec:gnn_explainability}, a reparameterization trick can be utilized to relax discrete edge weights to continuous variables in the range $(0,1)$. PGExplainer uses the reparameterizable Gumbel-Softmax estimator \cite{jang2016categorical} to allow for efficiently optimizing the objective function with gradient-based methods. This method introduces the Gumbel-Softmax distribution, a continuous distribution used to approximate samples from a categorical distribution. A temperature $\tau$ is used to control the approximation, usually starting from a high value and annealing to a small, non-zero value. Samples with $\tau > 0$ are not identical to samples from the corresponding continuous distribution, but are differentiable and therefore allow back-propagation \cite{abid2019concrete}. The sampling process $G_s \sim q(\Theta)$ of PGExplainer is therefore approximated with a determinant function that takes as input the parameters $\Omega$, a temperature $\tau$ and an independent random variable $\epsilon$: $G_s \approx \hat{G}=f_\Omega(G_o,\tau,\epsilon)$. The binary concrete distribution \cite{maddison2016concrete}, also referred to as Gumbel-Softmax distribution, is utilized as an instantiation for the sampling, yielding the weight $\hat{e}_{ij} \in (0,1)$ for edge $(i,j)$ in $\hat{G}_s$, computed by:
+As described in Section \ref{sec:gnn_explainability}, a reparameterization trick can be utilized to relax discrete edge weights to continuous variables in the range $(0,1)$. PGExplainer uses the reparameterizable Gumbel-Softmax estimator \cite{jang2016categorical} to allow for efficiently optimizing the objective function with gradient-based methods. This method introduces the Gumbel-Softmax distribution, a continuous distribution used to approximate samples from a categorical distribution. A temperature $\tau$ is used to control the approximation, usually starting from a high value and annealing to a small, non-zero value. Samples with $\tau > 0$ are not identical to samples from the corresponding continuous distribution, but are differentiable and therefore allow back-propagation \cite{abid2019concrete}. The sampling process $G_s \sim q(\Theta)$ of PGExplainer is therefore approximated with a determinant function that takes as input the parameters $\Omega$, a temperature $\tau$ and an independent random variable $\epsilon$: $G_s \approx \hat{G}=f_\Omega(G_o,\tau,\epsilon)$. The binary concrete distribution \cite{maddison2016concrete}, also referred to as Gumbel-Softmax distribution, is utilized as an instantiation for the sampling, yielding the weight $\hat{e}_{i,j} \in (0,1)$ for edge $(i,j)$ in $\hat{G}_s$, computed by:
 \begin{equation}
     \label{eq:reparam_trick}
-    \epsilon \sim \text{Uniform}(0,1), \qquad \hat{e}_{ij}=\sigma((\log \epsilon - \log(1-\epsilon)+\omega_{ij}/\tau),
+    \epsilon \sim \text{Uniform}(0,1), \qquad \hat{e}_{i,j}=\sigma((\log \epsilon - \log(1-\epsilon)+\omega_{ij}/\tau),
 \end{equation}
-where $\sigma(\cdot)$ is the Sigmoid function and $\omega_{ij} \in \mathbb{R}$ is an explainer logit for the corresponding edge used as a parameter. When $\tau \rightarrow 0$, e.g. during the explanation stage, the weight $\hat{e}_{ij}$ is binarized with the sigmoid function $\lim_{\tau\rightarrow 0}P(\hat{e}_{ij} = 1) = \frac{\exp (\omega{ij})}{1+\exp (\omega{ij})}$. Since $P(e_{ij} = 1) = \theta_{ij}$, choosing $\omega_{ij} = \log\frac{\theta_{ij}}{1-\theta_{ij}}$ leads to $\lim_{\tau\rightarrow 0}\hat{G}_s = G_s$ and justifies the approximation of the Bernoulli distribution with the binary concrete distribution. During training, when $\tau > 0$, the objective function in \eqref{eq:init_learning_obj} is smoothed with a well-defined gradient $\frac{\partial\hat{e}_{ij}}{\partial\omega_{ij}}$ and becomes:
+where $\sigma(\cdot)$ is the Sigmoid function and $\omega_{ij} \in \mathbb{R}$ is an explainer logit for the corresponding edge used as a parameter. When $\tau \rightarrow 0$, e.g. during the explanation stage, the weight $\hat{e}_{i,j}$ is binarized with the sigmoid function $\lim_{\tau\rightarrow 0}P(\hat{e}_{i,j} = 1) = \frac{\exp (\omega{ij})}{1+\exp (\omega{ij})}$. Since $P(e_{i,j} = 1) = \theta_{ij}$, choosing $\omega_{ij} = \log\frac{\theta_{ij}}{1-\theta_{ij}}$ leads to $\lim_{\tau\rightarrow 0}\hat{G}_s = G_s$ and justifies the approximation of the Bernoulli distribution with the binary concrete distribution. During training, when $\tau > 0$, the objective function in \eqref{eq:init_learning_obj} is smoothed with a well-defined gradient $\frac{\partial\hat{e}_{i,j}}{\partial\omega_{ij}}$ and becomes:
 \begin{equation}
     \min_\Omega \mathbb{E}_{\epsilon \sim \text{Uniform}(0,1)}H(Y_o| G = \hat{G}_s)
 \end{equation}
@@ -246,7 +246,7 @@ This leads to an improved computational complexity when compared to their baseli
 \node (weights) [emb, below=of trick] {Sampled edge importance weights};
 \node[anchor=center] at ([xshift=4cm]weights.center) 
  (edge_score) 
- {$\begin{bmatrix} \hat{e}_{ij} \\ \hat{e}_{jk} \\ \vdots \end{bmatrix}$};
+ {$\begin{bmatrix} \hat{e}_{i,j} \\ \hat{e}_{jk} \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of edge_score, anchor=west] 
  {\scriptsize $[|E(G_o)|]$};
 
@@ -400,7 +400,7 @@ To enhance the preservation of desired properties of explanations the authors pr
 
 Inspired by GNNExplainer \cite{ying2019gnnexplainer}, to obtain compact and precise explanations, a constraint on the size of the explanations is added in the form of $||\Omega||_1$, the $l_1$ norm on latent variables $\Omega$. Additionally, to encourage the discreteness of edge weights, element-wise entropy is added as a constraint:
 \begin{equation}
-    H_{\hat{G}_s} = -\frac{1}{|\varepsilon|}\sum_{(i,j)\in \varepsilon} (\hat{e}_{ij}\log \hat{e}_{ij} + (1-\hat{e}_{ij})\log(1-\hat{e}_{ij})),
+    H_{\hat{G}_s} = -\frac{1}{|\varepsilon|}\sum_{(i,j)\in \varepsilon} (\hat{e}_{i,j}\log \hat{e}_{i,j} + (1-\hat{e}_{i,j})\log(1-\hat{e}_{i,j})),
 \end{equation}
 for one explanatory graph $\hat{G_s}$ with $\varepsilon$ edges. For the collective setting, this is added as a mean over all instances in $\mathcal{I}$. \bigskip
 
@@ -410,7 +410,7 @@ Note that the following two constraints are not used in the original experimenta
 
 The authors propose the modification of the size constraint to a budget constraint, for a predefined available budget $B$. Let $|\hat{G}_s| \leq B$, then the budget regularization is defined as:
 \begin{equation}
-    R_b = \text{ReLU}(\sum_{(i,j)\in \varepsilon}\hat{e}_{ij}-B).
+    R_b = \text{ReLU}(\sum_{(i,j)\in \varepsilon}\hat{e}_{i,j}-B).
 \end{equation}
 Note that $R_b = 0$ when the explanatory graph is smaller than the budget. When out of budget, the regularization is similar to that of the size constraint. \bigskip
 
@@ -418,7 +418,7 @@ Note that $R_b = 0$ when the explanatory graph is smaller than the budget. When 
 
 To enhance the effect of the explainer detecting a small, connected subgrap, motivated through real-life motifs being inherently connected, the authors suggest adding the cross-entropy of adjacent edges. Let $(i,j)$ and $(i,k)$ be two edges that both connect to the node $i$, then $(i,k)$ should rather be included in the explanatory graph if the edge $(i,j)$ is selected to be included. This is formally defined as:
 \begin{equation}
-    H(\hat{e}_{ij},\hat{e}_{ik}) = -[1-\hat{e}_{ij}\log(1-\hat{e}_{ik})+\hat{e}_{ij}\log \hat{e}_{ik}].
+    H(\hat{e}_{i,j},\hat{e}_{i,k}) = -[1-\hat{e}_{i,j}\log(1-\hat{e}_{i,k})+\hat{e}_{i,j}\log \hat{e}_{i,k}].
 \end{equation}
 We note that in practice this is implemented only for the two highest edge weights for each edge. The definition therefore would change to $(i,j)$ and $(i,k)$ being the edges carrying the top two edge weights from the nodes connecting to node $i$.
 
