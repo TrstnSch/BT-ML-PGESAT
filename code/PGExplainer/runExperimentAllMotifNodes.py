@@ -3,21 +3,21 @@ import sys
 import numpy as np
 
 datasets = [
-    "BA-Shapes", "BA-Community" , "Tree-Cycles", "Tree-Grid", "BA-2Motif", "MUTAG"
+    "BA-Shapes", "Tree-Cycles"
 ]
-#
+
 for dataset in datasets:
     testAUCs = []
     individual_aurocs_tests = []
     testInfTimes = []
 
-    print(f"\nRunning experiment on dataset: {dataset}, with hyperparameters specified in configs")
+    print(f"\nRunning AllMotifNodes experiment on dataset: {dataset}, with hyperparameters specified in configs")
 
     for i in range(10):
         mlp, downstreamTask, testAUC, individual_aurocs_test, testInfTime = trainExplainer_trainSplit.trainExplainer(
             dataset=dataset,
             save_model=False,
-            wandb_project=f"Final-Replication-Inductive-{dataset}",
+            wandb_project=f"Experiment-AllMotifNodes-{dataset}",
             runSeed=i
         )
         testAUCs.append(testAUC)

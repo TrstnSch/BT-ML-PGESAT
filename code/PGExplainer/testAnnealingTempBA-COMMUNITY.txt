@@ -1,0 +1,211 @@
+
+Running experiment on dataset: BA-Community, with hyperparameters specified in configs
+MLP weights initialized:0.0006235064356587827, 0.04309038072824478
+tensor(975880)
+Epoch 1, Loss: 0.11222361028194427
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.2801250990265554
+roc_auc_score: 0.28012509902655536
+Mean individual BinaryAUROC: 0.3874836564064026
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.37995009259794393
+roc_auc_score: 0.379950092597944
+Mean individual BinaryAUROC: 0.45599350333213806
+tensor(980467)
+Epoch 2, Loss: 0.10504141449928284
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.7170974095738332
+roc_auc_score: 0.7170974095738332
+Mean individual BinaryAUROC: 0.7523012757301331
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.6871277173567121
+roc_auc_score: 0.6871277173567121
+Mean individual BinaryAUROC: 0.74590003490448
+tensor(983406)
+Epoch 3, Loss: 0.09300188720226288
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.7903645126808252
+roc_auc_score: 0.7903645126808252
+Mean individual BinaryAUROC: 0.8085540533065796
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7177791411280285
+roc_auc_score: 0.7177791411280285
+Mean individual BinaryAUROC: 0.7745455503463745
+tensor(982409)
+Epoch 4, Loss: 0.08467195928096771
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.801582322267681
+roc_auc_score: 0.8015823222676809
+Mean individual BinaryAUROC: 0.825283408164978
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.71811476407423
+roc_auc_score: 0.71811476407423
+Mean individual BinaryAUROC: 0.7758969664573669
+tensor(981623)
+Epoch 5, Loss: 0.07249543815851212
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8042923263915266
+roc_auc_score: 0.8042923263915267
+Mean individual BinaryAUROC: 0.8275852203369141
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7160092172131146
+roc_auc_score: 0.7160092172131147
+Mean individual BinaryAUROC: 0.7746593356132507
+tensor(982569)
+Epoch 6, Loss: 0.06216811016201973
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8040176294399166
+roc_auc_score: 0.8040176294399166
+Mean individual BinaryAUROC: 0.8252342939376831
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7132983417950882
+roc_auc_score: 0.7132983417950881
+Mean individual BinaryAUROC: 0.7741439342498779
+tensor(983743)
+Epoch 7, Loss: 0.053202904760837555
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.803263060653087
+roc_auc_score: 0.803263060653087
+Mean individual BinaryAUROC: 0.8262874484062195
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.710606085557421
+roc_auc_score: 0.7106060855574209
+Mean individual BinaryAUROC: 0.7722992300987244
+tensor(985751)
+Epoch 8, Loss: 0.043969906866550446
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8025580051439548
+roc_auc_score: 0.8025580051439548
+Mean individual BinaryAUROC: 0.8249334096908569
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7082912127636978
+roc_auc_score: 0.7082912127636979
+Mean individual BinaryAUROC: 0.7709383368492126
+tensor(987721)
+Epoch 9, Loss: 0.0428537055850029
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8020572766883349
+roc_auc_score: 0.8020572766883349
+Mean individual BinaryAUROC: 0.8213082551956177
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.706501565273689
+roc_auc_score: 0.7065015652736891
+Mean individual BinaryAUROC: 0.7699068188667297
+tensor(988938)
+Epoch 10, Loss: 0.03972720354795456
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8018797410659055
+roc_auc_score: 0.8018797410659056
+Mean individual BinaryAUROC: 0.8216259479522705
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7053850757819984
+roc_auc_score: 0.7053850757819984
+Mean individual BinaryAUROC: 0.7694897055625916
+tensor(989704)
+Epoch 11, Loss: 0.03870365768671036
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8019794458853788
+roc_auc_score: 0.8019794458853787
+Mean individual BinaryAUROC: 0.8204169869422913
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7047873551324909
+roc_auc_score: 0.7047873551324908
+Mean individual BinaryAUROC: 0.768491268157959
+tensor(990165)
+Epoch 12, Loss: 0.03872288390994072
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.802160203262179
+roc_auc_score: 0.802160203262179
+Mean individual BinaryAUROC: 0.8197098970413208
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7044857377418262
+roc_auc_score: 0.7044857377418262
+Mean individual BinaryAUROC: 0.7682845592498779
+tensor(990418)
+Epoch 13, Loss: 0.039533428847789764
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8024067522545498
+roc_auc_score: 0.8024067522545499
+Mean individual BinaryAUROC: 0.8210005164146423
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7043076465755961
+roc_auc_score: 0.704307646575596
+Mean individual BinaryAUROC: 0.768554151058197
+tensor(990513)
+Epoch 14, Loss: 0.03949199616909027
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8026205750051548
+roc_auc_score: 0.8026205750051549
+Mean individual BinaryAUROC: 0.8206328749656677
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7041929215276699
+roc_auc_score: 0.7041929215276699
+Mean individual BinaryAUROC: 0.7679096460342407
+tensor(990551)
+Epoch 15, Loss: 0.03926794230937958
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.802864580507233
+roc_auc_score: 0.802864580507233
+Mean individual BinaryAUROC: 0.8225889801979065
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.704143562271356
+roc_auc_score: 0.7041435622713559
+Mean individual BinaryAUROC: 0.7678682208061218
+tensor(990563)
+Epoch 16, Loss: 0.03935229778289795
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8030990903122185
+roc_auc_score: 0.8030990903122184
+Mean individual BinaryAUROC: 0.8214401006698608
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7041219657996266
+roc_auc_score: 0.7041219657996267
+Mean individual BinaryAUROC: 0.7679489254951477
+tensor(990576)
+Epoch 17, Loss: 0.03935444727540016
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8033040956298089
+roc_auc_score: 0.8033040956298089
+Mean individual BinaryAUROC: 0.8209015727043152
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7041178135368159
+roc_auc_score: 0.704117813536816
+Mean individual BinaryAUROC: 0.7680736780166626
+tensor(990584)
+Epoch 18, Loss: 0.03934580460190773
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.803511644437692
+roc_auc_score: 0.803511644437692
+Mean individual BinaryAUROC: 0.8204230666160583
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7041285215913353
+roc_auc_score: 0.7041285215913353
+Mean individual BinaryAUROC: 0.7678179144859314
+tensor(990588)
+Epoch 19, Loss: 0.03934450075030327
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8037149540950872
+roc_auc_score: 0.8037149540950872
+Mean individual BinaryAUROC: 0.82075035572052
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7041466219022152
+roc_auc_score: 0.7041466219022153
+Mean individual BinaryAUROC: 0.7680788636207581
+tensor(990597)
+Epoch 20, Loss: 0.03934479132294655
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8038823157563458
+roc_auc_score: 0.8038823157563458
+Mean individual BinaryAUROC: 0.8205814361572266
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7041738932638169
+roc_auc_score: 0.704173893263817
+Mean individual BinaryAUROC: 0.7679886221885681
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.6681352608282715
+roc_auc_score: 0.6681352608282713
+Mean individual BinaryAUROC: 0.7567815780639648
+Results for BA-Community:
+  Test AUC      - Mean: 0.6681, Std: 0.0000
+  Individual AUROCs - Mean: 0.7568, Std: 0.0000
+  Inference Time    - Mean: 0.0251s, Std: 0.0000s

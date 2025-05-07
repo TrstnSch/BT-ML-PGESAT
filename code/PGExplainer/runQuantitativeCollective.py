@@ -17,7 +17,7 @@ for dataset in datasets:
         mlp, downstreamTask, testAUC, individual_aurocs_test, testInfTime = trainExplainer_trainSplit.trainExplainer(
             dataset=dataset,
             save_model=False,
-            wandb_project=f"Final-Replication-Inductive-{dataset}",
+            wandb_project=f"Final-Replication-Collective-{dataset}",
             runSeed=i
         )
         testAUCs.append(testAUC)

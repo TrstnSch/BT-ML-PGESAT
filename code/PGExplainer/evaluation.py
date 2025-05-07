@@ -97,7 +97,7 @@ def evaluateExplainerAUC (mlp, modelGraphGNN, dataset, num_explanation_edges=5):
         reals.append(groundTruthMask.flatten().numpy())
         preds.append(edge_ij.cpu().flatten().numpy())
         
-        # TODO: SKIP GROUND TRUTHS THAT ARE ALL 0 OR ALL 1?
+        # SKIP GROUND TRUTHS THAT ARE ALL 0 OR ALL 1!
         if len(torch.unique(groundTruthMask)) == 1:
             print("AUC not computable")
         else:

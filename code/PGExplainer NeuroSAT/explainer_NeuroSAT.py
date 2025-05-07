@@ -226,25 +226,31 @@ class MLP_SAT(nn.Module):
     Args:
         nn (_type_): _description_
     """
-    def __init__(self, GraphTask=True, hidden_dim=64, emb_dim=128):
+    def __init__(self, GraphTask=True, hidden_dim=64, emb_dim=128, complex_architecture=True, three_embs=True):
         super(MLP_SAT, self).__init__()
         
         self.graphTask = GraphTask
+        self.three_embs = three_embs
         
         # emb*dim * 2 for both nodes per edge; * 3 since we take embeddings from 3 iterations
-        self.inputSize = 2 * emb_dim * 3
+        self.inputSize = 2 * emb_dim * 3 if three_embs else 2 * emb_dim
 
-        self.model = nn.Sequential(
-            nn.Linear(self.inputSize, 256),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
-            nn.ReLU(),
-            nn.Linear(256, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, 20),
-            nn.ReLU(),
-            nn.Linear(20, 1)                        # Linear Fully connected (20, 1)
-        )
-        
-        """"""
+        if complex_architecture:
+            self.model = nn.Sequential(
+                nn.Linear(self.inputSize, 256),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
+                nn.ReLU(),
+                nn.Linear(256, hidden_dim),
+                nn.ReLU(),
+                nn.Linear(hidden_dim, 20),
+                nn.ReLU(),
+                nn.Linear(20, 1)                        # Linear Fully connected (20, 1)
+            )
+        else:
+            self.model = nn.Sequential(
+                nn.Linear(self.inputSize, hidden_dim),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
+                nn.ReLU(),
+                nn.Linear(hidden_dim, 1)                        # Linear Fully connected (20, 1)
+            )
             
         self.init_weights()
 
@@ -391,15 +397,19 @@ class MLP_SAT(nn.Module):
         
         iterations = downstreamTask.opts['iterations']
         
-        l_emb_interm1 = all_l_emb[math.floor(iterations * 0.5)]           # Shape: (n_literals, emb_dim=128)
-        c_emb_interm1 = all_c_emb[math.floor(iterations * 0.5)]           # Shape: (n_clauses, emb_dim=128)
-        
-        l_emb_interm2 = all_l_emb[math.floor(iterations * 0.75)]           # Shape: (n_literals, emb_dim=128)
-        c_emb_interm2 = all_c_emb[math.floor(iterations * 0.75)]           # Shape: (n_clauses, emb_dim=128)
-        
-        l_embs_cat = torch.cat([l_emb, l_emb_interm1, l_emb_interm2], dim=1)
-        c_embs_cat = torch.cat([c_emb, c_emb_interm1, c_emb_interm2], dim=1)
-        
+        # Use concatenation of embeddings from middel, 3/4 and last iteration if wanted, or just last
+        if self.three_embs:
+            l_emb_interm1 = all_l_emb[math.floor(iterations * 0.5)]           # Shape: (n_literals, emb_dim=128)
+            c_emb_interm1 = all_c_emb[math.floor(iterations * 0.5)]           # Shape: (n_clauses, emb_dim=128)
+            
+            l_emb_interm2 = all_l_emb[math.floor(iterations * 0.75)]           # Shape: (n_literals, emb_dim=128)
+            c_emb_interm2 = all_c_emb[math.floor(iterations * 0.75)]           # Shape: (n_clauses, emb_dim=128)
+            
+            l_embs_cat = torch.cat([l_emb, l_emb_interm1, l_emb_interm2], dim=1)
+            c_embs_cat = torch.cat([c_emb, c_emb_interm1, c_emb_interm2], dim=1)
+        else:
+            l_embs_cat = l_emb
+            c_embs_cat = c_emb
         # This does not grant larger edge weights
         """l_emb = F.normalize(all_l_emb[-1], p=2, dim=1)  # L2 normalization
         c_emb = F.normalize(all_c_emb[-1], p=2, dim=1)  # L2 normalization"""

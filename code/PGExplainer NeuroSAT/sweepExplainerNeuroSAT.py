@@ -15,14 +15,14 @@ datasetType = ['BA-2Motif','MUTAG', 'BA-Shapes', 'BA-Community', 'Tree-Cycles', 
 
 
 def trainExplainer () :
-    # HRADCODED STUFF FOR SWEEPING
+    # HARDCODED STUFF FOR SWEEPING
     dataset="NeuroSAT"
     
     opts = {
-        'out_dir': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/data/dataset_train_10',
-        'logging': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/log/dataset_train_10.log',
-        'reals_dir': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/data/dataset_train_8_size500_reals',
-        'gt_edges_per_problem': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/data/dataset_train_8_size500_gt_edges_per_problem',
+        'out_dir': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/data/dataset_train_8_size4000',
+        'logging': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/log/dataset_train_8_size4000.log',
+        'reals_dir': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/data/dataset_train_8_size4000_reals',
+        'gt_edges_per_problem': '/Users/trist/Documents/Bachelor-Thesis/NeuroSAT/test/files/data/dataset_train_8_size4000_gt_edges_per_problem',
         'n_pairs': 100,  # Anzahl der zu generierenden Paare
         'min_n': 8,
         'max_n': 8,
@@ -45,22 +45,25 @@ def trainExplainer () :
 
     # Config for sweep
     # This works, BUT cannot pass arguments. Dataset therefore has to be hardcoded or passed otherwise?!
-    wandb.init(project="Explainer-NeuroSAT-Sweep", config=wandb.config)
+    wandb.init(project="Explainer-NeuroSAT-SWEEP", config=wandb.config)
     seed.seed_everything(wandb.config.seed)
     
     params = configOG['params']
     graph_task = params['graph_task']
     epochs = wandb.config.epochs
-    t0 = params['t0']
+    t0 = wandb.config.t0
     tT = wandb.config.tT
-    sampled_graphs = params['sampled_graphs']
+    sampled_graphs = wandb.config.sampled_graphs
     coefficient_size_reg = wandb.config.size_reg
     coefficient_entropy_reg = wandb.config.entropy_reg
-    #coefficient_L2_reg = params['coefficient_L2_reg']
+    coefficient_L2_reg = wandb.config.L2_reg
     coefficient_consistency = wandb.config.consistency_reg
     bce = bool(wandb.config.bce_loss)
     #num_explanation_edges = params['num_explanation_edges']
     lr_mlp = wandb.config.lr_mlp
+    #num_training_instances = wandb.config.num_training_instances
+    complex_architecture = bool(wandb.config.complex_architecture)
+    three_embs = bool(wandb.config.three_embs)
 
     hidden_dim = 64 # Make loading possible
     clip_grad_norm = 2 # Make loading possible
@@ -73,20 +76,21 @@ def trainExplainer () :
     # TODO: !!! each data consist of multiple problems !!! -> Extract singular problems for calculating the loss!
     dataset = data
     
-    eval_problem = data[-1]
+    eval_problem = data[-2]
+    test_problem = data[-1]
     
     with open(opts['reals_dir'], 'rb') as file:
         reals = pickle.load(file)
         
-    #with open(opts['gt_edges_per_problem'], 'rb') as file:
-    #    gt_edges_per_problem = pickle.load(file)
+    """with open(opts['gt_edges_per_problem'], 'rb') as file:
+        gt_edges_per_problem = pickle.load(file)"""
     
 
     downstreamTask = NeuroSAT.NeuroSAT(opts=opts,device=device)
     checkpoint = torch.load(f"models/neurosat_sr10to40_ep1024_nr26_d128_last.pth.tar", weights_only=True, map_location=device)
     downstreamTask.load_state_dict(checkpoint['state_dict'])
 
-    mlp = explainer_NeuroSAT.MLP_SAT(GraphTask=graph_task).to(device)
+    mlp = explainer_NeuroSAT.MLP_SAT(GraphTask=graph_task, complex_architecture=complex_architecture, three_embs=three_embs).to(device)
     wandb.watch(mlp, log= "all", log_freq=2, log_graph=False)
 
     mlp_optimizer = torch.optim.Adam(params = mlp.parameters(), lr = lr_mlp)
@@ -105,15 +109,15 @@ def trainExplainer () :
         temperature = t0*((tT/t0) ** ((epoch+1)/epochs))
 
         for index, content in enumerate(training_iterator):
-            # stop training before last batch, used for evaluation
-            if index == len(training_iterator)-2: break
+            # stop training before second to last batch, used for evaluation
+            if index == len(training_iterator)-3: break
             node_to_predict = None
             if graph_task: 
                 # !! current_problem is really a batch of problems !!
                 current_problem = content
 
             # MLP forward
-            w_ij = mlp.forward(downstreamTask, current_problem, nodeToPred=node_to_predict)
+            w_ij, unique_clauses, inverse_indices = mlp.forward(downstreamTask, current_problem, nodeToPred=node_to_predict)
 
             sampleLoss = torch.FloatTensor([0]).to(device)
             loss = torch.FloatTensor([0]).to(device)
@@ -124,7 +128,7 @@ def trainExplainer () :
             #pOriginal = torch.tensor([1 - pOriginal, pOriginal])
             
             for k in range(0, sampled_graphs):
-                edge_ij = mlp.sampleGraph(w_ij, temperature)
+                edge_ij = mlp.sampleGraph(w_ij, unique_clauses, inverse_indices, temperature)
                 
                 #sampledEdges += torch.sum(edge_ij)
             
@@ -157,13 +161,9 @@ def trainExplainer () :
 
         mlp.eval()
         
-        """if graph_task:
-            #TODO: Evaluation for SAT! Needs gt
-            meanAuc = evaluation.evaluateNeuroSATAUC(mlp, downstreamTask, data)"""
-        
         # Calculate weights and prediction for all sub_problems in eval_problem
-        w_ij_eval = mlp.forward(downstreamTask, eval_problem, nodeToPred=node_to_predict)
-        edge_ij_eval = mlp.sampleGraph(w_ij_eval, temperature).detach()
+        w_ij_eval, unique_clauses_eval, inverse_indices_eval = mlp.forward(downstreamTask, eval_problem, nodeToPred=node_to_predict)
+        edge_ij_eval = mlp.sampleGraph(w_ij_eval, unique_clauses_eval, inverse_indices_eval, temperature).detach()
         #pSample_eval, _, _, _ = downstreamTask.forward(eval_problem, edge_weights=edge_ij_eval)
         #pOriginal_eval, _, _, _ = downstreamTask.forward(eval_problem)
         
@@ -218,10 +218,6 @@ def trainExplainer () :
         print(f"mean auroc score: {mean_auroc}")
         
         wandb.log({"train/Loss": loss, "val/temperature": temperature, "val/auroc": mean_auroc})
-
-        """for name, param in mlp.named_parameters():
-            if param.requires_grad:
-                print(f"{name}: {param.grad}")"""
                 
     wandb.finish()
     

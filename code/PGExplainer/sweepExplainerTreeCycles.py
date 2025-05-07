@@ -100,7 +100,7 @@ def trainExplainer () :
             num_val = remaining // 2
             num_test = remaining - num_val  # In case of odd number
             
-        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [0.08, 0.46, 0.46], generator1)
+        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [num_training_instances, num_val, num_test], generator1)
     
     # TODO: Instead of loading static one, pass model as argument?
     downstreamTask = networks.GraphGNN(features = data[0].x.shape[1], labels=labels) if graph_task else networks.NodeGNN(features = 10, labels=labels)

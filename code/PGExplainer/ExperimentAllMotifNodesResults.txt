@@ -1,0 +1,5252 @@
+
+Running AllMotifNodes experiment on dataset: BA-Shapes, with hyperparameters specified in configs
+MLP weights initialized:0.0007509115384891629, 0.0430612675845623
+tensor(42205)
+Epoch 1, Loss: 0.050948262214660645
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8928012754948559
+roc_auc_score: 0.8928012754948559
+Mean individual BinaryAUROC: 0.9285746216773987
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8922948193096282
+roc_auc_score: 0.8922948193096283
+Mean individual BinaryAUROC: 0.9477541446685791
+tensor(42154)
+Epoch 2, Loss: 0.04644672945141792
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8770581393016866
+roc_auc_score: 0.8770581393016866
+Mean individual BinaryAUROC: 0.9530741572380066
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8843954018816598
+roc_auc_score: 0.8843954018816598
+Mean individual BinaryAUROC: 0.9588443040847778
+tensor(42021)
+Epoch 3, Loss: 0.04275830462574959
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.871939113170086
+roc_auc_score: 0.871939113170086
+Mean individual BinaryAUROC: 0.9529423117637634
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8817050710666025
+roc_auc_score: 0.8817050710666025
+Mean individual BinaryAUROC: 0.9615545272827148
+tensor(41921)
+Epoch 4, Loss: 0.036919377744197845
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8752582074885186
+roc_auc_score: 0.8752582074885186
+Mean individual BinaryAUROC: 0.9555978775024414
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8842862387163517
+roc_auc_score: 0.8842862387163517
+Mean individual BinaryAUROC: 0.9612284302711487
+tensor(41917)
+Epoch 5, Loss: 0.03162766993045807
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8789700445888401
+roc_auc_score: 0.8789700445888401
+Mean individual BinaryAUROC: 0.9556752443313599
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8871376658059512
+roc_auc_score: 0.8871376658059511
+Mean individual BinaryAUROC: 0.9608869552612305
+tensor(41989)
+Epoch 6, Loss: 0.02835918217897415
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8830445420452039
+roc_auc_score: 0.8830445420452039
+Mean individual BinaryAUROC: 0.9557002186775208
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8903549276805545
+roc_auc_score: 0.8903549276805546
+Mean individual BinaryAUROC: 0.9618831872940063
+tensor(41999)
+Epoch 7, Loss: 0.02653961069881916
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.88607116833457
+roc_auc_score: 0.8860711683345701
+Mean individual BinaryAUROC: 0.9536211490631104
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8929086893879585
+roc_auc_score: 0.8929086893879585
+Mean individual BinaryAUROC: 0.9618471264839172
+tensor(42000)
+Epoch 8, Loss: 0.023393746465444565
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8884409949929474
+roc_auc_score: 0.8884409949929473
+Mean individual BinaryAUROC: 0.9545787572860718
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8948911868937874
+roc_auc_score: 0.8948911868937874
+Mean individual BinaryAUROC: 0.96229088306427
+tensor(42000)
+Epoch 9, Loss: 0.025947732850909233
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.890067117234556
+roc_auc_score: 0.890067117234556
+Mean individual BinaryAUROC: 0.9556173086166382
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8959546641229039
+roc_auc_score: 0.895954664122904
+Mean individual BinaryAUROC: 0.9627395272254944
+tensor(42000)
+Epoch 10, Loss: 0.024881239980459213
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8919188576700159
+roc_auc_score: 0.8919188576700158
+Mean individual BinaryAUROC: 0.9558588862419128
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8974967665594074
+roc_auc_score: 0.8974967665594072
+Mean individual BinaryAUROC: 0.9631719589233398
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8752497211000188
+roc_auc_score: 0.8752497211000189
+Mean individual BinaryAUROC: 0.9633498787879944
+MLP weights initialized:0.00033985060872510076, 0.04295245558023453
+tensor(42178)
+Epoch 1, Loss: 0.04626116529107094
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8825314695599276
+roc_auc_score: 0.8825314695599276
+Mean individual BinaryAUROC: 0.9518977999687195
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9085827005401044
+roc_auc_score: 0.9085827005401043
+Mean individual BinaryAUROC: 0.9637272357940674
+tensor(42106)
+Epoch 2, Loss: 0.046342771500349045
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8819014098630247
+roc_auc_score: 0.8819014098630246
+Mean individual BinaryAUROC: 0.9507129788398743
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8988993059617828
+roc_auc_score: 0.8988993059617827
+Mean individual BinaryAUROC: 0.9631564617156982
+tensor(42017)
+Epoch 3, Loss: 0.044166821986436844
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8774107721824466
+roc_auc_score: 0.8774107721824466
+Mean individual BinaryAUROC: 0.957341730594635
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8902268221727431
+roc_auc_score: 0.8902268221727431
+Mean individual BinaryAUROC: 0.9647645354270935
+tensor(41910)
+Epoch 4, Loss: 0.037193894386291504
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8714026432424844
+roc_auc_score: 0.8714026432424845
+Mean individual BinaryAUROC: 0.9575353860855103
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8828686721060937
+roc_auc_score: 0.8828686721060937
+Mean individual BinaryAUROC: 0.9648700952529907
+tensor(41928)
+Epoch 5, Loss: 0.031836800277233124
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8657722158714879
+roc_auc_score: 0.8657722158714879
+Mean individual BinaryAUROC: 0.9569050073623657
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8766226505737745
+roc_auc_score: 0.8766226505737744
+Mean individual BinaryAUROC: 0.9646865129470825
+tensor(41993)
+Epoch 6, Loss: 0.02775394357740879
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8631984972157044
+roc_auc_score: 0.8631984972157043
+Mean individual BinaryAUROC: 0.955137312412262
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8733023861133399
+roc_auc_score: 0.8733023861133398
+Mean individual BinaryAUROC: 0.9639706015586853
+tensor(41999)
+Epoch 7, Loss: 0.024959849193692207
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8622191471298023
+roc_auc_score: 0.8622191471298023
+Mean individual BinaryAUROC: 0.9545843601226807
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8716977566739227
+roc_auc_score: 0.8716977566739228
+Mean individual BinaryAUROC: 0.9634823203086853
+tensor(42000)
+Epoch 8, Loss: 0.024341797456145287
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8637642139462126
+roc_auc_score: 0.8637642139462125
+Mean individual BinaryAUROC: 0.9525417685508728
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8725197046422443
+roc_auc_score: 0.8725197046422442
+Mean individual BinaryAUROC: 0.9630925059318542
+tensor(42000)
+Epoch 9, Loss: 0.02722984366118908
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8650920187981737
+roc_auc_score: 0.8650920187981738
+Mean individual BinaryAUROC: 0.9520612955093384
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8732626590120411
+roc_auc_score: 0.873262659012041
+Mean individual BinaryAUROC: 0.962744951248169
+tensor(42000)
+Epoch 10, Loss: 0.025476140901446342
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.866681373630414
+roc_auc_score: 0.866681373630414
+Mean individual BinaryAUROC: 0.9522148966789246
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.874108961420724
+roc_auc_score: 0.8741089614207239
+Mean individual BinaryAUROC: 0.9626763463020325
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8468431672726804
+roc_auc_score: 0.8468431672726804
+Mean individual BinaryAUROC: 0.9587423801422119
+MLP weights initialized:0.0006133766728453338, 0.04298768192529678
+tensor(42193)
+Epoch 1, Loss: 0.05552356317639351
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.7202401246080928
+roc_auc_score: 0.7202401246080928
+Mean individual BinaryAUROC: 0.8260466456413269
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.6775763428220843
+roc_auc_score: 0.6775763428220842
+Mean individual BinaryAUROC: 0.8224864602088928
+tensor(42195)
+Epoch 2, Loss: 0.04803420603275299
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8144281999344871
+roc_auc_score: 0.8144281999344871
+Mean individual BinaryAUROC: 0.8788508176803589
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8125476149460494
+roc_auc_score: 0.8125476149460493
+Mean individual BinaryAUROC: 0.8975887894630432
+tensor(42108)
+Epoch 3, Loss: 0.045552387833595276
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8434493846472668
+roc_auc_score: 0.8434493846472668
+Mean individual BinaryAUROC: 0.8989489078521729
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.849459849603558
+roc_auc_score: 0.8494598496035581
+Mean individual BinaryAUROC: 0.9104614853858948
+tensor(42027)
+Epoch 4, Loss: 0.043157752603292465
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8621188723769796
+roc_auc_score: 0.8621188723769796
+Mean individual BinaryAUROC: 0.907514214515686
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8697293651678303
+roc_auc_score: 0.8697293651678304
+Mean individual BinaryAUROC: 0.9241018891334534
+tensor(41907)
+Epoch 5, Loss: 0.03699193522334099
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8717661392214668
+roc_auc_score: 0.8717661392214668
+Mean individual BinaryAUROC: 0.9417169094085693
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8786658902417342
+roc_auc_score: 0.8786658902417342
+Mean individual BinaryAUROC: 0.9525208473205566
+tensor(41921)
+Epoch 6, Loss: 0.031146029010415077
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8764347645883053
+roc_auc_score: 0.8764347645883054
+Mean individual BinaryAUROC: 0.9475166201591492
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8825469401610825
+roc_auc_score: 0.8825469401610825
+Mean individual BinaryAUROC: 0.9557318687438965
+tensor(41992)
+Epoch 7, Loss: 0.025281937792897224
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.879220731470897
+roc_auc_score: 0.879220731470897
+Mean individual BinaryAUROC: 0.9491965174674988
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.885056656604003
+roc_auc_score: 0.885056656604003
+Mean individual BinaryAUROC: 0.9571363925933838
+tensor(42000)
+Epoch 8, Loss: 0.025334199890494347
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8822757689402295
+roc_auc_score: 0.8822757689402294
+Mean individual BinaryAUROC: 0.951801598072052
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8875492731207123
+roc_auc_score: 0.8875492731207124
+Mean individual BinaryAUROC: 0.9580910205841064
+tensor(42000)
+Epoch 9, Loss: 0.024797191843390465
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8843765250118658
+roc_auc_score: 0.8843765250118659
+Mean individual BinaryAUROC: 0.95307856798172
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.88929726557786
+roc_auc_score: 0.88929726557786
+Mean individual BinaryAUROC: 0.9588344097137451
+tensor(42000)
+Epoch 10, Loss: 0.025575418025255203
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8859675510899866
+roc_auc_score: 0.8859675510899866
+Mean individual BinaryAUROC: 0.9541032910346985
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8906547233565877
+roc_auc_score: 0.8906547233565877
+Mean individual BinaryAUROC: 0.9593654870986938
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.864584595364699
+roc_auc_score: 0.8645845953646991
+Mean individual BinaryAUROC: 0.9571154713630676
+MLP weights initialized:0.0003758765815291554, 0.04315098002552986
+tensor(42211)
+Epoch 1, Loss: 0.05340074747800827
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.7603884643924352
+roc_auc_score: 0.7603884643924352
+Mean individual BinaryAUROC: 0.6360607743263245
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.7310794786146135
+roc_auc_score: 0.7310794786146135
+Mean individual BinaryAUROC: 0.6546640992164612
+tensor(42173)
+Epoch 2, Loss: 0.04835819825530052
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.809972658417397
+roc_auc_score: 0.809972658417397
+Mean individual BinaryAUROC: 0.9129911661148071
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8127517201259107
+roc_auc_score: 0.8127517201259107
+Mean individual BinaryAUROC: 0.9380497932434082
+tensor(42068)
+Epoch 3, Loss: 0.03991062566637993
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8177723629411253
+roc_auc_score: 0.8177723629411254
+Mean individual BinaryAUROC: 0.9415050148963928
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8290112742058956
+roc_auc_score: 0.8290112742058956
+Mean individual BinaryAUROC: 0.9573620557785034
+tensor(41951)
+Epoch 4, Loss: 0.036884598433971405
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8209209901797592
+roc_auc_score: 0.8209209901797592
+Mean individual BinaryAUROC: 0.9457723498344421
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8335403940559966
+roc_auc_score: 0.8335403940559967
+Mean individual BinaryAUROC: 0.959660530090332
+tensor(41903)
+Epoch 5, Loss: 0.03243665769696236
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8259096591326902
+roc_auc_score: 0.8259096591326902
+Mean individual BinaryAUROC: 0.9439516663551331
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8376239946164596
+roc_auc_score: 0.8376239946164596
+Mean individual BinaryAUROC: 0.9579934477806091
+tensor(41965)
+Epoch 6, Loss: 0.02957669459283352
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8316253200435861
+roc_auc_score: 0.8316253200435861
+Mean individual BinaryAUROC: 0.9433520436286926
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8419936878817832
+roc_auc_score: 0.8419936878817832
+Mean individual BinaryAUROC: 0.9576364159584045
+tensor(42000)
+Epoch 7, Loss: 0.027623916044831276
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8370794309742027
+roc_auc_score: 0.8370794309742027
+Mean individual BinaryAUROC: 0.9441923499107361
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8460113644842938
+roc_auc_score: 0.8460113644842938
+Mean individual BinaryAUROC: 0.9581359624862671
+tensor(41999)
+Epoch 8, Loss: 0.026386776939034462
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8413636697885539
+roc_auc_score: 0.8413636697885539
+Mean individual BinaryAUROC: 0.9451286792755127
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8493554652055078
+roc_auc_score: 0.8493554652055078
+Mean individual BinaryAUROC: 0.9587581157684326
+tensor(42000)
+Epoch 9, Loss: 0.028475012630224228
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.844627612992934
+roc_auc_score: 0.844627612992934
+Mean individual BinaryAUROC: 0.9472038745880127
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8519153874923885
+roc_auc_score: 0.8519153874923886
+Mean individual BinaryAUROC: 0.9590890407562256
+tensor(42000)
+Epoch 10, Loss: 0.02533135563135147
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.847538923316554
+roc_auc_score: 0.847538923316554
+Mean individual BinaryAUROC: 0.947409987449646
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.85426314402813
+roc_auc_score: 0.85426314402813
+Mean individual BinaryAUROC: 0.959446907043457
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8226432891914741
+roc_auc_score: 0.8226432891914741
+Mean individual BinaryAUROC: 0.953437864780426
+MLP weights initialized:-0.00027659101760946214, 0.0431351363658905
+tensor(42205)
+Epoch 1, Loss: 0.050627682358026505
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8638085019620426
+roc_auc_score: 0.8638085019620426
+Mean individual BinaryAUROC: 0.9361284375190735
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.846920366622418
+roc_auc_score: 0.846920366622418
+Mean individual BinaryAUROC: 0.9514393210411072
+tensor(42161)
+Epoch 2, Loss: 0.04609161242842674
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8818863686501013
+roc_auc_score: 0.8818863686501013
+Mean individual BinaryAUROC: 0.9529469609260559
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8708131665516692
+roc_auc_score: 0.8708131665516692
+Mean individual BinaryAUROC: 0.9629525542259216
+tensor(42106)
+Epoch 3, Loss: 0.044411469250917435
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8765250118658457
+roc_auc_score: 0.8765250118658456
+Mean individual BinaryAUROC: 0.9542112946510315
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8687817298630809
+roc_auc_score: 0.8687817298630807
+Mean individual BinaryAUROC: 0.9640322327613831
+tensor(41998)
+Epoch 4, Loss: 0.04266078397631645
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8734549331835897
+roc_auc_score: 0.8734549331835897
+Mean individual BinaryAUROC: 0.9575216174125671
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8682701138889631
+roc_auc_score: 0.868270113888963
+Mean individual BinaryAUROC: 0.963192880153656
+tensor(41899)
+Epoch 5, Loss: 0.03369234502315521
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8719107019901196
+roc_auc_score: 0.8719107019901196
+Mean individual BinaryAUROC: 0.9558320641517639
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8684177950698783
+roc_auc_score: 0.8684177950698783
+Mean individual BinaryAUROC: 0.9634872078895569
+tensor(41958)
+Epoch 6, Loss: 0.02884567715227604
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8712706148179344
+roc_auc_score: 0.8712706148179346
+Mean individual BinaryAUROC: 0.955632209777832
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8686976696197529
+roc_auc_score: 0.8686976696197529
+Mean individual BinaryAUROC: 0.9632771611213684
+tensor(41992)
+Epoch 7, Loss: 0.026220597326755524
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.872380322082506
+roc_auc_score: 0.872380322082506
+Mean individual BinaryAUROC: 0.9551549553871155
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8707357850674002
+roc_auc_score: 0.8707357850674002
+Mean individual BinaryAUROC: 0.9632174968719482
+tensor(42000)
+Epoch 8, Loss: 0.028582341969013214
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8731841913509684
+roc_auc_score: 0.8731841913509684
+Mean individual BinaryAUROC: 0.9572227597236633
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8722227877416674
+roc_auc_score: 0.8722227877416674
+Mean individual BinaryAUROC: 0.9636549353599548
+tensor(42000)
+Epoch 9, Loss: 0.022471288219094276
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8744543382200562
+roc_auc_score: 0.8744543382200564
+Mean individual BinaryAUROC: 0.9574021697044373
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8741424127915278
+roc_auc_score: 0.8741424127915278
+Mean individual BinaryAUROC: 0.9635233283042908
+tensor(42000)
+Epoch 10, Loss: 0.024516386911273003
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8768141374031513
+roc_auc_score: 0.8768141374031513
+Mean individual BinaryAUROC: 0.9578595757484436
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8768704555650645
+roc_auc_score: 0.8768704555650645
+Mean individual BinaryAUROC: 0.9641628861427307
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8492103204211116
+roc_auc_score: 0.8492103204211116
+Mean individual BinaryAUROC: 0.9599993824958801
+MLP weights initialized:-6.385408050846308e-05, 0.043201994150877
+tensor(42193)
+Epoch 1, Loss: 0.05051087215542793
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9415632165466712
+roc_auc_score: 0.9415632165466711
+Mean individual BinaryAUROC: 0.9648367762565613
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9265323261150533
+roc_auc_score: 0.9265323261150533
+Mean individual BinaryAUROC: 0.9697298407554626
+tensor(42087)
+Epoch 2, Loss: 0.04803397133946419
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.930980887632112
+roc_auc_score: 0.930980887632112
+Mean individual BinaryAUROC: 0.9672077894210815
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9214952751234189
+roc_auc_score: 0.9214952751234189
+Mean individual BinaryAUROC: 0.9713262319564819
+tensor(41962)
+Epoch 3, Loss: 0.040624070912599564
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9238814351322624
+roc_auc_score: 0.9238814351322624
+Mean individual BinaryAUROC: 0.9684563875198364
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9164836725068193
+roc_auc_score: 0.9164836725068193
+Mean individual BinaryAUROC: 0.9690600633621216
+tensor(41905)
+Epoch 4, Loss: 0.03466351702809334
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9191685217495938
+roc_auc_score: 0.9191685217495938
+Mean individual BinaryAUROC: 0.9614128470420837
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9137922477570884
+roc_auc_score: 0.9137922477570886
+Mean individual BinaryAUROC: 0.9666182994842529
+tensor(41962)
+Epoch 5, Loss: 0.030889876186847687
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9162806088682991
+roc_auc_score: 0.9162806088682992
+Mean individual BinaryAUROC: 0.9613280892372131
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9124659383287994
+roc_auc_score: 0.9124659383287995
+Mean individual BinaryAUROC: 0.9659369587898254
+tensor(41999)
+Epoch 6, Loss: 0.02748934179544449
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9139191384393237
+roc_auc_score: 0.9139191384393237
+Mean individual BinaryAUROC: 0.9615002870559692
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9111163108193133
+roc_auc_score: 0.9111163108193133
+Mean individual BinaryAUROC: 0.9658591747283936
+tensor(42000)
+Epoch 7, Loss: 0.028037499636411667
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9115025168962958
+roc_auc_score: 0.9115025168962958
+Mean individual BinaryAUROC: 0.96136474609375
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9094344726221545
+roc_auc_score: 0.9094344726221545
+Mean individual BinaryAUROC: 0.9656508564949036
+tensor(42000)
+Epoch 8, Loss: 0.024941494688391685
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9101722051755142
+roc_auc_score: 0.9101722051755142
+Mean individual BinaryAUROC: 0.9609390497207642
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9083658711727256
+roc_auc_score: 0.9083658711727256
+Mean individual BinaryAUROC: 0.9654484391212463
+tensor(42000)
+Epoch 9, Loss: 0.025532344356179237
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9090524704356604
+roc_auc_score: 0.9090524704356603
+Mean individual BinaryAUROC: 0.9606297612190247
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9075685655223112
+roc_auc_score: 0.9075685655223112
+Mean individual BinaryAUROC: 0.9656016230583191
+tensor(42000)
+Epoch 10, Loss: 0.025085488334298134
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.908574494113872
+roc_auc_score: 0.908574494113872
+Mean individual BinaryAUROC: 0.9604734778404236
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9073627906526852
+roc_auc_score: 0.9073627906526852
+Mean individual BinaryAUROC: 0.965510368347168
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8850127718767618
+roc_auc_score: 0.8850127718767618
+Mean individual BinaryAUROC: 0.9644350409507751
+MLP weights initialized:0.0001496636978117749, 0.04303906112909317
+tensor(42172)
+Epoch 1, Loss: 0.047305628657341
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9167970238453362
+roc_auc_score: 0.9167970238453361
+Mean individual BinaryAUROC: 0.9019035696983337
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9163391579789062
+roc_auc_score: 0.9163391579789062
+Mean individual BinaryAUROC: 0.9114485383033752
+tensor(42079)
+Epoch 2, Loss: 0.04426056519150734
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8876053720527579
+roc_auc_score: 0.8876053720527579
+Mean individual BinaryAUROC: 0.9424756169319153
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8919195421411272
+roc_auc_score: 0.8919195421411272
+Mean individual BinaryAUROC: 0.9508960843086243
+tensor(41950)
+Epoch 3, Loss: 0.036415573209524155
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8781828877791816
+roc_auc_score: 0.8781828877791816
+Mean individual BinaryAUROC: 0.9429563879966736
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.883861849638564
+roc_auc_score: 0.883861849638564
+Mean individual BinaryAUROC: 0.9533814787864685
+tensor(41886)
+Epoch 4, Loss: 0.03525098040699959
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8762475850497029
+roc_auc_score: 0.8762475850497029
+Mean individual BinaryAUROC: 0.9441131949424744
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8818409492681462
+roc_auc_score: 0.8818409492681462
+Mean individual BinaryAUROC: 0.9537597894668579
+tensor(41971)
+Epoch 5, Loss: 0.03140814229846001
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8752281250626717
+roc_auc_score: 0.8752281250626717
+Mean individual BinaryAUROC: 0.9457463622093201
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8806019243116963
+roc_auc_score: 0.8806019243116963
+Mean individual BinaryAUROC: 0.9543834328651428
+tensor(41999)
+Epoch 6, Loss: 0.026677923277020454
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8749431776400671
+roc_auc_score: 0.8749431776400671
+Mean individual BinaryAUROC: 0.946982204914093
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.880135217234699
+roc_auc_score: 0.880135217234699
+Mean individual BinaryAUROC: 0.9551504850387573
+tensor(42000)
+Epoch 7, Loss: 0.02490699477493763
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8753902359130685
+roc_auc_score: 0.8753902359130685
+Mean individual BinaryAUROC: 0.9497106075286865
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8805312791619954
+roc_auc_score: 0.8805312791619955
+Mean individual BinaryAUROC: 0.9570406079292297
+tensor(42000)
+Epoch 8, Loss: 0.025082627311348915
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8762927086884731
+roc_auc_score: 0.8762927086884731
+Mean individual BinaryAUROC: 0.9500691294670105
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8813105061025434
+roc_auc_score: 0.8813105061025434
+Mean individual BinaryAUROC: 0.9576413631439209
+tensor(42000)
+Epoch 9, Loss: 0.025382842868566513
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8770631530393278
+roc_auc_score: 0.8770631530393277
+Mean individual BinaryAUROC: 0.9483458995819092
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8821048754019922
+roc_auc_score: 0.8821048754019922
+Mean individual BinaryAUROC: 0.958071768283844
+tensor(42000)
+Epoch 10, Loss: 0.02550969272851944
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.877721623916197
+roc_auc_score: 0.8777216239161971
+Mean individual BinaryAUROC: 0.9502494931221008
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8825912157276025
+roc_auc_score: 0.8825912157276024
+Mean individual BinaryAUROC: 0.9597765803337097
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8562170230905793
+roc_auc_score: 0.8562170230905793
+Mean individual BinaryAUROC: 0.9579184055328369
+MLP weights initialized:-0.0005136023974046111, 0.043057262897491455
+tensor(42193)
+Epoch 1, Loss: 0.0481899194419384
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9653834840797118
+roc_auc_score: 0.9653834840797118
+Mean individual BinaryAUROC: 0.9082104563713074
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9602249383020844
+roc_auc_score: 0.9602249383020843
+Mean individual BinaryAUROC: 0.9126723408699036
+tensor(42143)
+Epoch 2, Loss: 0.04821491241455078
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9500915842742448
+roc_auc_score: 0.9500915842742448
+Mean individual BinaryAUROC: 0.9378927946090698
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9479918698775069
+roc_auc_score: 0.9479918698775069
+Mean individual BinaryAUROC: 0.9407861828804016
+tensor(42011)
+Epoch 3, Loss: 0.04109342023730278
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9345022027020703
+roc_auc_score: 0.9345022027020704
+Mean individual BinaryAUROC: 0.9338801503181458
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9353701667663107
+roc_auc_score: 0.9353701667663107
+Mean individual BinaryAUROC: 0.9391879439353943
+tensor(41913)
+Epoch 4, Loss: 0.03798422962427139
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9228435914405471
+roc_auc_score: 0.9228435914405471
+Mean individual BinaryAUROC: 0.9302341341972351
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9254282581520011
+roc_auc_score: 0.9254282581520012
+Mean individual BinaryAUROC: 0.9401739835739136
+tensor(41922)
+Epoch 5, Loss: 0.035248029977083206
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9146427879055278
+roc_auc_score: 0.9146427879055278
+Mean individual BinaryAUROC: 0.9582834839820862
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9178781513379166
+roc_auc_score: 0.9178781513379166
+Mean individual BinaryAUROC: 0.964246392250061
+tensor(41982)
+Epoch 6, Loss: 0.030342761427164078
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9092346362366217
+roc_auc_score: 0.9092346362366216
+Mean individual BinaryAUROC: 0.957708477973938
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9128609063214225
+roc_auc_score: 0.9128609063214224
+Mean individual BinaryAUROC: 0.9637899994850159
+tensor(42000)
+Epoch 7, Loss: 0.026231925934553146
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9057952122148019
+roc_auc_score: 0.905795212214802
+Mean individual BinaryAUROC: 0.9593874216079712
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9098825252341941
+roc_auc_score: 0.9098825252341941
+Mean individual BinaryAUROC: 0.9646100997924805
+tensor(42000)
+Epoch 8, Loss: 0.025755800306797028
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9036677162090796
+roc_auc_score: 0.9036677162090796
+Mean individual BinaryAUROC: 0.9593276977539062
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9079737819555591
+roc_auc_score: 0.9079737819555592
+Mean individual BinaryAUROC: 0.9647111892700195
+tensor(42000)
+Epoch 9, Loss: 0.024508919566869736
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9032047811002146
+roc_auc_score: 0.9032047811002146
+Mean individual BinaryAUROC: 0.9592284560203552
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9073509300978047
+roc_auc_score: 0.9073509300978047
+Mean individual BinaryAUROC: 0.9649237990379333
+tensor(42000)
+Epoch 10, Loss: 0.02550950087606907
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9029758204146027
+roc_auc_score: 0.9029758204146027
+Mean individual BinaryAUROC: 0.9599160552024841
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9069338531096762
+roc_auc_score: 0.9069338531096763
+Mean individual BinaryAUROC: 0.9663394689559937
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8836200620859761
+roc_auc_score: 0.8836200620859762
+Mean individual BinaryAUROC: 0.9635833501815796
+MLP weights initialized:-0.0002989085915032774, 0.04316966235637665
+tensor(42201)
+Epoch 1, Loss: 0.047968540340662
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.9263766052316681
+roc_auc_score: 0.9263766052316681
+Mean individual BinaryAUROC: 0.9443563222885132
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.9270715783335529
+roc_auc_score: 0.9270715783335529
+Mean individual BinaryAUROC: 0.9647523164749146
+tensor(42061)
+Epoch 2, Loss: 0.04398190975189209
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8872360267131941
+roc_auc_score: 0.8872360267131942
+Mean individual BinaryAUROC: 0.9530491232872009
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8881150676489202
+roc_auc_score: 0.8881150676489202
+Mean individual BinaryAUROC: 0.9664856791496277
+tensor(41939)
+Epoch 3, Loss: 0.037218306213617325
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8673482007366852
+roc_auc_score: 0.8673482007366852
+Mean individual BinaryAUROC: 0.9513471722602844
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8682324019304838
+roc_auc_score: 0.8682324019304838
+Mean individual BinaryAUROC: 0.962938666343689
+tensor(41907)
+Epoch 4, Loss: 0.03385200351476669
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8587387775839133
+roc_auc_score: 0.8587387775839133
+Mean individual BinaryAUROC: 0.9493703842163086
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8597663839171797
+roc_auc_score: 0.8597663839171796
+Mean individual BinaryAUROC: 0.9617211222648621
+tensor(41993)
+Epoch 5, Loss: 0.027404367923736572
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8562527993368496
+roc_auc_score: 0.8562527993368496
+Mean individual BinaryAUROC: 0.9531608819961548
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8574617514377756
+roc_auc_score: 0.8574617514377756
+Mean individual BinaryAUROC: 0.9617829322814941
+tensor(42000)
+Epoch 6, Loss: 0.026212308555841446
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8564416501213324
+roc_auc_score: 0.8564416501213324
+Mean individual BinaryAUROC: 0.9531028866767883
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8575266966120728
+roc_auc_score: 0.8575266966120727
+Mean individual BinaryAUROC: 0.9607731699943542
+tensor(42000)
+Epoch 7, Loss: 0.023890772834420204
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.859359645428474
+roc_auc_score: 0.859359645428474
+Mean individual BinaryAUROC: 0.9534853100776672
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8605656471349045
+roc_auc_score: 0.8605656471349045
+Mean individual BinaryAUROC: 0.9609315991401672
+tensor(42000)
+Epoch 8, Loss: 0.025134410709142685
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8626219173869737
+roc_auc_score: 0.8626219173869736
+Mean individual BinaryAUROC: 0.954229474067688
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8640420563760961
+roc_auc_score: 0.8640420563760961
+Mean individual BinaryAUROC: 0.9610957503318787
+tensor(42000)
+Epoch 9, Loss: 0.025424566119909286
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8654028705319241
+roc_auc_score: 0.8654028705319241
+Mean individual BinaryAUROC: 0.9547368884086609
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8670079435778435
+roc_auc_score: 0.8670079435778434
+Mean individual BinaryAUROC: 0.9615938663482666
+tensor(42000)
+Epoch 10, Loss: 0.025436794385313988
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8677843959114641
+roc_auc_score: 0.8677843959114641
+Mean individual BinaryAUROC: 0.9552660584449768
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8693767727499261
+roc_auc_score: 0.8693767727499262
+Mean individual BinaryAUROC: 0.9619919657707214
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8424144694790096
+roc_auc_score: 0.8424144694790096
+Mean individual BinaryAUROC: 0.9572206735610962
+MLP weights initialized:5.181735104997642e-05, 0.04282489791512489
+tensor(42195)
+Epoch 1, Loss: 0.04697142541408539
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.868564867737601
+roc_auc_score: 0.8685648677376011
+Mean individual BinaryAUROC: 0.869779646396637
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8959083734135644
+roc_auc_score: 0.8959083734135644
+Mean individual BinaryAUROC: 0.8971906900405884
+tensor(42138)
+Epoch 2, Loss: 0.04733777791261673
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8582231982298164
+roc_auc_score: 0.8582231982298164
+Mean individual BinaryAUROC: 0.8863690495491028
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.877288050732775
+roc_auc_score: 0.8772880507327749
+Mean individual BinaryAUROC: 0.9102211594581604
+tensor(42021)
+Epoch 3, Loss: 0.04154307767748833
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8605178188235766
+roc_auc_score: 0.8605178188235765
+Mean individual BinaryAUROC: 0.8953453302383423
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8770803758713478
+roc_auc_score: 0.8770803758713477
+Mean individual BinaryAUROC: 0.9204075932502747
+tensor(41921)
+Epoch 4, Loss: 0.03648495674133301
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8652307322062451
+roc_auc_score: 0.8652307322062451
+Mean individual BinaryAUROC: 0.9288569688796997
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8793260510294041
+roc_auc_score: 0.8793260510294041
+Mean individual BinaryAUROC: 0.9480165243148804
+tensor(41947)
+Epoch 5, Loss: 0.03165007755160332
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8681036038746165
+roc_auc_score: 0.8681036038746164
+Mean individual BinaryAUROC: 0.9352251291275024
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8808713776944187
+roc_auc_score: 0.8808713776944187
+Mean individual BinaryAUROC: 0.9514848589897156
+tensor(41993)
+Epoch 6, Loss: 0.0265561044216156
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.870628856399869
+roc_auc_score: 0.870628856399869
+Mean individual BinaryAUROC: 0.942042350769043
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8826938728603789
+roc_auc_score: 0.8826938728603788
+Mean individual BinaryAUROC: 0.9536061882972717
+tensor(42000)
+Epoch 7, Loss: 0.024722950533032417
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8729468744359545
+roc_auc_score: 0.8729468744359546
+Mean individual BinaryAUROC: 0.9444393515586853
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8841113818951278
+roc_auc_score: 0.8841113818951277
+Mean individual BinaryAUROC: 0.9547722935676575
+tensor(42000)
+Epoch 8, Loss: 0.025030292570590973
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8754253320765565
+roc_auc_score: 0.8754253320765564
+Mean individual BinaryAUROC: 0.947364866733551
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8855328060644975
+roc_auc_score: 0.8855328060644975
+Mean individual BinaryAUROC: 0.9562612175941467
+tensor(42000)
+Epoch 9, Loss: 0.02551455609500408
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8775962804751686
+roc_auc_score: 0.8775962804751687
+Mean individual BinaryAUROC: 0.9490885138511658
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8867802370452802
+roc_auc_score: 0.8867802370452801
+Mean individual BinaryAUROC: 0.9571190476417542
+tensor(42000)
+Epoch 10, Loss: 0.02561458945274353
+---------------- TRAIN AUC ----------------
+BinaryAUROC: 0.8789449759006344
+roc_auc_score: 0.8789449759006343
+Mean individual BinaryAUROC: 0.9494221806526184
+---------------- VAL AUC ----------------
+BinaryAUROC: 0.8875309065333002
+roc_auc_score: 0.8875309065333004
+Mean individual BinaryAUROC: 0.9577373266220093
+---------------- TEST AUC ----------------
+BinaryAUROC: 0.8609586330583239
+roc_auc_score: 0.8609586330583239
+Mean individual BinaryAUROC: 0.9555749893188477
+Results for BA-Shapes:
+  Test AUC      - Mean: 0.8587, Std: 0.0185
+  Individual AUROCs - Mean: 0.9591, Std: 0.0035
+  Inference Time    - Mean: 0.0102s, Std: 0.0003s
+
+Running AllMotifNodes experiment on dataset: Tree-Cycles, with hyperparameters specified in configs
+MLP weights initialized:0.0007491919095627964, 0.0430745892226696
+tensor(0)
+Epoch 1, Loss: 0.25633564591407776
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8425319220430108
+roc_auc_score: 0.8425319220430108
+Mean individual BinaryAUROC: 0.841049313545227
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8535831794624008
+roc_auc_score: 0.8535831794624007
+Mean individual BinaryAUROC: 0.8743521571159363
+tensor(0)
+Epoch 2, Loss: 0.2551043629646301
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8138230846774194
+roc_auc_score: 0.8138230846774193
+Mean individual BinaryAUROC: 0.8171185851097107
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8129375255253183
+roc_auc_score: 0.8129375255253182
+Mean individual BinaryAUROC: 0.809998631477356
+tensor(5)
+Epoch 3, Loss: 0.19069986045360565
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7677881384408602
+roc_auc_score: 0.7677881384408602
+Mean individual BinaryAUROC: 0.7576743960380554
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7700823137586499
+roc_auc_score: 0.7700823137586499
+Mean individual BinaryAUROC: 0.7664203643798828
+tensor(1)
+Epoch 4, Loss: 0.21783824265003204
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7174479166666666
+roc_auc_score: 0.7174479166666665
+Mean individual BinaryAUROC: 0.6468788385391235
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7275362819030526
+roc_auc_score: 0.7275362819030528
+Mean individual BinaryAUROC: 0.6690789461135864
+tensor(2)
+Epoch 5, Loss: 0.24265174567699432
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6648185483870968
+roc_auc_score: 0.6648185483870968
+Mean individual BinaryAUROC: 0.6230034828186035
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6775986931037061
+roc_auc_score: 0.6775986931037061
+Mean individual BinaryAUROC: 0.618646502494812
+tensor(2)
+Epoch 6, Loss: 0.22485901415348053
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6105090725806451
+roc_auc_score: 0.6105090725806452
+Mean individual BinaryAUROC: 0.587793231010437
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6270600010353932
+roc_auc_score: 0.6270600010353933
+Mean individual BinaryAUROC: 0.5824058055877686
+tensor(0)
+Epoch 7, Loss: 0.24647310376167297
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.567372311827957
+roc_auc_score: 0.567372311827957
+Mean individual BinaryAUROC: 0.5775122046470642
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.584990681461285
+roc_auc_score: 0.584990681461285
+Mean individual BinaryAUROC: 0.5582612156867981
+tensor(0)
+Epoch 8, Loss: 0.21284542977809906
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5292338709677419
+roc_auc_score: 0.529233870967742
+Mean individual BinaryAUROC: 0.5587307214736938
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5515050590461728
+roc_auc_score: 0.5515050590461728
+Mean individual BinaryAUROC: 0.5417824387550354
+tensor(2)
+Epoch 9, Loss: 0.21923106908798218
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.49113743279569894
+roc_auc_score: 0.4911374327956989
+Mean individual BinaryAUROC: 0.5431941747665405
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5115374438442999
+roc_auc_score: 0.5115374438442999
+Mean individual BinaryAUROC: 0.494690477848053
+tensor(5)
+Epoch 10, Loss: 0.2538195848464966
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.45467909946236557
+roc_auc_score: 0.4546790994623656
+Mean individual BinaryAUROC: 0.5268434882164001
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.48301595655950347
+roc_auc_score: 0.48301595655950347
+Mean individual BinaryAUROC: 0.47892311215400696
+tensor(3)
+Epoch 11, Loss: 0.18326300382614136
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4259492607526882
+roc_auc_score: 0.4259492607526882
+Mean individual BinaryAUROC: 0.5119538307189941
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4496496919705258
+roc_auc_score: 0.44964969197052584
+Mean individual BinaryAUROC: 0.4592384994029999
+tensor(3)
+Epoch 12, Loss: 0.13960793614387512
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4054099462365591
+roc_auc_score: 0.4054099462365591
+Mean individual BinaryAUROC: 0.5008053779602051
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4284996289841067
+roc_auc_score: 0.4284996289841067
+Mean individual BinaryAUROC: 0.4505549967288971
+tensor(8)
+Epoch 13, Loss: 0.205921933054924
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3975554435483871
+roc_auc_score: 0.3975554435483871
+Mean individual BinaryAUROC: 0.501055896282196
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.41011349059805463
+roc_auc_score: 0.4101134905980546
+Mean individual BinaryAUROC: 0.44325700402259827
+tensor(3)
+Epoch 14, Loss: 0.19933359324932098
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.38827284946236557
+roc_auc_score: 0.3882728494623656
+Mean individual BinaryAUROC: 0.49642622470855713
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3930855867515689
+roc_auc_score: 0.3930855867515689
+Mean individual BinaryAUROC: 0.4220839738845825
+tensor(5)
+Epoch 15, Loss: 0.20045162737369537
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3777301747311828
+roc_auc_score: 0.37773017473118287
+Mean individual BinaryAUROC: 0.4954909086227417
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3785965532911123
+roc_auc_score: 0.37859655329111225
+Mean individual BinaryAUROC: 0.4234553575515747
+tensor(9)
+Epoch 16, Loss: 0.1887274831533432
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.37056871639784944
+roc_auc_score: 0.37056871639784944
+Mean individual BinaryAUROC: 0.49510514736175537
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3673956122337458
+roc_auc_score: 0.3673956122337458
+Mean individual BinaryAUROC: 0.41745322942733765
+tensor(9)
+Epoch 17, Loss: 0.19939477741718292
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3629872311827957
+roc_auc_score: 0.3629872311827957
+Mean individual BinaryAUROC: 0.4954909086227417
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3593734720760209
+roc_auc_score: 0.3593734720760209
+Mean individual BinaryAUROC: 0.4161706268787384
+tensor(5)
+Epoch 18, Loss: 0.1815294623374939
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.36160114247311825
+roc_auc_score: 0.3616011424731183
+Mean individual BinaryAUROC: 0.49607884883880615
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.35271100450396037
+roc_auc_score: 0.3527110045039604
+Mean individual BinaryAUROC: 0.4088883697986603
+tensor(11)
+Epoch 19, Loss: 0.14481684565544128
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.35735887096774194
+roc_auc_score: 0.35735887096774194
+Mean individual BinaryAUROC: 0.49607884883880615
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3458932279533153
+roc_auc_score: 0.3458932279533153
+Mean individual BinaryAUROC: 0.40736278891563416
+tensor(18)
+Epoch 20, Loss: 0.1443413645029068
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.34769825268817206
+roc_auc_score: 0.34769825268817206
+Mean individual BinaryAUROC: 0.4878484010696411
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3398433680190052
+roc_auc_score: 0.3398433680190052
+Mean individual BinaryAUROC: 0.39857232570648193
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.32516574267274845
+roc_auc_score: 0.32516574267274845
+Mean individual BinaryAUROC: 0.40435370802879333
+MLP weights initialized:0.0003884001635015011, 0.042955800890922546
+tensor(0)
+Epoch 1, Loss: 0.28431734442710876
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7631258400537635
+roc_auc_score: 0.7631258400537635
+Mean individual BinaryAUROC: 0.5727165341377258
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7453076555822074
+roc_auc_score: 0.7453076555822074
+Mean individual BinaryAUROC: 0.6192691326141357
+tensor(1)
+Epoch 2, Loss: 0.25432059168815613
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.664020497311828
+roc_auc_score: 0.664020497311828
+Mean individual BinaryAUROC: 0.5160418152809143
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6355344066909409
+roc_auc_score: 0.6355344066909409
+Mean individual BinaryAUROC: 0.5956772565841675
+tensor(0)
+Epoch 3, Loss: 0.2056654840707779
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5385164650537635
+roc_auc_score: 0.5385164650537634
+Mean individual BinaryAUROC: 0.4523608684539795
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4933641362807526
+roc_auc_score: 0.4933641362807526
+Mean individual BinaryAUROC: 0.5313423275947571
+tensor(0)
+Epoch 4, Loss: 0.24599045515060425
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4113323252688172
+roc_auc_score: 0.4113323252688172
+Mean individual BinaryAUROC: 0.33981749415397644
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.36142700190397303
+roc_auc_score: 0.36142700190397303
+Mean individual BinaryAUROC: 0.33662354946136475
+tensor(0)
+Epoch 5, Loss: 0.24391378462314606
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.32396673387096775
+roc_auc_score: 0.3239667338709678
+Mean individual BinaryAUROC: 0.2700834572315216
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2939941442762889
+roc_auc_score: 0.2939941442762889
+Mean individual BinaryAUROC: 0.2816527783870697
+tensor(0)
+Epoch 6, Loss: 0.2332603484392166
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2679351478494624
+roc_auc_score: 0.2679351478494623
+Mean individual BinaryAUROC: 0.21100389957427979
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2417981040800244
+roc_auc_score: 0.2417981040800244
+Mean individual BinaryAUROC: 0.1622430384159088
+tensor(1)
+Epoch 7, Loss: 0.24485079944133759
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.24109543010752688
+roc_auc_score: 0.24109543010752688
+Mean individual BinaryAUROC: 0.18112605810165405
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.21602328484241892
+roc_auc_score: 0.2160232848424189
+Mean individual BinaryAUROC: 0.14912647008895874
+tensor(3)
+Epoch 8, Loss: 0.21723611652851105
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.21908602150537634
+roc_auc_score: 0.21908602150537637
+Mean individual BinaryAUROC: 0.14038532972335815
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.19726828763222834
+roc_auc_score: 0.1972682876322283
+Mean individual BinaryAUROC: 0.12062010169029236
+tensor(1)
+Epoch 9, Loss: 0.22963041067123413
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.20438508064516128
+roc_auc_score: 0.20438508064516128
+Mean individual BinaryAUROC: 0.12145563960075378
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18114779087358424
+roc_auc_score: 0.18114779087358424
+Mean individual BinaryAUROC: 0.09522294998168945
+tensor(0)
+Epoch 10, Loss: 0.23872417211532593
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.19380040322580644
+roc_auc_score: 0.19380040322580644
+Mean individual BinaryAUROC: 0.10141194611787796
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.16861378108336642
+roc_auc_score: 0.16861378108336642
+Mean individual BinaryAUROC: 0.09123699367046356
+tensor(0)
+Epoch 11, Loss: 0.24523527920246124
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.17863743279569894
+roc_auc_score: 0.17863743279569894
+Mean individual BinaryAUROC: 0.0967676118016243
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.153925578238336
+roc_auc_score: 0.15392557823833602
+Mean individual BinaryAUROC: 0.08861744403839111
+tensor(1)
+Epoch 12, Loss: 0.25119271874427795
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1732610887096774
+roc_auc_score: 0.17326108870967744
+Mean individual BinaryAUROC: 0.08832405507564545
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1447954235620977
+roc_auc_score: 0.14479542356209768
+Mean individual BinaryAUROC: 0.07227478176355362
+tensor(0)
+Epoch 13, Loss: 0.23436355590820312
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.16431451612903225
+roc_auc_score: 0.16431451612903225
+Mean individual BinaryAUROC: 0.08943437039852142
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13493042732977847
+roc_auc_score: 0.13493042732977847
+Mean individual BinaryAUROC: 0.07469461858272552
+tensor(0)
+Epoch 14, Loss: 0.20734167098999023
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.15856014784946237
+roc_auc_score: 0.15856014784946235
+Mean individual BinaryAUROC: 0.08345192670822144
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13089239388657842
+roc_auc_score: 0.13089239388657845
+Mean individual BinaryAUROC: 0.07335136085748672
+tensor(1)
+Epoch 15, Loss: 0.22388115525245667
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1508736559139785
+roc_auc_score: 0.15087365591397847
+Mean individual BinaryAUROC: 0.07268619537353516
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12175792507204611
+roc_auc_score: 0.12175792507204612
+Mean individual BinaryAUROC: 0.060799870640039444
+tensor(1)
+Epoch 16, Loss: 0.2155025452375412
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14936155913978494
+roc_auc_score: 0.14936155913978494
+Mean individual BinaryAUROC: 0.07096260786056519
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11666580383900786
+roc_auc_score: 0.11666580383900785
+Mean individual BinaryAUROC: 0.05896895006299019
+tensor(1)
+Epoch 17, Loss: 0.20864972472190857
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14400621639784947
+roc_auc_score: 0.1440062163978495
+Mean individual BinaryAUROC: 0.06894942373037338
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11014498380760093
+roc_auc_score: 0.11014498380760095
+Mean individual BinaryAUROC: 0.05466058477759361
+tensor(3)
+Epoch 18, Loss: 0.1561187207698822
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1422631048387097
+roc_auc_score: 0.14226310483870966
+Mean individual BinaryAUROC: 0.07186046987771988
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10838697245278894
+roc_auc_score: 0.10838697245278894
+Mean individual BinaryAUROC: 0.054638609290122986
+tensor(8)
+Epoch 19, Loss: 0.20526725053787231
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14234711021505375
+roc_auc_score: 0.14234711021505378
+Mean individual BinaryAUROC: 0.07539115101099014
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10804327943536558
+roc_auc_score: 0.10804327943536557
+Mean individual BinaryAUROC: 0.06955971568822861
+tensor(6)
+Epoch 20, Loss: 0.1555805653333664
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14012096774193547
+roc_auc_score: 0.1401209677419355
+Mean individual BinaryAUROC: 0.07370765507221222
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10608250358073479
+roc_auc_score: 0.10608250358073479
+Mean individual BinaryAUROC: 0.06939269602298737
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09963098371991459
+roc_auc_score: 0.09963098371991459
+Mean individual BinaryAUROC: 0.06791197508573532
+MLP weights initialized:0.0005570431821979582, 0.0429634191095829
+tensor(2)
+Epoch 1, Loss: 0.25951865315437317
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12689012096774194
+roc_auc_score: 0.12689012096774194
+Mean individual BinaryAUROC: 0.09072236716747284
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.153170604036883
+roc_auc_score: 0.15317060403688298
+Mean individual BinaryAUROC: 0.0762738510966301
+tensor(0)
+Epoch 2, Loss: 0.22197465598583221
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11533938172043011
+roc_auc_score: 0.11533938172043011
+Mean individual BinaryAUROC: 0.0843157172203064
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1269341720018177
+roc_auc_score: 0.1269341720018177
+Mean individual BinaryAUROC: 0.07299523055553436
+tensor(1)
+Epoch 3, Loss: 0.2519875764846802
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10462869623655914
+roc_auc_score: 0.10462869623655913
+Mean individual BinaryAUROC: 0.07627230882644653
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10678067496131656
+roc_auc_score: 0.10678067496131657
+Mean individual BinaryAUROC: 0.055449943989515305
+tensor(0)
+Epoch 4, Loss: 0.1915377974510193
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09454805107526881
+roc_auc_score: 0.09454805107526881
+Mean individual BinaryAUROC: 0.07395750284194946
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09386845904732322
+roc_auc_score: 0.09386845904732323
+Mean individual BinaryAUROC: 0.05097540095448494
+tensor(1)
+Epoch 5, Loss: 0.18665088713169098
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09274193548387097
+roc_auc_score: 0.09274193548387097
+Mean individual BinaryAUROC: 0.07486940175294876
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.08641003296001656
+roc_auc_score: 0.08641003296001656
+Mean individual BinaryAUROC: 0.04965851083397865
+tensor(2)
+Epoch 6, Loss: 0.20322494208812714
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09362399193548387
+roc_auc_score: 0.09362399193548387
+Mean individual BinaryAUROC: 0.07442046701908112
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.0831740697279792
+roc_auc_score: 0.0831740697279792
+Mean individual BinaryAUROC: 0.05065391585230827
+tensor(1)
+Epoch 7, Loss: 0.23325037956237793
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09316196236559139
+roc_auc_score: 0.0931619623655914
+Mean individual BinaryAUROC: 0.07076819986104965
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.07981587257761134
+roc_auc_score: 0.07981587257761136
+Mean individual BinaryAUROC: 0.04882989823818207
+tensor(2)
+Epoch 8, Loss: 0.22552713751792908
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09261592741935484
+roc_auc_score: 0.09261592741935484
+Mean individual BinaryAUROC: 0.07245170325040817
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.07717849603386887
+roc_auc_score: 0.07717849603386885
+Mean individual BinaryAUROC: 0.048554468899965286
+tensor(7)
+Epoch 9, Loss: 0.22005602717399597
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.0922799059139785
+roc_auc_score: 0.0922799059139785
+Mean individual BinaryAUROC: 0.07095526158809662
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.07396158691263006
+roc_auc_score: 0.07396158691263008
+Mean individual BinaryAUROC: 0.04935314506292343
+tensor(1)
+Epoch 10, Loss: 0.21437272429466248
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09211189516129033
+roc_auc_score: 0.09211189516129033
+Mean individual BinaryAUROC: 0.07179700583219528
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.07194257019103005
+roc_auc_score: 0.07194257019103005
+Mean individual BinaryAUROC: 0.04965662211179733
+tensor(5)
+Epoch 11, Loss: 0.16289328038692474
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09135584677419355
+roc_auc_score: 0.09135584677419356
+Mean individual BinaryAUROC: 0.07179700583219528
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.07014932670681691
+roc_auc_score: 0.07014932670681692
+Mean individual BinaryAUROC: 0.0497947596013546
+tensor(4)
+Epoch 12, Loss: 0.19159282743930817
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.0910198252688172
+roc_auc_score: 0.0910198252688172
+Mean individual BinaryAUROC: 0.06768178194761276
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06957698435981063
+roc_auc_score: 0.06957698435981065
+Mean individual BinaryAUROC: 0.047919463366270065
+tensor(7)
+Epoch 13, Loss: 0.19747887551784515
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09127184139784947
+roc_auc_score: 0.09127184139784947
+Mean individual BinaryAUROC: 0.09237314015626907
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06834242178467273
+roc_auc_score: 0.06834242178467274
+Mean individual BinaryAUROC: 0.052019573748111725
+tensor(4)
+Epoch 14, Loss: 0.19718459248542786
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09316196236559139
+roc_auc_score: 0.0931619623655914
+Mean individual BinaryAUROC: 0.09237314015626907
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06791244600136902
+roc_auc_score: 0.06791244600136903
+Mean individual BinaryAUROC: 0.050051771104335785
+tensor(12)
+Epoch 15, Loss: 0.20553627610206604
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09265793010752688
+roc_auc_score: 0.09265793010752688
+Mean individual BinaryAUROC: 0.09153138846158981
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.068410728974328
+roc_auc_score: 0.06841072897432801
+Mean individual BinaryAUROC: 0.049976423382759094
+tensor(5)
+Epoch 16, Loss: 0.16753309965133667
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09311995967741936
+roc_auc_score: 0.09311995967741934
+Mean individual BinaryAUROC: 0.09237314015626907
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06801886141262144
+roc_auc_score: 0.06801886141262144
+Mean individual BinaryAUROC: 0.04989165812730789
+tensor(7)
+Epoch 17, Loss: 0.14294573664665222
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09358198924731183
+roc_auc_score: 0.09358198924731183
+Mean individual BinaryAUROC: 0.09475810080766678
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06849701174020835
+roc_auc_score: 0.06849701174020835
+Mean individual BinaryAUROC: 0.04982572793960571
+tensor(9)
+Epoch 18, Loss: 0.19105781614780426
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09519909274193548
+roc_auc_score: 0.09519909274193548
+Mean individual BinaryAUROC: 0.0935305580496788
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06974595477632631
+roc_auc_score: 0.06974595477632631
+Mean individual BinaryAUROC: 0.049744315445423126
+tensor(13)
+Epoch 19, Loss: 0.13868798315525055
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09532510080645161
+roc_auc_score: 0.09532510080645161
+Mean individual BinaryAUROC: 0.08530010282993317
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06906719701806761
+roc_auc_score: 0.06906719701806761
+Mean individual BinaryAUROC: 0.04623190313577652
+tensor(18)
+Epoch 20, Loss: 0.16503266990184784
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09475806451612903
+roc_auc_score: 0.09475806451612903
+Mean individual BinaryAUROC: 0.08568590134382248
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.06940010468975594
+roc_auc_score: 0.06940010468975594
+Mean individual BinaryAUROC: 0.04649562016129494
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.07005016255822981
+roc_auc_score: 0.07005016255822982
+Mean individual BinaryAUROC: 0.05854601040482521
+MLP weights initialized:0.00033883447758853436, 0.04314810410141945
+tensor(0)
+Epoch 1, Loss: 0.21424657106399536
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6407090053763441
+roc_auc_score: 0.6407090053763441
+Mean individual BinaryAUROC: 0.41842201352119446
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5531918871191335
+roc_auc_score: 0.5531918871191335
+Mean individual BinaryAUROC: 0.36666473746299744
+tensor(0)
+Epoch 2, Loss: 0.23029857873916626
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.579049059139785
+roc_auc_score: 0.579049059139785
+Mean individual BinaryAUROC: 0.3143528699874878
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4443842861826779
+roc_auc_score: 0.4443842861826779
+Mean individual BinaryAUROC: 0.23241829872131348
+tensor(1)
+Epoch 3, Loss: 0.25359004735946655
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4650117607526882
+roc_auc_score: 0.46501176075268813
+Mean individual BinaryAUROC: 0.20327848196029663
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3616491800261149
+roc_auc_score: 0.3616491800261149
+Mean individual BinaryAUROC: 0.16859795153141022
+tensor(0)
+Epoch 4, Loss: 0.25367245078086853
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3644153225806452
+roc_auc_score: 0.36441532258064513
+Mean individual BinaryAUROC: 0.25406211614608765
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2928149464759242
+roc_auc_score: 0.2928149464759242
+Mean individual BinaryAUROC: 0.17252303659915924
+tensor(0)
+Epoch 5, Loss: 0.24267098307609558
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.28133400537634407
+roc_auc_score: 0.2813340053763441
+Mean individual BinaryAUROC: 0.21312564611434937
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.24917887567803873
+roc_auc_score: 0.24917887567803876
+Mean individual BinaryAUROC: 0.15536680817604065
+tensor(0)
+Epoch 6, Loss: 0.2520262897014618
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.23609711021505375
+roc_auc_score: 0.23609711021505375
+Mean individual BinaryAUROC: 0.20264652371406555
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.21513025821555737
+roc_auc_score: 0.21513025821555737
+Mean individual BinaryAUROC: 0.1505732536315918
+tensor(1)
+Epoch 7, Loss: 0.24417231976985931
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.20745127688172044
+roc_auc_score: 0.2074512768817204
+Mean individual BinaryAUROC: 0.16960713267326355
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1882301679062624
+roc_auc_score: 0.1882301679062624
+Mean individual BinaryAUROC: 0.14460957050323486
+tensor(2)
+Epoch 8, Loss: 0.23140543699264526
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18308971774193547
+roc_auc_score: 0.18308971774193547
+Mean individual BinaryAUROC: 0.1595989614725113
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.16741948379897267
+roc_auc_score: 0.16741948379897267
+Mean individual BinaryAUROC: 0.1370118260383606
+tensor(1)
+Epoch 9, Loss: 0.21511578559875488
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.17111895161290322
+roc_auc_score: 0.17111895161290322
+Mean individual BinaryAUROC: 0.14964492619037628
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.15420815429659412
+roc_auc_score: 0.15420815429659412
+Mean individual BinaryAUROC: 0.13094830513000488
+tensor(2)
+Epoch 10, Loss: 0.24118992686271667
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.15940020161290322
+roc_auc_score: 0.15940020161290325
+Mean individual BinaryAUROC: 0.07230406254529953
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14307336335973586
+roc_auc_score: 0.14307336335973586
+Mean individual BinaryAUROC: 0.0662626400589943
+tensor(0)
+Epoch 11, Loss: 0.16680297255516052
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.15309979838709678
+roc_auc_score: 0.15309979838709678
+Mean individual BinaryAUROC: 0.07852835208177567
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13520077999620356
+roc_auc_score: 0.13520077999620356
+Mean individual BinaryAUROC: 0.07379499077796936
+tensor(0)
+Epoch 12, Loss: 0.22747403383255005
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14318716397849462
+roc_auc_score: 0.14318716397849462
+Mean individual BinaryAUROC: 0.0768047645688057
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12742814083648266
+roc_auc_score: 0.12742814083648266
+Mean individual BinaryAUROC: 0.07334541529417038
+tensor(1)
+Epoch 13, Loss: 0.20859304070472717
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13356854838709678
+roc_auc_score: 0.13356854838709675
+Mean individual BinaryAUROC: 0.07596300542354584
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11935638808837656
+roc_auc_score: 0.11935638808837656
+Mean individual BinaryAUROC: 0.07152660191059113
+tensor(1)
+Epoch 14, Loss: 0.17675289511680603
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12722614247311828
+roc_auc_score: 0.1272261424731183
+Mean individual BinaryAUROC: 0.07764650136232376
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11175343836822033
+roc_auc_score: 0.11175343836822034
+Mean individual BinaryAUROC: 0.07147741317749023
+tensor(1)
+Epoch 15, Loss: 0.21503350138664246
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12605006720430106
+roc_auc_score: 0.12605006720430106
+Mean individual BinaryAUROC: 0.07353128492832184
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10702801889017355
+roc_auc_score: 0.10702801889017355
+Mean individual BinaryAUROC: 0.06964020431041718
+tensor(3)
+Epoch 16, Loss: 0.21841397881507874
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12388692876344086
+roc_auc_score: 0.12388692876344087
+Mean individual BinaryAUROC: 0.07373002916574478
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10409296680414387
+roc_auc_score: 0.10409296680414387
+Mean individual BinaryAUROC: 0.0693618431687355
+tensor(3)
+Epoch 17, Loss: 0.16767162084579468
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12222782258064516
+roc_auc_score: 0.12222782258064517
+Mean individual BinaryAUROC: 0.07579933106899261
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10067185513698827
+roc_auc_score: 0.10067185513698827
+Mean individual BinaryAUROC: 0.070872962474823
+tensor(8)
+Epoch 18, Loss: 0.1601511687040329
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12180779569892473
+roc_auc_score: 0.12180779569892473
+Mean individual BinaryAUROC: 0.10067775845527649
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09766777683825432
+roc_auc_score: 0.09766777683825431
+Mean individual BinaryAUROC: 0.0759211927652359
+tensor(3)
+Epoch 19, Loss: 0.23416420817375183
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12088373655913978
+roc_auc_score: 0.1208837365591398
+Mean individual BinaryAUROC: 0.09899425506591797
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.0959500307741865
+roc_auc_score: 0.0959500307741865
+Mean individual BinaryAUROC: 0.07178089767694473
+tensor(3)
+Epoch 20, Loss: 0.1893097311258316
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11960265456989247
+roc_auc_score: 0.11960265456989247
+Mean individual BinaryAUROC: 0.09037799388170242
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09499157304986569
+roc_auc_score: 0.09499157304986569
+Mean individual BinaryAUROC: 0.06419224292039871
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.08819466348020186
+roc_auc_score: 0.08819466348020188
+Mean individual BinaryAUROC: 0.07310368120670319
+MLP weights initialized:-0.000432585715316236, 0.043087344616651535
+tensor(0)
+Epoch 1, Loss: 0.26536068320274353
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8975554435483871
+roc_auc_score: 0.8975554435483871
+Mean individual BinaryAUROC: 0.9089720249176025
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.9234772529868217
+roc_auc_score: 0.9234772529868218
+Mean individual BinaryAUROC: 0.9374584555625916
+tensor(1)
+Epoch 2, Loss: 0.24260462820529938
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8565608198924731
+roc_auc_score: 0.8565608198924731
+Mean individual BinaryAUROC: 0.8884979486465454
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8998048571445006
+roc_auc_score: 0.8998048571445005
+Mean individual BinaryAUROC: 0.9200944304466248
+tensor(1)
+Epoch 3, Loss: 0.24239251017570496
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8217825940860215
+roc_auc_score: 0.8217825940860215
+Mean individual BinaryAUROC: 0.8708755970001221
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8699258543431868
+roc_auc_score: 0.8699258543431867
+Mean individual BinaryAUROC: 0.9116240739822388
+tensor(2)
+Epoch 4, Loss: 0.24973948299884796
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7673051075268817
+roc_auc_score: 0.7673051075268817
+Mean individual BinaryAUROC: 0.8420482277870178
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8298820226981196
+roc_auc_score: 0.8298820226981196
+Mean individual BinaryAUROC: 0.8943629264831543
+tensor(1)
+Epoch 5, Loss: 0.20348596572875977
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7215431787634409
+roc_auc_score: 0.7215431787634409
+Mean individual BinaryAUROC: 0.8131534457206726
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7871468877806347
+roc_auc_score: 0.7871468877806347
+Mean individual BinaryAUROC: 0.8620374798774719
+tensor(1)
+Epoch 6, Loss: 0.22801433503627777
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6476814516129032
+roc_auc_score: 0.6476814516129032
+Mean individual BinaryAUROC: 0.7480072975158691
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7305878157230208
+roc_auc_score: 0.7305878157230208
+Mean individual BinaryAUROC: 0.8304557204246521
+tensor(1)
+Epoch 7, Loss: 0.2025272101163864
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5367523521505376
+roc_auc_score: 0.5367523521505376
+Mean individual BinaryAUROC: 0.6772107481956482
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6451808199163632
+roc_auc_score: 0.6451808199163632
+Mean individual BinaryAUROC: 0.7704052329063416
+tensor(2)
+Epoch 8, Loss: 0.1806129515171051
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4408182123655914
+roc_auc_score: 0.44081821236559143
+Mean individual BinaryAUROC: 0.595384955406189
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5430205870679391
+roc_auc_score: 0.5430205870679391
+Mean individual BinaryAUROC: 0.6542888879776001
+tensor(0)
+Epoch 9, Loss: 0.22308573126792908
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3717237903225806
+roc_auc_score: 0.3717237903225806
+Mean individual BinaryAUROC: 0.5502124428749084
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4494253567792369
+roc_auc_score: 0.4494253567792369
+Mean individual BinaryAUROC: 0.5192559361457825
+tensor(5)
+Epoch 10, Loss: 0.17565201222896576
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3275369623655914
+roc_auc_score: 0.3275369623655914
+Mean individual BinaryAUROC: 0.5292431116104126
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.38100024734392884
+roc_auc_score: 0.38100024734392884
+Mean individual BinaryAUROC: 0.4880705177783966
+tensor(4)
+Epoch 11, Loss: 0.20532192289829254
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2950898857526882
+roc_auc_score: 0.2950898857526882
+Mean individual BinaryAUROC: 0.42649275064468384
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.31857394720645166
+roc_auc_score: 0.3185739472064517
+Mean individual BinaryAUROC: 0.3869606554508209
+tensor(5)
+Epoch 12, Loss: 0.1992238610982895
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.26194976478494625
+roc_auc_score: 0.2619497647849462
+Mean individual BinaryAUROC: 0.39185139536857605
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2765966625826157
+roc_auc_score: 0.2765966625826157
+Mean individual BinaryAUROC: 0.3457942605018616
+tensor(3)
+Epoch 13, Loss: 0.21838489174842834
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2482358870967742
+roc_auc_score: 0.2482358870967742
+Mean individual BinaryAUROC: 0.3809497356414795
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.25184860825898636
+roc_auc_score: 0.25184860825898636
+Mean individual BinaryAUROC: 0.31893423199653625
+tensor(5)
+Epoch 14, Loss: 0.21092793345451355
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.23870127688172044
+roc_auc_score: 0.2387012768817204
+Mean individual BinaryAUROC: 0.3640442192554474
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2363421571841907
+roc_auc_score: 0.2363421571841907
+Mean individual BinaryAUROC: 0.2899206280708313
+tensor(6)
+Epoch 15, Loss: 0.14837685227394104
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.233387936827957
+roc_auc_score: 0.233387936827957
+Mean individual BinaryAUROC: 0.3573165833950043
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2214821078304486
+roc_auc_score: 0.22148210783044858
+Mean individual BinaryAUROC: 0.2850339412689209
+tensor(8)
+Epoch 16, Loss: 0.2059657722711563
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.22425235215053763
+roc_auc_score: 0.22425235215053763
+Mean individual BinaryAUROC: 0.2808358371257782
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.203466266314633
+roc_auc_score: 0.20346626631463297
+Mean individual BinaryAUROC: 0.21575607359409332
+tensor(5)
+Epoch 17, Loss: 0.23734165728092194
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.21681787634408603
+roc_auc_score: 0.216817876344086
+Mean individual BinaryAUROC: 0.17942486703395844
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18912535160227095
+roc_auc_score: 0.18912535160227095
+Mean individual BinaryAUROC: 0.1453162282705307
+tensor(7)
+Epoch 18, Loss: 0.1604086011648178
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.20665322580645162
+roc_auc_score: 0.20665322580645162
+Mean individual BinaryAUROC: 0.17339900135993958
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1796507848855603
+roc_auc_score: 0.17965078488556027
+Mean individual BinaryAUROC: 0.14220982789993286
+tensor(7)
+Epoch 19, Loss: 0.1979724019765854
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.20316700268817203
+roc_auc_score: 0.203167002688172
+Mean individual BinaryAUROC: 0.16757889091968536
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1719558002151317
+roc_auc_score: 0.17195580021513168
+Mean individual BinaryAUROC: 0.12599556148052216
+tensor(10)
+Epoch 20, Loss: 0.18692249059677124
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1947244623655914
+roc_auc_score: 0.19472446236559138
+Mean individual BinaryAUROC: 0.16068589687347412
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1643830494630336
+roc_auc_score: 0.1643830494630336
+Mean individual BinaryAUROC: 0.12368369102478027
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.172510372185559
+roc_auc_score: 0.17251037218555898
+Mean individual BinaryAUROC: 0.1391182541847229
+MLP weights initialized:7.975706830620766e-05, 0.043192058801651
+tensor(0)
+Epoch 1, Loss: 0.24019156396389008
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6039146505376344
+roc_auc_score: 0.6039146505376345
+Mean individual BinaryAUROC: 0.7656335234642029
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6343695893515563
+roc_auc_score: 0.6343695893515563
+Mean individual BinaryAUROC: 0.7278313636779785
+tensor(0)
+Epoch 2, Loss: 0.24639859795570374
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5446488575268817
+roc_auc_score: 0.5446488575268817
+Mean individual BinaryAUROC: 0.714871883392334
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5558522724004441
+roc_auc_score: 0.5558522724004441
+Mean individual BinaryAUROC: 0.6488342881202698
+tensor(2)
+Epoch 3, Loss: 0.24921812117099762
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.48237987231182794
+roc_auc_score: 0.482379872311828
+Mean individual BinaryAUROC: 0.6855961084365845
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.48834104126041866
+roc_auc_score: 0.48834104126041866
+Mean individual BinaryAUROC: 0.6323869824409485
+tensor(0)
+Epoch 4, Loss: 0.22347798943519592
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4251512096774194
+roc_auc_score: 0.4251512096774194
+Mean individual BinaryAUROC: 0.6493710279464722
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4345372655265837
+roc_auc_score: 0.4345372655265837
+Mean individual BinaryAUROC: 0.6179890036582947
+tensor(1)
+Epoch 5, Loss: 0.25936758518218994
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3826024865591398
+roc_auc_score: 0.3826024865591398
+Mean individual BinaryAUROC: 0.6237884759902954
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.38559444511553265
+roc_auc_score: 0.38559444511553265
+Mean individual BinaryAUROC: 0.5969317555427551
+tensor(1)
+Epoch 6, Loss: 0.17006178200244904
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.36302923387096775
+roc_auc_score: 0.36302923387096775
+Mean individual BinaryAUROC: 0.5857300162315369
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.35912325205496787
+roc_auc_score: 0.3591232520549679
+Mean individual BinaryAUROC: 0.5601928234100342
+tensor(0)
+Epoch 7, Loss: 0.23600786924362183
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3365255376344086
+roc_auc_score: 0.3365255376344086
+Mean individual BinaryAUROC: 0.5650509595870972
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3372282811897818
+roc_auc_score: 0.3372282811897818
+Mean individual BinaryAUROC: 0.5388792157173157
+tensor(3)
+Epoch 8, Loss: 0.19705761969089508
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.32186659946236557
+roc_auc_score: 0.3218665994623656
+Mean individual BinaryAUROC: 0.5594733357429504
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3183071896552716
+roc_auc_score: 0.3183071896552716
+Mean individual BinaryAUROC: 0.5364856719970703
+tensor(5)
+Epoch 9, Loss: 0.24400965869426727
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.30611559139784944
+roc_auc_score: 0.3061155913978495
+Mean individual BinaryAUROC: 0.528990626335144
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.30036253142130726
+roc_auc_score: 0.30036253142130726
+Mean individual BinaryAUROC: 0.5021489262580872
+tensor(0)
+Epoch 10, Loss: 0.216370090842247
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2999831989247312
+roc_auc_score: 0.2999831989247312
+Mean individual BinaryAUROC: 0.5238398909568787
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.28819666143217887
+roc_auc_score: 0.28819666143217887
+Mean individual BinaryAUROC: 0.46825698018074036
+tensor(4)
+Epoch 11, Loss: 0.2248716503381729
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.29263272849462363
+roc_auc_score: 0.29263272849462363
+Mean individual BinaryAUROC: 0.5012061595916748
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2747969478909616
+roc_auc_score: 0.27479694789096154
+Mean individual BinaryAUROC: 0.42407041788101196
+tensor(3)
+Epoch 12, Loss: 0.23177582025527954
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.27914986559139787
+roc_auc_score: 0.27914986559139787
+Mean individual BinaryAUROC: 0.49338728189468384
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.26618808492525037
+roc_auc_score: 0.26618808492525037
+Mean individual BinaryAUROC: 0.41503259539604187
+tensor(5)
+Epoch 13, Loss: 0.22388340532779694
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.27142137096774194
+roc_auc_score: 0.271421370967742
+Mean individual BinaryAUROC: 0.5005888938903809
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.25654886193031806
+roc_auc_score: 0.25654886193031806
+Mean individual BinaryAUROC: 0.42142197489738464
+tensor(6)
+Epoch 14, Loss: 0.20241723954677582
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.26570900537634407
+roc_auc_score: 0.2657090053763441
+Mean individual BinaryAUROC: 0.49750250577926636
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2525345562477351
+roc_auc_score: 0.25253455624773513
+Mean individual BinaryAUROC: 0.4171893894672394
+tensor(3)
+Epoch 15, Loss: 0.18298959732055664
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.263650873655914
+roc_auc_score: 0.263650873655914
+Mean individual BinaryAUROC: 0.4892720580101013
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2459957606401031
+roc_auc_score: 0.2459957606401031
+Mean individual BinaryAUROC: 0.40547484159469604
+tensor(17)
+Epoch 16, Loss: 0.2013324797153473
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2621807795698925
+roc_auc_score: 0.2621807795698925
+Mean individual BinaryAUROC: 0.4875083863735199
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.241698159876213
+roc_auc_score: 0.241698159876213
+Mean individual BinaryAUROC: 0.404706746339798
+tensor(6)
+Epoch 17, Loss: 0.19412913918495178
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2564684139784946
+roc_auc_score: 0.2564684139784946
+Mean individual BinaryAUROC: 0.4781646132469177
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.23769032540107105
+roc_auc_score: 0.2376903254010711
+Mean individual BinaryAUROC: 0.402297705411911
+tensor(8)
+Epoch 18, Loss: 0.18127921223640442
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.25375924059139787
+roc_auc_score: 0.25375924059139787
+Mean individual BinaryAUROC: 0.4744351804256439
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.233655168050067
+roc_auc_score: 0.233655168050067
+Mean individual BinaryAUROC: 0.3998723328113556
+tensor(7)
+Epoch 19, Loss: 0.19175152480602264
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.251932123655914
+roc_auc_score: 0.25193212365591394
+Mean individual BinaryAUROC: 0.4740493595600128
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.23005717671285672
+roc_auc_score: 0.23005717671285672
+Mean individual BinaryAUROC: 0.39894306659698486
+tensor(12)
+Epoch 20, Loss: 0.16061754524707794
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.25239415322580644
+roc_auc_score: 0.25239415322580644
+Mean individual BinaryAUROC: 0.4740493595600128
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.22951934747220257
+roc_auc_score: 0.22951934747220254
+Mean individual BinaryAUROC: 0.3985035717487335
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2420692206909938
+roc_auc_score: 0.2420692206909938
+Mean individual BinaryAUROC: 0.4484298527240753
+MLP weights initialized:5.8745345086208545e-06, 0.043005697429180145
+tensor(0)
+Epoch 1, Loss: 0.20467525720596313
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14066700268817203
+roc_auc_score: 0.14066700268817203
+Mean individual BinaryAUROC: 0.21509507298469543
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12511720075698746
+roc_auc_score: 0.12511720075698746
+Mean individual BinaryAUROC: 0.16337734460830688
+tensor(2)
+Epoch 2, Loss: 0.19428841769695282
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13911290322580644
+roc_auc_score: 0.13911290322580644
+Mean individual BinaryAUROC: 0.21510709822177887
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12139985159364268
+roc_auc_score: 0.12139985159364267
+Mean individual BinaryAUROC: 0.1527794450521469
+tensor(5)
+Epoch 3, Loss: 0.22243089973926544
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13512264784946237
+roc_auc_score: 0.13512264784946237
+Mean individual BinaryAUROC: 0.21335344016551971
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11590292038401583
+roc_auc_score: 0.11590292038401584
+Mean individual BinaryAUROC: 0.15246006846427917
+tensor(3)
+Epoch 4, Loss: 0.2283303588628769
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1327074932795699
+roc_auc_score: 0.13270749327956988
+Mean individual BinaryAUROC: 0.21373926103115082
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11234807042974569
+roc_auc_score: 0.11234807042974569
+Mean individual BinaryAUROC: 0.15352725982666016
+tensor(1)
+Epoch 5, Loss: 0.21843574941158295
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13109038978494625
+roc_auc_score: 0.13109038978494625
+Mean individual BinaryAUROC: 0.21423529088497162
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10880688191340662
+roc_auc_score: 0.10880688191340661
+Mean individual BinaryAUROC: 0.15468284487724304
+tensor(0)
+Epoch 6, Loss: 0.20727865397930145
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1304603494623656
+roc_auc_score: 0.13046034946236557
+Mean individual BinaryAUROC: 0.21629759669303894
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10728399109561856
+roc_auc_score: 0.10728399109561858
+Mean individual BinaryAUROC: 0.1534663885831833
+tensor(1)
+Epoch 7, Loss: 0.20280128717422485
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1293892809139785
+roc_auc_score: 0.1293892809139785
+Mean individual BinaryAUROC: 0.2144336849451065
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10511254148762993
+roc_auc_score: 0.10511254148762994
+Mean individual BinaryAUROC: 0.15316203236579895
+tensor(5)
+Epoch 8, Loss: 0.21271881461143494
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1295782930107527
+roc_auc_score: 0.1295782930107527
+Mean individual BinaryAUROC: 0.21487461030483246
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10404551128290969
+roc_auc_score: 0.10404551128290968
+Mean individual BinaryAUROC: 0.15290962159633636
+tensor(4)
+Epoch 9, Loss: 0.18193592131137848
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12907426075268819
+roc_auc_score: 0.12907426075268819
+Mean individual BinaryAUROC: 0.21580053865909576
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10240757677728117
+roc_auc_score: 0.10240757677728118
+Mean individual BinaryAUROC: 0.15420766174793243
+tensor(7)
+Epoch 10, Loss: 0.19611157476902008
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12941028225806453
+roc_auc_score: 0.1294102822580645
+Mean individual BinaryAUROC: 0.21632228791713715
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10240901482337918
+roc_auc_score: 0.10240901482337919
+Mean individual BinaryAUROC: 0.15932495892047882
+tensor(8)
+Epoch 11, Loss: 0.13636140525341034
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1282342069892473
+roc_auc_score: 0.1282342069892473
+Mean individual BinaryAUROC: 0.21632228791713715
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1017360092495125
+roc_auc_score: 0.10173600924951251
+Mean individual BinaryAUROC: 0.15830779075622559
+tensor(5)
+Epoch 12, Loss: 0.1730344146490097
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1268481182795699
+roc_auc_score: 0.1268481182795699
+Mean individual BinaryAUROC: 0.2080918252468109
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10077108031775067
+roc_auc_score: 0.10077108031775067
+Mean individual BinaryAUROC: 0.1505839228630066
+tensor(6)
+Epoch 13, Loss: 0.16156359016895294
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12584005376344087
+roc_auc_score: 0.12584005376344087
+Mean individual BinaryAUROC: 0.20207330584526062
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09834941068870903
+roc_auc_score: 0.09834941068870903
+Mean individual BinaryAUROC: 0.1504960060119629
+tensor(4)
+Epoch 14, Loss: 0.18317510187625885
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12605006720430106
+roc_auc_score: 0.12605006720430106
+Mean individual BinaryAUROC: 0.20295514166355133
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.0984148417861683
+roc_auc_score: 0.0984148417861683
+Mean individual BinaryAUROC: 0.1509690284729004
+tensor(8)
+Epoch 15, Loss: 0.19071774184703827
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12600806451612903
+roc_auc_score: 0.12600806451612903
+Mean individual BinaryAUROC: 0.2097967118024826
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09845223098471645
+roc_auc_score: 0.09845223098471644
+Mean individual BinaryAUROC: 0.1589934378862381
+tensor(5)
+Epoch 16, Loss: 0.1711597591638565
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12504200268817203
+roc_auc_score: 0.12504200268817206
+Mean individual BinaryAUROC: 0.2097967118024826
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09697463861901558
+roc_auc_score: 0.09697463861901556
+Mean individual BinaryAUROC: 0.158546581864357
+tensor(14)
+Epoch 17, Loss: 0.12226526439189911
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12474798387096774
+roc_auc_score: 0.12474798387096775
+Mean individual BinaryAUROC: 0.20727145671844482
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09684521447019506
+roc_auc_score: 0.09684521447019505
+Mean individual BinaryAUROC: 0.1588178277015686
+tensor(11)
+Epoch 18, Loss: 0.15546856820583344
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1255880376344086
+roc_auc_score: 0.1255880376344086
+Mean individual BinaryAUROC: 0.2097967118024826
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09785112771575005
+roc_auc_score: 0.09785112771575007
+Mean individual BinaryAUROC: 0.1587592363357544
+tensor(17)
+Epoch 19, Loss: 0.09239265322685242
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12420194892473119
+roc_auc_score: 0.12420194892473119
+Mean individual BinaryAUROC: 0.2097967118024826
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.0976584295386173
+roc_auc_score: 0.09765842953861728
+Mean individual BinaryAUROC: 0.1587592363357544
+tensor(16)
+Epoch 20, Loss: 0.14936760067939758
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12483198924731183
+roc_auc_score: 0.12483198924731181
+Mean individual BinaryAUROC: 0.2097967118024826
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09765627246947028
+roc_auc_score: 0.09765627246947028
+Mean individual BinaryAUROC: 0.1589057445526123
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.09713081691576086
+roc_auc_score: 0.09713081691576086
+Mean individual BinaryAUROC: 0.18715961277484894
+MLP weights initialized:-0.000559647916816175, 0.04310440272092819
+tensor(0)
+Epoch 1, Loss: 0.2469678670167923
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7231182795698925
+roc_auc_score: 0.7231182795698924
+Mean individual BinaryAUROC: 0.8218150734901428
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.8042179330100606
+roc_auc_score: 0.8042179330100605
+Mean individual BinaryAUROC: 0.8942741751670837
+tensor(2)
+Epoch 2, Loss: 0.24944597482681274
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6983786962365591
+roc_auc_score: 0.698378696236559
+Mean individual BinaryAUROC: 0.8025429844856262
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7773444465535787
+roc_auc_score: 0.7773444465535787
+Mean individual BinaryAUROC: 0.8768001794815063
+tensor(2)
+Epoch 3, Loss: 0.1980687528848648
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6596522177419355
+roc_auc_score: 0.6596522177419355
+Mean individual BinaryAUROC: 0.7783034443855286
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7472727455751321
+roc_auc_score: 0.7472727455751321
+Mean individual BinaryAUROC: 0.8613159656524658
+tensor(0)
+Epoch 4, Loss: 0.21864652633666992
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.62890625
+roc_auc_score: 0.62890625
+Mean individual BinaryAUROC: 0.7404643893241882
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.7146240659890594
+roc_auc_score: 0.7146240659890594
+Mean individual BinaryAUROC: 0.8243055939674377
+tensor(2)
+Epoch 5, Loss: 0.22206003963947296
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5919018817204301
+roc_auc_score: 0.5919018817204302
+Mean individual BinaryAUROC: 0.7076900005340576
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6696254465133135
+roc_auc_score: 0.6696254465133133
+Mean individual BinaryAUROC: 0.739003598690033
+tensor(0)
+Epoch 6, Loss: 0.20964619517326355
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5588877688172043
+roc_auc_score: 0.5588877688172043
+Mean individual BinaryAUROC: 0.6952671408653259
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.6327359689842218
+roc_auc_score: 0.6327359689842218
+Mean individual BinaryAUROC: 0.6852361559867859
+tensor(4)
+Epoch 7, Loss: 0.23369237780570984
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.529275873655914
+roc_auc_score: 0.529275873655914
+Mean individual BinaryAUROC: 0.6562275886535645
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5904854556017648
+roc_auc_score: 0.5904854556017648
+Mean individual BinaryAUROC: 0.6435338854789734
+tensor(9)
+Epoch 8, Loss: 0.21776317059993744
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5069304435483871
+roc_auc_score: 0.5069304435483871
+Mean individual BinaryAUROC: 0.6320102214813232
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5571824650410994
+roc_auc_score: 0.5571824650410994
+Mean individual BinaryAUROC: 0.6223554015159607
+tensor(1)
+Epoch 9, Loss: 0.2126627117395401
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.47794858870967744
+roc_auc_score: 0.4779485887096775
+Mean individual BinaryAUROC: 0.6218177080154419
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.5011374944635225
+roc_auc_score: 0.5011374944635225
+Mean individual BinaryAUROC: 0.6038957238197327
+tensor(6)
+Epoch 10, Loss: 0.14902426302433014
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4392641129032258
+roc_auc_score: 0.4392641129032258
+Mean individual BinaryAUROC: 0.6065165400505066
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.45235465668087455
+roc_auc_score: 0.4523546566808746
+Mean individual BinaryAUROC: 0.5317195653915405
+tensor(3)
+Epoch 11, Loss: 0.1996300369501114
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4146505376344086
+roc_auc_score: 0.41465053763440857
+Mean individual BinaryAUROC: 0.5815579295158386
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4239345516459876
+roc_auc_score: 0.4239345516459876
+Mean individual BinaryAUROC: 0.511349081993103
+tensor(8)
+Epoch 12, Loss: 0.18509455025196075
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.38295950940860213
+roc_auc_score: 0.38295950940860213
+Mean individual BinaryAUROC: 0.5718213319778442
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.40177282322962143
+roc_auc_score: 0.40177282322962143
+Mean individual BinaryAUROC: 0.4931009113788605
+tensor(7)
+Epoch 13, Loss: 0.18474987149238586
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3649193548387097
+roc_auc_score: 0.3649193548387097
+Mean individual BinaryAUROC: 0.5616332292556763
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3860916495539181
+roc_auc_score: 0.3860916495539181
+Mean individual BinaryAUROC: 0.48869478702545166
+tensor(7)
+Epoch 14, Loss: 0.18748076260089874
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.34543010752688175
+roc_auc_score: 0.3454301075268817
+Mean individual BinaryAUROC: 0.526382565498352
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.36730932946786543
+roc_auc_score: 0.3673093294678654
+Mean individual BinaryAUROC: 0.47441792488098145
+tensor(17)
+Epoch 15, Loss: 0.21429219841957092
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.32951108870967744
+roc_auc_score: 0.3295110887096774
+Mean individual BinaryAUROC: 0.5254566073417664
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.35665772201993706
+roc_auc_score: 0.35665772201993706
+Mean individual BinaryAUROC: 0.46895840764045715
+tensor(17)
+Epoch 16, Loss: 0.1667233556509018
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3170362903225806
+roc_auc_score: 0.3170362903225806
+Mean individual BinaryAUROC: 0.5172261595726013
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.34372177834532663
+roc_auc_score: 0.34372177834532663
+Mean individual BinaryAUROC: 0.45879700779914856
+tensor(22)
+Epoch 17, Loss: 0.1563882976770401
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3116809475806452
+roc_auc_score: 0.3116809475806452
+Mean individual BinaryAUROC: 0.5048146843910217
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3330967747502114
+roc_auc_score: 0.3330967747502114
+Mean individual BinaryAUROC: 0.43988582491874695
+tensor(29)
+Epoch 18, Loss: 0.1704498678445816
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3053175403225806
+roc_auc_score: 0.3053175403225806
+Mean individual BinaryAUROC: 0.4956580400466919
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3256031165335036
+roc_auc_score: 0.3256031165335036
+Mean individual BinaryAUROC: 0.4321731925010681
+tensor(27)
+Epoch 19, Loss: 0.19642402231693268
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.30069724462365593
+roc_auc_score: 0.3006972446236559
+Mean individual BinaryAUROC: 0.49477618932724
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.32010906141607276
+roc_auc_score: 0.32010906141607276
+Mean individual BinaryAUROC: 0.43168655037879944
+tensor(23)
+Epoch 20, Loss: 0.14428289234638214
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.30002520161290325
+roc_auc_score: 0.3000252016129032
+Mean individual BinaryAUROC: 0.4938502013683319
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3088807974828441
+roc_auc_score: 0.3088807974828441
+Mean individual BinaryAUROC: 0.4310815930366516
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3201896714868012
+roc_auc_score: 0.3201896714868012
+Mean individual BinaryAUROC: 0.47740158438682556
+MLP weights initialized:-0.0003393166116438806, 0.04321473836898804
+tensor(0)
+Epoch 1, Loss: 0.26414361596107483
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4930275537634409
+roc_auc_score: 0.4930275537634409
+Mean individual BinaryAUROC: 0.39856770634651184
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.4667840112282639
+roc_auc_score: 0.4667840112282639
+Mean individual BinaryAUROC: 0.4443882703781128
+tensor(0)
+Epoch 2, Loss: 0.22050166130065918
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.43140961021505375
+roc_auc_score: 0.43140961021505375
+Mean individual BinaryAUROC: 0.3818352222442627
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.39362341599222306
+roc_auc_score: 0.39362341599222306
+Mean individual BinaryAUROC: 0.4219522178173065
+tensor(0)
+Epoch 3, Loss: 0.2234056293964386
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.37600806451612906
+roc_auc_score: 0.376008064516129
+Mean individual BinaryAUROC: 0.3678387999534607
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.34386702100122524
+roc_auc_score: 0.3438670210012252
+Mean individual BinaryAUROC: 0.34465929865837097
+tensor(1)
+Epoch 4, Loss: 0.2881101965904236
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3201024865591398
+roc_auc_score: 0.32010248655913975
+Mean individual BinaryAUROC: 0.23169928789138794
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.3070285941086127
+roc_auc_score: 0.3070285941086128
+Mean individual BinaryAUROC: 0.2597084641456604
+tensor(0)
+Epoch 5, Loss: 0.22894470393657684
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2664230510752688
+roc_auc_score: 0.2664230510752688
+Mean individual BinaryAUROC: 0.20761483907699585
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.28314408646683575
+roc_auc_score: 0.28314408646683575
+Mean individual BinaryAUROC: 0.2382039874792099
+tensor(1)
+Epoch 6, Loss: 0.22073274850845337
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.24449764784946237
+roc_auc_score: 0.24449764784946235
+Mean individual BinaryAUROC: 0.19465121626853943
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.26077456038930785
+roc_auc_score: 0.2607745603893078
+Mean individual BinaryAUROC: 0.21713244915008545
+tensor(2)
+Epoch 7, Loss: 0.24051040410995483
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.22761256720430106
+roc_auc_score: 0.22761256720430106
+Mean individual BinaryAUROC: 0.19150599837303162
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.24365677866169677
+roc_auc_score: 0.2436567786616968
+Mean individual BinaryAUROC: 0.2003910094499588
+tensor(0)
+Epoch 8, Loss: 0.24006174504756927
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2127016129032258
+roc_auc_score: 0.21270161290322578
+Mean individual BinaryAUROC: 0.1712639033794403
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2301564018936191
+roc_auc_score: 0.23015640189361908
+Mean individual BinaryAUROC: 0.17343321442604065
+tensor(2)
+Epoch 9, Loss: 0.19980014860630035
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2052671370967742
+roc_auc_score: 0.20526713709677422
+Mean individual BinaryAUROC: 0.16248629987239838
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.219819726541154
+roc_auc_score: 0.219819726541154
+Mean individual BinaryAUROC: 0.1573989987373352
+tensor(0)
+Epoch 10, Loss: 0.22601725161075592
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.20220094086021506
+roc_auc_score: 0.20220094086021506
+Mean individual BinaryAUROC: 0.15102244913578033
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.2100855925037533
+roc_auc_score: 0.2100855925037533
+Mean individual BinaryAUROC: 0.14726944267749786
+tensor(1)
+Epoch 11, Loss: 0.21080657839775085
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.19497647849462366
+roc_auc_score: 0.19497647849462366
+Mean individual BinaryAUROC: 0.14099827408790588
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.19667077947850697
+roc_auc_score: 0.19667077947850695
+Mean individual BinaryAUROC: 0.14260943233966827
+tensor(1)
+Epoch 12, Loss: 0.2147778868675232
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1922883064516129
+roc_auc_score: 0.1922883064516129
+Mean individual BinaryAUROC: 0.13180582225322723
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.19139315029882598
+roc_auc_score: 0.19139315029882598
+Mean individual BinaryAUROC: 0.13318085670471191
+tensor(3)
+Epoch 13, Loss: 0.18145804107189178
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18989415322580644
+roc_auc_score: 0.18989415322580644
+Mean individual BinaryAUROC: 0.13092398643493652
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18747016054346638
+roc_auc_score: 0.18747016054346638
+Mean individual BinaryAUROC: 0.13317663967609406
+tensor(7)
+Epoch 14, Loss: 0.15476438403129578
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18892809139784947
+roc_auc_score: 0.18892809139784947
+Mean individual BinaryAUROC: 0.13092398643493652
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18296260504926745
+roc_auc_score: 0.18296260504926742
+Mean individual BinaryAUROC: 0.13235487043857574
+tensor(5)
+Epoch 15, Loss: 0.1792866587638855
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18981014784946237
+roc_auc_score: 0.18981014784946237
+Mean individual BinaryAUROC: 0.12372235208749771
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1797262823057056
+roc_auc_score: 0.1797262823057056
+Mean individual BinaryAUROC: 0.11564545333385468
+tensor(6)
+Epoch 16, Loss: 0.21840697526931763
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18716397849462366
+roc_auc_score: 0.18716397849462366
+Mean individual BinaryAUROC: 0.11549189686775208
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.17461330940424627
+roc_auc_score: 0.17461330940424627
+Mean individual BinaryAUROC: 0.09886158257722855
+tensor(7)
+Epoch 17, Loss: 0.1926470398902893
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18792002688172044
+roc_auc_score: 0.18792002688172044
+Mean individual BinaryAUROC: 0.11549189686775208
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1724576783033357
+roc_auc_score: 0.1724576783033357
+Mean individual BinaryAUROC: 0.0986468493938446
+tensor(4)
+Epoch 18, Loss: 0.18369443714618683
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18802503360215053
+roc_auc_score: 0.18802503360215053
+Mean individual BinaryAUROC: 0.11510609090328217
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.17114258514670946
+roc_auc_score: 0.17114258514670944
+Mean individual BinaryAUROC: 0.09764382988214493
+tensor(8)
+Epoch 19, Loss: 0.2020537108182907
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18876008064516128
+roc_auc_score: 0.1887600806451613
+Mean individual BinaryAUROC: 0.11465014517307281
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.16922279360587184
+roc_auc_score: 0.16922279360587184
+Mean individual BinaryAUROC: 0.09748559445142746
+tensor(11)
+Epoch 20, Loss: 0.1387225091457367
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18863407258064516
+roc_auc_score: 0.18863407258064518
+Mean individual BinaryAUROC: 0.11446308344602585
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.16740941747628663
+roc_auc_score: 0.1674094174762866
+Mean individual BinaryAUROC: 0.09703288227319717
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.16940933132763975
+roc_auc_score: 0.16940933132763975
+Mean individual BinaryAUROC: 0.09398835897445679
+MLP weights initialized:0.00019910356786567718, 0.042821530252695084
+tensor(0)
+Epoch 1, Loss: 0.20700053870677948
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.17271505376344087
+roc_auc_score: 0.17271505376344087
+Mean individual BinaryAUROC: 0.1348007321357727
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.18676192284019857
+roc_auc_score: 0.18676192284019855
+Mean individual BinaryAUROC: 0.17755044996738434
+tensor(1)
+Epoch 2, Loss: 0.16250306367874146
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1541078629032258
+roc_auc_score: 0.1541078629032258
+Mean individual BinaryAUROC: 0.12820498645305634
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.16954419690877612
+roc_auc_score: 0.16954419690877612
+Mean individual BinaryAUROC: 0.1539510190486908
+tensor(0)
+Epoch 3, Loss: 0.23301388323307037
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.14465725806451613
+roc_auc_score: 0.14465725806451613
+Mean individual BinaryAUROC: 0.12118340283632278
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.15321015030457816
+roc_auc_score: 0.15321015030457816
+Mean individual BinaryAUROC: 0.12670449912548065
+tensor(3)
+Epoch 4, Loss: 0.19684763252735138
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1376008064516129
+roc_auc_score: 0.1376008064516129
+Mean individual BinaryAUROC: 0.11601363867521286
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13662804074847423
+roc_auc_score: 0.13662804074847423
+Mean individual BinaryAUROC: 0.08494444191455841
+tensor(3)
+Epoch 5, Loss: 0.2020995169878006
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.13520665322580644
+roc_auc_score: 0.13520665322580647
+Mean individual BinaryAUROC: 0.11612387746572495
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12705424885100117
+roc_auc_score: 0.12705424885100114
+Mean individual BinaryAUROC: 0.08322977274656296
+tensor(3)
+Epoch 6, Loss: 0.21417945623397827
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1327284946236559
+roc_auc_score: 0.1327284946236559
+Mean individual BinaryAUROC: 0.12383992224931717
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1239437551410148
+roc_auc_score: 0.1239437551410148
+Mean individual BinaryAUROC: 0.09038351476192474
+tensor(5)
+Epoch 7, Loss: 0.20976917445659637
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12903225806451613
+roc_auc_score: 0.12903225806451613
+Mean individual BinaryAUROC: 0.13068148493766785
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12141638912376976
+roc_auc_score: 0.12141638912376974
+Mean individual BinaryAUROC: 0.10110078006982803
+tensor(3)
+Epoch 8, Loss: 0.19868579506874084
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12731014784946237
+roc_auc_score: 0.12731014784946237
+Mean individual BinaryAUROC: 0.1242440864443779
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11819516586423695
+roc_auc_score: 0.11819516586423692
+Mean individual BinaryAUROC: 0.09812121093273163
+tensor(5)
+Epoch 9, Loss: 0.18761365115642548
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12310987903225806
+roc_auc_score: 0.12310987903225806
+Mean individual BinaryAUROC: 0.12275231629610062
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11355171501377648
+roc_auc_score: 0.11355171501377648
+Mean individual BinaryAUROC: 0.09240947663784027
+tensor(4)
+Epoch 10, Loss: 0.18307597935199738
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12176579301075269
+roc_auc_score: 0.12176579301075269
+Mean individual BinaryAUROC: 0.12136343121528625
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11090642921649496
+roc_auc_score: 0.11090642921649496
+Mean individual BinaryAUROC: 0.08983012288808823
+tensor(1)
+Epoch 11, Loss: 0.14734996855258942
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.12063172043010753
+roc_auc_score: 0.12063172043010753
+Mean individual BinaryAUROC: 0.1165023222565651
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10887447008001289
+roc_auc_score: 0.10887447008001289
+Mean individual BinaryAUROC: 0.08343695849180222
+tensor(8)
+Epoch 12, Loss: 0.167141392827034
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1187415994623656
+roc_auc_score: 0.1187415994623656
+Mean individual BinaryAUROC: 0.11427167803049088
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10863144028944992
+roc_auc_score: 0.1086314402894499
+Mean individual BinaryAUROC: 0.08324649930000305
+tensor(10)
+Epoch 13, Loss: 0.16146428883075714
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11802755376344086
+roc_auc_score: 0.11802755376344087
+Mean individual BinaryAUROC: 0.11511343717575073
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1059624267315513
+roc_auc_score: 0.1059624267315513
+Mean individual BinaryAUROC: 0.08241245150566101
+tensor(5)
+Epoch 14, Loss: 0.15783636271953583
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11897261424731183
+roc_auc_score: 0.11897261424731183
+Mean individual BinaryAUROC: 0.11641111969947815
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10388804523517806
+roc_auc_score: 0.10388804523517806
+Mean individual BinaryAUROC: 0.08234652131795883
+tensor(6)
+Epoch 15, Loss: 0.20897801220417023
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11722950268817205
+roc_auc_score: 0.11722950268817205
+Mean individual BinaryAUROC: 0.11498483270406723
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10348107818944244
+roc_auc_score: 0.10348107818944244
+Mean individual BinaryAUROC: 0.08270622044801712
+tensor(9)
+Epoch 16, Loss: 0.1014024093747139
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1161164314516129
+roc_auc_score: 0.11611643145161292
+Mean individual BinaryAUROC: 0.11548086255788803
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10313163298762705
+roc_auc_score: 0.10313163298762704
+Mean individual BinaryAUROC: 0.082722969353199
+tensor(20)
+Epoch 17, Loss: 0.150709867477417
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11869959677419355
+roc_auc_score: 0.11869959677419353
+Mean individual BinaryAUROC: 0.11418317258358002
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10340558076929714
+roc_auc_score: 0.10340558076929712
+Mean individual BinaryAUROC: 0.08276273310184479
+tensor(8)
+Epoch 18, Loss: 0.1492365151643753
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1184475806451613
+roc_auc_score: 0.11844758064516128
+Mean individual BinaryAUROC: 0.11586666852235794
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10317585290514072
+roc_auc_score: 0.10317585290514072
+Mean individual BinaryAUROC: 0.08279204368591309
+tensor(19)
+Epoch 19, Loss: 0.17437507212162018
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11937163978494623
+roc_auc_score: 0.11937163978494623
+Mean individual BinaryAUROC: 0.10984815657138824
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.1027900970393507
+roc_auc_score: 0.1027900970393507
+Mean individual BinaryAUROC: 0.08276273310184479
+tensor(22)
+Epoch 20, Loss: 0.1357436180114746
+---------------- TRAIN AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.11916162634408602
+roc_auc_score: 0.11916162634408602
+Mean individual BinaryAUROC: 0.10984815657138824
+---------------- VAL AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10307842528200084
+roc_auc_score: 0.10307842528200085
+Mean individual BinaryAUROC: 0.08253858238458633
+---------------- TEST AUC ----------------
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+AUC not computable
+BinaryAUROC: 0.10746585064052795
+roc_auc_score: 0.10746585064052794
+Mean individual BinaryAUROC: 0.08641787618398666
+Results for Tree-Cycles:
+  Test AUC      - Mean: 0.1692, Std: 0.0909
+  Individual AUROCs - Mean: 0.2036, Std: 0.1618
+  Inference Time    - Mean: 0.0034s, Std: 0.0013s

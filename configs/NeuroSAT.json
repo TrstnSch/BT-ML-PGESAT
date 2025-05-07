@@ -3,11 +3,11 @@
         "architecture": "MLP",
         "dataset": "SAT",
         "graph_task": true,
-        "epochs": 30,
+        "epochs": 50,
         "batch_size": 1,
-        "lr_mlp": 0.0003,
-        "sampled_graphs": 20,
-        "coefficient_size_reg": 0.001,
+        "lr_mlp": 0.00003,
+        "sampled_graphs": 5,
+        "coefficient_size_reg": 0.01,
         "coefficient_entropy_reg": 1.0,
         "coefficient_L2_reg": 0.0,
         "coefficient_consistency": 0.0,
@@ -15,6 +15,6 @@
         "num_explanation_edges": 0,
         "num_training_instances" : 30,
         "t0": 5.0,
-        "tT": 1.0
+        "tT": 5.0
     }
 }

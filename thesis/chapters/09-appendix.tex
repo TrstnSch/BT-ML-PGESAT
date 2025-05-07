@@ -158,7 +158,18 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
 sample bias $=0.0$
 training size = num batches -2
 eval size = one batch
+loss = paper loss
+No L2 reg
 
+Since over all sweeps the mean local ROC-AUC was no higher than $0.502$ and no lower than $0.44$, we select the hyperparameters that maximize the metric.
+
+We conclude that regardless of exact hyperparameters, the NeuroSAT model does not succinctly learn UNSAT cores.
+
+
+TODO: After these hyperparameters had been established, we ran an additional test for 50 and 70 epochs, but only achieved a consistent ROC-AUC of 0.5.
+
+
+TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A CERTAIN TIME!!! Try batchnorm?? Else lower lr, below 0.003...
 
 
 \begin{table}[h]
@@ -166,13 +177,13 @@ eval size = one batch
     \scriptsize
     \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
-    \multicolumn{10}{|c|}{\textbf{Hard constraint explainer}} \\ \hline
+    \multicolumn{10}{|c|}{\textbf{Hard constraint explainer – Grid search configuration values}} \\ \hline
     entropy reg & epochs & lr mlp & sampled graphs & concat embs & seed & size reg & tT & t0 & complex arch. \\ \hline
-    0.1 & \textbf{20} & 0.0003 & 1 & True & 75 & 0.01 & \textbf{1.0} & 5.0 & True \\ 
-    \textbf{1.0} & 30 & 0.003 & 5 & False & 76 & \textbf{0.005} & 5.0 &  & False \\ 
-     &  & \textbf{0.01} &  &  &  &  &  &  &  \\ \hline
+    0.1 & 20 & 0.0003 & 1  & False & 75 & 0.1 & 1.0 & 5.0 & False \\
+    \textbf{1.0} & \textbf{30} & \textbf{0.003}  & \textbf{5}  & \textbf{True}  & 76 & \textbf{1.0} & \textbf{5.0} &      & \textbf{True}  \\
+        &     & 0.01   &  &       &     &      &      &      &       \\ \hline
     \end{tabularx}
-    \caption[NeuroSAT hard constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a hard constraint. Highlighted values are the best performing.}
+    \caption[NeuroSAT hard constraint Sweep]{New configurations from the grid search space not present in the original table. Highlighted values are the best performing. TODO: LR 0.01 TOO LOW - ALL EDGES 0!!}
 \end{table}
 
 \begin{table}[h]

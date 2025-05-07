@@ -6,13 +6,13 @@ TODO: In this chapter we introduce all performed experiments. This includes a ge
 Since our work is twofold, we start with the experiments regarding the replication of the PGExplainer with a changed downstream model architecture and a focus on the inductive setting in Section \ref{}. Next, we describe the experiments performed on the adapted explainer framework to generate explanations for the NeuroSAT model predictions of unsatisfiable problems in Section \ref{}.
 
 \section{Replication of PGExplainer}
-All experiments regarding the replication of the presented explainer model. This includes a common experimental setup, including the datasets, corresponding downstream models, as well as hyperparameter searches. In Section xy we replicate the experiments in the inductive setting from the original paper. We also include a study of the effect of using a larger set of training data, as the original proposes that only few training instances are necessary for the explainer to generalize well. Furthermore, we perform the original quantitative experiment in the collective setting with the same hyperparameters for better comparability, as this was the core study of the original paper. In Section xy we run an experiment specific to the BA-2Motif dataset, as we found that it behaves opposite to the expectations. Later, we study the effects of the specific node sets that were used in the original codebase in Section xy. Lastly, we qualitatively evaluate the explanations provided by our reimplemented model (see Section xy).
+In this section we present all experiments regarding the replication of the presented explainer model. We first present the common experimental setup, including the datasets, corresponding downstream models and hyperparameter searches. In Section xy we replicate the experiments in the inductive setting from the original paper. We also include a study of the effect of using a larger set of training data, as the original proposes that only few training instances are necessary for the explainer to generalize well. Furthermore, we perform the original quantitative experiment in the collective setting with the found hyperparameters for better comparability, as this was the core study of the original paper. In Section xy we run an experiment specific to the BA-2Motif dataset, as we found that it behaves opposite to the expectations. Later, we study the effects of the specific node sets that were used in the original codebase in Section xy. Lastly, we qualitatively evaluate the explanations provided by our reimplemented model (see Section xy).
 
 \subsection{Common experimental setup}
 In this section we describe the common setup for the experiments that we perform on PGExplainer.
 
 \textbf{Datasets}
-For our reimplementation we perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. Statistics of each dataset can be found in table \ref{tab:dataset-statistics}. We will give a short description of each dataset.
+We perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. Statistics of each dataset can be found in table \ref{tab:dataset-statistics}. We will give a short description of each dataset.
 
 Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree \cite{albert2002statistical}.
 
@@ -22,30 +22,6 @@ Tree-Cycles uses an 8-level balanced binary tree as a base graph. 80 cycle motif
 The Tree-Grid dataset is assembled in the same way as Tree-Cycles, with the difference that the motifs are 3-by-3 grids. Node features and labels also follow the same procedure.
 BA-2Motif is the first graph dataset with 800 graphs. Each of these graphs is obtained by attaching either a "house" or a cycle as a motif to a base BA graph with 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 and 1 implying a house and circle, respectively (TODO: CHECK).
 The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned to one of 2 classes, depending on the molecules mutagenic effect \ref{}. Following \ref{}, carbon rings with chemical groups $NH_2$ or $NO_2$ are known to be mutagenic, with carbon rings in general existing in both mutagenic and non-mutagenic graphs. The authors thus propose treating the carbon ring as a shared base graph and $NH_2$ and $NO_2$ as motifs for mutagenic graphs. Since there are no explicit motifs for the non-mutagenic graphs, these grapgs are not considered in PGExplainer.
-
-NOTE that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. In the node classification experiments the node sets used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This is also left unexplained by the authors.
-
-
-
-\textbf{Downstream models used}: train/test/validation split. TRAINING SET SIZE = 30 FOR COMPARABILITY WITH ORIGINAL! The node sets of motif nodes used for training and evaluating the explainer are extracted from the codebase. The same is done for the mutagenic graphs with existing ground truth, namely TODO. Similar accuracies achieved of at least $85\%$ (see table \ref{tab:compact-accuracy})
-
-\textbf{Training procedures}: How long you trained, on which hardware (especially if relevant), early stopping criteria, etc.
-
-\textbf{Evaluation metrics}: AUROC score evaluation for quantitative evaluation; Paper does not describe calculation, code varies between datasets. Since explanations are collective, calculating global AUROC is valid, because all edges share the same network parameters (?). We propose consistently calculating local AUROC for each instance and meaning over the dataset, as we use inductive setting. Additionally, AUROC for (sub-)graphs that contain only or no motif edges cannot be calculated individually and is therefore excluded/skipped. This is not regarded in the global calculation. This is not discussed in the original paper.
-
-Qualitative evaluation using the top-$k$ explanation mask edges with highest importance scores. Compared to ground truht that contains $k$ edges. $k$ can be understood as a parameter. For node classification tasks, we only show the computational graph of the node to be explained, as this is known to be relevant for the prediction \cite{}, where the top$-k$ edges are highlighted as explanation.
-
-Efficiency evaluation performed by authors, big increase in eff. since training time is disregarded when compared to GNNExplainer. However, exact method for this not clear. We follow the calculation of the RE-PGE to compare the average time needed for a trained explainer model to return an explanation for any one instance.
-
-\textbf{Hyperparameter tuning}: Hyperparameter tuning using grid search for each dataset
-
-\textbf{Baselines}: Original in both inductive and collective setting, RE-PGE in collective setting
-
-\textbf{Experimental protocol}: Averaged over 10 seeds account for randomness, similar to original.
-
-
-We run additional experiments to evaluate the effects of certain inconsistencies. Therefore, we change the motif nodes that are used for training/evaluating to include all or one select motif node, depending on the dataset. We use the same hyperparameters used for the previous experiments. Besides this change, we follow the experimental setup to evaluate whether a reasoning behind the node selection can be made out.
-
 
 \begin{table}[h]
     \centering
@@ -60,11 +36,30 @@ We run additional experiments to evaluate the effects of certain inconsistencies
     \#labels & 4 & 8 & 2 & 2 & 2 & 2 \\
     \hline
     \end{tabular}
-    \caption[Statistics of PGExplainer datasets]{Dataset statistics for Node and Graph Classification tasks.}
+    \caption[Statistics of PGExplainer datasets]{Dataset statistics for Node and Graph Classification tasks (Luo et al. \cite{luo2020parameterized}).}
     \label{tab:dataset-statistics}
-    \end{table}
+\end{table}
 
-\bigskip
+NOTE that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. In the node classification experiments the node sets used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This is also left unexplained by the authors and extracted from the codebase.
+
+
+The trained downstream models that we use for each dataset are trained as described in Section \ref{}. Since we use a different GNN layer, we try to achieve accuracies above 85\%, similar to the original. The exact accuracies can be seen in Table \ref{} and are slightly higher for four of the datasets, except for BA-Community and MUTAG. We add a dropout layer (see Section \ref{}) with a probability of $p=0.1$ for the latter two, to improve their generalizability and push their testing scores closer to the original. (TODO: The exact downstream task accuracies achieved in PGExplainer can be seen in \ref{tab:compact-accuracy})
+
+\textbf{Training procedures}: How long you trained, on which hardware (especially if relevant), early stopping criteria, etc.
+
+\textbf{Evaluation metrics}: AUROC score evaluation for quantitative evaluation; Paper does not describe calculation, code varies between datasets. Since explanations are collective, calculating global AUROC is valid, because all edges share the same network parameters (?). We propose consistently calculating local AUROC for each instance and meaning over the dataset, as we use inductive setting. Additionally, AUROC for (sub-)graphs that contain only or no motif edges cannot be calculated individually and is therefore excluded/skipped. This is not regarded in the global calculation. This is not discussed in the original paper.
+
+Qualitative evaluation using the top-$k$ explanation mask edges with highest importance scores. Compared to ground truht that contains $k$ edges. $k$ can be understood as a parameter. For node classification tasks, we only show the computational graph of the node to be explained, as this is known to be relevant for the prediction \cite{}, where the top$-k$ edges are highlighted as explanation.
+
+Efficiency evaluation performed by authors, big increase in eff. since training time is disregarded when compared to GNNExplainer. However, exact method for this not clear. We follow the calculation of the RE-PGE to compare the average time needed for a trained explainer model to return an explanation for any one instance.
+
+\textbf{Baselines}: Original in both inductive and collective setting, RE-PGE in collective setting
+
+\textbf{Experimental protocol}: Averaged over 10 seeds account for randomness, similar to original.
+
+
+We run additional experiments to evaluate the effects of certain inconsistencies. Therefore, we change the motif nodes that are used for training/evaluating to include all or one select motif node, depending on the dataset. We use the same hyperparameters used for the previous experiments. Besides this change, we follow the experimental setup to evaluate whether a reasoning behind the node selection can be made out.
+
 
 \subsection{PGExplainer in the inductive setting}
 
@@ -418,6 +413,8 @@ Generated batches of unsat problems that "turned" unsat because of last added cl
 
 For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
 For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
+
+NeuroSAT model achieves accuracy of 1.0 on the unsat problems used.
 
 \textbf{Hyperparameter search}
 We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the hard constraints.
