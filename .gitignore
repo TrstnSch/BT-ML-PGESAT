@@ -163,8 +163,11 @@ cython_debug/
 
 /.vscode
 /code/PGExplainer/models
+/code/PGExplainer/data csv
+/code/PGExplainer/explanations
 /code/PGExplainer/datasets/original
 /code/PGExplainer/wandb
 /code/PGExplainer NeuroSAT/wandb
 /code/PGExplainer NeuroSAT/lib
 /code/PGExplainer NeuroSAT/results/archive
+/code/PGExplainer NeuroSAT/results

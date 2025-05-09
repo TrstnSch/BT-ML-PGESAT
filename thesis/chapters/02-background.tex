@@ -114,17 +114,16 @@ where $e$ denotes the exponential function, and the Rectified Linear Unit (ReLU)
         1 & x > 0.
     \end{cases}
 \end{equation}
+\bigskip
 
-\textbf{Backpropagation}
-
+\textbf{Backpropagation}\par
 The back propagation algorithm is commonly used during neural network training. It optimizes the network parameters by leveraging gradient descent. It first calculates the values for each unit in the network given the input and a set of parameters in a forward order. Then the error for each variable to be optimized is calculated, and the parameters are updated according to their corresponding partial derivative backwards. These two steps will repeat until reaching the optimization target.
 
 \subsection{Regularization}
-A central problem of not only deep learning but machine learning in general is the creation of an algorithm that generalizes well, therefore performing not only on training data, but also on unseen test inputs. There exists many strategies that aim to reduce the test error, sometimes at the expense of an increase in training error. These strategies are known as regularization. We introduce a few of these strategies that are relevant in the course of this work.
+A central problem of not only deep learning but machine learning in general is the creation of an algorithm that generalizes well, therefore performing not only on training data, but also on unseen test inputs. There exists many strategies that aim to reduce the test error, sometimes at the expense of an increase in training error. These strategies are known as regularization. We introduce a few of these strategies that are relevant in the course of this work.\bigskip
 
-\textbf{Parameter Norm Penalties}
+\textbf{Parameter Norm Penalties}\par
 TODO: DEFINE OBJECTIVE J BEFOREHAND?
-
 Many regularization approaches in deep learning restrict the capacity of a model by adding a parameter norm penalty $\Omega(\boldsymbol{\theta})$ to the objective function. Let $J$ be the objective function and the regularized objective function
 \begin{equation}
     \tilde{J}(\boldsymbol{\theta}; \mathbf{X}, \mathbf{y}) = J(\boldsymbol{\theta}; \mathbf{X}, \mathbf{y}) + \alpha\Omega(\boldsymbol{\theta}),
@@ -142,25 +141,21 @@ Another option is the $L^1$ regularization, defined as :
     \Omega(\boldsymbol{\theta}) = ||\mathbf{x}||_1 = \sum_i |\mathbf{x}_i|,
 \end{equation}
 
-that provides a more sparse solution in comparison, meaning that some parameters have an optimal value of zero.
+that provides a more sparse solution in comparison, meaning that some parameters have an optimal value of zero. \bigskip
 
+\textbf{Norm Penalties as Constrained Optimization}\par
+TODO: Constraints in general, as applied in my work probably needed here \bigskip
 
-\textbf{Norm Penalties as Constrained Optimization}
-TODO: Constraints in general, as applied in my work probably needed here
+\textbf{Early stopping}\par
+TODO: SOURCE?!
+When training a deep model, a commonly observable problem is the training error steadily decreasing over time, but the validation set error rising after some time, indicating that the model is overfitting to the train data. To obtain a better model we may then return to a parameter setting at an earlier point in the training, where the validation set error was at its lowest. In practice, we store a copy of the model parameters at any point in training where the validation error decreases. Thus, when the training is concluded we return the stored set of parameters, rather than the latest one. Additionally, we may stop our algorithm early if the validation error does not decrease over a set period of iterations.\bigskip
 
-\textbf{Early stopping}
-TODO: SOURCE?
-
-When training a deep model, a commonly observable problem is the training error steadily decreasing over time, but the validation set error rising after some time, indicating that the model is overfitting to the train data. To obtain a better model we may then return to a parameter setting at an earlier point in the training, where the validation set error was at its lowest. In practice, we store a copy of the model parameters at any point in training where the validation error decreases. Thus, when the training is concluded we return the stored set of parameters, rather than the latest one. Additionally, we may stop our algorithm early if the validation error does not decrease over a set period of iterations.
-
-\textbf{Dropout}
-
+\textbf{Dropout}\par
 Dropout \cite{hinton2012improving} is a regularization technique used to prevent a neural network from "overfitting" to the training data, which occurs due to feature detectors (TODO!?) of models being tuned to the training data, but not to the unseen test data. This is done by randomly omitting each hidden unit from the network with a common probability $p$ for each presentation of each training instance, to avoid hidden units relying on the presence of other hidden units. Usually, to reduce the error on a test set, an average of the predictions of multiple networks is consulted, which requires training many separate networks. Random dropout provides a computationally cheap alternative to this approach. Effectively, at each presentation of each training instance a different network is used, but the present hidden units share the same weights across all these networks.
 
-At test time, the "mean network" is used, that contains all hidden units with their outgoing weights scaled by the factor $\frac{1}{1-p}$, to account for more hidden units being present during this stage.
+At test time, the "mean network" is used, that contains all hidden units with their outgoing weights scaled by the factor $\frac{1}{1-p}$, to account for more hidden units being present during this stage. \bigskip
 
-\textbf{Batch Normalization}
-
+\textbf{Batch Normalization}\par
 While not strictly a regularization technique, batch normalization \cite{ioffe2015batch} often serves a similar purpose in practice by improving generalization.
 In deep models composed of several layers the gradient tells us how to update each parameter assuming that the other layers do not change. Since in practice all layers are updated simultaneously, this may lead to unexpected results. Batch normalization is an optimization technique that can be applied to any input or hidden layer to reduce the aforementioned problem. We follow the definition by Goodfellow et al. \cite{Goodfellow-et-al-2016}.
 
@@ -217,7 +212,7 @@ The diagonal degree matrix $D\in \mathbb{R}^{n\times n}$ of $G$ is defined as:
 \end{equation*}
 
 $G$ is called a subgraph of another graph $G'=(V',E')$ if $V(G) \subseteq V(G')$ and $E(G) \subseteq E(G')$. This is denoted as $H \subseteq G$. The number of nodes in a graph $|V|$ is its order and the number of edges $|E|$ is its size (see Diestel \cite{Diestel2017}).
-We additionally define bipartite graphs according to Asratian et al. \cite{asratian1998}: A graph $G$ is bipartite if the set of nodes $V$ can be partitioned into two disjoint sets $V_1$ and $V_2$ such that: $V = V_1 \cup V_2, V_1 \cap V_2 = \emptyset$ and $\forall (i,j) \in E(G): (i \in V_1 \land j \in V_2) \lor (i \in V_2 \land j \in V_1)$. This formalizes that no two nodes from the same set are adjacent. The sets $V_1$ and $V_2$ are called colour classes and $(V_1, V_2)$ is a bipartition of $G$. This means that if a graph is bipartite all nodes in $V$ can be coloured by at most two colours so that no two adjacent nodes share the same colour.\\
+We additionally define bipartite graphs according to Asratian et al. \cite{asratian1998}: A graph $G$ is bipartite if the set of nodes $V$ can be partitioned into two disjoint sets $V_1$ and $V_2$ such that: $V = V_1 \cup V_2, V_1 \cap V_2 = \emptyset$ and $\forall (i,j) \in E(G): (i \in V_1 \land j \in V_2) \lor (i \in V_2 \land j \in V_1)$. This formalizes that no two nodes from the same set are adjacent. The sets $V_1$ and $V_2$ are called color classes and $(V_1, V_2)$ is a bipartition of $G$. This means that if a graph is bipartite all nodes in $V$ can be colored by at most two colors so that no two adjacent nodes share the same color. \bigskip
 \begin{figure}[h]
     \centering
     \begin{minipage}{0.5\textwidth}
@@ -276,9 +271,8 @@ We additionally define bipartite graphs according to Asratian et al. \cite{asrat
     \label{fig:bipartite-colored}
 \end{figure}
 
-\textbf{Random Graphs}
+\textbf{Random Graphs}\par
 \label{sec:random-graphs}
-
 %Gilbert\cite{} describes the process of generating a random graph of order $N$ by assigning a common probability to exist in the graph to each potential edge between two nodes. Note that these random selections are made independently of each other, effectively drawing from a Bernoulli distribution. \\
 Gilbert \cite{gilbert1959random} describes the process of generating a random graph of order $N$ by assigning a common probability of existence to each potential edge between any two nodes. For each of these potential edges an experiment is performed independently to determine whether it shall be included in the resulting graph. Note that this process can be modeled using a Bernoulli distribution.
 %The actual edges in the graph are then selected by performing random experiments, made independently of each other, and can therefore be described by a Bernoulli distribution.
@@ -481,25 +475,25 @@ with $c_{v,w} = (d(v)d(w))^{-\frac{1}{2}}\mathbf{A}_{v,w}$.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{img/message_passing.png}
-    \caption{Node features passed along edges. Reprinted from \cite{ali2023gnns}.}
+    \caption[Message passing]{Node features passed along edges. Reprinted from \cite{ali2023gnns}.}
 \end{figure}
 
-Therefore, we briefly present two subsequent models that are used in the course of this work.
+Therefore, we briefly present two subsequent models that are used in the course of this work. \bigskip
 
-\textbf{Graph Convolutional Network} \\
+\textbf{Graph Convolutional Network} \par
 Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. An example is the model proposed by Kipf et al. \cite{kipf2016semi} that introduces a simple, layer-wise propagation rule for multi-layer GCNs as
 \begin{equation}
     \label{eq:GCN}
     H^{l+1} = \sigma(\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}),
 \end{equation}
-where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}$ is the degree matrix and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in Equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$. $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix, referred to as renormalization trick. This architecture aims to alleviate the problem of overfitting on local neighborhood structures for graphs with very wide node degree distributions (TODO: Source).
+where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}$ is the degree matrix and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in Equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$. $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix, referred to as renormalization trick. This architecture aims to alleviate the problem of overfitting on local neighborhood structures for graphs with very wide node degree distributions (TODO: Source). \bigskip
 
 %TODO: generalization to signal X?
 %\begin{equation}
 %    Z = \hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}X\Theta
 %\end{equation}
 
-\textbf{Higher-order GNN} \\
+\textbf{Higher-Order GNN} \par
 TODO: A basic GNN model can be implemented as follows (Hamilton, Ying, and Leskovec 2017b)
 Morris et al. \cite{morris2019weisfeiler} propose an implementation for a GNN model consisting of stacked neural network layers, that each aggregate the local neighborhood information of a node and pass it to the next one. This network is defined specifically for graphs that can be partitioned into $r$ color classes and therefore applicable to bipartite graphs. The new features of node $i$ are then computed with:
 \begin{equation}

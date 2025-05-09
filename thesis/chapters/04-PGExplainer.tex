@@ -94,20 +94,18 @@ $\Psi$ denotes the parameters in the explanation network and the output $\Omega$
 \end{equation}
 Consequently, $G^{(i)}$ and $G_s^{(i,k)}$ denote the input graph and the $k$-th graph sampled with Equation \ref{eq:reparam_trick} in \ref{eq:explainer_network} respectively for instance $i$. The full pipeline of the PGExplainer can be observed in figure \ref{fig:PGExplainer_pipeline}. 
 
-The authors propose two slightly different instantiations of $\Omega$ for node classification and graph classification tasks.
+The authors propose two slightly different instantiations of $\Omega$ for node classification and graph classification tasks.\bigskip
 
-\textbf{Explanation network for graph classification}
-
+\textbf{Explanation Network for Graph Classification}\par
 For graph level tasks, the authors consider each graph to be an instance, independent  of specific nodes. The output $\Omega$ of the network (see Equation \ref{eq:explainer_network}) is thus specified as:
 \begin{equation}
     \label{eq:mlp_graph_input}
     \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j]),
 \end{equation}
-where $\text{MLP}_\Psi$ is an MLP ( see \ref{} for implementation details) parameterized with $\Psi$ and $\oplus$ denotes the concatenation operation. Effectively, for each edge in $G_o$ a concatenation of both its nodes is fed through the MLP. The output $\omega_{ij}$ is therefore an edge logit (TODO: NOT IN GENERAL? ONLY FOR THE LATER SPECIFIED MLP?), which serves as a parameter in the sampling process.
+where $\text{MLP}_\Psi$ is an MLP ( see \ref{} for implementation details) parameterized with $\Psi$ and $\oplus$ denotes the concatenation operation. Effectively, for each edge in $G_o$ a concatenation of both its nodes is fed through the MLP. The output $\omega_{ij}$ is therefore an edge logit (TODO: NOT IN GENERAL? ONLY FOR THE LATER SPECIFIED MLP?), which serves as a parameter in the sampling process. \bigskip
 
-\textbf{Explanation network for node classification}
+\textbf{Explanation Network for Node Classification}\par
 %Since explanations for different nodes may not share a common explanation pattern, especially for nodes with different labels, ... DOES THIS NOT ALSO APPLY FOR GRAPHS?!
-
 For node level tasks on the other hand, each prediction node is considered as an instance. Let an edge $(i,j)$ be considered relevant for the prediction of a node $u$, but irrelevant for the prediction of a node $v$. To explain the prediction of node $v$ the authors specify the output $\Omega$ of the network in Equation \ref{eq:explainer_network} as:
 \begin{equation}
     \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j\oplus\mathbf{z}_v]).
@@ -122,7 +120,7 @@ For a target GNN consisting of $L$ graph layers with
     &\vdots \\
     \mathbf{H}_L &= F_L(\mathbf{H}_{L-1}, \mathbf{X}), \\
 \end{align*}
-this leads to $\mathbf{Z} \in \mathbb{R}^{V(G_o)\times (Ld)}$ being the matrix of node embeddings $\mathbf{z}$ that are computed as:
+this leads to $\mathbf{Z} \in \mathbb{R}^{|V(G_o)|\times (Ld)}$ being the matrix of node embeddings $\mathbf{z}$ that are computed as:
 \begin{equation}
     \mathbf{z}_i = \mathbf{h}_{1,i} \oplus \mathbf{h}_{2,i} \oplus ... \oplus \mathbf{h}_{L,i},
 \end{equation}
@@ -130,12 +128,8 @@ with $\mathbf{h}_{L,i}$ denoting the hidden representations of node $i$ in layer
 
 Furthermore, it is important to note, that for target GNNs utilizing a message passing mechanism, the prediction at node $v$ is fully determined by its local computation graph. This is defined by its $L-$hop neighborhood $\mathcal{N}_L(v)$ \cite{ying2019gnnexplainer}. TODO: SEE FIGURE\bigskip
 
-\textbf{Collective and inductive setting}
-
+\textbf{Collective and Inductive Setting}\par
 Due to the nature of its predecessor GNNExplainer, the authors main focus was the application in a collective setting, where the goal is to explain a full population of instances by training on all these and thus being able to provide explanations for every single one. However, since the PGExplainer utilizes a deep neural network to parameterize the generation process of explanations for a population, it can be utilized in an inductive setting, unlike its predecessor. This means, that explanations can be generated for instances from the same population, that have not been seen during training. Thus, it is not necessary to retrain the explainer for new instances of the same population, effectively reducing the computational complexity by the training time when compared to the GNNExplainer.
-
-We discuss the results of the inductive performance study by the authors in \ref{}.
-
 
 %"PGExplainer learns a latent variable for each edge in the original input graph with a neural network parameterized by Ψ, which is shared by all edges in the population of input graphs." "In GNNExplainer, the parameter size is linear to the number of edges"
 
@@ -153,10 +147,10 @@ This leads to an improved computational complexity when compared to their baseli
 
 \tikzset{
   mymini/.pic={
-    \node[circle, draw, fill=black, inner sep=2pt, label=left:$x_i$] (x) at (0,0) {};
-    \node[circle, draw, fill=black, inner sep=2pt, label=above:$x_j$] (y) at (0.5,0.5) {};
-    \node[circle, draw, fill=black, inner sep=2pt, label=left:$x_k$] (a) at (0,0.5) {};
-    \node[circle, draw, fill=black, inner sep=2pt, label=left:$x_l$] (b) at (0,-0.5 ) {};
+    \node[circle, draw, fill=black, inner sep=2pt, label=left:$\mathbf{x}_i$] (x) at (0,0) {};
+    \node[circle, draw, fill=black, inner sep=2pt, label=above:$\mathbf{x}_j$] (y) at (0.5,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt, label=left:$\mathbf{x}_k$] (a) at (0,0.5) {};
+    \node[circle, draw, fill=black, inner sep=2pt, label=left:$\mathbf{x}_l$] (b) at (0,-0.5 ) {};
     \draw[-] (x) -- (y);
     \draw[-] (a) -- (y);
     \draw[-] (b) -- (x);
@@ -166,10 +160,10 @@ This leads to an improved computational complexity when compared to their baseli
 
 \tikzset{
   mymini3/.pic={
-    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$z_i$] (x) at (0,0) {};
-    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=above:$z_j$] (y) at (0.5,0.5) {};
-    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$z_k$] (a) at (0,0.5) {};
-    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$z_l$] (b) at (0,-0.5) {};
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$\mathbf{z}_i$] (x) at (0,0) {};
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=above:$\mathbf{z}_j$] (y) at (0.5,0.5) {};
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$\mathbf{z}_k$] (a) at (0,0.5) {};
+    \node[circle, draw, fill=black, minimum size=4pt, inner sep=2pt, label=left:$\mathbf{z}_l$] (b) at (0,-0.5) {};
     \draw[-] (x) -- (y);
     \draw[-] (a) -- (y);
     \draw[-] (b) -- (x);
@@ -196,10 +190,10 @@ This leads to an improved computational complexity when compared to their baseli
     \node[circle, draw, fill=black, inner sep=2pt] (y) at (0.5,0.5) {};
     \node[circle, draw, fill=black, inner sep=2pt] (a) at (0,0.5) {};
     \node[circle, draw, fill=black, inner sep=2pt] (b) at (0,-0.5 ) {};
-    \draw[-] (x) -- node[midway, right, font=\scriptsize] {$z_{ij}$} (y);
-    \draw[-] (a) -- node[midway, above, font=\scriptsize] {$z_{jk}$}(y);
-    \draw[-] (b) -- node[midway, left, font=\scriptsize] {$z_{il}$}(x);
-    \draw[-] (a) -- node[midway, left, font=\scriptsize] {$z_{ik}$}(x);
+    \draw[-] (x) -- node[midway, right, font=\scriptsize] {$\mathbf{z}_{ij}$} (y);
+    \draw[-] (a) -- node[midway, above, font=\scriptsize] {$\mathbf{z}_{jk}$}(y);
+    \draw[-] (b) -- node[midway, left, font=\scriptsize] {$\mathbf{z}_{il}$}(x);
+    \draw[-] (a) -- node[midway, left, font=\scriptsize] {$\mathbf{z}_{ik}$}(x);
   }
 }
 
@@ -223,17 +217,17 @@ This leads to an improved computational complexity when compared to their baseli
 \node (embeddings) [emb, below=of target] {Node Embeddings $\mathbf{Z}$ of $G_o$};
 \node[anchor=center] at ([xshift=4cm]embeddings.center) 
  (node_embs) 
- {$\begin{bmatrix} z_i \\ z_j \\ \vdots \end{bmatrix}$};
+ {$\begin{bmatrix} \mathbf{z}_i \\ \mathbf{z}_j \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of node_embs, anchor=west] 
- {\scriptsize $[|V(G_o)|]$};
+ {\scriptsize $\in \mathbb{R}^{|V(G_o)|}$};
 \pic at ([xshift=7cm]embeddings.center) {mymini3};
 \node (embedding_transformation) [process, below=of embeddings] {Edge Embedding Transformation};
 \node (edge_embeddings) [emb, below=of embedding_transformation] {Edge Embeddings of $G_o$};
 \node[anchor=center] at ([xshift=4cm]edge_embeddings.center) 
  (edge_embs) 
- {$\begin{bmatrix} z_{ij} \\ z_{jk} \\ \vdots \end{bmatrix}$};
+ {$\begin{bmatrix} \mathbf{z}_{ij} \\ \mathbf{z}_{jk} \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of edge_embs, anchor=west] 
- {\scriptsize $[|E(G_o)|]$};
+ {\scriptsize $\in \mathbb{R}^{|E(G_o)|}$};
 \pic at ([xshift=7cm]edge_embeddings.center) {mymini4};
 \node (explainer) [module, below=of edge_embeddings] {PGExplainer MLP};
 \node (logits) [emb, below=of explainer] {Edge Logits/Latent variables $\Omega$};
@@ -241,14 +235,14 @@ This leads to an improved computational complexity when compared to their baseli
  (omega) 
  {$\begin{bmatrix} \omega_{ij} \\ \omega_{jk} \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of omega, anchor=west] 
- {\scriptsize $[|E(G_o)|]$};
+ {\scriptsize $\in \mathbb{R}^{|E(G_o)|}$};
 \node (trick) [process, below=of logits] {Reparameterization Trick};
 \node (weights) [emb, below=of trick] {Sampled edge importance weights};
 \node[anchor=center] at ([xshift=4cm]weights.center) 
  (edge_score) 
  {$\begin{bmatrix} \hat{e}_{i,j} \\ \hat{e}_{jk} \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of edge_score, anchor=west] 
- {\scriptsize $[|E(G_o)|]$};
+ {\scriptsize $\in (0,1)^{|E(G_o)|}$};
 
 \node (sampled_graph) [data, below= of weights] {Sampled graph $\hat{G}_s$};
 \pic at ([xshift=7cm]sampled_graph.center) {mymini2};
@@ -396,8 +390,7 @@ This leads to an improved computational complexity when compared to their baseli
 \label{sec:Regularization_Terms}
 To enhance the preservation of desired properties of explanations the authors propose various regularization terms. These are added to the learning objective, depending on the specific downstream task at hand.\bigskip
 
-\textbf{Size and entropy constraints}
-
+\textbf{Size and Entropy Constraints}\par
 Inspired by GNNExplainer \cite{ying2019gnnexplainer}, to obtain compact and precise explanations, a constraint on the size of the explanations is added in the form of $||\Omega||_1$, the $l_1$ norm on latent variables $\Omega$. Additionally, to encourage the discreteness of edge weights, element-wise entropy is added as a constraint:
 \begin{equation}
     H_{\hat{G}_s} = -\frac{1}{|\varepsilon|}\sum_{(i,j)\in \varepsilon} (\hat{e}_{i,j}\log \hat{e}_{i,j} + (1-\hat{e}_{i,j})\log(1-\hat{e}_{i,j})),
@@ -406,16 +399,14 @@ for one explanatory graph $\hat{G_s}$ with $\varepsilon$ edges. For the collecti
 
 Note that the following two constraints are not used in the original experimental setup, but serve as inspiration for constraints introduced in our NeuroSAT application\ref{} and are therefore included. \bigskip
 
-\textbf{Budget constraint}
-
+\textbf{Budget Constraint}\par
 The authors propose the modification of the size constraint to a budget constraint, for a predefined available budget $B$. Let $|\hat{G}_s| \leq B$, then the budget regularization is defined as:
 \begin{equation}
     R_b = \text{ReLU}(\sum_{(i,j)\in \varepsilon}\hat{e}_{i,j}-B).
 \end{equation}
 Note that $R_b = 0$ when the explanatory graph is smaller than the budget. When out of budget, the regularization is similar to that of the size constraint. \bigskip
 
-\textbf{Connectivity constraint}
-
+\textbf{Connectivity Constraint}\par
 To enhance the effect of the explainer detecting a small, connected subgrap, motivated through real-life motifs being inherently connected, the authors suggest adding the cross-entropy of adjacent edges. Let $(i,j)$ and $(i,k)$ be two edges that both connect to the node $i$, then $(i,k)$ should rather be included in the explanatory graph if the edge $(i,j)$ is selected to be included. This is formally defined as:
 \begin{equation}
     H(\hat{e}_{i,j},\hat{e}_{i,k}) = -[1-\hat{e}_{i,j}\log(1-\hat{e}_{i,k})+\hat{e}_{i,j}\log \hat{e}_{i,k}].
@@ -442,8 +433,7 @@ Since PGExplainer generates edge wise explanations, and we want to evaluate the 
 The remainder of the explainer pipeline stays identical. The downstream task - NeuroSAT - calculates hidden node representations $\mathbf{h}^t$ for the input graph $G_b$, now modeling a SAT instance, at each iteration $t$. The representations in the last iteration $T$ are extracted as node embeddings $\mathbf{z}$ for clause and literal nodes respectively, and transformed into edge embeddings (see Equation \ref{eq:mlp_graph_input}). Though this is only done for node level tasks in the original, we also consider using a concatenation of multiple hidden representations $\mathbf{h}^{\frac{1}{2}T} \oplus \mathbf{h}^{\frac{3}{4}T} \oplus \mathbf{h}^T$ as node embeddings $\mathbf{z}$. These serve as the input of the explainer MLP and are processed as usual, with either of the following additional limitations. \bigskip
 
 
-\textbf{Soft modified connectivity constraint}
-
+\textbf{Soft Modified Connectivity Constraint}\par
 To account for the definition of unsatisfiable cores - a subset of clauses in the original formula whose conjunction is still unsatisfiable - we add a constraint that reinforces the prediction of complete clauses. Therefore, if the explainer assigns a high score to an edge $(l_1,c)$, all edges $(l_k,c) \in E(c)$ that also connect to the clause node $c$ should receive a high score. Therefore, we introduce a soft constraint that punishes varying edge weights for the same clause. For our sampled bipartite Graph $\hat{G}_s$ with node sets $L$ and $C$ containing literal nodes and clause nodes respectively, we define:
 \begin{equation*}
     R_C = \sum_{c \in C}  \text{Var}(\hat{E}_c) = \sum_{c \in C} \frac{1}{|E(c)|} \sum_{(l,c) \in E(c)} (\hat{e}_{l,c} - \bar{E_c})^2,
@@ -451,8 +441,7 @@ To account for the definition of unsatisfiable cores - a subset of clauses in th
 where $\hat{E}_c = \{\hat{e}_{l,c} \mid (l,c)\in E(\hat{G}_s)\}$ is the set of edge weights corresponding to edges incident to $c$ and $\bar{E_c} = \frac{1}{|\hat{E}_c|}\sum_{\hat{e}_{l,c} \in \hat{E}_c} \hat{e}_{l,c}$ denotes the mean of $\hat{E}_c$. This is added to our objective function during training. \bigskip
 
 
-\textbf{Hard constraint}
-
+\textbf{Hard Constraint}\par
 Since the soft constraint only encourages the prediction of entire clauses but does not enforce it, we also propose a hard constraint that modifies the predicion process. We restrain the edge logits $\omega_{i,j}$ calculated by the MLP to be identical for all edges that connect to the same clause. %Let $\Omega_c = \{\hat{\omega}_{i,c} \mid (i,c)\in E\}$ denote the set of logits corresponding to the edges connected to node $c$. We update these logits with:
 %\begin{equation}
 %    \mu_c = \frac{1}{|\Omega_c|} \sum_{\hat{\omega}_{i,c} \in \Omega_c} \hat{\omega}_{i,c}
@@ -487,18 +476,22 @@ In the following, we provide the implementation details needed to reproduce our 
 
 For our replication we try to implement the methods and details as close to the original paper as possible. Thus, we follow the general pseudocode algorithms presented by the authors (see Appendix \ref{sec:PGE_material}). Since the paper differs from the original codebase and is imprecise about certain descriptions, as found by Holdijk et al. \cite{holdijk2021re}, we aim to give a thorough description. This includes the tools we used, resulting changes regarding the data processing, the general architecture and hyperparameters of the downstream models, the architecture and hyperparameters of the explainer model, as well as concrete methods implemented in the model. \bigskip
 
-\textbf{Libraries}: To reimplement the framework, we utilize a couple of libraries that we introduce shortly. Most notably, we use PyTorch Geometric \cite{Fey/Lenssen/2019}, a library built upon PyTorch \cite{paszke2019pytorch}, that provides methods to create and train GNNs. For evaluation of the explainer model, specifically for calculating the ROC-AUC score, we use TorchEval, a model evaluation library that is part of PyTorch. Furthermore, we integrate WandB \cite{wandb} to monitor model performance and allow for easy hyperparameter searches. To visualize the graphs and their explanations we employ NetworkX \cite{SciPyProceedings_11}. TODO: seaborn \cite{Waskom2021} for plotting curves\bigskip
+\textbf{Libraries}\par
+ To reimplement the framework, we utilize a couple of libraries that we introduce shortly. Most notably, we use PyTorch Geometric \cite{Fey/Lenssen/2019}, a library built upon PyTorch \cite{paszke2019pytorch}, that provides methods to create and train GNNs. For evaluation of the explainer model, specifically for calculating the ROC-AUC score, we use TorchEval, a model evaluation library that is part of PyTorch. Furthermore, we integrate WandB \cite{wandb} to monitor model performance and allow for easy hyperparameter searches. To visualize the graphs and their explanations we employ NetworkX \cite{SciPyProceedings_11}. Lastly, we utilize seaborn \cite{Waskom2021} to plot loss curves and other metrics.\bigskip
 
-\textbf{Preprocessing}: We use the original datasets that are provided in the PGExplainer codebase\footnote{\url{https://github.com/flyingdoog/PGExplainer}}. We transform the data to fit our PyTorch Geometric framework. Each graph is stored as a torch-geometric Data object. This holds the $d$-dimensional node features as tensors, the graph label index in the form of a long or all node labels in the form of a tensor of class indices, a ground truth edge mask that contains the edges present in the motif, as well as training-, evaluation- and test-node-masks for training the downstream model. In PyTorch Geometric edges are stored in the edge-index format as a COO tensor - a PyTorch coordinate format that stores tuples of element indices and their corresponding values. In the context of graph edges in PyTorch Geometric, for an edge $(i,j)$ the element index is the starting node $i$ and the corresponding value its incident node $j$. This is computed from the adjacency matrix $A$ as follows:
+\textbf{Preprocessing}\par
+ We use the original datasets that are provided in the PGExplainer codebase\footnote{\url{https://github.com/flyingdoog/PGExplainer}}. We transform the data to fit our PyTorch Geometric framework. Each graph is stored as a torch-geometric Data object. This holds the $d$-dimensional node features as tensors, the graph label index in the form of a long or all node labels in the form of a tensor of class indices, a ground truth edge mask that contains the edges present in the motif, as well as training-, evaluation- and test-node-masks for training the downstream model. In PyTorch Geometric edges are stored in the edge-index format as a COO tensor - a PyTorch coordinate format that stores tuples of element indices and their corresponding values. In the context of graph edges in PyTorch Geometric, for an edge $(i,j)$ the element index is the starting node $i$ and the corresponding value its incident node $j$. This is computed from the adjacency matrix $A$ as follows:
 \begin{verbatim}
     edge_index = A.nonzero().t().contiguous()
 \end{verbatim}
 First, the matrix indices or coordinates of the edges - non-zero elements - are extracted. These are then transposed and lastly stored in contiguous memory. The resulting shape of the edge-index is $\mathbb{N}^{2\times \text{\#edges}}$. Therefore, we only transform the data without changing its content. \bigskip
 
-\textbf{Reproducibility}: Inspired by Holdijk et al. \cite{holdijk2021re} we implement the ability to seed the experiments performed on PGExplainer. PyTorch Geometric provides a way of seeding all modules that generate random numbers during the training process, including torch and python random.
+\textbf{Reproducibility}\par
+ Inspired by Holdijk et al. \cite{holdijk2021re} we implement the ability to seed the experiments performed on PGExplainer. PyTorch Geometric provides a way of seeding all modules that generate random numbers during the training process, including torch and python random.
 To further increase reproducibility, we utilize PyTorch's \verb|use_deterministic_algorithms|, forcing the learning algorithm to only use deterministic algorithms. For the dataset splits we use a separate fixed seed that consistently creates the same sets across all training runs and experiments.\bigskip
 
-\textbf{Downstream model specifics}: In PGExplainer two slightly different architectures of GNNs for node classification and graph classification are introduced. We recreate these in PyTorch Geometric, while changing the exact layers used in the network to test whether the claim that the explainer does apply to any downstream GNN model holds. These models implement the same downstream classification tasks on the given datasets that achieve accuracies of at least $85\%$, a baseline set in GNNExplainer \cite{ying2019gnnexplainer}. The datasets as well as the exact accuracies of each of the models are presented in the experimental setup (see Section \ref{sec:experiments_replication}). 
+\textbf{Downstream Model Specifications}\par
+ In PGExplainer two slightly different architectures of GNNs for node classification and graph classification are introduced. We recreate these in PyTorch Geometric, while changing the exact layers used in the network to test whether the claim that the explainer does apply to any downstream GNN model holds. These models implement the same downstream classification tasks on the given datasets that achieve accuracies of at least $85\%$, a baseline set in GNNExplainer \cite{ying2019gnnexplainer}. The datasets as well as the exact accuracies of each of the models are presented in the experimental setup (see Section \ref{sec:experiments_replication}). 
 
 The model for both node- and graph classification consist of $3$ "GraphConv" layers, a Pytorch Geometric implementation of the Higher-order GNN by Morris et al \cite{morris2019weisfeiler} (see Equation \ref{eq:higher-order-gnn}). Since this layer allows for the passing of edge weights, weights of one are passed by default - e.g. during downstream model training - to simply maintain the adjacency matrix. Each of these layers has $20$ hidden units and is followed by a ReLU activation function. The first layer processes the $d$-dimensional input node features, while the remaining layers retain the hidden dimensionality of $20$. Holdijk et al. \cite{holdijk2021re} found that the original code wrongfully uses undocumented batch normalization layers in training mode during evaluation, which leads to a deviation in results, and thus completely omit the use of batch normalization. We choose to add batch normalization between the first two layers and their activation functions for both models, similar to the orginal codebase, without the training mode error. Additionally, we add an optional dropout layer after each activation function to improve the generalizability on more difficult tasks.
 
@@ -532,7 +525,7 @@ Note that a PyTorch Geometric implementation of the GCN layer described in equat
 
 We use a PyTorch Geometric implementation of the Higher-order GNN layer with a ReLU activation function, as defined in Equation \ref{eq:higher-order-gnn}. On the one hand, it works on bipartite graphs by definition. On the other hand, it explicitly allows for edge weights to be passed, which is essential for "applying" the sampled, approximate discrete explanation mask to the input graph during training. This is necessary since in practice, applying a hard mask to the input graph would prevent the computation of gradients during back propagation. Thus, instead of actually removing edges of the graph, the edge importance scores that are learned by the MLP are treated as edge weights in the prediction process of the downstream model, with higher scores indicating edges being more relevant for the prediction. During training, the prediction for the original input graph is computed from the node features and edge-index alone, while for the sampled graph the edge weights are passed additionally. (TODO: Visualization?)\bigskip
 
-\textbf{Explainer Architecture}:
+\textbf{Explainer Architecture}\par
 We implement the explainer MLP architecture described in the paper. It consists of two linear layers, with a ReLU activation function applied after the first. The first layer maps the input edge embedding dimension to 64 hidden units, and the second maps the hidden units to a single output scalar. The input edge embeddings for the MLP are calculated as described in Section \ref{sec:Global_Explanations}. For the described downstream models, the resulting MLP input - a concatenation of the node embeddings - has a shape of $\mathbb{R}^{2\cdot20}$ for graph tasks and $\mathbb{R}^{3\cdot60}$ for node tasks. Again, this is taken from the original codebase, as the paper does not consider the node embeddings as a concatenation of all GNN layers for node tasks.
 
 We implement the calculation of edge embeddings as follows:
@@ -550,16 +543,27 @@ We implement the calculation of edge embeddings as follows:
 \end{verbatim}
 The trained, fixed downstream model \verb|modelGNN| is passed to the explainer and returns its node embeddings for the input graph, defined by its node features \verb|x| and the \verb|edge_index|. Depending on the task at hand, the node embeddings of each two connected nodes, as well as the node embeddings of the node to be predicted \verb|nodeToPred| in the case of a node task, are concatenated and returned as edge embeddings. \bigskip
 
-\textbf{Explainer training details} We initialize all linear layer weights of the explainer with He initialization \cite{he2015delving}, which is used by default for linear layers with ReLU activation in PyTorch. We also test the effect of adopting the initializations from the downstream models and initializing all layer weights with Xavier \cite{glorot2010understanding} (TOD: see Section \ref{}). Biases are generally initialized with zero. During training, the Adam optimizer \cite{kingma2014adam} is used to update the model parameters based on gradients. Additionally, gradients are clipped during training using PyTorch's \verb|clip_grad_norm_| with a maximum norm of 2. The authors define the temperature used in the reparameterization trick (see Equation \ref{eq:reparam_trick}) with an annealing temperature schedule, as proposed by Abid et al. \cite{abid2019concrete}:
+\textbf{Explainer Training Specifications}\par
+We initialize all linear layer weights of the explainer with He initialization \cite{he2015delving}, which is used by default for linear layers with ReLU activation in PyTorch. We also test the effect of adopting the initializations from the downstream models and initializing all layer weights with Xavier \cite{glorot2010understanding} (TOD: see Section \ref{}). Biases are generally initialized with zero. During training, the Adam optimizer \cite{kingma2014adam} is used to update the model parameters based on gradients. Additionally, gradients are clipped during training using PyTorch's \verb|clip_grad_norm_| with a maximum norm of 2. The authors define the temperature used in the reparameterization trick (see Equation \ref{eq:reparam_trick}) with an annealing temperature schedule, as proposed by Abid et al. \cite{abid2019concrete}:
 \begin{equation}
     \tau^{(t)} = \tau_0(\frac{\tau_T}{\tau_0})^{\frac{t}{T}},
 \end{equation} 
 where $t$ is the current epoch and $T$ is the total number of epochs. $\tau_0$ and $\tau_T$ are hyperparameters that define the initial and final temperature, respectively.
-The reason for this is that small temperatures tend to generate more discrete graphs, as they more closely approximate samples from the Gumbel-Softmax distribution. While this is desirable at convergence, it may hinder the optimization early in training due to a reduced gradient signal. We note that in the original codebase $t$ is initialized with $0$, leading to a temperature $\tau^{(0)} = \tau_0$ in the first epoch, and $\tau^{(T-1)} = \tau_0(\frac{\tau_T}{\tau_0})^{\frac{T-1}{T}}$ in the last epoch. We initialize $t$ with $1$ to get a temperature of $\tau^{(T)} = \tau_T$ in the last epoch, as we believe this to be more inline with the proposition by Abid et al. \cite{abid2019concrete}.
+The reason for this is that small temperatures tend to generate more discrete graphs, as they more closely approximate samples from the Gumbel-Softmax distribution. While this is desirable at convergence, it may hinder the optimization early in training due to a reduced gradient signal. It should be noted that in the original codebase $t$ is initialized with $0$, leading to a temperature $\tau^{(0)} = \tau_0$ in the first epoch, and $\tau^{(T-1)} = \tau_0(\frac{\tau_T}{\tau_0})^{\frac{T-1}{T}}$ in the last epoch. We initialize $t$ with $1$ to get a temperature of $\tau^{(T)} = \tau_T$ in the last epoch, as we believe this to be more inline with the proposition by Abid et al. \cite{abid2019concrete}. \bigskip
+
+As established in Section \ref{sec:Global_Explanations}, the node prediction of an $L$-layer GNN is completely determined by its local computation graph, defined by its $L$-hop neighborhood \cite{ying2019gnnexplainer}. This is capitalized on during explainer training by computing the neighborhood graphs of each input node and treating this subgraph as a base for the node predictions, rather than using the full graph (see Algorithm \ref{alg:node-alg}). Since the downstream models for node tasks consist of three graph layers, the $3$-hop subgraph of each node is computed. We implement this using the \verb|k_hop_subgraph()| function from PyTorch Geometric. \bigskip
+
+We compute the loss as described in Equation \ref{eq:mlp_loss}, with each regularization term being added according to a regularization coefficient hyperparameter. It is noteworthy that the loss function used in the original codebase can formally be defined as:
+\begin{equation}
+    \min_\Psi -\frac{1}{K}\sum_{i\in \mathcal{I}}\sum_{k=1}^K -\log P_\Phi(\hat{Y}_s = c_i|G=\hat{G}_s^{(i,k)}),
+\end{equation}
+where $c_i$ denotes the class label according to the prediction on the original graph $G_o^{(i)}$ and $K=1$. However, this is not mentioned in the paper and therefore not adopted. 
+
+A further undocumented specification is that for downstream models that perform node tasks, only node instances that belong to the "motif classes" are selected for training and evaluation, since for nodes that do not belong to these classes there does not exist a specific ground truth motif that may serve as an explanation. This is only documented for one graph classification dataset, where only one of two possible classes has a dedicated motif. The specific node sets used for each dataset vary as well and are presented in Section \ref{sec:experiments_replication}.\bigskip
 
 In the PGExplainer paper, Luo et al. \cite{luo2020parameterized} propose the use of high temperatures, with $\tau_0 = 5.0$ and $\tau_T=2.0$. However, Hodlijk et al. \cite{holdijk2021re} found that all hyperparameters described in the paper are overly simplified and in practice, different parameters are used for each dataset. Therefore, we conduct hyperparameter searches for each task in \ref{sec:experiments_replication}. We add that the number of sampled graphs $K$ is not defined in the original work, and the codebase suggests the use of $K=1$. We implement the ability to sample multiple graphs as described in the pseudocode (see Section \ref{sec:PGE_material}) and also consider this in our hyperparameter searches. \bigskip
 
-\textbf{Extension description}:
+\textbf{Extension description}\par
 This is not described in the original paper, but since undirected graphs contain bidirectional edges, effectively each edge carries two importance scores. The authors alleviate this in the code by symmetrizing the edge weight matrix, corresponding to the adjacency matrix of the graph. We propose meaning the logits of each pair of bidirectional edges after the MLP output has been calculated. We implement the logic of meaning each edge's logits as follows: 
 \begin{verbatim}
     edge_pairs = edge_index.t()
@@ -576,28 +580,17 @@ This is not described in the original paper, but since undirected graphs contain
 \end{verbatim}
 All edges pairs from the edge-index that connect the same two nodes, e.g. $(i,j)$ and $(j,i)$, are treated as a unique pair. For each of these unique pairs the mean of the logits $\omega_{i,j}$ and $\omega_{j,i}$ corresponding to its two edges is calculated and used to update each of the two logits. To account for this in the reparameterization trick, the unique pairs are further passed there to sample $\epsilon$ for each edge pair, rather than each edge. This process guarantees edge pairs that connect the same two nodes to always carry identical importance scores. \bigskip
 
-\textbf{Explainer training specifications}:
-We already established in Section \ref{sec:Global_Explanations} that the node prediction of an $L$-layer GNN is completely determined by its local computation graph, defined by its $L$-hop neighborhood \cite{ying2019gnnexplainer}. This is capitalized on during explainer training by computing the neighborhood graphs of each input node and treating this subgraph as a base for the node predictions, rather than using the full graph (see Algorithm \ref{alg:node-alg}). Since the downstream models for node tasks consist of three graph layers, the $3$-hop subgraph of each node is computed. We implement this using the \verb|k_hop_subgraph()| function from PyTorch Geometric. \bigskip
-
-We compute the loss as described in Equation \ref{eq:mlp_loss}, with each regularization term being added according to a regularization coefficient hyperparameter. It is noteworthy that the loss function used in the original codebase can formally be defined as:
-\begin{equation}
-    \min_\Psi -\frac{1}{K}\sum_{i\in \mathcal{I}}\sum_{k=1}^K -\log P_\Phi(\hat{Y}_s = c_i|G=\hat{G}_s^{(i,k)}),
-\end{equation}
-where $c_i$ denotes the class label according to the prediction on the original graph $G_o^{(i)}$ and $K=1$. However, this is not mentioned in the paper and therefore not adopted. 
-
-A further undocumented specification is that for downstream models that perform node tasks, only node instances that belong to the "motif classes" are selected for training and evaluation, since for nodes that do not belong to these classes there does not exist a specific ground truth motif that may serve as an explanation. This is only documented for one graph classification dataset, where only one of two possible classes has a dedicated motif. The specific node sets used for each dataset vary as well and are presented in Section \ref{sec:experiments_replication}.\bigskip
-
-\textbf{Evaluation implementation}:
+\textbf{Evaluation Implementation}\par
 To quantitatively evaluate the explanations of each prediction (see Section \ref{sec:experiments_replication}), the authors utilize the ROC-AUC as a metric to compare the predicted importance scores of the edges to the ground truth edges. Since the exact procedure is not further described by the authors, we extract it from the codebase as far as possible. For graph tasks the metric is computed globally, meaning that for all graph instances the edge predictions and ground truths are gathered, and the global thresholds are computed, while for node tasks the metric is computed locally for the $3$-hop subgraph of each node instance and a mean is calculated later on.
 Since a reason for this difference in calculation is not provided, we choose to only consider the mean of the local values, regardless of task. TODO: We justify this with our application in the inductive setting, where global explanations are still provided, but we focus on generalizing to unseen instances.
 
-TODO: Speculation? This may be motivated by the fact that motif nodes may be selected for explanation, where the computation graph only consist of motif nodes and consequently only ground truth edges. This may lead to an inflated score when calculated in a global way, as the ROC-AUC score is not computable for these cases and explicitly disregarded in the local computation.
+It is notable that motif nodes may be selected for explanation, where the local computation graph only consist of motif nodes and consequently only ground truth edges. Since the local ROC-AUC score is not computable for these binary cases with only one class present, it is explicitly disregarded and skipped for these nodes in the evaluation process. Note that these nodes are not disregarded during training.
 
 We implement this calculation using the \verb|BinaryAUROC| from TorchEval, which operates identical to the \verb|roc_auc_score| from scikit-learn \cite{pedregosa2011scikit} in the binary case, used in PGExplainer \cite{luo2020parameterized}.
 
 The qualitative explanations provided by the explainer are implemented as a NetworkX visualization of the graph instance in the case of graph tasks, or of the $3$-hop subgraph of the instance node in the case of node tasks. Only the edges with the top-$2k$ importance scores are drawn, where $k$ equals $\text{\#motif-edges}$, since edges are bidirectional and guaranteed to carry identical weights. $k$ can therefore be understood as a needed parameter for qualitative evaluation. TODO: Holdijk discussion about k as hyperparameter!
 
-TODO: The inference time is measured as the time it takes to generate an explanation for any instance. This starts with the computation of node embeddings from the downstream model and ends with the reparameterization trick - the simple application of a Sigmoid to the edge logits during evaluation - that returns the edge importance scores. This process is illustrated in Figure \ref{fig:PGExplainer_pipeline}, starting from input graph $G_o$ and ending at the sampled graph $\hat{G}_s$. \bigskip
+TODO: OMIT!! The inference time is measured as the time it takes to generate an explanation for any instance. This starts with the computation of node embeddings from the downstream model and ends with the reparameterization trick - the simple application of a Sigmoid to the edge logits during evaluation - that returns the edge importance scores. This process is illustrated in Figure \ref{fig:PGExplainer_pipeline}, starting from input graph $G_o$ and ending at the sampled graph $\hat{G}_s$. \bigskip
 
 \textbf{TODO: Challenges}: NECESSARY? MENTION DIFFICULTIES IN EACH SUBSECTION? Difficulties getting the code to work, as we started working with the paper only. Found that hyperparameters had to be finetuned, exact downstream model is relevant (e.g. batch norm present or not, overfit models obviously generate bad explanations, need for early stopping). Different loss used in code than in paper; we adopt the loss described in the paper. No documentation of the motif node selection/training only performed on graphs/nodes that contain gt! Imprecise about dataset description (BA-2Motif has different features than the rest of the syn datasets). No description of the AUROC calculation, had to be extracted from code (global vs local) \bigskip
 

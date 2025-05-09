@@ -4,7 +4,7 @@
 \label{sec:PGE_material}
 
 \begin{algorithm}
-    \caption{Training Algorithm for Explaining Node Classification.}
+    \caption{Training Algorithm for Explaining Node Classification from \cite{luo2020parameterized}.}
     \label{alg:node-alg}
     \begin{algorithmic}[1]
     \REQUIRE Input graph $G_o = (\mathcal{V}, \mathcal{E})$, node features $X$, node labels $Y$, set of instances to be explained $\mathcal{I}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
@@ -30,7 +30,7 @@
     \vspace{0.5cm}
     
     \begin{algorithm}
-    \caption{Training Algorithm for Explaining Graph Classification.}
+    \caption{Training Algorithm for Explaining Graph Classification from \cite{luo2020parameterized}.}
     \label{alg:graph-alg}
     \begin{algorithmic}[1]
     \REQUIRE A set of input graphs with $i$-th graph represented by $G^{(i)}_o$, node features $X^{(i)}$, label $Y^{(i)}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
@@ -64,12 +64,13 @@
     \textbf{Testing}    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
     \hline
     \end{tabularx}
-    \caption[Accuracies of original GNN downstream task]{Compact accuracy table for Node and Graph Classification from ORIGINAL PGExplainer paper.}
+    \caption[Accuracies of original GNN downstream task]{Compact accuracy table for Node and Graph Classification. Reprinted from \cite{luo2020parameterized}.}
     \label{tab:compact-accuracy}
 \end{table}
 
 
 \section{Data visualization}
+\label{sec:data_vis}
 
 \begin{figure}[H]
     \centering
@@ -107,45 +108,45 @@
         \caption{MUTAG}
     \end{subfigure}
 
-    \caption[Visualization of original PGExplainer datasets]{Visualization of all six datasets. For node datasets the target node where the computational graph is computed from is colored in light blue.}
+    \caption[Visualization of original PGExplainer datasets]{Visualization of all six datasets. For node datasets (a-d) the target prediction node where the computational graph is computed from is colored in light blue.}
 \end{figure}
 
 \section{Replication sweeps}
 \label{sec:sweeps}
+The following tables contain the hyperparameter search configurations for each downstream task. The first row includes the configuration used in the original codebase \cite{luo2020parameterized} and the second row contains the configurations used in \cite{holdijk2021re}. For BA-Community (see Table \ref{tab:BA-Community_sweep}) both configurations are identical, and the second row is thus omitted. The last section of each table contains the set of the values tested for each parameter. The optimal settings for our explainer implementation are highlighted in each column. Note that we optimize BA-2Motif (see Table \ref{tab:BA-2Motif_sweep}) towards a minimal metric score, as discussed in \ref{}.
 
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{table}[h]
-    \centering
-    \scriptsize
-    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
-    \hline
-    \multicolumn{10}{|c|}{\textbf{BA-Shapes}} \\ \hline
-    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
-    1.0 & 10 & 0.003 & 1 & 0.0 & - & 0.05 & 0.05 & 1.0 & \text{All} \\ \hline
-    1.0 & 10 & 0.003 & 1 & 0.0 & - & 0.05 & 2.0 & 5.0 & \text{All} \\ \midrule
-    \textbf{0.1} & 10 & 0.0003 & \textbf{1} & 0.0 & 74 & 0.005 & \textbf{1} & 5.0 & 5 \\ 
-    0.5 &  & \textbf{0.003} & 5 &  & 75 & \textbf{0.05} & 2 &  &  \\ 
-    1.0 &  &  0.03 & 10 &  & 76 & 0.1 & 5 &  &  \\ \hline
-    \end{tabularx}
-    \caption[BA-Shapes Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
+  \centering
+  \scriptsize
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+  \hline
+  \multicolumn{10}{|c|}{\textbf{BA-Shapes}} \\ \hline
+  $a$ & $K$ & $b$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
+  $N$ & 1 & 0.0 & 10 & 0.003 & - & 1.0 & 0.05 & 1.0 & 0.05 \\ \hline
+  $N$ & 1 & 0.0 & 10 & 0.003 & - & 1.0 & 0.05 & 5.0 & 2.0 \\ \hline
+  5 & \textbf{1} & 0.0 & 10 & 0.0003 & 74 & \textbf{0.1} & 0.005 & 5.0 & \textbf{1} \\
+   & 5 &  &  & \textbf{0.003} & 75 & 0.5 & \textbf{0.05} &  & 2 \\
+   & 10 &  &  & 0.03 & 76 & 1.0 & 0.1 &  & 5 \\ \hline
+  \end{tabular}
+  \caption[BA-Shapes Sweep]{First two rows show original and replication configurations; following rows show parameter sweep results. Bolded values indicate best performance.}
 \end{table}
-
 
 \begin{table}[h]
-    \centering
-    \scriptsize
-    \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
-    \hline
-    \multicolumn{10}{|c|}{\textbf{BA-Community}} \\ \hline
-    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
-    1.0 & 20 & 0.003 & 1 & 0.5 & - & 0.05 & 1.0 & 1.0 & \text{All} \\ \midrule
-    \textbf{1.0} & 20 & \textbf{0.003} & 1 & \textbf{0.0} & 74 & 0.05 & 1.0 & 1.0 & 64 \\
-    0.1 &  & 0.0003 & \textbf{5} & 0.5 & 75 & \textbf{0.1} & \textbf{5.0} &  &  \\
-     &  &  & 10 &  & 76 &  &  &  &  \\ \hline
-    \end{tabularx}
-    \caption[BA-Community Sweep]{BA-Community hyperparameter search configuration. The first row contains the values used in the original code as well as in the replication. Highlighted values are the best performing.}
+  \centering
+  \scriptsize
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+  \hline
+  \multicolumn{10}{|c|}{\textbf{BA-Community}} \\ \hline
+  $a$ & $K$ & $b$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
+  $\text{All}$ & 1 & 0.5 & 20 & 0.003 & - & 1.0 & 0.05 & 1.0 & 1.0 \\ \hline
+  64 & 1 & \textbf{0.0} & 20 & \textbf{0.003} & 74 & \textbf{1.0} & 0.05 & 1.0 & 1.0 \\
+   & \textbf{5} & 0.5 &  & 0.0003 & 75 & 0.1 & \textbf{0.1} &  & \textbf{5.0} \\
+   & 10 &  &  &  & 76 &  &  &  &  \\ \hline
+  \end{tabular}
+  \caption[BA-Community Sweep]{First row shows original configuration; following rows show parameter sweep results. Bolded values indicate best-performing settings.}
+  \label{tab:BA-Community_sweep}
 \end{table}
-
 
 \begin{table}[h]
     \centering
@@ -153,7 +154,7 @@
     \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{Tree-Cycles}} \\ \hline
-    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
+    $\alpha_e$ & $E$ & $\eta$ & $K$ & $b$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $a$ \\ \hline
     0.01 & 20 & 0.003 & 1 & 0.0 & - & 0.0001 & 5.0 & 5.0 & \text{All} \\ \hline
     10.0 & 20 & 0.003 & 1 & 0.0 & - & 0.1 & 5.0 & 1.0 & \text{All} \\ \midrule
     0.01 & 20 & \textbf{0.0003} & 1 & 0.0 & 74 & \textbf{0.0001} & \textbf{1.0} & 1.0 & 5 \\ 
@@ -169,7 +170,7 @@
     \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{Tree-Grid}} \\ \hline
-    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
+    $\alpha_e$ & $E$ & $\eta$ & $K$ & $b$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $a$ \\ \hline
     1.0 & 30 & 0.01 & 1 & 0.0 & - & 0.01 & 5.0 & 5.0 & \text{All} \\ \hline
     1.0 & 30 & 0.003 & 1 & 0.0 & - & 1.0 & 2.0 & 5.0 & \text{All} \\ \midrule
     0.1 & 30 & 0.0003 & 1 & 0.0 & 74 & 0.01 & \textbf{2.0} & 5.0 & 24 \\ 
@@ -186,7 +187,7 @@
     \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{BA-2Motif}} \\ \hline
-    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
+    $\alpha_e$ & $E$ & $\eta$ & $K$ & $b$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $a$ \\ \hline
     0.0 & 10 & 0.003 & 1 & 0.0 & - & 0.00 & 0.0 & 1.0 & \text{All} \\ \hline
     0.01 & 20 & 0.005 & 1 & 0.0 & - & 0.03 & 1.0 & 5.0 & \text{All} \\ \midrule
     0.01 & 10 & 0.0003 & 1 & 0.0 & 74 & 0.03 & \textbf{1.0} & 5.0 & 30 \\ 
@@ -195,6 +196,7 @@
      &  & \textbf{0.01} &  &  &  &  &  &  &  \\ \hline
     \end{tabularx}
     \caption[BA-2Motif Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the one that achieve the lowest individual AUROCs, as the explainer seems to learn the opposite for BA-2Motif.}
+    \label{tab:BA-2Motif_sweep}
 \end{table}
 
 \begin{table}[h]
@@ -203,7 +205,7 @@
     \begin{tabularx}{\linewidth}{|c|c|c|Y|Y|c|c|c|c|Y|}
     \hline
     \multicolumn{10}{|c|}{\textbf{MUTAG}} \\ \hline
-    entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
+    $\alpha_e$ & $E$ & $\eta$ & $K$ & $b$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $a$ \\ \hline
     1.0 & 10 & 0.01 & 1 & 0.0 & - & 0.01 & 5.0 & 5.0 & \text{All} \\ \hline
     1.0 & 30 & 0.0003 & 1 & 0.0 & - & 0.005 & 5.0 & 5.0 & \text{All} \\ \midrule
     0.1 & 10 & 0.0003 & 1 & 0.0 & 74 & 0.01 & \textbf{1.0} & 5.0 & 30 \\ 
@@ -215,7 +217,7 @@
 
 \clearpage
 \section{Multiple Explanation Visualizations}
-16 randomly sampled explanations for the best explainer model of every dataset. For graph tasks all nodes of the input graph are included, while for node tasks only the nodes of the local computation graph from one selected motif node are shown.
+The following figures contain 16 randomly sampled explanations for the best explainer model of every dataset. For graph tasks all nodes of the input graph are included, while for node tasks only the nodes of the local computation graph from the prediction motif node are shown.
 
 % REMOVE draw=black TO REMOVE EDGES
 \begin{figure}[htbp]
@@ -360,4 +362,26 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
      &  & \textbf{0.01} &  &  &  &  &  &  &  & \\ \hline
     \end{tabularx}
     \caption[NeuroSAT soft constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Highlighted values are the best performing.}
+\end{table}
+
+
+\section{REMOVE}
+\begin{table}[ht]
+  \centering
+  \scriptsize
+  \begin{tabularx}{\textwidth}{l*{4}{X}}   % Now only 4 datasets
+  \toprule
+  \textbf{} & \multicolumn{4}{c}{\textbf{Explanation AUC}} \\
+  \cmidrule{2-5}
+  \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid \\
+  \midrule
+  Our work (inductive) & 0.993$\pm$0.002 & 0.829$\pm$0.008 & 0.109$\pm$0.108 & 0.689$\pm$0.027 \\
+  \addlinespace
+  \midrule
+  \midrule
+  \textit{Inference Time (ms)} & 39.0$\pm$1.9 & 25.6$\pm$1.5 & 3.1$\pm$0.3 & 3.4$\pm$0.1 \\
+  \bottomrule
+  \end{tabularx}
+  \caption[REMOVE! PGExplainer with $a=0.08$!]{PGExplainer performance WITH $a=0.08$! (4.8, 64, 4.8, 23) (USED IN SWEEP!)}
+  \label{tab:pgexplainer_auc}
 \end{table}
