@@ -32,6 +32,43 @@ To tune the hyperparameters we need a validation set of data that is not directl
 A traditional approach for tuning hyperparameters is the grid search, as described in Liashchynskyi et al. \cite{liashchynskyi2019grid}. This method involves defining a subspace of the complete hyperparameter space and searching for the best-performing training algorithm across all possible combinations within that subspace.
 
 \subsection{Multilayer Perceptron}
+
+\begin{wrapfigure}{r}{0.45\textwidth}
+    \centering
+    \begin{tikzpicture}[node distance=1cm and 1.5cm,
+        every node/.style={circle, draw, minimum size=1cm},
+        every path/.style={->, >=latex}]
+        
+      % Input layer
+      \node (I1) at (0,3) {$x_1$};
+      \node (I2) at (0,1.5) {$x_2$};
+      \node (I3) at (0,0) {$x_3$};
+  
+      % Hidden layer
+      \node (H1) at (2,3) {$h_1$};
+      \node (H2) at (2,1.5) {$h_2$};
+      \node (H3) at (2,0) {$h_3$};
+  
+      % Output layer
+      \node (O1) at (4,1.5) {$y$};
+  
+      % Connections Input -> Hidden
+      \foreach \i in {1,2,3}
+        \foreach \h in {1,2,3}
+          \draw (I\i) -- (H\h);
+  
+      % Connections Hidden -> Output
+      \foreach \h in {1,2,3}
+        \draw (H\h) -- (O1);
+  
+      % Layer labels
+      \node[draw=none] at (0,4) {\textbf{Input}};
+      \node[draw=none] at (2,4) {\textbf{Hidden}};
+      \node[draw=none] at (4,3) {\textbf{Output}};
+    \end{tikzpicture}
+    \caption{A simple MLP with one hidden layer.}
+  \end{wrapfigure}
+
 TODO: consisting of multiple layers of hidden units and nonlinear activation functions
 A classical DL model is the multilayer perceptron (MLP), first proposed by Rosenblatt \cite{rosenblatt1958perceptron}, with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(x)$ that maps an input $x$ to a label $y$. The MLP then defines the mapping $y = f(x;\boldsymbol{\theta})$ and learns the value of the parameters $\boldsymbol{\theta}$ that best approximate the function. At the start of the training these parameters are initialized randomly or by a smart initialization strategy, like the Glorot/Xavier initialization \cite{glorot2010understanding}. 
 
@@ -68,9 +105,9 @@ The activation function typically maps its input to a real number within a speci
 %initiated with random weights or values, updated in each neuron with backpropagation. Learned knowledge stored in connections digitally. \\
 %Each neuron therefore takes inputs $x_1, ..., x_n$ with corresponding weights $w_1, ..., w_n$ and an offset $b$. A layer can then be described as a linear function $y=\sum_{i=1}^{n} w_i x_i +b$ that is optionally passed through a non-linear activation function $f$ that generates the output of the current layer $z = f(y)$. The activation function usually serves the purpose of mapping to a real number between $0$ and $1$, imitating the activation of a neuron. We try to use activation functions that are continuous differentiable and easily calculated, to minimize computational complexity. Examples are the Sigmoid function 
 \begin{equation}
-    \sigma (x)= \frac{1}{1+e^{-x}}
+    \sigma (x)= \frac{1}{1+e^{-x}},
 \end{equation}
-and the Rectified Linear Unit (ReLU)
+where $e$ denotes the exponential function, and the Rectified Linear Unit (ReLU):
 \begin{equation}
     ReLU(x)=\begin{cases}
         0 & x \leq 0, \\
@@ -380,40 +417,6 @@ Though the architecture proposed by Scarselli et al. \cite{4700287} proved to be
 
 Another drawback is the computational inefficiency, as hidden states have to be updated $T$ times until reaching the fixed point. A relaxation of the fixed point assumption enables multi-layer GNNs to provide stable representations of the node and its neighborhood \cite{li2015gated}. Additionally, this architecture is unable to model informative edge features, which limits its capacity to learn meaningful hidden representations for edges.
 
-
-TODO: MOVE AFTER TWO SPECIFIC LAYERS? DEFINE GCN AS MPNN AS EXAMPLE, EVEN IF NOT USED? MAINLY NEEDED FOR RATIONALITY OF NEUROSAT BEING GNN
-
-The Message Passing Neural Network (MPNN) proposed by Gilmer et al. \cite{gilmer2017neural} seeks to unify GNN models, by providing a general framework for supervised learning on GNNs, since many existing models operate similarly. Typically, messages derived from node features are passed along edges of a graph to be able to learn meaningful graph and node representations that can be used for downstream tasks \cite{kipf2016semi} \cite{4700287} \cite{velivckovic2017graph} \cite{xu2018powerful}. Therefore, GNNs may be expressed as MPPNs, where the forward pass consist of a message passing phase and a readout phase. The message passing phase runs for $T$ time steps and is defined by the message function $M_t$, as well as the node update function $U_t$. At each time step $t$, the hidden state $\mathbf{h}_v^{t+1}$ of a node $v$ in the graph $G$ is updated based on the message $\mathbf{m}_v^{t+1}$, which aggregates information from the previous hidden states of its neighbors according to the message function $M_t$. Formally, this is defined as
-
-\begin{align}
-    \mathbf{m}_v^{t+1} &= \sum_{w \in \mathcal{N}(v)} M_t\left(\mathbf{h}_v^t, \mathbf{h}_w^t, \mathbf{e}_{v,w}\right) \tag{1} \\
-    \mathbf{h}_v^{t+1} &= U_t\left(\mathbf{h}_v^t, \mathbf{m}_v^{t+1}\right) \tag{2},
-\end{align}
-where $\mathbf{e}_{v,w}$ denotes possible edge features of edge $(v,w)$.
-In the readout phase a feature vector $\hat{\mathbf{y}}$ is computed for the entire graph from the final node states  using a readout function $R$:
-\begin{equation}
-    \hat{\mathbf{y}} = R\left(\{ \mathbf{h}_v^T \mid v \in G \}\right) \tag{3}.
-\end{equation}
-Note that the three functions $M_t$, $U_t$ and $R_t$ are learned and differentiable.
-    
-Example Kipf and Welling:
-\begin{equation}
-    M_t(\mathbf{h}_v^t, \mathbf{h}_w^t) = c_{v,w}\mathbf{h}_w^t,
-\end{equation}
-with $c_{v,w} = (d(v)d(w))^{-\frac{1}{2}}\mathbf{A}_{v,w}$.
-\begin{equation}
-    U_v^t(\mathbf{h}_v^t, \mathbf{m}_w^{t+1}) = \text{ReLU}(\mathbf{W}^t\mathbf{m}_v^{t+1}).
-\end{equation}
-
-
-
-
-
-
-
-Therefore, we briefly present two subsequent models that are used in the course of this work.
-
-
 \tikzstyle{texts} = [text centered, font=\small, draw=none]
 \begin{figure}
     \centering
@@ -451,6 +454,37 @@ Therefore, we briefly present two subsequent models that are used in the course 
     \caption[$k$-hop neighborhood visualization]{Visualization of the $k$-hop neighborhood of $u$.}
     \label{fig:k-hop}
 \end{figure}
+
+TODO: MOVE AFTER TWO SPECIFIC LAYERS? DEFINE GCN AS MPNN AS EXAMPLE, EVEN IF NOT USED? MAINLY NEEDED FOR RATIONALITY OF NEUROSAT BEING GNN
+
+The Message Passing Neural Network (MPNN) proposed by Gilmer et al. \cite{gilmer2017neural} seeks to unify GNN models, by providing a general framework for supervised learning on GNNs, since many existing models operate similarly. Typically, messages derived from node features are passed along edges of a graph to be able to learn meaningful graph and node representations that can be used for downstream tasks \cite{kipf2016semi} \cite{4700287} \cite{velivckovic2017graph} \cite{xu2018powerful}. Therefore, GNNs may be expressed as MPPNs, where the forward pass consist of a message passing phase and a readout phase. The message passing phase runs for $T$ time steps and is defined by the message function $M_t$, as well as the node update function $U_t$. At each time step $t$, the hidden state $\mathbf{h}_v^{t+1}$ of a node $v$ in the graph $G$ is updated based on the message $\mathbf{m}_v^{t+1}$, which aggregates information from the previous hidden states of its neighbors according to the message function $M_t$. Formally, this is defined as
+
+\begin{align}
+    \mathbf{m}_v^{t+1} &= \sum_{w \in \mathcal{N}(v)} M_t\left(\mathbf{h}_v^t, \mathbf{h}_w^t, \mathbf{e}_{v,w}\right) \tag{1} \\
+    \mathbf{h}_v^{t+1} &= U_t\left(\mathbf{h}_v^t, \mathbf{m}_v^{t+1}\right) \tag{2},
+\end{align}
+where $\mathbf{e}_{v,w}$ denotes possible edge features of edge $(v,w)$.
+In the readout phase a feature vector $\hat{\mathbf{y}}$ is computed for the entire graph from the final node states  using a readout function $R$:
+\begin{equation}
+    \hat{\mathbf{y}} = R\left(\{ \mathbf{h}_v^T \mid v \in G \}\right) \tag{3}.
+\end{equation}
+Note that the three functions $M_t$, $U_t$ and $R_t$ are learned and differentiable.
+    
+Example Kipf and Welling:
+\begin{equation}
+    M_t(\mathbf{h}_v^t, \mathbf{h}_w^t) = c_{v,w}\mathbf{h}_w^t,
+\end{equation}
+with $c_{v,w} = (d(v)d(w))^{-\frac{1}{2}}\mathbf{A}_{v,w}$.
+\begin{equation}
+    U_v^t(\mathbf{h}_v^t, \mathbf{m}_w^{t+1}) = \text{ReLU}(\mathbf{W}^t\mathbf{m}_v^{t+1}).
+\end{equation}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{img/message_passing.png}
+    \caption{Node features passed along edges. Reprinted from \cite{ali2023gnns}.}
+\end{figure}
+
+Therefore, we briefly present two subsequent models that are used in the course of this work.
 
 \textbf{Graph Convolutional Network} \\
 Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. An example is the model proposed by Kipf et al. \cite{kipf2016semi} that introduces a simple, layer-wise propagation rule for multi-layer GCNs as

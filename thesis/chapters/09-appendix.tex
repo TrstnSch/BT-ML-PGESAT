@@ -1,9 +1,11 @@
 \chapter{Supplementary Material}
 
-\section{PGExplainer algorithms}
+\section{Material from original PGExplainer}
+\label{sec:PGE_material}
 
 \begin{algorithm}
     \caption{Training Algorithm for Explaining Node Classification.}
+    \label{alg:node-alg}
     \begin{algorithmic}[1]
     \REQUIRE Input graph $G_o = (\mathcal{V}, \mathcal{E})$, node features $X$, node labels $Y$, set of instances to be explained $\mathcal{I}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
     \FOR{each node $i \in \mathcal{I}$}
@@ -29,6 +31,7 @@
     
     \begin{algorithm}
     \caption{Training Algorithm for Explaining Graph Classification.}
+    \label{alg:graph-alg}
     \begin{algorithmic}[1]
     \REQUIRE A set of input graphs with $i$-th graph represented by $G^{(i)}_o$, node features $X^{(i)}$, label $Y^{(i)}$, trained GNN model: $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$, parameterized explainer MLP $\Psi$.
     \FOR{each graph $G^{(i)}_o$}
@@ -49,9 +52,66 @@
     \end{algorithmic}
 \end{algorithm}
 
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{l|X X X X|X X}
+    \hline
+    \textbf{Accuracy} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2Motif} & \textbf{MUTAG} \\
+    \hline
+    \textbf{Training}   & 0.98 & 0.99 & 0.99 & 0.92 & 1.00 & 0.87 \\
+    \textbf{Validation} & 1.00 & 0.88 & 1.00 & 0.94 & 1.00 & 0.89 \\
+    \textbf{Testing}    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
+    \hline
+    \end{tabularx}
+    \caption[Accuracies of original GNN downstream task]{Compact accuracy table for Node and Graph Classification from ORIGINAL PGExplainer paper.}
+    \label{tab:compact-accuracy}
+\end{table}
+
+
+\section{Data visualization}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{img/BA-Shapes-VIS-COMP-GRAPH.pdf}
+        \caption{BA-Shapes}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{img/BA-Community-VIS-COMP-GRAPH.pdf}
+        \caption{BA-Community}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{img/Tree-Cycles-VIS-COMP-GRAPH.pdf}
+        \caption{Tree-Cycles}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{img/Tree-Grid-VIS-COMP-GRAPH.pdf}
+        \caption{Tree-Grid}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{img/BA-2Motif-VIS-UNLABELED.pdf}
+        \caption{BA-2Motif}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{img/MUTAG-VIS-LARGE-UNLABELED.pdf}
+        \caption{MUTAG}
+    \end{subfigure}
+
+    \caption[Visualization of original PGExplainer datasets]{Visualization of all six datasets. For node datasets the target node where the computational graph is computed from is colored in light blue.}
+\end{figure}
+
 \section{Replication sweeps}
 \label{sec:sweeps}
-TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY, AS WELL AS NODE SETS USED IN ORIGINAL (Tree-Grid only one where AUC not computabel)!?
 
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{table}[h]
@@ -63,7 +123,7 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
     entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     1.0 & 10 & 0.003 & 1 & 0.0 & - & 0.05 & 0.05 & 1.0 & \text{All} \\ \hline
     1.0 & 10 & 0.003 & 1 & 0.0 & - & 0.05 & 2.0 & 5.0 & \text{All} \\ \midrule
-    \textbf{0.1} & 10 & 0.0003 & \textbf{1} & 0.0 & 74 & 0.005 & \textbf{1} & 5.0 & 30 \\ 
+    \textbf{0.1} & 10 & 0.0003 & \textbf{1} & 0.0 & 74 & 0.005 & \textbf{1} & 5.0 & 5 \\ 
     0.5 &  & \textbf{0.003} & 5 &  & 75 & \textbf{0.05} & 2 &  &  \\ 
     1.0 &  &  0.03 & 10 &  & 76 & 0.1 & 5 &  &  \\ \hline
     \end{tabularx}
@@ -79,7 +139,7 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
     \multicolumn{10}{|c|}{\textbf{BA-Community}} \\ \hline
     entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     1.0 & 20 & 0.003 & 1 & 0.5 & - & 0.05 & 1.0 & 1.0 & \text{All} \\ \midrule
-    \textbf{1.0} & 20 & \textbf{0.003} & 1 & \textbf{0.0} & 74 & 0.05 & 1.0 & 1.0 & 30 \\
+    \textbf{1.0} & 20 & \textbf{0.003} & 1 & \textbf{0.0} & 74 & 0.05 & 1.0 & 1.0 & 64 \\
     0.1 &  & 0.0003 & \textbf{5} & 0.5 & 75 & \textbf{0.1} & \textbf{5.0} &  &  \\
      &  &  & 10 &  & 76 &  &  &  &  \\ \hline
     \end{tabularx}
@@ -96,7 +156,7 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
     entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     0.01 & 20 & 0.003 & 1 & 0.0 & - & 0.0001 & 5.0 & 5.0 & \text{All} \\ \hline
     10.0 & 20 & 0.003 & 1 & 0.0 & - & 0.1 & 5.0 & 1.0 & \text{All} \\ \midrule
-    0.01 & 20 & \textbf{0.0003} & 1 & 0.0 & 74 & \textbf{0.0001} & \textbf{1.0} & 1.0 & 30 \\ 
+    0.01 & 20 & \textbf{0.0003} & 1 & 0.0 & 74 & \textbf{0.0001} & \textbf{1.0} & 1.0 & 5 \\ 
     \textbf{1.0} &  & 0.003 & \textbf{5} &  & 75 & 0.05 & 5.0 &  &  \\ 
     10.0 &  &  & 10 &  & 76 & 0.1 &  &  &  \\ \hline
     \end{tabularx}
@@ -112,7 +172,7 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
     entropy reg & epochs & lr\_mlp & sampled graphs & sample bias & seed & size reg & tT & t0 & num training instances \\ \hline
     1.0 & 30 & 0.01 & 1 & 0.0 & - & 0.01 & 5.0 & 5.0 & \text{All} \\ \hline
     1.0 & 30 & 0.003 & 1 & 0.0 & - & 1.0 & 2.0 & 5.0 & \text{All} \\ \midrule
-    0.1 & 30 & 0.0003 & 1 & 0.0 & 74 & 0.01 & \textbf{2.0} & 5.0 & 30 \\ 
+    0.1 & 30 & 0.0003 & 1 & 0.0 & 74 & 0.01 & \textbf{2.0} & 5.0 & 24 \\ 
     \textbf{1.0} &  & \textbf{0.003} & \textbf{5} &  & 75 & \textbf{0.5} & 5.0 &  &  \\ 
     10 &  & 0.01 & 10 &  & 76 & 1.0 &  &  &  \\
      &  & 0.05 &  &  &  &  &  &  &  \\ \hline
@@ -152,6 +212,107 @@ TODO: COMPLETE THESE TABLES!! ONLY CONSIDER NUM-TRAINING OF 30 FOR COMPARABILITY
     \end{tabularx}
     \caption[MUTAG Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
 \end{table}
+
+\clearpage
+\section{Multiple Explanation Visualizations}
+16 randomly sampled explanations for the best explainer model of every dataset. For graph tasks all nodes of the input graph are included, while for node tasks only the nodes of the local computation graph from one selected motif node are shown.
+
+% REMOVE draw=black TO REMOVE EDGES
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+      % 4x4 grid: row = 0 to 3, col = 0 to 3
+      \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+          \pgfmathtruncatemacro{\num}{\col + 4 * \row}
+          \node[draw=black, thin, inner sep=0pt] at (\col*4, -\row*4)
+            {\includegraphics[width=3.5cm]{img/BA-Shapes/graph_\num_explanation.pdf}};
+        }
+      }
+    \end{tikzpicture}
+    \caption{Grid of BA-Shapes explanations (top-6 edges)}
+    \label{fig:grid-BA-Shapes-explanations}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+      % 4x4 grid: row = 0 to 3, col = 0 to 3
+      \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+          \pgfmathtruncatemacro{\num}{\col + 4 * \row}
+          \node[draw=black, thin, inner sep=0pt] at (\col*4, -\row*4)
+            {\includegraphics[width=3.5cm]{img/BA-Community/graph_\num_explanation.pdf}};
+        }
+      }
+    \end{tikzpicture}
+    \caption{Grid of BA-Community explanations (top-6 edges)}
+    \label{fig:grid-BA-Community-explanations}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+      % 4x4 grid: row = 0 to 3, col = 0 to 3
+      \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+          \pgfmathtruncatemacro{\num}{\col + 4 * \row}
+          \node[draw=black, thin, inner sep=0pt] at (\col*4, -\row*4)
+            {\includegraphics[width=3.5cm]{img/Tree-Cycles/graph_\num_explanation.pdf}};
+        }
+      }
+    \end{tikzpicture}
+    \caption{Grid of Tree-Cycles explanations (top-6 edges)}
+    \label{fig:grid-Tree-Cycles-explanations}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+      % 4x4 grid: row = 0 to 3, col = 0 to 3
+      \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+          \pgfmathtruncatemacro{\num}{\col + 4 * \row}
+          \node[draw=black, thin, inner sep=0pt] at (\col*4, -\row*4)
+            {\includegraphics[width=3.5cm]{img/Tree-Grid/graph_\num_explanation.pdf}};
+        }
+      }
+    \end{tikzpicture}
+    \caption{Grid of Tree-Grid explanations (top-12 edges)}
+    \label{fig:grid-Tree-Grid-explanations}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+      % 4x4 grid: row = 0 to 3, col = 0 to 3
+      \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+          \pgfmathtruncatemacro{\num}{\col + 4 * \row}
+          \node[draw=black, thin, inner sep=0pt] at (\col*4, -\row*4)
+            {\includegraphics[width=3.5cm]{img/BA-2Motif/graph_\num_explanation.pdf}};
+        }
+      }
+    \end{tikzpicture}
+    \caption{Grid of BA-2Motif explanations (top-5 edges)}
+    \label{fig:grid-BA-2Motif-explanations}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+      % 4x4 grid: row = 0 to 3, col = 0 to 3
+      \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+          \pgfmathtruncatemacro{\num}{\col + 4 * \row}
+          \node[draw=black, thin, inner sep=0pt] at (\col*4, -\row*4)
+            {\includegraphics[width=3.5cm]{img/MUTAG/graph_\num_explanation.pdf}};
+        }
+      }
+    \end{tikzpicture}
+    \caption{Grid of MUTAG explanations (top-10 edges)}
+    \label{fig:grid-MUTAG-explanations}
+\end{figure}
 
 \clearpage
 \section{NeuroSAT explainer sweeps}
@@ -200,50 +361,3 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
     \end{tabularx}
     \caption[NeuroSAT soft constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Highlighted values are the best performing.}
 \end{table}
-
-
-\section{Explanation Visualization with 64 sampled plots?}
-
-
-
-\clearpage
-\section{Data visualization}
-
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{img/BA-Shapes-VIS-COMP-GRAPH.pdf}
-        \caption{BA-Shapes}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{img/BA-Community-VIS-COMP-GRAPH.pdf}
-        \caption{BA-Community}
-    \end{subfigure}
-    
-    \vspace{0.5cm}
-    
-    \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{img/Tree-Cycles-VIS-COMP-GRAPH.pdf}
-        \caption{Tree-Cycles}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{img/Tree-Grid-VIS-COMP-GRAPH.pdf}
-        \caption{Tree-Grid}
-    \end{subfigure}
-    
-    \vspace{0.5cm}
-    
-    \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{img/BA-2Motif-VIS-UNLABELED.pdf}
-        \caption{BA-2Motif}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{img/MUTAG-VIS-LARGE-UNLABELED.pdf}
-        \caption{MUTAG}
-    \end{subfigure}
-
-    \caption[Visualization of original PGExplainer datasets]{Visualization of all six datasets. For node datasets the target node where the computational graph is computed from is colored in light blue.}
-\end{figure}

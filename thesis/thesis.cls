@@ -32,7 +32,7 @@
 \usetikzlibrary{shapes.geometric}
 \usetikzlibrary{fit, backgrounds}
 \usepackage{tabularx}
-% \usepackage{pgfplots}
+\usepackage{pgfplots}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 
