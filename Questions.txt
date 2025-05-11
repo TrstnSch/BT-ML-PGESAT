@@ -373,3 +373,16 @@ Include difficulties part in implementation details?
 
 PGExplainer inductive and collective zusammenfasse als ein "Replication" experiment? Oder trennen?
 Selbes für qual. evaluation
+
+
+
+
+--------------------------
+
+
+
+Code highlighting? Background color etc using listings or fine as is?
+
+
+Citation: Okay to use a combination of in [1], see xy et al [2] and NeuroSAT, proposed by yz et al. [3]?
+Or either always/never name author?

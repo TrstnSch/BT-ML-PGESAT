@@ -39,6 +39,9 @@
 \usepackage{subcaption}
 \usepackage{float}
 
+% Code
+\usepackage{listings}
+
 % Bibliography
 \usepackage{csquotes}
 \usepackage{biblatex}

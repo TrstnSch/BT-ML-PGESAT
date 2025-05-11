@@ -10,11 +10,12 @@ Since our work is twofold, we start with the experiments regarding the replicati
 In this section we present all experiments regarding the replication of the presented explainer model. We first present the common experimental setup, including the datasets, corresponding downstream models and hyperparameter searches. In Section xy we replicate the experiments in the inductive setting from the original paper. We also include a study of the effect of using a larger set of training data, as the original proposes that only few training instances are necessary for the explainer to generalize well. Furthermore, we perform the original quantitative experiment in the collective setting with the found hyperparameters for better comparability, as this was the core study of the original paper. In Section xy we run an experiment specific to the BA-2Motif dataset, as we found that it behaves opposite to the expectations. Later, we study the effects of the specific node sets that were used in the original codebase in Section xy. Lastly, we qualitatively evaluate the explanations provided by our reimplemented model (see Section xy).
 
 \subsection{Common experimental setup}
+\label{sec:PGE_exp_setup}
 In this section we describe the common setup for the experiments that we perform on PGExplainer.
-We follow the experimental setup from the PGExplainer as closely as possible. Since the textual description refers to the setup from GNNExplainer and is lacking in some aspects, we extract the missing information from the codebase. As the hyperparameters are unclear or not comprehensible for some tasks we also draw information from the configs of the replication by Holdijk et al. \cite{holdijk2021re}. \\
+We follow the experimental setup from the PGExplainer as closely as possible. Since the textual description refers to the setup from GNNExplainer and is lacking in some aspects, we extract the missing information from the codebase. As the hyperparameters are unclear or not comprehensible for some tasks we also draw information from the configs of the replication by Holdijk et al. \cite{holdijk2021re}.
 
 \textbf{Datasets}\par
-We perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExpplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. Statistics of each dataset can be found in Table \ref{tab:dataset-statistics} and a visualization in Section \ref{sec:data_vis}. We will give a short description of each dataset. \bigskip
+We perform the experiments on the same datasets used in the original. These were constructed by the authors similarly to the ones used in the baseline GNNExplainer. Four synthetic datasets were used for the node classification tasks. For the graph classification task the authors provide one synthetic dataset as well as the real-world dataset MUTAG. The synthetic datasets are constructed by creating a base graph and attaching motifs to random nodes of the base graph. These motifs determine the labels of the nodes or graphs, depending on the task at hand, and therefore serve as the ground truth explanations that the explainer shall detect. Statistics of each dataset can be found in Table \ref{tab:dataset-statistics} and a visualization in Section \ref{sec:data_vis}. We will give a short description of each dataset. \bigskip
 
 Since three of the synthetic datasets use a Barabási-Albert (BA) graph as a base, we briefly introduce the BA model. The BA model generates scale-free networks that grow over time. Starting with an initialization network of $m_0 \geq m$ nodes, at each step a new node is added and connected to $m$ of the nodes already existing in the graph. The probability for each node to be selected as a neighbor depends on its degree, leading to a higher probability for nodes that already have a high degree rather than nodes with a low degree \cite{albert2002statistical}. \bigskip
 
@@ -48,6 +49,37 @@ The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned 
 
 Note that in the collective setting used in the original paper the explainer is trained and evaluated on the same data. This data is further reduced by only using graphs and nodes that contain a ground truth motif. This makes sense for evaluation, since the AUROC cannot be calculated for ground truths with only one class present. However, the authors do not specify why the training is performed only on these instances. Therefore, only the 1,015 mutagenic graphs where either $NH_2$ or $NO_2$ are present are selected for the MUTAG experiment. \bigskip
 
+\begin{figure}[h]
+    \centering
+    % First 3 images
+    \begin{subfigure}[b]{0.2\textwidth}
+        \includegraphics[width=\linewidth]{img/Motif_Vis/BA-Shapes-MOTIF.pdf}
+        \caption{House motif}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.2\textwidth}
+        \includegraphics[width=\linewidth]{img/Motif_Vis/Tree-Cycles-MOTIF.pdf}
+        \caption{Circle motif}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.2\textwidth}
+        \includegraphics[width=\linewidth]{img/Motif_Vis/Tree-Grid-MOTIF.pdf}
+        \caption{Grid motif}
+    \end{subfigure}
+    % Fourth image composed of two smaller images
+    \begin{subfigure}[b]{0.30\textwidth}
+        \centering
+        \begin{subfigure}[b]{0.48\linewidth}
+            \includegraphics[width=\linewidth]{img/Motif_Vis/MUTAG-MOTIF1.pdf}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.48\linewidth}
+            \includegraphics[width=\linewidth]{img/Motif_Vis/MUTAG-MOTIF2.pdf}
+        \end{subfigure}
+        \caption{$NO_2$ and $NH_2$ motifs}
+    \end{subfigure}
+    
+    \caption{The different motifs used in the datasets.}
+    \label{fig:motifs}
+\end{figure}
+
 In the node classification experiments the node sets containing instances used for training and evaluation were further finetuned per dataset. This leads to a selection of either all nodes that are part of a motif, or only one node per motif. This inconsistency is also left unexplained by the authors and extracted from the codebase. We perform an experiment on the effects of these node selections in \ref{sec:motif_set_experiment}.
 
 For the motif node set used in BA-community multiple configurations exist in the PGExplainer codebase. One is extracted from the GNNExplainer \cite{ying2019gnnexplainer} and consists of the same nodes used for the BA-Shapes dataset, which seems unjustified and is not addressed in the paper. Another setting uses all motif nodes of both communities - effectively all nodes that do not belong to the two community base graphs:
@@ -77,7 +109,7 @@ The selection of instances for the remaining dataset is as follows: In BA-Shapes
 
 
 
-The trained downstream models that we use for each dataset are trained as described in Section \ref{sec:Replication_of_PGExplainer}. Since we use a different GNN layer, we try to achieve accuracies above 85\%, similar to the original. The accuracies can be seen in Table \ref{tab:our-dt-accuracy} and are slightly higher than in the original for four of the datasets, except for BA-Community and MUTAG. We add a dropout layer with a probability of $p=0.1$ for the latter two, to improve their generalizability and push their testing scores closer to the original. The exact downstream task accuracies achieved in PGExplainer can be seen in Table \ref{tab:compact-accuracy}. \bigskip
+The trained downstream model that we use for each dataset is trained as described in Section \ref{sec:Replication_of_PGExplainer}. Since we use a different GNN layer, we try to achieve accuracies above 85\%, similar to the original. The accuracies can be seen in Table \ref{tab:our-dt-accuracy} and are slightly higher than in the original for four of the datasets, except for BA-Community and MUTAG. We add a dropout layer with a probability of $p=0.1$ to the latter two models to improve their generalizability and push their testing performance closer to the original. The exact downstream task accuracies achieved in PGExplainer can be seen in Table \ref{tab:compact-accuracy}. \bigskip
 
 \begin{table}[h]
     \centering
@@ -102,10 +134,10 @@ Since the original paper does not specify the exact calculation of the AUROC sco
 
 To qualitatively evaluate the explanations we visualize the top-$k$ explanation mask edges with the highest prediction scores, following Luo et al. \cite{luo2020parameterized}. The parameter $k$ for each dataset is extracted from the original codebase, and is set to include at least the number of ground truth motif edges in the explanation. For node classification tasks the visual explanations only include the nodes inside the local computation graph of the prediction node, as only these are relevant for the prediction \cite{ying2019gnnexplainer}.
 
-We perform the efficiency evaluation as described by Holdijk et al. \cite{holdijk2021re}. The average inference time needed to generate an explanation for any instance is calculated over the test set for each run individually (see Section \ref{sec:Replication_of_PGExplainer}). We include the mean of these averages for the replication experiment only. \bigskip
+We perform the efficiency evaluation as described by Holdijk et al. \cite{holdijk2021re}. The average inference time needed to generate an explanation for any instance is calculated over the test set for each run individually (see Section \ref{sec:Replication_of_PGExplainer}). We include the mean of these averages for the inductive replication experiment only. \bigskip
 
 \textbf{Hyperparameter Search}\par
-Most details on the training procedure of the explainer have been established in Section \ref{sec:Replication_of_PGExplainer}. As found by Holdijk et al. \cite{holdijk2021re} the PGExplainer is very sensitive to hyperparameter settings on each dataset. Therefore, we conduct hyperparameter searches for the explainer model on each of the datasets to obtain the best performing explainers. We follow Liashchynskyi et al. \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original \cite{luo2020parameterized}, as well as the configs provided in Replication study \cite{holdijk2021re}. For our hyperparameters $\theta_1,\theta_2,...,\theta_n$ we define corresponding sets $S_1,S_2,...,S_n$ of possible values. The grid search finds the best model with respect to the mean of the local ROC-AUC scores of all validation instances over all combinations $(\theta_1,\theta_2,...,\theta_n) \in S_1\times S_2 \times...\times S_n$. 
+Most details on the training procedure of the explainer have been established in Section \ref{sec:Replication_of_PGExplainer}. As found by Holdijk et al. \cite{holdijk2021re} the PGExplainer is very sensitive to hyperparameter settings on each dataset. Therefore, we conduct hyperparameter searches for the explainer model on each of the datasets to obtain the best performing explainers. We follow Liashchynskyi and Liashchynskyi \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original \cite{luo2020parameterized}, as well as the configs provided in Replication study \cite{holdijk2021re}. For our hyperparameters $\lambda_1,\lambda_2,...,\lambda_n$ we define corresponding sets $S_1,S_2,...,S_n$ of possible values. The grid search finds the best model with respect to the mean of the local ROC-AUC scores of all validation instances over all combinations $(\lambda_1,\lambda_2,...,\lambda_n) \in S_1\times S_2 \times...\times S_n$. 
 
 Additionally, we consider that the predicted edge importance scores shall not be exactly 0 or 1 for all edges. Since we found that some datasets behave unexpectedly regarding the evaluation metric, we may choose to optimize in the opposite direction, which we will further discuss in Section \ref{}. All experiments and training were conducted on an AMD Ryzen 7 2700X processor.
 
@@ -125,23 +157,24 @@ Since we care about the inductive performance and Luo et al. \cite{luo2020parame
     \textbf{BA-2Motif} & 10 & 0.0 & 20 & 0.01 & 0.1 & 0.03 & 5.0 & 1.0 \\ \hline
     \textbf{MUTAG} & 10 & 0.0 & 20 & 0.01 & 1.0 & 0.005 & 5.0 & 1.0 \\ \hline
     \end{tabular}
-    \caption[Optimal explainer parameter values for each dataset]{This table shows the best-performing parameter values for each dataset based on the performed grid searches (see Section \ref{sec:sweeps}).}
+    \caption[Optimal explainer parameter values for each dataset]{The best-performing parameter values for each dataset based on the performed grid searches (see Section \ref{sec:sweeps}).}
     \label{tab:best_sweep_values}
   \end{table}
 
  \bigskip
 
 \textbf{Baselines}\par
- We compare our work to both the collective and inductive results from the original PGExplainer paper, as well as the results from the collective PyTorch replication study by Holdijk et al. \cite{holdijk2021re} (see Table \ref{tab:pgexplainer_baseline}). Since the inductive results of PGExplainer are only provided as plots, the numeric values are approximated by us.
+ We compare our work to both the collective and inductive results from the original PGExplainer paper, as well as the results from the collective PyTorch replication study by Holdijk et al. \cite{holdijk2021re} (see Table \ref{tab:pgexplainer_baseline}). Since the inductive results of PGExplainer are only provided as plots, we approximate the numeric values.
 
 \begin{table}[ht]
     \centering
     \scriptsize
-    \begin{tabularx}{\textwidth}{l*{6}{X}}   % 'X' column type from tabularx automatically scales columns
-    \toprule
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
-    \cmidrule{2-7}
+    \begin{tabularx}{\textwidth}{lXXXX|XX}   % 'X' column type from tabularx automatically scales columns
+    \textbf{} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
     \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
+    \midrule
+    \addlinespace
+    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
     \midrule
     PGExplainer & 0.963$\pm$0.011 & 0.945$\pm$0.019 & 0.987$\pm$0.007 & 0.907$\pm$0.014 & 0.926$\pm$0.021 & 0.873$\pm$0.013 \\
     \midrule
@@ -149,8 +182,11 @@ Since we care about the inductive performance and Luo et al. \cite{luo2020parame
     \midrule
     PGExplainer (inductive) & $\sim$0.98 & $\sim$0.99 & $\sim$0.99 & $\sim$0.88 & $\sim$0.84 & - \\
     \midrule
-    \textit{IT PGExplainer (ms)} & 10.92 & 24.07 & 6.36 & 6.72 & 80.13 & 9.68 \\
-    \textit{IT RE-PGExplainer (ms)} & 3.58 & 5.23 & 0.45 & 0.54 & 0.33 & 2.05 \\
+    \addlinespace
+    \textbf{} & \multicolumn{6}{c}{\textbf{Inference Time (ms)}} \\
+    \midrule
+    \textit{PGExplainer} & 10.92 & 24.07 & 6.36 & 6.72 & 80.13 & 9.68 \\
+    \textit{RE-PGExplainer} & 3.58 & 5.23 & 0.45 & 0.54 & 0.33 & 2.05 \\
     \bottomrule
     \end{tabularx}
     \caption[Baseline PGExplainer and RE-PGExplainer]{PGExplainer performance baselines.}
@@ -159,56 +195,19 @@ Since we care about the inductive performance and Luo et al. \cite{luo2020parame
 
 
 \textbf{Experimental Protocol}\par
-We follow the general experimental setup used in the baselines \cite{luo2020parameterized} \cite{holdijk2021re}, originally proposed in \cite{ying2019gnnexplainer}. For each trained downstream model we train a PGExplainer model on a specified seed, with the hyperparameter values listed in Table \ref{tab:best_sweep_values}. This process is repeated 10 times for each fixed downstream model. The models are evaluated both quantitatively using the AUROC metric and qualitatively in the sense of comparing visualizations of explanations to the ground truth motifs. We provide the quantitative results as the mean and standard deviation over 10 runs for all experiments. \bigskip
+We follow the general experimental setup used in the baselines \cite{luo2020parameterized} \cite{holdijk2021re}, originally proposed in \cite{ying2019gnnexplainer}. We train a PGExplainer model on a fixed downstream model with a specified seed, with the hyperparameter values listed in Table \ref{tab:best_sweep_values}. This process is repeated 10 times for each dataset. The models are evaluated both quantitatively using the AUROC metric and qualitatively in the sense of comparing visualizations of explanations to the ground truth motifs. We provide the quantitative results as the mean and standard deviation over 10 runs for all experiments. \bigskip
 
 
-\subsection{PGExplainer in the inductive setting}
+\subsection{Inductive Setting}
 
-\textbf{Experimental setup}
+\textbf{Experimental Setup} \par
+In this experiment we evaluate the performance of PGExplainer in the inductive setting on our slightly adapted downstream models. Since Luo et al. \cite{luo2020parameterized} showed that PGExplainer achieves good results with only few training instances, we aim to replicate this for $a=30$ training instances, one of the original experiment settings. Since the exact instances used are not further specified in the paper, we treat the motif node sets described in Section \ref{} as the instance sets of size $N$ for node task.
 
-Quantitative: 10 explainer runs on one downstream model; Calculate ROC-AUC over ALL graphs/nodes in each run;
-Qualitative: Original uses a threshold; we instead take the topK nodes according to the dataset/motif as an explanation
+We repeat this experiment with Xavier \cite{glorot2010understanding} used as initialization for the explainer MLP weights, opposed to the He \cite{he2015delving} initialization standard to PyTorch linear layers with ReLU activations. This is done since the grid searches showed that the performance is heavily dependent on the used seed for some datasets, which mainly controls the initializations. Note that the original TensorFlow \cite{tensorflow2015-whitepaper} implementation uses Xavier by default. 
 
-We test both the standard weight initialization in PyTorch for linear layers using a ReLU activation function, namely the He initialization \cite{he2015delving}, and the Xavier initialization used in the original.
+Additionally, we measure the average inference time to explain any instance and compare it to both baselines. \bigskip
 
-
-TODO: WE USE PGEXPLAINER IN INDUCTIVE SETTING, OPPOSED TO COLLECTIVE SETTING USED IN ORIGINAL/GNNExplainer, with $a=30$ training instances for all datasets (for comparison with original). Hyperparameter searches were also performed in inductive setting.
-
-Additionally, experiment in the collective setting with the configuration and setup described for inductive setting - difference lies in same data used for training and testing (Used because of global explanations?). Used for fair comparison with the original paper and the replication paper.
-
-
-TODO: LOW INFERENCE TIMES BECAUSE OF CPU INSTEAD OF GPU!?
-
-
-NOTE: Tree-Grid with original experimental setup (all motif nodes, 30 training instances) leads to mean of 0.5 for almost all hyperparam settings tried. Size reg of 0.05 (as in original) leads to all edges being assigned a values of one!
-
-%"In this section, we empirically demonstrate the effectiveness of PGExplainer in the inductive setting. In the inductive setting, we select α instances for training, (N − α)/2 for validation, and the rest for testing. α is ranged from [1,2,3,4,5,30]. Note that, with α =1, our method degenerates to the single-instance explanation method. Recall that to explain a set of instances, GNNExplainer first detects a reference node and then computes the explanation for the reference node. The explanation is then generalized to other nodes with graph alignment(SOURCE GNNExplainer)"
-
-\begin{table}[ht]
-    \centering
-    \scriptsize
-    \begin{tabularx}{\textwidth}{l*{6}{X}}   % 'X' column type from tabularx automatically scales columns
-    \toprule
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
-    \cmidrule{2-7}
-    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
-    \midrule
-    PGExplainer (collective) & 0.963$\pm$0.011 & 0.945$\pm$0.019 & 0.987$\pm$0.007 & 0.907$\pm$0.014 & 0.926$\pm$0.021 & 0.873$\pm$0.013 \\
-    \midrule
-    RE-PGExplainer (collective) & 0.999$\pm$0.000 & 0.825$\pm$0.040 & 0.760$\pm$0.014 & 0.679$\pm$0.008 & 0.133$\pm$0.046 & 0.843$\pm$0.084 \\
-    \midrule
-    PGExplainer (inductive) & $\sim$0.98 & $\sim$0.99 & $\sim$0.99 & $\sim$0.88 & $\sim$0.84 & - \\
-    \midrule
-    Our work (inductive) (He) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
-    \addlinespace
-    \midrule
-    \midrule
-    \textit{Inference Time (ms)} & 37.0$\pm$1.4 & 24.8$\pm$0.1 & 3.0$\pm$0.2 & 2.7$\pm$0.1 & 4.0$\pm$0.3 & 4.0$\pm$0.0 \\
-    \bottomrule
-    \end{tabularx}
-    \caption[Inductive performance of our reimplementation]{PGExplainer performance in Explanation AUROC compared to baselines ($a=30$).}
-    \label{tab:pgexplainer_auc}
-\end{table}
+%NOTE: Tree-Grid with original experimental setup (all motif nodes, 30 training instances) leads to mean of 0.5 for almost all hyperparam settings tried. Size reg of 0.05 (as in original) leads to all edges being assigned a values of one!
 
 \textbf{Results}
 
@@ -221,6 +220,36 @@ BA-2Motif LEARNS OPPOSITE OF WHAT IT IS EXPECTED TO LEARN. LOSS BEHAVES AS EXPEC
 BA-COMMUNITY DOES LEARN BUT NOT AS FAST AS PROPOSED IN ORIGINAL INDUCTIVE EXPERIMENT. COLLECTIVE EXPERIMENTS SHOW COMPARABLE RESULTS TO RE-PGE!
 
 TREE-CYCLES ALSO TENDS TO LEARN OPPOSITE OF EXPECTATION WITH ONE OUTLIER RUN THAT DOES NOT LEARN AS FAST. HOWEVER, CONVERGENCE NOT AS CLEAN AS IN BA-2Motif AND HIGHER VARIANCE BECAUSE OF INSTABILITY ACROSS SEEDS. LOSS IS ALSO VERY INCONSISTENT. See Figures \ref{fig:Tree-Cycles-val_loss}, \ref{fig:Tree-Cycles-val_auroc}.
+
+\begin{table}[ht]
+    \centering
+    \scriptsize
+    \begin{tabularx}{\textwidth}{l|XXXX|XX}   % 'X' column type from tabularx automatically scales columns
+    \textbf{} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
+    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
+    \midrule
+    \addlinespace
+    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
+    \midrule
+    PGExplainer & $\sim$0.98 & $\sim$0.99 & $\sim$0.99 & $\sim$0.88 & $\sim$0.84 & - \\
+    \midrule
+    Our work (He) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
+    \midrule
+    Our work (Xavier) & 0.995$\pm$0.002 & 0.779$\pm$0.036 & 0.467$\pm$0.316 & 0.551$\pm$0.119 & 0.035$\pm$0.05 & 0.834$\pm$0.04 \\
+    \midrule
+    \addlinespace
+    \textbf{} & \multicolumn{6}{c}{\textbf{Inference Time (ms)}} \\
+    \midrule
+    \textit{PGExplainer} & 10.92 & 24.07 & 6.36 & 6.72 & 80.13 & 9.68 \\
+    \textit{RE-PGExplainer} & 3.58 & 5.23 & 0.45 & 0.54 & 0.33 & 2.05 \\
+    \textit{Our work} & 37.0$\pm$1.4 & 24.8$\pm$0.1 & 3.0$\pm$0.2 & 2.7$\pm$0.1 & 4.0$\pm$0.3 & 4.0 \\
+    \bottomrule
+    \end{tabularx}
+    \caption[Inductive performance of our reimplementation]{Inductive performance of PGExplainer in Explanation AUROC compared to baselines ($a=30$).}
+    \label{tab:pgexplainer_auc}
+\end{table}
+
+
 
 \begin{figure}[htbp]
     \centering
@@ -297,35 +326,51 @@ NOTABLE THAT LOSS DOES CONVERGE
 
 %MUTAG: Low lr -> 0.0003; low entropy reg(high impact, but highest AUC runs vary) -> 0.1; low tT -> 1; less epochs -> 20; low size reg -> 0.005(/0.01); Loss is messy and AUC seems to decrease over time! lr 0.0001 worse, entropy reg 0.1/0.01 has zero effect -> 0.1\\
 
+\subsection{Collective Setting}
+
+\textbf{Experimental Setup} \par
+To allow for a better comparison with both baselines we perform an experiment in the collective setting. Therefore, both the training and evaluation are performed on the complete set of motif instances. This is the setting that can be found in the original codebase. It is noteworthy that we use the hyperparameters found in an inductive setting (see Section \ref{}), which should allow for good generalization. We also include our results obtained in the inductive setting, to evaluate the difference between the settings. \bigskip
+
+\textbf{Results}\par
+
+We cannot reproduce the scores achieved in the original work for most of the datasets, as seen in Table \ref{}. BA-Shapes achieves a higher score than the original, while MUTAG comes close to the original baseline and even obtains a higher score in the inductive setting. The other scores do not come close when considering the scores as they are without flipped ground truths. We are however able to match the results achieved in the RE-PGExplainer baseline, in all but Tree-Cycles. This validates that the PGExplainer is applicable to different downstream GNN architectures.
 
 \begin{table}[ht]
     \centering
     \scriptsize
-    \begin{tabularx}{\textwidth}{l*{6}{X}}   % 'X' column type from tabularx automatically scales columns
-    \toprule
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
-    \cmidrule{2-7}
+    \begin{tabularx}{\textwidth}{l|XXXX|XX}   % 'X' column type from tabularx automatically scales columns
+    \textbf{} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
     \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
     \midrule
-    Our work (inductive) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
+    \addlinespace
+    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
     \midrule
-    with Xavier & 0.995$\pm$0.002 & 0.779$\pm$0.036 & 0.467$\pm$0.316 & 0.551$\pm$0.119 & 0.035$\pm$0.05 & 0.834$\pm$0.04 \\
+    PGExplainer & 0.963$\pm$0.011 & 0.945$\pm$0.019 & 0.987$\pm$0.007 & 0.907$\pm$0.014 & 0.926$\pm$0.021 & 0.873$\pm$0.013 \\
+    \midrule
+    RE-PGExplainer & 0.999$\pm$0.000 & 0.825$\pm$0.040 & 0.760$\pm$0.014 & 0.679$\pm$0.008 & 0.133$\pm$0.046 & 0.843$\pm$0.084 \\
+    \midrule
+    Our work & 0.993$\pm$0.001 & 0.831$\pm$0.009 & 0.084$\pm$0.078 & 0.679$\pm$0.032 & 0.018$\pm$0.004 & 0.833$\pm$0.006 \\
+    \midrule
+    %collective with Xavier & 0.993.$\pm$0.003 & 0.833$\pm$0.023 & 0.322$\pm$0.278 & 0.68$\pm$0.057 & 0.027$\pm$0.009 & 0.774$\pm$0.034 \\
+    %\midrule
+    \midrule
+    Our work (inductive) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
     \bottomrule
     \end{tabularx}
-    \caption[Inductive performance with Xavier]{PGExplainer performance in Explanation AUROC with Xavier used to initialize the Linear layer weights ($a=30$).}
-    \label{tab:pgexplainer_ind_Xavier}
+    \caption[Collective performance of our reimplementation]{Collective PGExplainer performance in Explanation AUROC ($a=N$).}
+    \label{tab:pgexplainer_auc}
 \end{table}
 
 
-\subsection{PGExplainer in inductive setting with more training data}
+\subsection{Inductive Setting with more training data}
 
-\textbf{Experimental setup}
-$a=60$
+\textbf{Experimental Setup}\par
+Luo et al. \cite{} show that the inductive performance of PGExplainer improves with the number of instances used for training. To validate this we perform an inductive experiment with an increase number of training instances $a=60$. Since the motif instance sets of BA-Shapes and Tree-Cycles in the original setting only consist of 60 instances, we use a percental split of $0.8/0.1/0.1$. This leads to $a=48$ for these two tasks. \bigskip
 
-\textbf{Results}
-\ref{tab:experiment_60train}
+\textbf{Results}\par
+Table \ref{tab:experiment_60train}
 
-BA-Community: SumSampledEdges increases after 6/7 epochs, AUROC reaches peak early but then decreases steadily! (For 30 instances: Both sum sampled egdes and AUROC converge very strongly!) - Apparently less stable on 60 instances (ONLY CHANGE!!!), probably would have to be retuned (BAD!)
+BA-Community: SumSampledEdges increases after 6/7 epochs, AUROC reaches peak early but then decreases steadily! (For 30 instances: Both sum sampled edges and AUROC converge very strongly!) - Apparently less stable on 60 instances (ONLY CHANGE!!!), probably would have to be retuned (BAD!)
 \begin{table}[ht]
     \centering
     \scriptsize
@@ -339,73 +384,43 @@ BA-Community: SumSampledEdges increases after 6/7 epochs, AUROC reaches peak ear
     \midrule
     with Xavier & 0.995$\pm$0.002 & 0.779$\pm$0.036 & 0.467$\pm$0.316 & 0.551$\pm$0.119 & 0.035$\pm$0.05 & 0.834$\pm$0.04 \\
     \midrule
-    $a=60$ & 0.987.$\pm$0.002 & 0.641$\pm$0.045 & 0.144$\pm$0.096 & 0.495$\pm$0.052 & 0.017$\pm$0.004 & 0.895$\pm$0.009 \\
+    $a=60$ & 0.987$\pm$0.002 & 0.641$\pm$0.045 & 0.144$\pm$0.096 & 0.495$\pm$0.052 & 0.017$\pm$0.004 & 0.895$\pm$0.009 \\
     \bottomrule
     \end{tabularx}
     \caption[Inductive performance with 60 training instances]{PGExplainer performance in Explanation AUROC ($a=60$) (He initialized).}
     \label{tab:experiment_60train}
 \end{table}
 
-
-\subsection{PGExplainer in collective setting}
-
-\textbf{Experimental setup}
-Collective setting (ALL instances used for training + testing) with hyperparameters that were found in inductive setting.
-
-\textbf{Results}
-
-\begin{table}[ht]
-    \centering
-    \scriptsize
-    \begin{tabularx}{\textwidth}{l*{6}{X}}   % 'X' column type from tabularx automatically scales columns
-    \toprule
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUC}} \\
-    \cmidrule{2-7}
-    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
-    \midrule
-    PGExplainer (collective) & 0.963$\pm$0.011 & 0.945$\pm$0.019 & 0.987$\pm$0.007 & 0.907$\pm$0.014 & 0.926$\pm$0.021 & 0.873$\pm$0.013 \\
-    \midrule
-    RE-PGExplainer (collective) & 0.999$\pm$0.000 & 0.825$\pm$0.040 & 0.760$\pm$0.014 & 0.679$\pm$0.008 & 0.133$\pm$0.046 & 0.843$\pm$0.084 \\
-    \midrule
-    Our work (collective) & 0.993$\pm$0.001 & 0.831$\pm$0.009 & 0.084$\pm$0.078 & 0.679$\pm$0.032 & 0.018$\pm$0.004 & 0.833$\pm$0.006 \\
-    \midrule
-    collective with Xavier & 0.993.$\pm$0.003 & 0.833$\pm$0.023 & 0.322$\pm$0.278 & 0.68$\pm$0.057 & 0.027$\pm$0.009 & 0.774$\pm$0.034 \\
-    \midrule
-    \midrule
-    Our work (inductive) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
-    \bottomrule
-    \end{tabularx}
-    \caption[Collective performance of our reimplementation]{PGExplainer performance in Explanation AUROC in collective setting.}
-    \label{tab:pgexplainer_auc}
-\end{table}
-
 \subsection{BA-2Motif with flipped GT}
 
-He initialized
-
 \textbf{Experimental setup}
-Mean individual AUROC is calculated identical to before, but the ground truth masks of each graph are inverted, meaning that edges in the motif now carry a label of $0$ and all other edges a label of $1$. Validation loss is evaluated as well.
+Since we found that the AUROC metric for BA-2Motif decreases rather than increases over the training epochs, and converges near zero, we run an additional experiment with flipped GT. Since both the loss and AUROC curves decrease steadily and flatten in the original inductive experiment, we consider this experiment an additional validation.
+The mean individual AUROC is calculated identical to before, but the ground truth mask of each graph is inverted, meaning that edges in the motif now carry a label of $0$ and all other edges a label of $1$. 
+Note that the ground truth does not affect the training procedure in any way and merely changes the metric evaluation. \bigskip
 
 \textbf{Results}
+
+As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment, even higher than in the original work, as seen in Table \ref{tab:flippedGT}. It is notable that the results by Holdijk et al. suggest a similar observation, however the authors do not expand on this.
 
 \begin{table}[ht]
     \centering
     \scriptsize
-    \begin{tabularx}{0.4\textwidth}{l X}
+    \begin{tabularx}{0.4\textwidth}{l c}
         \toprule
         \textbf{Method} & \textbf{Explanation AUC} \\
         \midrule
-        Our work       & 0.017 $\pm$ 0.006 \\
-        Flipped GT     & 0.985 $\pm$ 0.006 \\
+        PGExplainer       & 0.926$\pm$0.021 \\
+        RE-PGExplainer       & 0.133$\pm$0.046 \\
+        Our work       & 0.017$\pm$0.006 \\
+        \midrule
+        Flipped GT     & 0.985$\pm$0.006 \\
         \bottomrule
     \end{tabularx}
     \caption[Inductive performance on BA-2Motif with flipped ground truth]{Explanation AUROC for BA-2Motif with flipped GT.}
-    \label{tab:allmotifnodes_selected}
+    \label{tab:flippedGT}
 \end{table}
 
-Validation Loss curve relatively smooth. TODO: INCLUDE
-
-\subsection{Effects of motif node sets}
+\subsection{Effects of used Motif Instances}
 \label{sec:motif_set_experiment}
 
 We conduct an experiment on the performance with only select motif nodes! only taking 30 random nodes from all motif nodes may lead to a selection of mostly nodes where not even the complete motif, and even less probable edges outside the motif, are contained.
@@ -426,7 +441,8 @@ OneMotifNode experiment:
 
 BA-Community:
 \begin{verbatim}
-    middleCommNodes = [i for i in range(single_label.shape[0]) if single_label[i] == 1 or single_label[i] == 5]
+    middleCommNodes = [i for i in range(single_label.shape[0]) 
+            if single_label[i] == 1 or single_label[i] == 5]
     singularNodes = [_ for i,_ in enumerate(middleCommNodes) if i%2 == 0]
 \end{verbatim}
 (One of the two middle house nodes) (160 nodes)
@@ -439,6 +455,12 @@ Maybe works well because if all motif nodes are used, subgraphs are used where o
 
 
 \textbf{Results}
+
+OneMotifNode trivializes the problem?!
+
+AllMotifNodes seems reasonable, since we want to be able to explain as many nodes as possible!
+
+Further idea: Use a subset of the static one motif nodes for training and evaluate using all motif nodes?
 
 \begin{table}[ht]
     \centering
@@ -456,7 +478,7 @@ Maybe works well because if all motif nodes are used, subgraphs are used where o
     AllMotifNodes Xavier & 0.948$\pm$0.015 & 0.247$\pm$0.197 \\
     \bottomrule
     \end{tabularx}
-    \caption[Inductive performance using all motif nodes for training]{Explanation AUROC and inference time for AllMotifNodes on selected datasets.}
+    \caption[Inductive performance using all motif nodes for training]{Explanation AUROC for AllMotifNodes on selected datasets.}
     \label{tab:allmotifnodes_selected}
 \end{table}
 
@@ -474,10 +496,26 @@ Maybe works well because if all motif nodes are used, subgraphs are used where o
     OneMotifNode & 0.951$\pm$0.007 & 1.0$\pm$0.0 \\
     \bottomrule
     \end{tabularx}
-    \caption[Inductive performance using one motif node for training]{Explanation AUROC and inference time for OneMotifNode on selected datasets.}
+    \caption[Inductive performance using one motif node for training]{Explanation AUROC for OneMotifNode on selected datasets.}
     \label{tab:allmotifnodes_selected}
 \end{table}
 
+
+\begin{table}[ht]
+    \centering
+    \scriptsize
+    \begin{tabularx}{0.6\textwidth}{l*{4}{X}}   % Adjust width as needed
+    \toprule
+    \textbf{} & \multicolumn{4}{c}{\textbf{Explanation AUC}} \\
+    \cmidrule{2-5}
+    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid \\
+    \midrule
+    Experiment & 0.85$\pm$0.005 & 0.731$\pm$0.016 & 0.224$\pm$0.160 & 0.65$\pm$0.026 \\
+    \bottomrule
+    \end{tabularx}
+    \caption[Inductive performance using one motif node for training and all other motif nodes for evaluation]{Explanation AUROC when training with a subset of one node per motif and evaluating on all motif nodes for node tasks.}
+    \label{tab:allmotifnodes_selected}
+\end{table}
 
 \subsection{Qualitative Analysis}
 
@@ -516,30 +554,33 @@ TODO: We present our approach for generating bipartite explanations for NeuroSAT
 
 \subsection{Common experimental setup}
 
-We create required data with provided methods, add unsat cores and MUSs as gt
+NeuroSAT \cite{selsam2018learning} uses a distribution $\textbf{SR}(n)$ that creates pairs of SAT problems on $n$ variables, which are satisfiable and unsatisfiable, only differing in a singular negated literal. These are created by randomly sampling subclauses of $k$ variables, where each variable is negated with a probability of $50\%$. These subclauses are added to the problem until a SAT solver \cite{een2003extensible} finds it to be unsatisfiable. We adapt this to only contain singular unsatisfiable problems, rather than pairs of problems, since UNSAT cores only appear in unsatisfiable problems. The difficulty of the problems is slightly reduced by using $n=8$, to allow for the explainer to run on NeuroSAT on our limited hardware. We create a dataset of 100 problems.
+
+We create the expected ground truth with the deletion-based MUS extractor \verb|MUSX| from PySAT \cite{imms-sat18}, as described in section \ref{sec:Application_to_NeuroSAT}.
+
+The quantitative evaluation is adopted from Section \ref{sec:PGE_exp_setup}, with the positive targets being the edges that appear in the corresponding ground truth MUS of each problem. Since the qualitative evaluation relies on knowing $k$, we calculate this dynamically during evaluation from the ground truth of the current problem.
+
+The NeuroSAT model was provided by a fellow student, trained on a $\textbf{SR}(40)$ distribution. It achieves an accuracy of 1.0 on the dataset we created.
+
+We use a 50/25/25 split for training, evaluating and testing the NeuroSAT explainer. \bigskip
+
+\textbf{Hyperparameter Search}\par
+We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the applied hard constraint. We follow the general grid search procedure used for the previous experiments, but introduce three new hyperparameters, one exclusive to the hard constraint and one exclusive to the soft constraint. $\alpha_{arch} \in \{0,1\}$, exclusive to the hard constraint, denotes whether a more complex MLP architecture is used in the explainer. The second introduced hyperparameter $\alpha_{concat} \in \{0,1\}$ controls whether the node embeddings $\mathbf{z}$ are used from the last iteration of NeuroSAT or if a concatenation of the states at multiple iterations shall be used (see Section \ref{sec:NeuroSAT_extension}). Lastly, the coefficient $\alpha_{c} \in \mathbb{R}^+$ controls the effect of the soft constraint $R_C$ (see Equation \ref{eq:soft_restraint}) on the loss. This is disregarded in the hard constraint experiment, as the hard constraint replaces the soft constraint. The sample bias $b$ used in PGExplainer is disregarded completely.
 
 
-Generated batches of unsat problems that "turned" unsat because of last added clause. 10 literals per problem. Only unsat to test for unsat cores, that only apply for unsat problems. Calculated unsat cores with solver xy by adding negative assumption literals per clause and passing these as assumption for calulation. The edges of the clauses present in the unsat core were treated as ground truth. \\
+\subsection{Soft Constraint Experiment}
+In this experiment we adopt the soft constraint introduced in Section \ref{sec:NeuroSAT_extension} to use the PGExplainer to generate explanations for the predictions of NeuroSAT on unsatisfiable SAT problems. \bigskip
+
+\textbf{Results}\par
 
 
-For quant. eval. adapted roc auc as metric as done in PGExplainer. Results seem "good" but qual. eval. shows different result. roc auc bad metric? \\
-For qual. eval. topk(=number of edges in gt) edges of predictions were highlighted to be compared to gt edges. For quant. eval. the edge probabilites were compared to gt with 1s for edges in gt and 0s for rest. \\
+\subsection{Hard Constraint Experiment}
+In this experiment we adopt the hard constraint introduced in Section \ref{sec:NeuroSAT_extension} to use the PGExplainer to generate explanations for the predictions of NeuroSAT on unsatisfiable SAT problems. \bigskip
 
-NeuroSAT model achieves accuracy of 1.0 on the unsat problems used.
+\textbf{Hyperparameter search}\par
+We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the hard constraints. We follow the general grid search procedure used for the previous experiments, but introduce new hyperparameters. 
 
+The search revealed that none of the parameter configurations achieves an AUROC score above $0.5$ and below $0.44$. Since $0.5$ equals pure randomness and is usually caused by all edges being predicted with a score of $0$, we select the model that achieves the lowest score, thus departing from the point of randomness. However, this mostly indicates that the explainer predictions do not align with the selected ground truth.
 
-
-
-
-\subsection{Soft constraint}
-
-\textbf{Hyperparameter search}
-We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the hard constraints.
-
-\textbf{Results}
-
-
-\subsection{Hard constraint}
-
-\textbf{Hyperparameter search}
-We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the hard constraints.
+\textbf{Results}\par
+We found that running the training for 500 epochs resulted in a converging loss, as well as a converging metric score, close to $0.46$. A local score minimum is reached in epoch 60 with a value of $0.44$. Since this is very close to a score indicating randomness, we conclude that NeuroSAT does in fact not learn generalized unsatisfiable cores in the form of MUSs.
