@@ -89,9 +89,20 @@ def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_tas
                 color_map.append(colors[j.item()])
         
     
-    node_size = 300 if graph_task else 300
-    plt.figure(1, figsize=(10, 10))
-    nx.draw(nxGraph, pos=pos, node_size=node_size, node_color=color_map, font_size=8)
+    node_size = 1000 if graph_task else 1000
+    plt.figure(1, figsize=(3, 3))
+    #nx.draw(nxGraph, pos=pos, node_size=node_size, node_color=color_map, font_size=8)
+    
+    nx.draw(
+        nxGraph, 
+        pos=pos, 
+        node_size=node_size, 
+        node_color=color_map, 
+        font_size=8,
+        width=2.5,                 # Increase edge thickness
+        edge_color='black',        # Make edges a bold color
+        alpha=0.8                  # Optional: slight transparency for cleaner look
+    )
 
     if number_nodes: nx.draw_networkx_labels(nxGraph, pos, labels={i: f"{i}" for i in range(graph.x.shape[0])})
 
@@ -101,7 +112,7 @@ def plotGraphAll (graph, pos=None, color_map=None, edge_weights=False, graph_tas
         nx.draw_networkx_edge_labels(nxGraph, pos, edge_labels=labels, font_size=6)
  
     if save_path:
-        plt.savefig(save_path, format="pdf", dpi=300, bbox_inches="tight")
+        plt.savefig(save_path, format="pdf", bbox_inches="tight")
         plt.close()
     else:
         plt.show()
@@ -234,7 +245,8 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
 
         edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices)
 
-        _, top_k_indices = torch.topk(edge_ij, k=num_explanation_edges*2, largest=True)
+        # Select topk largest for MUTAG and topK smallest for BA-2Motif
+        _, top_k_indices = torch.topk(edge_ij, k=num_explanation_edges*2, largest=MUTAG)
 
         mask = torch.zeros_like(edge_ij, dtype=torch.bool)
         mask[top_k_indices] = True
@@ -257,7 +269,7 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
         print("-----------------Explanation Graph-----------------")
         
         if index is not None: save_path = f"explanations/graph_{index}_explanation.pdf"
-        pos1 = plotGraphAll(G_weights, pos=pos, number_nodes=True, graph_task=True, edge_weights=True, MUTAG=MUTAG, save_path=save_path)
+        pos1 = plotGraphAll(G_weights, pos=pos, number_nodes=False, graph_task=True, edge_weights=False, MUTAG=MUTAG, save_path=save_path)
 
         print("-----------Original Graph with edge weights-----------")
 
@@ -314,7 +326,7 @@ def showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes
 
         print("-----------------Top K Motif Graph-----------------")
         if index is not None: save_path = f"explanations/graph_{index}_explanation.pdf"
-        pos1 = plotGraphAll(GtopK, pos=pos, color_map=None, edge_weights=True, save_path=save_path)
+        pos1 = plotGraphAll(GtopK, pos=pos, color_map=None, edge_weights=False, save_path=save_path)
         
         G_gt = Data(x=G_hop.x, edge_index=G_hop.edge_index[:,data.gt_mask[edge_mask]], y=G_hop.y)
         

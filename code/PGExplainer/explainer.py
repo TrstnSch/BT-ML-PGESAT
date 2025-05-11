@@ -24,7 +24,7 @@ class MLP(nn.Module):
         """Xavier Initialization for Linear Layers"""
         for layer in self.model:
             if isinstance(layer, nn.Linear):
-                nn.init.xavier_uniform_(layer.weight)  # Xavier for weights
+                #nn.init.xavier_uniform_(layer.weight)  # Xavier for weights
                 if layer.bias is not None:
                     nn.init.zeros_(layer.bias)  # Zero for bias
                     
@@ -32,7 +32,7 @@ class MLP(nn.Module):
 
             
     def forward(self, modelGraphGNN, x, edge_index, nodeToPred=None):
-        """Forward method of our model. This starts by calculating edge embeddings on thy fly.
+        """Forward method of our model. This starts by calculating edge embeddings on the fly.
         These are the inputs that are fed through the model. The model output edge weights are transformed
         so that both parts of the adj. matrix/edge_index hold identical weights for each edge(symmetric).
 

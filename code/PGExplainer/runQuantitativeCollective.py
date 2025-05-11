@@ -17,8 +17,9 @@ for dataset in datasets:
         mlp, downstreamTask, testAUC, individual_aurocs_test, testInfTime = trainExplainer_trainSplit.trainExplainer(
             dataset=dataset,
             save_model=False,
-            wandb_project=f"Final-Replication-Collective-{dataset}",
-            runSeed=i
+            wandb_project=f"FIXED-Final-Replication-Collective-{dataset}",
+            runSeed=i,
+            collective=True
         )
         testAUCs.append(testAUC)
         individual_aurocs_tests.append(np.mean(individual_aurocs_test))

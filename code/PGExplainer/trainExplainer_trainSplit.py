@@ -10,6 +10,7 @@ from torch_geometric.loader import DataLoader
 from torch_geometric import seed
 from torch_geometric.utils import k_hop_subgraph
 import wandb
+import pandas as pd
 
 
 
@@ -36,7 +37,7 @@ def loadExplainer(dataset):
     return mlp, downstreamTask
 
 
-def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replication",runSeed=None) :
+def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replication",runSeed=None, collective=False):
     if runSeed is not None: seed.seed_everything(runSeed)
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -118,18 +119,24 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             num_test = remaining - num_val  # In case of odd number
         
         # COLLECTIVE
-        #train_dataset = data
-        
-        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [num_training_instances, num_val, num_test], generator1)
-        
+        if collective:
+            train_dataset = data
+        else:
+            train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(data, [num_training_instances, num_val, num_test], generator1)
+            val_loader = DataLoader(val_dataset, params['batch_size'], False)
+            
         train_loader = DataLoader(train_dataset, params['batch_size'], True)
-        val_loader = DataLoader(val_dataset, params['batch_size'], False)
+        
     else:
         if dataset == "BA-Community":
             single_label = data.y
             motifNodes = [i for i in range(single_label.shape[0]) if single_label[i] != 0 and single_label[i] != 4]
-            # USED TO EVAL One of the two middele house nodes
-            #motifNodes = [i for i in range(single_label.shape[0]) if single_label[i] == 1 and single_label[i] != 5]
+            
+            # USED TO EVAL One of the two middele house nodes!
+            # Calc all two middle nodes of each motif
+            #middleCommunityNodes = [i for i in range(single_label.shape[0]) if single_label[i] == 1 or single_label[i] == 5]
+            # Since middle nodes are next to each other, select every second node
+            #motifNodes = [_ for i,_ in enumerate(middleCommunityNodes) if i%2 == 0]
         else:
             motif_node_indices = params['motif_node_indices']
             motifNodes = [i for i in range(motif_node_indices[0], motif_node_indices[1], motif_node_indices[2])]
@@ -145,9 +152,11 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
             num_val = remaining // 2
             num_test = remaining - num_val  # In case of odd number
             
-        train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [num_training_instances, num_val, num_test], generator1)
-        # COLLECTIVE
-        #train_nodes = motifNodes
+        if collective:
+            train_nodes = motifNodes
+        else:
+            train_nodes, val_nodes, test_nodes = torch.utils.data.random_split(motifNodes, [num_training_instances, num_val, num_test], generator1)
+
     
 
     # TODO: Instead of loading static one, pass model as argument?
@@ -191,7 +200,8 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         else:
             original_preds.append(pOriginal[node_to_predict])"""
         
-            
+    
+    results = []
     
     for epoch in range(0, epochs) :
         mlp.train()
@@ -272,71 +282,84 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
         else:
             trainAUC, individual_aurocs_train, trainInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, train_nodes, num_explanation_edges)
 
-        #Evaluation on validation set
-        print("---------------- VAL AUC ----------------")
-        if graph_task:
-            valAUC, individual_aurocs_val, valInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
-        else:
-            valAUC, individual_aurocs_val, valInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, val_nodes, num_explanation_edges)
-    
-        sumSampledEdges = sumSampledEdges / len(training_iterator)
-        
-        # VAL loss
-        valLoss = torch.FloatTensor([0]).to(device)
-        
-        validation_iterator = val_loader if graph_task else val_nodes
-        for index, content in enumerate(validation_iterator):
-            node_to_predict = None
-            if graph_task: 
-                current_data = content.to(device)
-
-            if not graph_task:
-                node_to_predict = content
-                subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=node_to_predict, num_hops=3, edge_index=current_data.edge_index, relabel_nodes=False)
-                edge_index_hop = edge_index_hop.to(device)
-
-            current_edge_index = current_data.edge_index if graph_task else edge_index_hop
-            current_edge_index = current_edge_index.to(device)
-            
-            w_ij, unique_pairs, inverse_indices = mlp.forward(downstreamTask, current_data.x.to(device), current_edge_index, nodeToPred=node_to_predict)
-            
-            pOriginal = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, current_data.batch), dim=1)
-
-            edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices, temperature, sample_bias)
-            pSample = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, batch=current_data.batch, edge_weights=edge_ij), dim=1)
-
+        if not collective:
+            #Evaluation on validation set
+            print("---------------- VAL AUC ----------------")
             if graph_task:
-                valLoss += mlp.loss(pOriginal, pSample, edge_ij, coefficient_size_reg, coefficient_entropy_reg)
+                valAUC, individual_aurocs_val, valInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, val_dataset, num_explanation_edges)
             else:
-                valLoss = mlp.loss(pOriginal[node_to_predict], pSample[node_to_predict], edge_ij, coefficient_size_reg, coefficient_entropy_reg, coefficient_L2_reg)
+                valAUC, individual_aurocs_val, valInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, val_nodes, num_explanation_edges)
         
-        valLoss = valLoss / len(validation_iterator)
-        
-        wandb.log({"train/Loss": loss, "train/AUC": trainAUC, "train/mean_ind_AUC": torch.tensor(individual_aurocs_train).mean(), "val/AUC": valAUC, "val/mean_ind_AUC": torch.tensor(individual_aurocs_val).mean(), "val/sum_sampledEdges": sumSampledEdges, "val/loss": valLoss,"temperature": temperature})
-        
-        
-    print("---------------- TEST AUC ----------------")
-    # Evaluation on test set
-    if graph_task:
-        testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, test_dataset, num_explanation_edges)
-    else:
-        testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
-        
-    if graph_task:
-        test_data = test_dataset[-1]
-        w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, test_data.x, test_data.edge_index)
-        edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
-    else:
-        test_node = test_nodes[-1]
-        subset, edge_index_hop_test, mapping, edge_mask = k_hop_subgraph(node_idx=test_node, num_hops=3, edge_index=data.edge_index, relabel_nodes=False)
+            sumSampledEdges = sumSampledEdges / len(training_iterator)
+            
+            # VAL loss
+            valLoss = torch.FloatTensor([0]).to(device)
+            
+            validation_iterator = val_loader if graph_task else val_nodes
+            for index, content in enumerate(validation_iterator):
+                node_to_predict = None
+                if graph_task: 
+                    current_data = content.to(device)
 
-        w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, data.x, edge_index_hop_test, test_node)
-        edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
+                if not graph_task:
+                    node_to_predict = content
+                    subset, edge_index_hop, mapping, edge_mask = k_hop_subgraph(node_idx=node_to_predict, num_hops=3, edge_index=current_data.edge_index, relabel_nodes=False)
+                    edge_index_hop = edge_index_hop.to(device)
+
+                current_edge_index = current_data.edge_index if graph_task else edge_index_hop
+                current_edge_index = current_edge_index.to(device)
+                
+                w_ij, unique_pairs, inverse_indices = mlp.forward(downstreamTask, current_data.x.to(device), current_edge_index, nodeToPred=node_to_predict)
+                
+                pOriginal = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, current_data.batch), dim=1)
+
+                edge_ij = mlp.sampleGraph(w_ij, unique_pairs, inverse_indices, temperature, sample_bias)
+                pSample = fn.softmax(downstreamTask.forward(current_data.x.to(device), current_edge_index, batch=current_data.batch, edge_weights=edge_ij), dim=1)
+
+                if graph_task:
+                    valLoss += mlp.loss(pOriginal, pSample, edge_ij, coefficient_size_reg, coefficient_entropy_reg)
+                else:
+                    valLoss += mlp.loss(pOriginal[node_to_predict], pSample[node_to_predict], edge_ij, coefficient_size_reg, coefficient_entropy_reg, coefficient_L2_reg)
+                    
+            
+                    
+        if collective:
+            wandb.log({"train/Loss": loss, "train/AUC": trainAUC, "train/mean_ind_AUC": torch.tensor(individual_aurocs_train).mean(), "temperature": temperature})
+        else:    
+            valLoss = valLoss / len(validation_iterator)
+            
+            results.append({
+                "epoch": epoch,
+                "val_loss": valLoss.item(),
+                "val_auroc": torch.tensor(individual_aurocs_val).mean().item(),
+                "run": f"{dataset}_{runSeed}"
+            })
+            
+            wandb.log({"train/Loss": loss, "train/AUC": trainAUC, "train/mean_ind_AUC": torch.tensor(individual_aurocs_train).mean(), "val/AUC": valAUC, "val/mean_ind_AUC": torch.tensor(individual_aurocs_val).mean(), "val/sum_sampledEdges": sumSampledEdges, "val/loss": valLoss,"temperature": temperature})
+            
+    if not collective:
+        print("---------------- TEST AUC ----------------")
+        # Evaluation on test set
+        if graph_task:
+            testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateExplainerAUC(mlp, downstreamTask, test_dataset, num_explanation_edges)
+        else:
+            testAUC, individual_aurocs_test, testInfTime = evaluation.evaluateNodeExplainerAUC(mlp, downstreamTask, data, test_nodes, num_explanation_edges)
+            
+        if graph_task:
+            test_data = test_dataset[-1]
+            w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, test_data.x, test_data.edge_index)
+            edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
+        else:
+            test_node = test_nodes[-1]
+            subset, edge_index_hop_test, mapping, edge_mask = k_hop_subgraph(node_idx=test_node, num_hops=3, edge_index=data.edge_index, relabel_nodes=False)
+
+            w_ij_test, unique_pairs_test, inverse_indices_test = mlp.forward(downstreamTask, data.x, edge_index_hop_test, test_node)
+            edge_ij_test = mlp.sampleGraph(w_ij_test, unique_pairs_test, inverse_indices_test).detach()
+            
+        wandb.log({"test/AUC": testAUC, "test/mean_ind_AUC": torch.tensor(individual_aurocs_test).mean(), 
+                "test/mean_infTime": testInfTime, "edge_importance/min": edge_ij_test.min().item(), "edge_importance/max": edge_ij_test.max().item(),
+                "edge_importance/mean": edge_ij_test.mean().item()})
         
-    wandb.log({"test/AUC": testAUC, "test/mean_ind_AUC": torch.tensor(individual_aurocs_test).mean(), 
-               "test/mean_infTime": testInfTime, "edge_importance/min": edge_ij_test.min().item(), "edge_importance/max": edge_ij_test.max().item(),
-               "edge_importance/mean": edge_ij_test.mean().item()})
-    
     #,"test/edge_importance_histogram": wandb.Histogram(edge_ij_test.cpu().numpy())
     
     if save_model is True:
@@ -344,5 +367,11 @@ def trainExplainer (dataset, save_model=False, wandb_project="Experiment-Replica
 
     wandb.finish()
     
-    #return mlp, downstreamTask, testAUC, individual_aurocs_test, testInfTime
-    return mlp, downstreamTask, trainAUC, individual_aurocs_train, trainInfTime
+    if collective:
+        return mlp, downstreamTask, trainAUC, individual_aurocs_train, trainInfTime
+    else:
+        df = pd.DataFrame(results)
+        df.to_csv(f"{dataset}_{runSeed}.csv", index=False)
+        
+        return mlp, downstreamTask, testAUC, individual_aurocs_test, testInfTime
+    

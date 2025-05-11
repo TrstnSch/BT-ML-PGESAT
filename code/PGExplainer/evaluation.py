@@ -221,7 +221,7 @@ def evaluate (datasetName, mlp, downstreamTask, index=None):
         # For showExplanation, pass random graph from data
         data = data[random.choice(range(0,len(data)))]
         
-        _ = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes=None, graphTask=graph_task, MUTAG=MUTAG)
+        _ = utils.showExplanation(mlp, downstreamTask, data, num_explanation_edges, motifNodes=None, graphTask=graph_task, MUTAG=MUTAG, index=index)
     else:
         # TODO: move to config
         if datasetName == "BA-Community":

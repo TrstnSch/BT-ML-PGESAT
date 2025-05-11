@@ -3,9 +3,9 @@ import sys
 import numpy as np
 
 datasets = [
-    "BA-Shapes", "BA-Community" , "Tree-Cycles", "Tree-Grid", "BA-2Motif", "MUTAG"
+    "BA-2Motif"
 ]
-#
+#"BA-Shapes", "BA-Community" , "Tree-Cycles", "Tree-Grid", , "MUTAG"
 for dataset in datasets:
     testAUCs = []
     individual_aurocs_tests = []
@@ -16,8 +16,8 @@ for dataset in datasets:
     for i in range(10):
         mlp, downstreamTask, testAUC, individual_aurocs_test, testInfTime = trainExplainer_trainSplit.trainExplainer(
             dataset=dataset,
-            save_model=False,
-            wandb_project=f"Final-Replication-Inductive-{dataset}",
+            save_model=True,
+            wandb_project=f"PLOTS-HE-Final-Replication-Inductive-{dataset}",
             runSeed=i
         )
         testAUCs.append(testAUC)
