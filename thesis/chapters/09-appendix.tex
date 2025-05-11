@@ -358,8 +358,8 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
     \hline
     \multicolumn{10}{|c|}{\textbf{Hard Constraint Explainer}} \\ \hline
     $\alpha_e$ & $E$ & $\eta$ & $K$ & $\alpha_{concat}$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $\alpha_{arch}$ \\ \hline
-    0.1 & 20 & \textbf{0.0003} & 1  & \textbf{False} & 75 & \textbf{0.01} & 1.0 & 5.0 & \textbf{False} \\
-    \textbf{1.0} & 30 & 0.003  & \textbf{5}  & True  & 76 & 0.1 & \textbf{5.0} &  & True  \\
+    0.1 & 20 & \textbf{0.0003} & 1  & \textbf{False} & 75 & \textbf{0.01} & \textbf{1.0} & 5.0 & False \\
+    \textbf{1.0} & 30 & 0.003  & \textbf{5}  & True  & 76 & 0.1 & 5.0 &  & \textbf{True}  \\
         &  \textbf{50} & 0.01   &  &       &     &   1.0   &      &      &       \\ \hline
     \end{tabular}
     \caption[NeuroSAT hard constraint Sweep]{Highlighted values are the best performing ones, leading to a smaller mean validation AUROC and avoiding same weighted edges. TODO: LR 0.01 TOO LOW - ALL EDGES 0!!}
