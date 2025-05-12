@@ -111,9 +111,9 @@
     \caption[Visualization of original PGExplainer datasets]{Visualization of all six datasets. For node datasets (a-d) the target prediction node where the computational graph is computed from is colored in light blue.}
 \end{figure}
 
-\section{Replication sweeps}
+\section{Replication Hyperparameter Searches}
 \label{sec:sweeps}
-The following tables contain the hyperparameter search configurations for each downstream task. The first row includes the configuration used in the original codebase \cite{luo2020parameterized} and the second row contains the configurations used in \cite{holdijk2021re}. For BA-Community (see Table \ref{tab:BA-Community_sweep}) both configurations are identical, and the second row is thus omitted. The last section of each table contains the set of the values tested for each parameter. The optimal settings for our explainer implementation are highlighted in each column. Note that we optimize BA-2Motif (see Table \ref{tab:BA-2Motif_sweep}) towards a minimal metric score, as discussed in \ref{}.
+The following tables contain the grid search configurations for the explainer on each downstream model. The first row includes the configuration used in the original codebase \cite{luo2020parameterized} and the second row contains the configurations used in \cite{holdijk2021re}. For BA-Community (see Table \ref{tab:BA-Community_sweep}) both configurations are identical, and the second row is thus omitted. The last section of each table contains the set of the values that we tested for each parameter. The optimal settings for our explainer implementation are highlighted in each column. Note that we optimize Tree-Cycles (see Table \ref{tab:Tree-Cycles_sweep}) and BA-2Motif (see Table \ref{tab:BA-2M-sweep}) towards a minimal metric score, as discussed in Section \ref{sec:ind_results}.
 
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{table}[h]
@@ -129,7 +129,7 @@ The following tables contain the hyperparameter search configurations for each d
    & 5 &  &  & \textbf{0.003} & 75 & 0.5 & \textbf{0.05} &  & 2 \\
    & 10 &  &  & 0.03 & 76 & 1.0 & 0.1 &  & 5 \\ \hline
   \end{tabular}
-  \caption[BA-Shapes Sweep]{First two rows show original and replication configurations; following rows show parameter sweep results. Bolded values indicate best performance.}
+  \caption[BA-Shapes Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
 \end{table}
 
 \begin{table}[h]
@@ -144,7 +144,7 @@ The following tables contain the hyperparameter search configurations for each d
    & \textbf{5} & 0.5 &  & 0.0003 & 75 & 0.1 & \textbf{0.1} &  & \textbf{5.0} \\
    & 10 &  &  &  & 76 &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[BA-Community Sweep]{First row shows original configuration; following rows show parameter sweep results. Bolded values indicate best-performing settings.}
+  \caption[BA-Community Grid Search]{First row shows hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}. Last section contains our grid search configuration. Bolded values indicate the best performance.}
   \label{tab:BA-Community_sweep}
 \end{table}
 
@@ -161,7 +161,8 @@ The following tables contain the hyperparameter search configurations for each d
    & \textbf{5} &  &  & 0.003 & 75 & \textbf{1.0} & 0.05 &  & 5.0 \\
    & 10 &  &  &  & 76 & 10.0 & 0.1 &  &  \\ \hline
   \end{tabular}
-  \caption[Tree-Cycles Sweep]{TODO: CONSIDER OPTIMUM TO BE CLASSIFICATION EITHER REALLY HIGH OR REALLY LOW?? First row contains the values used in the original code; second row for replication. Highlighted values are the ones that achieved scores closest to $0$ or $1$, depending on the seed and the "direction" it is learning.}
+  \caption[Tree-Cycles Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \label{tab:Tree-Cycles_sweep}
 \end{table}
 
 \begin{table}[h]
@@ -178,7 +179,7 @@ The following tables contain the hyperparameter search configurations for each d
    & 10 &  & 30 & 0.01 & 76 & 10 & 1.0 &  &  \\ 
    &  &  &  & 0.05 &  &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[Tree-Grid Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing. size-reg of $0.01$ leads to all edges being one. With original experimental setup, mostly complete randomness}
+  \caption[Tree-Grid Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
 \end{table}
 
 \begin{table}[h]
@@ -195,8 +196,8 @@ The following tables contain the hyperparameter search configurations for each d
    & \textbf{10} &  &  & 0.005 & 76 &  &  &  &  \\
    &  &  &  & \textbf{0.01} &  &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[BA-2Motif Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the one that achieve the lowest individual AUROCs, as the explainer seems to learn the opposite for BA-2Motif.}
-    \label{tab:BA-2Motif_sweep}
+  \caption[BA-2Motif Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \label{tab:BA-2M-sweep}
 \end{table}
 
 \begin{table}[h]
@@ -212,11 +213,12 @@ The following tables contain the hyperparameter search configurations for each d
    & 5 &  & \textbf{20} & 0.003 & 75 & \textbf{1.0} & \textbf{0.005} &  & 5.0 \\
    & \textbf{10} &  & 30 & \textbf{0.01} & 76 &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[MUTAG Sweep]{First row contains the values used in the original code; second row for replication. Highlighted values are the best performing.}
+  \caption[MUTAG Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
 \end{table}
 
 \clearpage
 \section{Multiple Explanation Visualizations}
+\label{sec:grid_vis}
 The following figures contain 16 randomly sampled explanations for the best explainer model of every dataset. For graph tasks all nodes of the input graph are included, while for node tasks only the nodes of the local computation graph from the prediction motif node are shown.
 
 % REMOVE draw=black TO REMOVE EDGES
@@ -317,21 +319,15 @@ The following figures contain 16 randomly sampled explanations for the best expl
 \end{figure}
 
 \clearpage
-\section{NeuroSAT explainer sweeps}
+\section{NeuroSAT explainer Hyperparameter Searches}
 
-sample bias $=0.0$
-training size = num batches -2
-eval size = one batch
-loss = paper loss
-No L2 reg
+The following tables contain the grid search configurations for the NeuroSAT explainer models with either the soft constraint or the hard constraint applied. The columns contain the values tested for the corresponding hyperparameter. The optimal settings for each explainer implementation are highlighted.
 
-Since over all sweeps the mean local ROC-AUC was no higher than $0.502$ and no lower than $0.44$, we select the hyperparameters that maximize the metric.
+For the hard constraint the mean local ROC-AUC was no higher than $0.502$ and no lower than $0.44$ over all runs. Therefore, we select the hyperparameters that minimize the metric.
+
+TODO: For the soft constraint
 
 We conclude that regardless of exact hyperparameters, the NeuroSAT model does not succinctly learn UNSAT cores.
-
-
-TODO: After these hyperparameters had been established, we ran an additional test for 50 and 70 epochs, but only achieved a consistent ROC-AUC of 0.5.
-
 
 TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A CERTAIN TIME!!! Try batchnorm?? Else lower lr, below 0.003...
 
@@ -339,15 +335,15 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
 \begin{table}[h]
   \centering
   \scriptsize
-  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
   \hline
-  \multicolumn{10}{|c|}{\textbf{Soft Constraint Explainer}} \\ \hline
-  $\alpha_e$ & $E$ & $\eta$ & $K$ & $\alpha_{concat}$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $\alpha_{C}$\\ \hline
-  0.1 & 20 & 0.0003 & 1 & False & 75 & \textbf{0.005} & \textbf{1.0} & 5.0 & 0.1\\ 
-  \textbf{1.0} & 30 & 0.003 & 5 & True & 76 & 0.01 & 5.0 &  & 1.0\\ 
-   & 50 & 0.01 &  &  &  & 0.1 &  &  & \\ \hline
+  \multicolumn{11}{|c|}{\textbf{Soft Constraint Explainer}} \\ \hline
+  $\alpha_e$ & $E$ & $\eta$ & $K$ & $\alpha_{concat}$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $\alpha_{C}$ & $\alpha_{AdamW}$ \\ \hline
+  0.1 & 20 & 0.0003 & 1 & False & 75 & \textbf{0.005} & \textbf{1.0} & 5.0 & 0.1 & False\\ 
+  \textbf{1.0} & 30 & 0.003 & 5 & True & 76 & 0.01 & 5.0 &  & 1.0 & True\\ 
+   & 50 & 0.01 &  &  &  & 0.1 &  &  & & \\ \hline
   \end{tabular}
-  \caption[NeuroSAT soft constraint Sweep]{TODO: ADD COLUMN ADAMW(0.01)Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Highlighted values are the best performing.}
+  \caption[NeuroSAT soft constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Bolded values indicate the best performance.}
 \end{table}
 
 
@@ -362,7 +358,8 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
     \textbf{1.0} & 30 & 0.003  & \textbf{5}  & True  & 76 & 0.1 & 5.0 &  & \textbf{True}  \\
         &  \textbf{50} & 0.01   &  &       &     &   1.0   &      &      &       \\ \hline
     \end{tabular}
-    \caption[NeuroSAT hard constraint Sweep]{Highlighted values are the best performing ones, leading to a smaller mean validation AUROC and avoiding same weighted edges. TODO: LR 0.01 TOO LOW - ALL EDGES 0!!}
+    \caption[NeuroSAT hard constraint Sweep]{Highlighted values are the best performing ones, leading to a smaller mean validation AUROC and avoiding same weighted edges. Bolded values indicate the best performance.
+    }
 \end{table}
 
 
@@ -384,5 +381,52 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
   \bottomrule
   \end{tabularx}
   \caption[REMOVE! PGExplainer with $a=0.08$!]{PGExplainer performance WITH $a=0.08$! (4.8, 64, 4.8, 23) (USED IN SWEEP!)}
-  \label{tab:pgexplainer_auc}
+  \label{tab:rem1}
+\end{table}
+
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/plots/Grid_val_loss_plot.pdf}  % Plot 1
+        \caption{Mean validation Loss per Epoch (Tree-Grid).}
+        \label{fig:Tree-Grid-val_loss}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/plots/Grid_val_auroc_plot.pdf}  % Plot 2
+        \caption{Mean validation AUROC per Epoch (Tree-Grid).}
+        \label{fig:Tree-Grid-val_auroc}
+    \end{minipage}
+\end{figure}
+
+
+    % Second part without vertical lines
+    \begin{tabular}{l|cccc}
+    \midrule
+    \textbf{} & \multicolumn{4}{c}{\textbf{One-Motif-Node-Train}} \\
+    \addlinespace
+    \toprule
+    \#used motif instances $N$ & 60 & 60 & 160  & 32 \\
+    \bottomrule
+    \end{tabular}
+
+  
+
+\begin{table}[ht]
+    \centering
+    \scriptsize
+    \begin{tabularx}{0.6\textwidth}{l*{4}{X}}   % Adjust width as needed
+    \toprule
+    \textbf{} & \multicolumn{4}{c}{\textbf{Explanation AUROC}} \\
+    \cmidrule{2-5}
+    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid \\
+    \midrule
+    Experiment & 0.85$\pm$0.005 & 0.731$\pm$0.016 & 0.224$\pm$0.160 & 0.65$\pm$0.026 \\
+    \bottomrule
+    \end{tabularx}
+    \caption[REM]{TODO: THIS DOES NOT MAKE SENSE! TRAIN AND EVAL NODES SHALL BE FROM THE SAME DISTRIBUTION!!! Explanation AUROC for One-Motif-Node-Train.}
+    \label{tab:allmotifnodes_selected_rem}
 \end{table}

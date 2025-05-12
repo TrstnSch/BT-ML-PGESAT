@@ -1,33 +1,30 @@
 \chapter{Theoretical Background}
 \label{ch:Background}
-In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on the Boolean Satisfiability Problem (SAT). We start by giving an introduction to deep learning in Section \ref{sec:deep_learning}, including a specific architecture and regularization techniques. In Section \ref{sec:graph_theory} we define the necessary graph theory, including bipartite graphs and random graphs. To understand the motivation behind the objective of PGExplainer we outline the relevant concepts of information theory, namely entropy, cross-entropy and mutual information, in Section \ref{sec:information_theory}. Since the explainer model operates on Graph Neural networks, we introduce the historically relevant GNN model by Scarselli et al. \cite{4700287} in Section \ref{sec:gnns}, as well as two succeeding models. After introducing the most relevant concepts, in Section \ref{sec:gnn_explainability} we briefly discuss the field of explainability in graph neural networks to motivate the selection of this approach for our work. Lastly, in Section \ref{sec:SAT} we describe the boolean satisfiability problem that motivates this work.
+In this chapter we define the necessary background for understanding PGExplainer as well as the follow-up work regarding its application on a machine learning solver for the Boolean Satisfiability Problem (SAT). We start by giving an introduction to deep learning in Section \ref{sec:deep_learning}, including a specific architecture and regularization techniques. In Section \ref{sec:graph_theory} we define the necessary graph theory, including bipartite graphs and random graphs. To understand the motivation behind the objective of PGExplainer we outline the relevant concepts of information theory, namely entropy, cross-entropy and mutual information, in Section \ref{sec:information_theory}. Since the explainer model operates on Graph Neural networks, we introduce the historically relevant GNN model by Scarselli et al. \cite{4700287} in Section \ref{sec:gnns}, as well as two succeeding models. Lastly, in Section \ref{sec:SAT} we describe the boolean satisfiability problem that motivates this work.
 
 \section{Deep learning}
 \label{sec:deep_learning}
-TODO: Generally more examples, sources etc., to convey broad knowledge in the field
-
 In this chapter we introduce Deep Learning (DL) in the context of Machine Learning (ML) and their concepts required for this work. The definitions in this chapter loosely follow Goodfellow et al. \cite{Goodfellow-et-al-2016}.
 
-ML algorithms generally learn to perform certain tasks from data that can broadly be divided into supervised and unsupervised learning. In this work, we focus on supervised learning, meaning that the algorithm learns from a dataset containing both features and labels or targets that the algorithm is supposed to predict. In other words, the algorithm learns from a training set of input examples, defined as vectors $\mathbf{x} \in \mathbb{R}^n$, with entries $x_i$ denoting features, and output examples $\mathbf{y}$, whose shape depends on the task at hand. Its goal is to be able to associate unseen inputs from a set of test data, coming from the same distribution as the training data, with some target output. This process estimates the generalization error of the learner after the training is complete. 
-Common supervised ML tasks include classification, assigning an input to one of $k$ categories, and regression, where the program shall predict a numeric value given some input. 
-TODO: WHAT IS A MODEL?
+ML algorithms generally learn to perform certain tasks from data that can broadly be divided into supervised and unsupervised learning. In this work, we focus on supervised learning, meaning that the algorithm learns from a dataset containing both features and labels or targets that the algorithm is supposed to predict. In other words, the algorithm learns from a training set of input examples, defined as vectors $\mathbf{x} \in \mathbb{R}^n$, with entries $x_i$ denoting features, and output examples $\mathbf{y}$, whose shape depends on the task at hand. Its goal is to be able to associate unseen inputs from a set of test data, coming from the same distribution as the training data, with some target output.
 
-%Deep learning entails adding more layers and units to the model used in our algorithm to allow for representations of functions with increasing complexity.
+This process estimates the generalization error of the learner after the training is complete. 
+Common supervised ML tasks include classification, assigning an input to one of $k$ categories, and regression, where the program shall predict a numeric value given some input. 
+TODO: WHAT IS A MODEL? WHAT IS A LAYER? \bigskip
 
 DL entails expanding the size of the model used in our algorithm to allow for representations of functions with increasing complexity. This enables many human-solvable tasks that consist of mapping an input vector to an output vector to be performed with DL, given sufficiently large models and datasets. Most notably, Krizhevsky et al. \cite{krizhevsky2012imagenet} achieved record-breaking results by using a large, deep convolutional network for image classification.
 
-TODO: LAYER AND PARAMETER NOT YET DEFINED HERE
 However, increasing the size of a model comes with new challenges. Since models become more complex with increasing number of layers, subnetworks and parameters, they are commonly treated as a "black box", as it is difficult to explain their decision-making process \cite{noor2024survey}. Thus, the need for methods that can explain and interpret such models arises. Furthermore, the increasing number of parameters directly raises the computational complexity, resulting in longer training times and higher hardware requirements. This may also impose limitations when deploying the model on low-resourced end-devices.
 
 TODO: Formally define objective? What exactly does it do?
 In many cases DL involves optimizing an objective function, usually by minimizing $f(x)$, that guides the model. This objective function is also referred to as loss function in the context of minimization. %We denote $x^*=\text{arg min} f(x)$.
 To minimize a function $y = f(x)$, where $y,x \in \mathbb{R}$, we make use of the derivative $f'(x)$ that tells us how to change $x$ in order to get an improvement in $y$. We can reduce $f(x)$ by moving $x$ in the direction opposite of the sign of its derivative, since $f(x-\epsilon \text{ sign}(f'(x))) < f(x)$ for small enough $\epsilon$. Since we usually want to minimize a function with multiple inputs, we let $\mathbf{x} \in \mathbb{R}^n$ be a vector with $n$ elements. The partial derivative $\frac{\partial}{\partial x_i}f(\mathbf{x})$ is utilized, telling us how $f$ changes when only $x_i$ increases at point $\mathbf{x}$. To generalize this to a vector, the gradient $\nabla_xf(\mathbf{x})$ of $f$ is defined as the vector containing all partial derivatives. The aforementioned technique used to minimize a function is hence called gradient descent (see Cauchy\cite{cauchy1847methode}).
 
-Ultimately, a DL algorithm typically consists of the following components: a dataset, an objective function, an optimization procedure like gradient descent, and a model. %5.10
+Ultimately, a DL algorithm typically consists of the following components: a dataset, an objective function, an optimization procedure like gradient descent, and a model. \bigskip%5.10
 
 We generally control an ML algorithm by tuning the hyperparameters, which are settings used to control its behavior that are not adapted by the algorithm itself. Settings that are difficult to optimize may be selected as hyperparameters. Common examples are the number of epochs - the iterations over the full training data - and the learning rate, that controls how much the model adjusts the weights at each step. An additional goal is finding the combination of hyperparameter settings that leads to the best performance of our model. This may also be automated with searching or learning algorithms.
 
-To tune the hyperparameters we need a validation set of data that is not directly observed by the training algorithm, since the test data may not be used for making decisions about our model. This set estimates the generalization error during training. The training data is therefore commonly split into two disjoint sets, the training set and the validation set, with a standard split being $80/20$.
+To tune the hyperparameters we need a validation set of data that is not directly observed by the training algorithm, since the separate test data may not be used for making decisions about our model. This set estimates the generalization error during training. The training data is therefore commonly split into two disjoint sets, the training set and the validation set, with a standard split being $80/20$.
 
 A traditional approach for tuning hyperparameters is the grid search, as described in Liashchynskyi and Liashchynskyi \cite{liashchynskyi2019grid}. This method involves defining a subspace of the complete hyperparameter space and searching for the best-performing training algorithm across all possible combinations within that subspace.
 
@@ -67,12 +64,13 @@ A traditional approach for tuning hyperparameters is the grid search, as describ
       \node[draw=none] at (4,3) {\textbf{Output}};
     \end{tikzpicture}
     \caption{A simple MLP with one hidden layer.}
+    \label{fig:2layer_mlp}
   \end{wrapfigure}
 
-TODO: consisting of multiple layers of hidden units and nonlinear activation functions
-A classical DL model is the multilayer perceptron (MLP), first proposed by Rosenblatt \cite{rosenblatt1958perceptron}, with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(\mathbf{x})$ that maps an input vector $\mathbf{x}$ to a label $y$. The MLP then defines the mapping $y = f(\mathbf{x};\boldsymbol{\theta})$ and learns the value of the parameters $\boldsymbol{\theta}$ that best approximate the function. At the start of the training these parameters are initialized randomly or by a smart initialization strategy, like the Glorot/Xavier initialization \cite{glorot2010understanding}. 
+%TODO: consisting of multiple layers of hidden units and nonlinear activation functions
+A classical DL model is the multilayer perceptron (MLP), first proposed by Rosenblatt \cite{rosenblatt1958perceptron}, with the general goal of approximating a function $f^*$. In the case of classification we could define a function $y = f^*(\mathbf{x})$ that maps an input vector $\mathbf{x}$ to a label $y$. The MLP then defines the mapping $y = f(\mathbf{x};\boldsymbol{\theta})$ and learns the value of the parameters $\boldsymbol{\theta}$ that best approximate the function. At the start of the training these parameters are initialized randomly or by a smart initialization strategy, like the Glorot/Xavier initialization \cite{glorot2010understanding}. \bigskip
 
-These models are also referred to as feedforward neural networks, as they process information from $\mathbf{x}$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(x) = f^{(3)}(f^{(2)}(f^{(1)}(\mathbf{x})))$, which processes an input vector $\mathbf{x}$ through two hidden layers $f^{(1)}$, $f^{(2)}$, and an output layer $f^{(3)}$. The length of this chain of functions defines the depth of a model, coining the term "deep learning". 
+These models are also referred to as feedforward neural networks, as they process information from $\mathbf{x}$, through the intermediate computations that define $f$, to the output $y$ without feedback connections that would feed outputs back to itself. The name network is derived from their representation as a composition of multiple different functions, that are described by a directed acyclic graph. An example network is $f(\mathbf{x}) = f^{(2)}(f^{(1)}(\mathbf{x}))$, which processes an input vector $\mathbf{x}$ through a hidden layer $f^{(1)}$, and an output layer $f^{(2)}$ (see Figure \ref{fig:2layer_mlp}).  The length of this chain of functions defines the depth of a model, coining the term "deep learning". 
 
 The approximation is achieved by training our network with training data, that consists of approximated examples of $f^*(\mathbf{x})$ at different points in the training and labels $y\approx f^*(\mathbf{x})$. These training examples dictate the output layer to generate a value close to $y$ for each input $\mathbf{x}$, or to produce a higher-level representation that can be used for subsequent tasks. The learning algorithm then learns to utilize the other hidden layers, without specified behaviors, to achieve the best approximation. It is to note that the hidden layers are vector-valued with each vector element, referred to as unit, loosely taking the role of a neuron in neuroscience. This comparison is a common analogy to convey the idea of information processing. Models are therefore also referred to as neural networks.
 
@@ -107,6 +105,7 @@ The activation function typically maps its input to a real number within a speci
 \begin{equation}
     \sigma (x)= \frac{1}{1+e^{-x}},
 \end{equation}
+
 where $e$ denotes the exponential function, and the Rectified Linear Unit (ReLU):
 \begin{equation}
     ReLU(x)=\begin{cases}
@@ -120,7 +119,7 @@ where $e$ denotes the exponential function, and the Rectified Linear Unit (ReLU)
 The back propagation algorithm is commonly used during neural network training. It optimizes the network parameters by leveraging gradient descent. It first calculates the values for each unit in the network given the input and a set of parameters in a forward order. Then the error for each variable to be optimized is calculated, and the parameters are updated according to their corresponding partial derivative backwards. These two steps will repeat until reaching the optimization target.
 
 \subsection{Regularization}
-A central problem of not only deep learning but machine learning in general is the creation of an algorithm that generalizes well, therefore performing not only on training data, but also on unseen test inputs. There exists many strategies that aim to reduce the test error, sometimes at the expense of an increase in training error. These strategies are known as regularization. We introduce a few of these strategies that are relevant in the course of this work.\bigskip
+A central problem of not only deep learning but machine learning in general is the creation of an algorithm that generalizes well, therefore performing not only on training data, but also on unseen test inputs \cite{Goodfellow-et-al-2016}. There exists many strategies that aim to reduce the test error, sometimes at the expense of an increase in training error. These strategies are known as regularization. We introduce a few of these strategies that are relevant in the course of this work.\bigskip
 
 \textbf{Parameter Norm Penalties}\par
 TODO: DEFINE OBJECTIVE J BEFOREHAND? $\mathbf{X}$ IS MATRIX OF (TRAINING-)INPUTS
@@ -177,8 +176,8 @@ where $\delta$ is a small positive value introduced to avoid $\sqrt{z}$ at $z = 
 When testing the model, we replace $\boldsymbol{\mu}$ and $\boldsymbol{\sigma}$ with running averages that were collected during training, to enable the evaluation of individual examples outside mini-batches.
 
 \subsection{Monte Carlo Sampling}
-In order to best approximate a randomized algorithm we can make use of Monte Carlo methods as described in Goodfellow et al. \cite{Goodfellow-et-al-2016}[p.590]. A common practice in ML is to draw samples from a probability distribution and using these to form a Monte Carlo estimate of some quantity. This can be used to train a model that can then sample from a probability distribution itself. \\
-More specifically, the idea of Monte Carlo sampling is to view a sum of function evaluations, such as those of a loss function, as if it was an expectation under some probability distribution. This estimate is approximated with a corresponding average. TODO: RENAME $n$ to $N$ for clarity between chapters?!
+In order to best approximate a randomized algorithm we can make use of Monte Carlo methods as described in Goodfellow et al. \cite{Goodfellow-et-al-2016}. A common practice in ML is to draw samples from a probability distribution and using these to form a Monte Carlo estimate of some quantity. This can be used to train a model that can then sample from a probability distribution itself. \\
+More specifically, the idea of Monte Carlo sampling is to view a sum of function evaluations, such as those of a loss function, as if it was an expectation under some probability distribution. This estimate is approximated with a corresponding average.
 Let 
 \begin{equation}
     s = \sum_x p(x)f(x)=\mathbb{E}_p[f(x)]
@@ -191,14 +190,18 @@ be the sum to estimate with $p$ being a probability distribution over a random v
 
 \section{Graph Theory}
 \label{sec:graph_theory}
-These definitions will loosely follow Liu and Zhou \cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel \cite{Diestel2017}[p.2] to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as "$G$ on $V$". An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We denote the set of edges that are incident to $u$ as $E(u) = \{(v,u) \in E(G) \mid v \in \mathcal{N}(u)\}$. Additionally, we define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. The degree of a node $v \in V(G)$ is the number of edges connected to $v$ and denoted by $d(v) = |\{(u,v) \in E(G) \mid u \in V(G)\}|$. $G$ can be described by an adjacency matrix $\mathbf{A} \in \mathbb{R}^{n \times n}$, where
+These definitions loosely follow Liu and Zhou \cite{Liu2020}. A graph is a data structure consisting of a set of nodes that are connected via edges, modeling objects and their relationships. It can be represented as $G=(V,E)$ with $V=\{v_1,v_2...v_n\}$ being the set of $n$ nodes, and $E \in V \times V$ the set of edges. We adopt the conventions from Diestel \cite{Diestel2017} to refer to the node and edges set of any graph $G$ with $V(G)$ and $E(G)$ respectively, regardless of the actual names of the sets, as well as a referring to $G$ with node set $V$ as "$G$ on $V$". \bigskip
+
+An edge $e=(u,v)$, sometimes accompanied by an edge weight $e_{u,v}\in (0,1)$, connects nodes $u$ and $v$, making them neighbors. The neighborhood $\mathcal{N}(u)$ of node $u$ in $V(G)$ is defined as $\mathcal{N}(u) = \{v \in V(G) \mid (v,u) \in E(G)\}$. We denote the set of edges that are incident to $u$ as $E(u) = \{(v,u) \in E(G) \mid v \in \mathcal{N}(u)\}$. Additionally, we define the $k$-hop neighborhood of node $u$ in $V(G)$ as $\mathcal{N}_k(u) = \{v \in V(G) \mid dis_G(v,u) \leq k\}$, where $dis_G(v,u)$ denotes the distance of nodes $v, u$ in $G$, defined as the length of the shortest path between the two nodes. Edges are either directed or undirected and lead to directed or undirected graphs if exclusively present. \bigskip
+
+The degree of a node $v \in V(G)$ is the number of edges connected to $v$ and denoted by $d(v) = |\{(u,v) \in E(G) \mid u \in V(G)\}|$. $G$ can be described by an adjacency matrix $\mathbf{A} \in \mathbb{R}^{n \times n}$, where
 \begin{equation*}
     \mathbf{A}_{ij}=\begin{cases}
         1 & \text{if } \{v_i,v_j\}\in E \text{ and } i \neq j, \\
         0 & \text{otherwise.}
     \end{cases}
 \end{equation*}
-If $G$ is an undirected Graph the adjacency matrix will be symmetrical, as seen in Figure \ref{fig:graph-example}. \\
+If $G$ is an undirected Graph the adjacency matrix will be symmetrical, as seen in Figure \ref{fig:graph-example}.
 %Alternatively an undirected graph $ G=(V, E)$ with $n$ nodes and $m$ edges can be represented as an incidence matrix $M \in \mathbb{R}^{n \times m}$, where
 %\begin{equation*}
 %    M_{ij}=\begin{cases}
@@ -211,8 +214,9 @@ The diagonal degree matrix $D\in \mathbb{R}^{n\times n}$ of $G$ is defined as:
     D_{ii} = d(v_i).
 \end{equation*}
 
-$G$ is called a subgraph of another graph $G'=(V',E')$ if $V(G) \subseteq V(G')$ and $E(G) \subseteq E(G')$. This is denoted as $H \subseteq G$. The number of nodes in a graph $|V|$ is its order and the number of edges $|E|$ is its size (see Diestel \cite{Diestel2017}).
-We additionally define bipartite graphs according to Asratian et al. \cite{asratian1998}: A graph $G$ is bipartite if the set of nodes $V$ can be partitioned into two disjoint sets $V_1$ and $V_2$ such that: $V = V_1 \cup V_2, V_1 \cap V_2 = \emptyset$ and $\forall (i,j) \in E(G): (i \in V_1 \land j \in V_2) \lor (i \in V_2 \land j \in V_1)$. This formalizes that no two nodes from the same set are adjacent. The sets $V_1$ and $V_2$ are called color classes and $(V_1, V_2)$ is a bipartition of $G$. This means that if a graph is bipartite all nodes in $V$ can be colored by at most two colors so that no two adjacent nodes share the same color. \bigskip
+$G$ is called a subgraph of another graph $G'=(V',E')$ if $V(G) \subseteq V(G')$ and $E(G) \subseteq E(G')$. This is denoted as $G' \subseteq G$. The number of nodes $|V|$ in a graph is called its order and the number of edges $|E|$ is its size (see Diestel \cite{Diestel2017}).
+
+We additionally define bipartite graphs according to Asratian et al. \cite{asratian1998}: A graph $G$ is bipartite if the set of nodes $V$ can be partitioned into two disjoint sets $V_1$ and $V_2$ such that: $V = V_1 \cup V_2, V_1 \cap V_2 = \emptyset$ and $\forall (i,j) \in E(G): (i \in V_1 \land j \in V_2) \lor (i \in V_2 \land j \in V_1)$. This formalizes that no two nodes from the same set are adjacent. The sets $V_1$ and $V_2$ are called color classes and $(V_1, V_2)$ is a bipartition of $G$. This means that if a graph is bipartite all nodes in $V$ can be colored by at most two colors so that no two adjacent nodes share the same color. This is visualized in Figure \ref{fig:bipartite-colored}. \bigskip
 \begin{figure}[h]
     \centering
     \begin{minipage}{0.5\textwidth}
@@ -274,12 +278,12 @@ We additionally define bipartite graphs according to Asratian et al. \cite{asrat
 \textbf{Random Graphs}\par
 \label{sec:random-graphs}
 %Gilbert\cite{} describes the process of generating a random graph of order $N$ by assigning a common probability to exist in the graph to each potential edge between two nodes. Note that these random selections are made independently of each other, effectively drawing from a Bernoulli distribution. \\
-Gilbert \cite{gilbert1959random} describes the process of generating a random graph of order $N$ by assigning a common probability of existence to each potential edge between any two nodes. For each of these potential edges an experiment is performed independently to determine whether it shall be included in the resulting graph. Note that this process can be modeled using a Bernoulli distribution.
+Gilbert \cite{gilbert1959random} describes the process of generating a random graph of order $n$ by assigning a common probability of existence to each potential edge between any two nodes. For each of these potential edges an experiment is performed independently to determine whether it shall be included in the resulting graph. Note that this process can be modeled using a Bernoulli distribution.
 %The actual edges in the graph are then selected by performing random experiments, made independently of each other, and can therefore be described by a Bernoulli distribution.
 %Note that these random selections are made independently of each other and effectively drawn from a Bernoulli distribution.
 
 %Version 1 (probability space for PGE not needed, definition for one random graph suffices?): \\
-A random graph is further described by Diestel \cite{Diestel2017}[p.323] as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. Say we want to define the set $\mathcal{G}$ of all graphs on $V$ as a probability space, which allows us to ask whether a Graph $G \in \mathcal{G}$ has a certain property. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$.
+A random graph is further described by Diestel \cite{Diestel2017} as follows. Let $V = \{0,...,n-1\}$ be a fixed set of $n$ elements. Say we want to define the set $\mathcal{G}$ of all graphs on $V$ as a probability space, which allows us to ask whether a Graph $G \in \mathcal{G}$ has a certain property. To generate our random graph we then decide from some random experiment whether $e$ shall be an edge of $G$ for each potential $e \in V \times V$. The probability of success - accepting $e$ as edge in $G$ - is defined as $p \in [0,1]$ for each experiment. This leads to the probability of $G$ being a particular graph $G_0$ on $V$ with e.g. $m$ edges being equal to $p^m q^{\binom{n}{2}-m}$ with $q:=1-p$.
 \bigskip
 
 %Version 2: \\
@@ -296,12 +300,12 @@ A random graph is further described by Diestel \cite{Diestel2017}[p.323] as foll
 
 \section{Information Theory}
 \label{sec:information_theory}
-To fully understand the learning objective of PGExplainer it is necessary to define the concepts of entropy and mutual information. We follow the definitions by Cover and Thomas \cite{Cover2005}[p.13] if not stated otherwise.
+To fully understand the learning objective of PGExplainer it is necessary to define the concepts of entropy and mutual information. We follow the definitions by Cover and Thomas \cite{Cover2005} if not stated otherwise.
 
 \subsection{Entropy}
 %TODO: REVISE THIS. Probably best to define with general expactation, for continous and discrete, according to Goodfellow. Derive conditional entropy for general case. Only apply discrete case where needed? (cross entropy in PGE) \bigskip
 
-Entropy is used to describe the uncertainty of a random variable. It quantifies the average amount of information produced by the outcomes of that variable. This is commonly illustrated as the average number of bits needed to encode its values if optimal code is used. Let $X$ be a discrete random variable with alphabet $\mathcal{X}$ and probability mass function $p(x)=Pr\{X=x\}$ for $x\in X$. TODO: EINHEITLICHE DEFINITION! SIMPLY USE THIS DEFINITION IN MONTE CARLO SAMPLING?
+Entropy is used to describe the uncertainty of a random variable. It quantifies the average amount of information produced by the outcomes of said variable. This is commonly illustrated as the average number of bits needed to encode its values if optimal code is used. Let $X$ be a discrete random variable with alphabet $\mathcal{X}$ and probability mass function $p(x)=Pr\{X=x\}$ for $x\in X$. TODO: EINHEITLICHE DEFINITION! SIMPLY USE THIS DEFINITION IN MONTE CARLO SAMPLING?
 The entropy $H(X)$, also written as $H(p)$, is defined as
 \begin{equation}
     H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x).
@@ -329,7 +333,7 @@ We define the KL divergence or relative entropy between two probability mass fun
     D_{KL}(p||q) = \sum_{x \in \mathcal{X}} p(x)\log \frac{p(x)}{q(x)}.
 \end{equation}
 We use the convention from Cover and Thomas \cite{Cover2005} that $0 \log \frac{0}{0} = 0$, $0 \log \frac{0}{q} = 0$ and $p \log \frac{p}{0} = \infty$.
-Suppose we know the true distribution $p$ of our random variable. We could then construct a code with an average description length of $H(p)$. If we used the code for the distribution $q$ instead, we would need $H(p) + D_{KL}(p||q)$ nats to describe the random variable on average. This is also referred to as the cross-entropy (see Goodfellow et al. \cite{Goodfellow-et-al-2016}[p.74]):
+Suppose we know the true distribution $p$ of our random variable. We could then construct a code with an average description length of $H(p)$. If we used the code for the distribution $q$ instead, we would need $H(p) + D_{KL}(p||q)$ nats to describe the random variable on average. This is also referred to as the cross-entropy (see Goodfellow et al. \cite{Goodfellow-et-al-2016}):
 \begin{equation}
     H(p,q) =  H(p) + D_{KL}(p||q)
 \end{equation}
@@ -355,9 +359,10 @@ Suppose we know the true distribution $p$ of our random variable. We could then 
 
 Since this is later applied in the PGExplainer (see Equation \ref{eq:monte_carlo}), we derive for the discrete case with mass probability functions $p, q$ defined on the same support $\mathcal{X}$:
 \begin{align}
-    H(p,q) = H(p) + D_{KL}(p||q) &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x)\log \frac{p(x)}{q(x)} \\
-    &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x) \log p(x) -\sum_{x \in \mathcal{X}} p(x) \log q(x) \\
-    &= -\sum_{x \in \mathcal{X}} p(x) \log q(x)
+    H(p,q) = H(p) + D_{KL}(p||q) 
+    &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x)\log \frac{p(x)}{q(x)} \nonumber \\
+    &= -\sum_{x \in \mathcal{X}} p(x) \log p(x) + \sum_{x \in \mathcal{X}} p(x) \log p(x) -\sum_{x \in \mathcal{X}} p(x) \log q(x) \nonumber \\
+    &= -\sum_{x \in \mathcal{X}} p(x) \log q(x) \label{eq:cross_entropy}
 \end{align}
 
 \subsection{Mutual Information}
@@ -375,11 +380,11 @@ Let $X$ and $Y$ be two random variables with the joint probability mass function
 
 Graph Neural Networks(GNNs) \cite{4700287} are a DL-based approach that operates on graphs. Due to their unique non-Euclidean property they find usage in many areas, including node classification \cite{gao2019graph}, graph classification \cite{xu2018powerful} and link prediction tasks \cite{zhang2018link}. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. They combine the key features of convolutional neural networks \cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings \cite{cai2018comprehensive} to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu and Zhou \cite{Liu2020}).\bigskip
 
-TODO: CONCRETELY DEFINE NODE AND GRAPH TASKS!
+TODO: CONCRETELY DEFINE NODE AND GRAPH TASKS! VISUALIZE?
 Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements a classifier on complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
 The study of GNNs was first introduced in \cite{gori2005new} and refined in \cite{4700287}. Thus, we describe the supervised GNN model by Scarselli et al. \cite{4700287} that aims to preserve the important, structural information of graphs by encoding their topological relationships among nodes. 
 
-A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^S$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al. \cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the $d$-dimensional features of each node and $x_e$ the optional features of each edge. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
+A node is naturally defined by its features as well as its related notes in the graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^n$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that e.g. may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al. \cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the $d$-dimensional features of each node and $x_e$ the optional features of each edge. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
 \begin{equation}
     \mathbf{h}_v = f(\mathbf{x}_v, \mathbf{x}_{E(v)}, \mathbf{h}_{\mathcal{N}(v)}, \mathbf{x}_{\mathcal{N}(v)}),
     \label{eq:gnn_state_local}
@@ -449,36 +454,7 @@ Another drawback is the computational inefficiency, as hidden states have to be 
     \label{fig:k-hop}
 \end{figure}
 
-TODO: MOVE AFTER TWO SPECIFIC LAYERS? DEFINE GCN AS MPNN AS EXAMPLE, EVEN IF NOT USED? MAINLY NEEDED FOR RATIONALITY OF NEUROSAT BEING GNN
-
-The Message Passing Neural Network (MPNN) proposed by Gilmer et al. \cite{gilmer2017neural} seeks to unify GNN models, by providing a general framework for supervised learning on GNNs, since many existing models operate similarly. Typically, messages derived from node features are passed along edges of a graph to be able to learn meaningful graph and node representations that can be used for downstream tasks \cite{kipf2016semi} \cite{4700287} \cite{velivckovic2017graph} \cite{xu2018powerful}. Therefore, GNNs may be expressed as MPPNs, where the forward pass consist of a message passing phase and a readout phase. The message passing phase runs for $T$ time steps and is defined by the message function $M_t$, as well as the node update function $U_t$. At each time step $t$, the hidden state $\mathbf{h}_v^{t+1}$ of a node $v$ in the graph $G$ is updated based on the message $\mathbf{m}_v^{t+1}$, which aggregates information from the previous hidden states of its neighbors according to the message function $M_t$. Formally, this is defined as
-
-\begin{align}
-    \mathbf{m}_v^{t+1} &= \sum_{w \in \mathcal{N}(v)} M_t\left(\mathbf{h}_v^t, \mathbf{h}_w^t, \mathbf{e}_{v,w}\right) \tag{1} \\
-    \mathbf{h}_v^{t+1} &= U_t\left(\mathbf{h}_v^t, \mathbf{m}_v^{t+1}\right) \tag{2},
-\end{align}
-where $\mathbf{e}_{v,w}$ denotes possible edge features of edge $(v,w)$.
-In the readout phase a feature vector $\hat{\mathbf{y}}$ is computed for the entire graph from the final node states  using a readout function $R$:
-\begin{equation}
-    \hat{\mathbf{y}} = R\left(\{ \mathbf{h}_v^T \mid v \in G \}\right) \tag{3}.
-\end{equation}
-Note that the three functions $M_t$, $U_t$ and $R_t$ are learned and differentiable.
-    
-Example Kipf and Welling:
-\begin{equation}
-    M_t(\mathbf{h}_v^t, \mathbf{h}_w^t) = c_{v,w}\mathbf{h}_w^t,
-\end{equation}
-with $c_{v,w} = (d(v)d(w))^{-\frac{1}{2}}\mathbf{A}_{v,w}$.
-\begin{equation}
-    U_v^t(\mathbf{h}_v^t, \mathbf{m}_w^{t+1}) = \text{ReLU}(\mathbf{W}^t\mathbf{m}_v^{t+1}).
-\end{equation}
-
-\begin{figure}
-    \includegraphics[width=\textwidth]{img/message_passing.png}
-    \caption[Message passing]{Node features passed along edges. Reprinted from \cite{ali2023gnns}.}
-\end{figure}
-
-Therefore, we briefly present two subsequent models that are used in the course of this work. \bigskip
+Therefore, we briefly present two subsequent models that are used in the course of this work, as well as a more general framework relevant in the context of NeuroSAT. \bigskip
 
 \textbf{Graph Convolutional Network} \par
 Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. An example is the model proposed by Kipf and Welling \cite{kipf2016semi} that introduces a simple, layer-wise propagation rule for multi-layer GCNs as
@@ -503,20 +479,46 @@ Morris et al. \cite{morris2019weisfeiler} propose an implementation for a GNN mo
 where $W_1^{(l)}$ and $W_2^{(l)}$ are two layer-specific trainable weight matrices.
 
 %No activation: x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j \\
-TODO: MORE MOTIVATION FOR THIS!
+TODO: MORE MOTIVATION FOR THIS! \bigskip
+
+\textbf{Message Passing Neural Network}\par
+The Message Passing Neural Network (MPNN) proposed by Gilmer et al. \cite{gilmer2017neural} seeks to unify GNN models, by providing a general framework for supervised learning on GNNs, since many by now existing models operate similarly. Typically, messages derived from node features are passed along edges of a graph to be able to learn meaningful graph and node representations that can be used for downstream tasks \cite{kipf2016semi} \cite{4700287} \cite{velivckovic2017graph} \cite{xu2018powerful}. Therefore, GNNs may be expressed as MPPNs, where the forward pass consist of a message passing phase and a readout phase. The message passing phase runs for $T$ time steps and is defined by the message function $M_t$, as well as the node update function $U_t$. At each time step $t$, the hidden state $\mathbf{h}_v^{t+1}$ of a node $v$ in the graph $G$ is updated based on the message $\mathbf{m}_v^{t+1}$, which aggregates information from the previous hidden states of its neighbors according to the message function $M_t$. Formally, this is defined as
+
+\begin{align}
+    \mathbf{m}_v^{t+1} &= \sum_{w \in \mathcal{N}(v)} M_t\left(\mathbf{h}_v^t, \mathbf{h}_w^t, \mathbf{e}_{v,w}\right) \tag{1} \\
+    \mathbf{h}_v^{t+1} &= U_t\left(\mathbf{h}_v^t, \mathbf{m}_v^{t+1}\right) \tag{2},
+\end{align}
+where $\mathbf{e}_{v,w}$ denotes possible edge features of edge $(v,w)$.
+In the readout phase a feature vector $\hat{\mathbf{y}}$ is computed for the entire graph from the final node states  using a readout function $R$:
+\begin{equation}
+    \hat{\mathbf{y}} = R\left(\{ \mathbf{h}_v^T \mid v \in G \}\right) \tag{3}.
+\end{equation}
+Note that the three functions $M_t$, $U_t$ and $R_t$ are learned and differentiable.
+    
+The higher-order GNN for example may also be defined with the following message and update functions:
+\begin{align}
+    M_t(\mathbf{h}_v^t, \mathbf{h}_w^t) &= c_{v,w}\mathbf{h}_w^t, \\
+    U_v^t(\mathbf{h}_v^t, \mathbf{m}_w^{t+1}) &= \text{ReLU}(\mathbf{W}^t\mathbf{m}_v^{t+1}),
+\end{align}
+with $c_{v,w} = (d(v)d(w))^{-\frac{1}{2}}\mathbf{A}_{v,w}$.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{img/message_passing.png}
+    \caption[Message passing]{Node features passed along edges. Reprinted from \cite{ali2023gnns}.}
+\end{figure}
 
 
 \section{Boolean Satisfiability Problem}
 \label{sec:SAT}
-We define the Boolean Satisfiability Problem (SAT) according to Guo et al. \cite{guo2023machine}[p.641]: \\
-A Boolean formula is constructed from Boolean variables, that only evaluate to True (1) or False (0), and the three logic operators conjunction ($\wedge$), disjunction ($\vee$) and negation ($\neg$). SAT aims to evaluate whether there exists a variable assignment for a formula constructed of said parts so that it evaluates to True. If so, the formula is said to be satisfiable or unsatisfiable otherwise. Every propositional formula can be converted into an equivalent formula in conjunctive normal form (CNF), which consists of a conjunction of one or more clauses. These clauses must contain only disjunctions of at least one literal (a variable or its negation). In this work we consider only formulas in CNF, as NeuroSAT \cite{selsam2018learning} assumes SAT problems to be in CNF. An example of a satisfiable formula in CNF over the set of variables $V=\{x_1,x_2\}$ is 
+We define the Boolean Satisfiability Problem (SAT) according to Guo et al. \cite{guo2023machine}: \\
+A Boolean formula is constructed from Boolean variables, that only evaluate to True (1) or False (0), and the three logic operators: conjunction ($\wedge$), disjunction ($\vee$) and negation ($\neg$). SAT aims to evaluate whether there exists a variable assignment for a formula constructed of said parts so that it evaluates to True. If so, the formula is said to be satisfiable or unsatisfiable otherwise. Every propositional formula can be converted into an equivalent formula in conjunctive normal form (CNF), which consists of a conjunction of one or more clauses. These clauses must contain only disjunctions of at least one literal - a variable or its negation. In this work we consider only formulae in CNF, as NeuroSAT \cite{selsam2018learning} assumes SAT problems to be in CNF. An example of a satisfiable formula in CNF over the set of variables $V=\{x_1,x_2\}$ is 
 $$\psi(V) = (x_1) \land (\neg x_1 \lor x_2) \land (\neg x_2 \lor x_2)$$
 with satisfying assignment $A:\{x_1 \mapsto 1, x_2 \mapsto 1\}$. Furthermore, SAT is $NP$-complete, meaning that if there exists a deterministic algorithm able to solve SAT in polynomial time, then such an algorithm exists for every $NP$ problem (see Cook \cite{cook2023complexity}). Current state-of-the-art SAT solvers apply searching based methods such as Conflict Driven Clause Learning \cite{marques1999grasp} or Stochastic Local Search \cite{selman1993local} with exponential worst-case complexity.
 
 \subsection{Representation as Bipartite Graph}
 SAT has extensively been studied in the form of graphs. Guo et al. \cite{guo2023machine} describe four different types of graph representations for CNF formulae with varying complexity and information compression. Since we want to minimize the loss of information for SAT we adapt the information-richest form of a literal-clause graph (LCG). 
 A LCG is a bipartite graph that separates literals and clauses, with edges connecting literals to the clauses they appear in (see Figure \ref{fig:lcg-sat}).
-The resulting graph $G_b$ can formally be described by a biadjacency matrix $\mathbf{B}$ of shape $L \times C$, with $(L,C)$ being a bipartition of the $G_b$ into literals and clauses. \\
+The resulting graph $G_b$ can formally be described by a biadjacency matrix $\mathbf{B}$ of shape $L \times C$, with $(L,C)$ being a bipartition of $G_b$ into literals and clauses. \\
 Following Sun et al. \cite{articleBiadjacency}, let $\mathbf{A} \in \mathbb{R}^{(L+C) \times (L+C)}$ be the adjacency matrix of our bipartite graph. Since for the bipartite case edges exist only between the two color classes $L$ and $C$, the adjacency matrix can be represented as
 \begin{equation}
     \mathbf{A}(i,j) = \begin{bmatrix}

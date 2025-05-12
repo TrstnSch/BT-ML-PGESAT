@@ -41,6 +41,7 @@
 
 % Code
 \usepackage{listings}
+\usepackage{xcolor}
 
 % Bibliography
 \usepackage{csquotes}
