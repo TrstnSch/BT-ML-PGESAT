@@ -81,11 +81,11 @@ $\Phi$ denotes the parameters in the target model, $K$ is the number of total sa
 \label{sec:Global_Explanations}
 The novelty of PGExplainer lies in the ability to generate explanations for graph data with a global perspective, that allow for understanding the general picture of a model across a population. This saves resources when analyzing large graph datasets, as new instances can be explained without retraining the model, and can also be helpful for establishing the users' trust in these explanations. To achieve this the authors propose the use of a parameterized network that learns to generate explanations from the target model, which also apply to not yet explained instances. 
 
-Since GNNs apply two functions $F$ and $G$ to calculate the global state embeddings and downstream task outputs respectively, Luo et al. \cite{luo2020parameterized} denote these two functions as $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$ for any GNN in the context of PGExplainer. For models without explicit classification layers the last layer is used to compute the output instead. It follows
+GNN models generally apply two functions to first learn node representations and utilize these in downstream tasks such as graph classification or node classification (TODO: SOURCE!). Therefore, Luo et al. \cite{luo2020parameterized} define two general functions $\text{GNNE}_{\Phi_0}(\cdot)$ and $\text{GNNC}_{\Phi_1}(\cdot)$ for any GNN in the context of PGExplainer. $\text{GNNE}_{\Phi_0}(\cdot)$ denotes a model of $L$ stacked GNN layers that returns higher dimensional node representations of the input graph and its node features. These are used as input for both the downstream task $\text{GNNC}_{\Phi_1}(\cdot)$ and the explainer network (see Equation \ref{eq:explainer_network}). For models without explicit classification layers the last layer is used instead. It follows
 \begin{equation}
     \mathbf{Z} = \text{GNNE}_{\Phi_0}(G_o, \mathbf{X}), \qquad Y = \text{GNNC}_{\Phi_1}(\mathbf{Z}),
 \end{equation}
-where $\mathbf{Z}$ denotes the matrix of final node representations $z$, referred to as node embeddings, and the initial state is $G_o$. TODO: (Because of focus on graph structure rather than features?) For generalizability across different GNN layers the output is only dependent on the node representation, that encapsulates both features and structure of the input graph. This representation also serves as the input for the explainer network $g$, defined as:
+where $\mathbf{Z}$ denotes a matrix of node representations $\mathbf{z}$, referred to as node embeddings. $\mathbf{X} \in \mathbb{R}^{|V(G_o)|\times d}$ denotes the $d$-dimensional node features of $G_o$. The general downstream GNN model is visualized in Figure \ref{fig:blackbox_downstream_model}. Note that $\mathbf{Z}$ encapsulates both features and structure of the input graph and therefore serves as input for the explainer network $g$, defined as:
 TODO: Rename g?
 \begin{equation}
     \label{eq:explainer_network}
@@ -96,11 +96,84 @@ $\Psi$ denotes the parameters in the explanation network and the output $\Omega$
     \label{eq:mlp_loss}
     \min_\Psi -\frac{1}{K}\sum_{i\in \mathcal{I}}\sum_{k=1}^K\sum_{c=1}^C P_\Phi (Y_o = c|G = G_o^{(i)}) \log P_\Phi(\hat{Y}_s = c|G=\hat{G}_s^{(i,k)}).
 \end{equation}
-Consequently, $G^{(i)}$ and $G_s^{(i,k)}$ denote the input graph and the $k$-th graph sampled with Equation \ref{eq:reparam_trick} in \ref{eq:explainer_network} respectively for instance $i$. The full pipeline of the PGExplainer can be observed in figure \ref{fig:PGExplainer_pipeline}. 
+Consequently, $G_o^{(i)}$ and $G_s^{(i,k)}$ denote the input graph and the $k$-th graph sampled with Equation \ref{eq:reparam_trick}, respectively for instance $i$. \bigskip 
 
-The authors propose two slightly different instantiations of $\Omega$ for node classification and graph classification tasks.\bigskip
+\tikzstyle{process} = [rectangle, rounded corners, minimum width=2cm, minimum height=1cm, text centered, draw=black, fill=purple!30, font=\small]
+\tikzstyle{module} = [rectangle, rounded corners, minimum width=3cm, minimum height=1.2cm, text centered, draw=black, fill=gray!30, font=\small]
+\tikzstyle{data} = [rectangle, sharp corners, minimum width=1.5cm, minimum height=1cm, text centered, draw=black, fill=cyan!30, font=\small]
+\tikzstyle{emb} = [rectangle, sharp corners, minimum width=1.5cm, minimum height=1cm, text centered, draw=black, fill=yellow!30, font=\small]
+\tikzstyle{arrow} = [thick,->,>=Stealth]    %very thick
 
-\textbf{Explanation Network for Graph Classification}\par
+
+\tikzstyle{module2} = [rectangle, rounded corners, minimum width=2cm, minimum height=1cm, text centered, draw=black, fill=brown!30, font=\small]
+\tikzstyle{module3} = [rectangle, rounded corners, minimum width=2cm, minimum height=1cm, text centered, draw=black, fill=teal!30, font=\small]
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \node (input) [data] {\small Input Graph $G_o$ with node features $\mathbf{X}$};
+
+        %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
+        \node (GNNE) [module2, below=of input] {GNNE};
+        %\node (layer1) [module2, below=of input] {GNN Layer 1};
+        %\node (dots) [below=0.3cm of layer1] {$\vdots$};
+        %\node (layerL) [module2, below=0.3cm of dots] {GNN Layer L};
+        \node (Z) [emb, below=of GNNE] {$\mathbf{Z}$};
+        \node (DT) [module3, below=of Z] {GNNC};
+
+        \node (Z_out) [right=of Z] {Node representations};
+
+        \node (Y_o) [data, right=of DT] {\small Prediction $Y_o$};
+
+        
+        %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
+
+        %\node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
+        %\node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
+        %\node (h_3) [data, right=0.5cm of h_2] {$h_{L,i}$};
+    
+        %\node (O) [module, above=1cm of h_2] {Downstream Task};
+        %\node (F_1) [module, above=0.2cm of O, minimum height=5cm] {L-Layer GNN};
+        %\node (H_1) [data, right=0.5cm of F_1] {$H_1 = [h_{1,i}, h_{1,j},...]$};
+        %\node (H_2) [data, below=0.5cm of H_1] {$H_2 = [h_{2,i}, h_{2,j},...]$};
+        %\node (H_3) [data, below=0.5cm of H_2] {$H_L = [h_{L,i}, h_{L,j},...]$};
+
+        %\node (input) [data, above=1cm of F_1] {$G_o$};
+
+        %\node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
+
+        \draw [arrow] (input) -- (GNNE);
+        \draw [arrow] (GNNE) -- (Z);
+        
+        \draw [arrow] (Z) -- (Z_out);
+        \draw [arrow] (Z) -- (DT);
+
+        \draw [arrow] (DT) -- (Y_o);
+
+        \begin{pgfonlayer}{background}
+            \node[draw=gray, dashed, rounded corners, fit=(GNNE) (DT)] (backgroundevaluation) {};
+            \node[
+                rotate=90, 
+                anchor=center
+            ] at ([xshift=-3mm]backgroundevaluation.west) {Downstream Model};
+        \end{pgfonlayer}
+        
+        %\begin{pgfonlayer}{background}
+        %    \node[draw=gray, thick, rounded corners, fit=(layer1) (layerL)] (backgroundevaluation) {};
+        %    \node[
+        %        rotate=90, 
+        %        anchor=center
+        %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
+        %\end{pgfonlayer}
+    \end{tikzpicture}
+    \caption["Black-box" downstream model in PGExplainer context.]{A "black-box" downstream model in the context of PGExplainer.}
+    \label{fig:blackbox_downstream_model}
+\end{figure}
+
+The authors propose two slightly different instantiations of $\Omega$ for node classification and graph classification tasks.
+
+\paragraph{Explanation Network for Graph Classification}\par
+\label{par:explanation-network}
 For graph level tasks, the authors consider each graph to be an instance, independent  of specific nodes. The output $\Omega$ of the network (see Equation \ref{eq:explainer_network}) is thus specified as:
 \begin{equation}
     \label{eq:mlp_graph_input}
@@ -114,23 +187,49 @@ For node level tasks on the other hand, each prediction node is considered as an
 \begin{equation}
     \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j\oplus\mathbf{z}_v]).
 \end{equation}
-Thus, a concatenation of the node embeddings of nodes $i, j$ and $v$ respectively is fed through the network.
+Thus, a concatenation of the node embeddings of nodes $i, j$ and $v$ respectively is fed through the network. We denote this preprocessing step of creating edge embeddings from node embeddings as edge embedding transformation (see Figure \ref{fig:edge_emb_trans}). The full pipeline of the PGExplainer can be observed in figure \ref{fig:PGExplainer_pipeline}. \bigskip
 
-Note that in their codebase the authors use a concatenation of all hidden representations instead of solely the final representation as node embeddings for node level tasks.
-For a target GNN consisting of $L$ graph layers with
-\begin{align*}
-    \mathbf{H}_1 &= F_1(G_o, \mathbf{X}), \\
-    \mathbf{H}_2 &= F_2(\mathbf{H}_1, \mathbf{X}), \\
-    &\vdots \\
-    \mathbf{H}_L &= F_L(\mathbf{H}_{L-1}, \mathbf{X}), \\
-\end{align*}
-this leads to $\mathbf{Z} \in \mathbb{R}^{|V(G_o)|\times (Ld)}$ being the matrix of node embeddings $\mathbf{z}$ that are computed as:
-\begin{equation}
-    \mathbf{z}_i = \mathbf{h}_{1,i} \oplus \mathbf{h}_{2,i} \oplus ... \oplus \mathbf{h}_{L,i},
-\end{equation}
-with $\mathbf{h}_{L,i}$ denoting the hidden representations of node $i$ in layer $L$.\bigskip
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    
+    \node (node_emb_i1) [data] {$\mathbf{z}_i$};
+    \node (node_emb_j1) [data, right=0.5cm of node_emb_i1] {$\mathbf{z}_j$};
+    
+    \coordinate (i_j_mid) at ($ (node_emb_i1)!0.5!(node_emb_j1) $);
+    
+    \node (concat) at ($(i_j_mid) + (0,-1)$) {\Large $\oplus$};
+    
+    \node (edge_emb_ij) [data] at ($(i_j_mid) + (0,-2)$) {Edge Embedding of $(i,j)$};
+    
+    
+    \node (node_emb_i2) [data, right=3cm of node_emb_j1] {$\mathbf{z}_i$};
+    \node (node_emb_j2) [data, right=0.5cm of node_emb_i2] {$\mathbf{z}_j$};
+    \node (node_emb_v2) [data, right=0.5cm of node_emb_j2] {$\mathbf{z}_v$};
+    
+    \coordinate (i_v_mid) at ($ (node_emb_i2)!0.5!(node_emb_v2) $);
+    
+    \node (concat2) at ($(i_v_mid) + (0,-1)$) {\Large $\oplus$};
+    
+    \node (edge_emb_ijv) [data] at ($(i_v_mid) + (0,-2)$) {Edge Embedding of $(i,j)$ with target node $v$};
 
-Furthermore, it is important to note, that for target GNNs utilizing a message passing mechanism, the prediction at node $v$ is fully determined by its local computation graph. The local computation graph of $v$ is defined as its $L-$hop neighborhood $\mathcal{N}_L(v)$ \cite{ying2019gnnexplainer} (see Figure \ref{fig:k-hop}).\bigskip
+    \begin{pgfonlayer}{background}
+        \node[draw=purple, dashed, rounded corners, fit=(node_emb_i1) (node_emb_j1) (node_emb_i2)(node_emb_v2) (edge_emb_ijv), inner sep=20pt, label=above:\text{Edge Embedding Transformation}] {};
+    \end{pgfonlayer}
+    
+    \begin{pgfonlayer}{background}
+        \node[draw=gray, thick, rounded corners, fit=(node_emb_i1) (node_emb_j1) (edge_emb_ij), fill=olive!30, label=above:Graph Task] {};
+    \end{pgfonlayer}
+    
+    \begin{pgfonlayer}{background}
+        \node[draw=gray, thick, rounded corners, fit=(node_emb_i2) (node_emb_v2) (edge_emb_ijv), fill=violet!30, label=above:Node Task] {};
+    \end{pgfonlayer}
+\end{tikzpicture}
+\caption[Visualization of edge embedding transformation]{TODO: FOR ALL EDGES IN $G_o$ Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the target model the created edge embeddings differ slightly.}
+\label{fig:edge_emb_trans}
+\end{figure}
+
+It is important to note, that for $L$-layer target GNNs utilizing a message passing mechanism, the prediction at node $v$ is fully determined by its local computation graph. The local computation graph of $v$ is defined as its $L-$hop neighborhood $\mathcal{N}_L(v)$ \cite{ying2019gnnexplainer} (see Figure \ref{fig:k-hop}).\bigskip
 
 \textbf{Collective and Inductive Setting}\par
 Due to the nature of its predecessor GNNExplainer, the authors main focus was the application in a collective setting, where the goal is to explain a full population of instances by training on all these and thus being able to provide explanations for every single one. However, since the PGExplainer utilizes a deep neural network to parameterize the generation process of explanations for a population, it can be utilized in an inductive setting, unlike its predecessor. 
@@ -140,12 +239,6 @@ This means, that explanations can be generated for instances from the same popul
 %"PGExplainer learns a latent variable for each edge in the original input graph with a neural network parameterized by Ψ, which is shared by all edges in the population of input graphs." "In GNNExplainer, the parameter size is linear to the number of edges"
 
 This leads to an improved computational complexity when compared to their baseline GNNExplainer, since for one the number of parameters in the explainer does no longer depend on the size of the input graph and since for another the explainer does not have to be retrained for every unexplained instance.
-
-\tikzstyle{process} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30, font=\small]
-\tikzstyle{module} = [rectangle, rounded corners, minimum width=3cm, minimum height=1.2cm, text centered, draw=black, fill=gray!30, font=\small]
-\tikzstyle{data} = [rectangle, sharp corners, minimum width=1.5cm, minimum height=1cm, text centered, draw=black, fill=cyan!30, font=\small]
-\tikzstyle{emb} = [rectangle, sharp corners, minimum width=1.5cm, minimum height=1cm, text centered, draw=black, fill=yellow!30, font=\small]
-\tikzstyle{arrow} = [very thick,->,>=Stealth]    %very thick
 
 \begin{figure}
 \centering
@@ -217,9 +310,9 @@ This leads to an improved computational complexity when compared to their baseli
 
 
 % Nodes
-\node (input) [data] {\small Input Graph $G_o$};
+\node (input) [data] {\small Input Graph $G_o$ with node features $\mathbf{X}$};
 \pic at ([xshift=7cm]input.center) {mymini};
-\node (target) [module, below=of input] {Target GNN};
+\node (target) [module, below=of input] {Downstream Model};
 \node (embeddings) [emb, below=of target] {Node Embeddings $\mathbf{Z}$ of $G_o$};
 \node[anchor=center] at ([xshift=4cm]embeddings.center) 
  (node_embs) 
@@ -328,70 +421,6 @@ This leads to an improved computational complexity when compared to their baseli
 \label{fig:PGExplainer_pipeline}
 \end{figure}
 
-\begin{figure}
-\centering
-\begin{tikzpicture}
-    
-    \node (node_emb_i1) [data] {$z_i$};
-    \node (node_emb_j1) [data, right=0.5cm of node_emb_i1] {$z_j$};
-    
-    \coordinate (i_j_mid) at ($ (node_emb_i1)!0.5!(node_emb_j1) $);
-    
-    \node (concat) at ($(i_j_mid) + (0,-1)$) {\Large $\oplus$};
-    
-    \node (edge_emb_ij) [data] at ($(i_j_mid) + (0,-2)$) {Edge Embedding of $(i,j)$};
-    
-    
-    \node (node_emb_i2) [data, right=3cm of node_emb_j1] {$z_i$};
-    \node (node_emb_j2) [data, right=0.5cm of node_emb_i2] {$z_j$};
-    \node (node_emb_v2) [data, right=0.5cm of node_emb_j2] {$z_v$};
-    
-    \coordinate (i_v_mid) at ($ (node_emb_i2)!0.5!(node_emb_v2) $);
-    
-    \node (concat2) at ($(i_v_mid) + (0,-1)$) {\Large $\oplus$};
-    
-    \node (edge_emb_ijv) [data] at ($(i_v_mid) + (0,-2)$) {Edge Embedding of $(i,j)$ with target node $v$};
-
-
-    \node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
-
-    \node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
-    \node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
-    \node (h_3) [data, right=0.5cm of h_2] {$h_{3,i}$};
- 
-    \node (O) [module, above=1cm of h_2] {$O$};
-    \node (F_3) [module, above=0.2cm of O] {$F_3$};
-    \node (F_2) [module, above=0.2cm of F_3] {$F_2$};
-    \node (F_1) [module, above=0.2cm of F_2] {$F_1$};
-    \node (H_2) [data, right=0.5cm of F_2] {$H_2 = [h_{2,i}, h_{2,j},...]$};
-    \node (H_1) [data, right=0.5cm of F_1] {$H_1 = [h_{1,i}, h_{1,j},...]$};
-    \node (H_3) [data, right=0.5cm of F_3] {$H_3 = [h_{3,i}, h_{3,j},...]$};
-
-    \node (input) [data, above=1cm of F_1] {$G_o$};
-
-    \node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
-
-    \begin{pgfonlayer}{background}
-        \node[draw=gray, thick, rounded corners, fit=(F_1) (O) (H_1), fill=gray!30, inner sep=20pt, label=above:\text{Target GNN}] {};
-    \end{pgfonlayer}
-
-
-
-    \begin{pgfonlayer}{background}
-        \node[draw=purple, dashed, rounded corners, fit=(node_emb_i1) (node_emb_j1) (node_emb_i2)(node_emb_v2) (edge_emb_ijv), inner sep=20pt, label=above:\text{Edge Embedding Transformation}] {};
-    \end{pgfonlayer}
-    
-    \begin{pgfonlayer}{background}
-        \node[draw=gray, thick, rounded corners, fit=(node_emb_i1) (node_emb_j1) (edge_emb_ij), fill=red!30, label=above:Graph Task] {};
-    \end{pgfonlayer}
-    
-    \begin{pgfonlayer}{background}
-        \node[draw=gray, thick, rounded corners, fit=(node_emb_i2) (node_emb_v2) (edge_emb_ijv), fill=orange!30, label=above:Node Task] {};
-    \end{pgfonlayer}
-\end{tikzpicture}
-\caption[Visualization of edge embedding transformation]{TODO: Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the target model the created edge embedding differs slightly.}
-\end{figure}
-
 \subsection{Regularization Terms}
 \label{sec:Regularization_Terms}
 To enhance the preservation of desired properties of explanations the authors propose various regularization terms. These are added to the learning objective, depending on the specific downstream task at hand.\bigskip
@@ -436,7 +465,8 @@ Additionally, connections exist between each literal and its negation, since mes
 
 %aggregation: sum the outgoing messages of each of a node’s neighbors to form the incoming message
 
-Since PGExplainer generates edge wise explanations, and we want to evaluate the SAT problem evaluations with unsatisfiable cores as ground truth, we need to adapt the framework to account for the definition of unsatisfiable cores. Since a core is a subset of clauses, predicting singular edges that represent a literal being present in a clause, may not provide sufficient results in the sense of human understandable explanations. Therefore, we propose a soft and a hard restraint that encourage the explainer to predict sets of edges that connect to the same node $c$, approximating the prediction of a complete clause.
+TODO: MORE FORMAL DEFINITION?
+Since PGExplainer generates edge wise explanations, and we want to evaluate the SAT problem evaluations with unsatisfiable cores as ground truth, we need to adapt the framework to account for the definition of unsatisfiable cores. Since a core is a subset of clauses, predicting singular edges that represent literals being present in a clause, may not provide sufficient results in the sense of human understandable explanations. Therefore, we propose a soft and a hard restraint that encourage the explainer to predict sets of edges that connect to the same node $c$, approximating the prediction of a complete clause.
 
 The remainder of the explainer pipeline stays identical. The downstream task - NeuroSAT - calculates hidden node representations $\mathbf{h}^t$ for the input graph $G_b$, now modeling a SAT instance, at each iteration $t$. The representations in the last iteration $T$ are extracted as node embeddings $\mathbf{z}$ for clause and literal nodes respectively, and transformed into edge embeddings (see Equation \ref{eq:mlp_graph_input}). Though this is only done for node level tasks in the original, we also consider using a concatenation of multiple hidden representations $\mathbf{h}^{\frac{1}{2}T} \oplus \mathbf{h}^{\frac{3}{4}T} \oplus \mathbf{h}^T$ as node embeddings $\mathbf{z}$. These serve as the input of the explainer MLP and are processed as usual, with either of the following additional limitations. \bigskip
 
@@ -495,7 +525,7 @@ For our replication we try to implement the methods and details as close to the 
 \begin{lstlisting}[language=Python, caption=Edge index transformation, label=lst:edge_index]
     edge_index = A.nonzero().t().contiguous()
 \end{lstlisting}
-First, the matrix indices or coordinates of the edges - non-zero elements - are extracted. These are then transposed and lastly stored in contiguous memory. The resulting shape of the edge-index is $\mathbb{N}^{2\times \text{\#edges}}$. Therefore, we only transform the data without changing its content. \bigskip
+First, the matrix indices or coordinates of the edges - non-zero elements - are extracted. These are then transposed and lastly stored in contiguous memory. The resulting shape of the edge-index is TODO: $\mathbb{N}^{2\times \text{\#edges}}$. Therefore, we only transform the data without changing its content. \bigskip
 
 \textbf{Reproducibility}\par
  Inspired by Holdijk et al. \cite{holdijk2021re} we implement the ability to seed the experiments performed on PGExplainer. PyTorch Geometric provides a way of seeding all modules that generate random numbers during the training process, including torch and python random.
@@ -508,7 +538,23 @@ The model for both node- and graph classification consist of $3$ \lstinline|Grap
 
 Holdijk et al. \cite{holdijk2021re} found that the original code wrongfully uses undocumented batch normalization layers in training mode during evaluation, which leads to a deviation in results, and thus completely omit the use of batch normalization. We choose to add batch normalization between the first two layers and their activation functions for both models, similar to the original codebase, without the training mode error. Additionally, we add an optional dropout layer after each activation function to improve the generalizability on more difficult tasks. \bigskip
 
-As mentioned in Section \ref{sec:Global_Explanations}, the original codebase uses a concatenation of the hidden states of each layer in the node classification model, rather than solely the last one. Thus, the node embeddings used in the explainer as well as in the downstream classification task each have a shape of $\mathbb{R}^{3(20)}$. For the classification a final linear layer is added to the model that maps each $60$-dimensional node embedding to $C$ classes. A softmax is applied to the model output to get class probabilities for each node. We also adopt this in our implementation.
+
+Note that in their codebase the authors use a concatenation of the hidden representations at each layer instead of solely the final layer representation as node embeddings for node level tasks.
+%For a target GNN consisting of $L$ graph layers with TODO: CONCRETE DEFINITION?!
+%\begin{align*}
+%    \mathbf{H}^{(1)} &= F_1(G_o, \mathbf{X}), \\
+%    \mathbf{H}^{(2)} &= F_2(G_o, \mathbf{H}^{(1)}), \\
+%    &\vdots \\
+%    \mathbf{H}^{(L)} &= F_L(G_o, \mathbf{H}^{(L-1)},), \\
+%\end{align*}
+This leads to $\mathbf{Z} \in \mathbb{R}^{|V(G_o)|\times (Ld)}$ being the matrix of node embeddings $\mathbf{z}$ that are computed as:
+\begin{equation}
+    \mathbf{z}_i = \mathbf{h}^{(1)}_i \oplus \mathbf{h}^{(2)}_i \oplus \mathbf{h}^{(3)}_i,
+\end{equation}
+with $\mathbf{h}^{(L)}_i$ denoting the hidden representations of node $i$ in layer $L \in \{1,2,3\}$.\bigskip
+
+
+Thus, the node embeddings used in the explainer as well as in the downstream classification task each have a shape of $\mathbb{R}^{3(20)}$. For the classification a final linear layer is added to the model that maps each $60$-dimensional node embedding to $C$ classes. A softmax is applied to the model output to get class probabilities for each node. We also adopt this in our implementation.
 
 The softmax function is defined as follows \cite{Goodfellow-et-al-2016}:
 Given a vector \( \mathbf{z} = [z_1, z_2, \dots, z_K] \in \mathbb{R}^K \), the softmax function maps \( \mathbf{z} \) to a probability distribution over \( K \) classes:
@@ -518,11 +564,345 @@ Given a vector \( \mathbf{z} = [z_1, z_2, \dots, z_K] \in \mathbb{R}^K \), the s
 \end{equation}
 where $e$ denotes the exponential function. \bigskip
 
-The model used for graph tasks differs slightly, in the sense that only the hidden embeddings of the last "GraphConv" layer are treated as node embeddings. In addition, before the final linear layer used for classification, both a max pooling and mean pooling operation are performed on the embeddings of each graph and the results concatenated to get a representation of a complete graph. Note that the paper only states to use max pooling, while in practice a concatenation of the max pooling and sum pooling is used. We adopt the combination of mean- and max pooling from the replication study \cite{holdijk2021re}, as this has been used in recent graph neural networks \cite{simonovsky2017dynamic} \cite{ma2021unsupervised} \cite{zhao2023faithful}. 
+The model used for graph tasks differs slightly, in the sense that only the hidden embeddings of the last "GraphConv" layer are treated as node embeddings. In addition, before the final linear layer used for classification, both a max pooling and mean pooling operation are performed on the embeddings of each graph and the results concatenated to get a representation of a complete graph. Note that the paper only states to use max pooling, while in practice a concatenation of the max pooling and sum pooling is used. We adopt the combination of mean- and max pooling from the replication study \cite{holdijk2021re}, as this has been used in recent graph neural networks \cite{simonovsky2017dynamic}, \cite{ma2021unsupervised}, \cite{zhao2023faithful}. 
 
 The max pooling operation extracts the maximum value of each feature dimension across the nodes of a graph, while the mean pooling extracts the mean value of each feature dimension across all nodes of a graph. Since the results of both pooling operations are in $\mathbb{R}^{20}$, the resulting $40$-dimensional graph embedding is fed into the linear layer, again mapping to $C$ classes, and a softmax is applied to get probabilities of a graph belonging to each class.\bigskip
 
+\tikzstyle{function} = [rectangle, sharp corners, minimum width=2cm, minimum height=0.5cm, text centered, draw=black, fill=brown!30, font=\small]
 
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \node (input) [data] {\small $G_o$};
+
+        %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
+        \node (layer1) [module2, below=of input] {GNN Layer 1};
+        \node (layer2) [module2, below=of layer1] {GNN Layer 2};
+        \node (layer3) [module2, below=of layer2] {GNN Layer 3};
+        \node (concat) [process, below=of layer3] {concat};
+        \coordinate (right_of_concat) at ($ (concat) + (3.5cm, 0) $);
+        \node (Z) [emb, below=0.5cm of concat] {$\mathbf{Z}$};
+        \node (DT) [module3, below=0.5cm of Z] {Linear Layer};
+        \node (softmax) [process, below=of DT] {Softmax};
+
+        \node (Z_out) [right=3.5cm of Z] {};
+
+        \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
+
+        
+        %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
+
+        %\node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
+        %\node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
+        %\node (h_3) [data, right=0.5cm of h_2] {$h_{L,i}$};
+    
+        %\node (O) [module, above=1cm of h_2] {Downstream Task};
+        %\node (F_1) [module, above=0.2cm of O, minimum height=5cm] {L-Layer GNN};
+        \node (H_1) [emb, right=0.5cm of layer1] {$\mathbf{H}^{(1)}$};
+        \coordinate (right_of_layer1) at ($ (layer1) + (3.5cm, 0) $);
+        \node (H_2) [emb, right=0.5cm of layer2] {$\mathbf{H}^{(2)}$};
+        \coordinate (right_of_layer2) at ($ (layer2) + (3.5cm, 0) $);
+        \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
+        \coordinate (right_of_layer3) at ($ (layer3) + (3.5cm, 0) $);
+
+        
+        \node (features) [data, above=of H_1] {\small $\mathbf{X}$};
+
+        \node (GraphConv) [function, right=3cm of H_1] {GraphConv};
+        \node (ReLu) [function, below=0.1cm of GraphConv] {ReLu};
+        \node (BN) [function, below=0.1cm of ReLu] {BatchNorm};
+        \node (Dropout) [function, below=0.1cm of BN] {Dropout};
+
+        
+        \draw [arrow] (features) -- (layer1);
+
+        \draw [arrow] (layer1) -- (H_1);
+        \draw [arrow] (H_1) -- (layer2);
+        \draw [arrow] (layer2) -- (H_2);
+        \draw [arrow] (H_2) -- (layer3);
+        \draw [arrow] (layer3) -- (H_3);
+    
+        \draw [arrow] (H_1) -- (right_of_layer1) -- (right_of_concat) -- (concat);
+        \draw [-] (H_2) -- (right_of_layer2);
+        \draw [-] (H_3) -- (right_of_layer3);
+
+        \draw [arrow] (concat) -- (Z);
+        \draw [arrow] (Z) -- (Z_out);
+        \draw [arrow] (Z) -- (DT);
+
+        \draw [arrow] (DT) -- (softmax);
+        \draw [arrow] (softmax) -- (Y_o);
+
+        \begin{pgfonlayer}{background}
+            \draw [arrow] (input) -- (layer3);
+            \node[draw=gray, dashed, rounded corners, inner sep=15pt,  fit=(GNNE) (H_1) (DT)] (backgroundevaluation) {};
+            \node[
+                rotate=90, 
+                anchor=center
+            ] at ([xshift=-3mm]backgroundevaluation.west) {Downstream Model Node Classification};
+        \end{pgfonlayer}
+        
+        %\begin{pgfonlayer}{background}
+        %    \node[draw=gray, thick, rounded corners, fit=(layer1) (layerL)] (backgroundevaluation) {};
+        %    \node[
+        %        rotate=90, 
+        %        anchor=center
+        %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
+        %\end{pgfonlayer}
+    \end{tikzpicture}
+    \caption{Visualization of the concrete node classification downstream model. concat denotes the row-wise concatenation along the feature dimension.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \node (input) [data] {\small $G_o$};
+
+        %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
+        \node (layer1) [module2, below=of input] {GNN Layer 1};
+        \node (layer2) [module2, below=of layer1] {GNN Layer 2};
+        \node (layer3) [module2, below=of layer2] {GNN Layer 3};
+        \node (Z) [emb, below=of layer3] {$\mathbf{Z}$};
+        \node at ($(Z.south)+(0,-1)$) (belowZ) {};
+        \node (meanP) [process, left=0.3cm of belowZ] {MeanPool};
+        \node (maxP) [process, right=0.3cm of belowZ] {MaxPool};
+        \node (concat) [below=0.5cm of belowZ] {\Large $\oplus$};
+        \coordinate (right_of_concat) at ($ (maxP |- concat) $);
+        \coordinate (left_of_concat) at ($ (meanP |- concat) $);
+        \node (DT) [module3, below=0.3cm of concat] {Linear Layer};
+        \node (softmax) [process, below=of DT] {Softmax};
+
+        \node (Z_out) [right=3.5cm of Z] {};
+
+        \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
+
+        
+        %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
+
+        %\node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
+        %\node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
+        %\node (h_3) [data, right=0.5cm of h_2] {$h_{L,i}$};
+    
+        %\node (O) [module, above=1cm of h_2] {Downstream Task};
+        %\node (F_1) [module, above=0.2cm of O, minimum height=5cm] {L-Layer GNN};
+        \node (H_1) [emb, right=0.5cm of layer1] {$\mathbf{H}^{(1)}$};
+        \node (H_2) [emb, right=0.5cm of layer2] {$\mathbf{H}^{(2)}$};
+        \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
+
+        \node (features) [data, above=of H_1] {\small $\mathbf{X}$};
+
+        %\node (input) [data, above=1cm of F_1] {$G_o$};
+
+        %\node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
+
+        \draw [arrow] (features) -- (layer1);
+
+        \draw [arrow] (layer1) -- (H_1);
+        \draw [arrow] (H_1) -- (layer2);
+        \draw [arrow] (layer2) -- (H_2);
+        \draw [arrow] (H_2) -- (layer3);
+        \draw [arrow] (layer3) -- (H_3);
+        \draw [arrow] (H_3) -- (Z);
+
+        \draw [arrow] (Z) -- (Z_out);
+        \draw [arrow] (Z) -- (maxP);
+        \draw [arrow] (Z) -- (meanP);
+
+        \draw [arrow] (meanP) -- (left_of_concat) -- (concat);
+        \draw [arrow] (maxP) -- (right_of_concat) -- (concat);
+        
+
+        \draw [arrow] (concat) -- (DT);
+        \draw [arrow] (DT) -- (softmax);
+        \draw [arrow] (softmax) -- (Y_o);
+
+        \begin{pgfonlayer}{background}
+            \draw [arrow] (input) -- (layer3);
+            \node[draw=gray, dashed, rounded corners, inner sep=10pt, fit=(GNNE) (H_1) (meanP) (DT)] (backgroundevaluation) {};
+            \node[
+                rotate=90, 
+                anchor=center
+            ] at ([xshift=-3mm]backgroundevaluation.west) {Downstream Model Graph Classification};
+        \end{pgfonlayer}
+        
+        %\begin{pgfonlayer}{background}
+        %    \node[draw=gray, thick, rounded corners, fit=(layer1) (layerL)] (backgroundevaluation) {};
+        %    \node[
+        %        rotate=90, 
+        %        anchor=center
+        %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
+        %\end{pgfonlayer}
+    \end{tikzpicture}
+    \caption{Visualization of the concrete graph classification downstream model.}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+    \centering
+    % Subfigure 1: Node Classification
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \node (input) [data] {\small Input Graph $G_o$ with node features $\mathbf{X}$};
+
+            %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
+            \node (layer1) [module2, below=of input] {GNN Layer 1};
+            \node (layer2) [module2, below=of layer1] {GNN Layer 2};
+            \node (layer3) [module2, below=of layer2] {GNN Layer 3};
+            \node (concat) [process, below=of layer3] {concat};
+            \coordinate (right_of_concat) at ($ (concat) + (3.5cm, 0) $);
+            \node (Z) [emb, below=1cm of concat] {$\mathbf{Z}$};
+            \node (DT) [module3, below=0.5cm of Z] {Linear Layer};
+            \node (softmax) [process, below=of DT] {Softmax};
+
+            \node (Z_out) [right=3.5cm of Z] {};
+
+            \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
+
+            
+            %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
+
+            %\node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
+            %\node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
+            %\node (h_3) [data, right=0.5cm of h_2] {$h_{L,i}$};
+        
+            %\node (O) [module, above=1cm of h_2] {Downstream Task};
+            %\node (F_1) [module, above=0.2cm of O, minimum height=5cm] {L-Layer GNN};
+            \node (H_1) [emb, right=0.5cm of layer1] {$\mathbf{H}^{(1)}$};
+            \coordinate (right_of_layer1) at ($ (layer1) + (3.5cm, 0) $);
+            \node (H_2) [emb, right=0.5cm of layer2] {$\mathbf{H}^{(2)}$};
+            \coordinate (right_of_layer2) at ($ (layer2) + (3.5cm, 0) $);
+            \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
+            \coordinate (right_of_layer3) at ($ (layer3) + (3.5cm, 0) $);
+
+            %\node (input) [data, above=1cm of F_1] {$G_o$};
+
+            %\node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
+
+            \draw [arrow] (layer1) -- (H_1);
+            \draw [arrow] (H_1) -- (layer2);
+            \draw [arrow] (layer2) -- (H_2);
+            \draw [arrow] (H_2) -- (layer3);
+            \draw [arrow] (layer3) -- (H_3);
+        
+            \draw [arrow] (H_1) -- (right_of_layer1) -- (right_of_concat) -- (concat);
+            \draw [-] (H_2) -- (right_of_layer2);
+            \draw [-] (H_3) -- (right_of_layer3);
+
+            \draw [arrow] (concat) -- (Z);
+            \draw [arrow] (Z) -- (Z_out);
+            \draw [arrow] (Z) -- (DT);
+
+            \draw [arrow] (DT) -- (softmax);
+            \draw [arrow] (softmax) -- (Y_o);
+
+            \begin{pgfonlayer}{background}
+                \draw [arrow] (input) -- (layer3);
+                \node[draw=gray, dashed, rounded corners, inner sep=15pt,  fit=(GNNE) (H_1) (DT)] (backgroundevaluation) {};
+                \node[
+                    rotate=90, 
+                    anchor=center
+                ] at ([xshift=-3mm]backgroundevaluation.west) {Downstream Model Node Classification};
+            \end{pgfonlayer}
+            
+            %\begin{pgfonlayer}{background}
+            %    \node[draw=gray, thick, rounded corners, fit=(layer1) (layerL)] (backgroundevaluation) {};
+            %    \node[
+            %        rotate=90, 
+            %        anchor=center
+            %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
+            %\end{pgfonlayer}
+        \end{tikzpicture}
+        \caption{concat denotes row-wise concatenation along the feature dimension.}
+        \label{fig:node-classification}
+    \end{subfigure}
+    \hfill
+    \rule{0.4pt}{\linewidth}
+    \hfill
+    % Subfigure 2: Graph Classification
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \node (input) [data] {\small Input Graph $G_o$ with node features $\mathbf{X}$};
+
+            %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
+            \node (layer1) [module2, below=of input] {GNN Layer 1};
+            \node (layer2) [module2, below=of layer1] {GNN Layer 2};
+            \node (layer3) [module2, below=of layer2] {GNN Layer 3};
+            \node (Z) [emb, below=of layer3] {$\mathbf{Z}$};
+            \node at ($(Z.south)+(0,-1)$) (belowZ) {};
+            \node (meanP) [process, left=0.3cm of belowZ] {MeanPool};
+            \node (maxP) [process, right=0.3cm of belowZ] {MaxPool};
+            \node (concat) [below=0.5cm of belowZ] {\Large $\oplus$};
+            \coordinate (right_of_concat) at ($ (maxP |- concat) $);
+            \coordinate (left_of_concat) at ($ (meanP |- concat) $);
+            \node (DT) [module3, below=0.3cm of concat] {Linear Layer};
+            \node (softmax) [process, below=of DT] {Softmax};
+
+            \node (Z_out) [right=3.5cm of Z] {};
+
+            \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
+
+            
+            %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
+
+            %\node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
+            %\node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
+            %\node (h_3) [data, right=0.5cm of h_2] {$h_{L,i}$};
+        
+            %\node (O) [module, above=1cm of h_2] {Downstream Task};
+            %\node (F_1) [module, above=0.2cm of O, minimum height=5cm] {L-Layer GNN};
+            \node (H_1) [emb, right=0.5cm of layer1] {$\mathbf{H}^{(1)}$};
+            \node (H_2) [emb, right=0.5cm of layer2] {$\mathbf{H}^{(2)}$};
+            \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
+
+            %\node (input) [data, above=1cm of F_1] {$G_o$};
+
+            %\node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
+
+            \draw [arrow] (layer1) -- (H_1);
+            \draw [arrow] (H_1) -- (layer2);
+            \draw [arrow] (layer2) -- (H_2);
+            \draw [arrow] (H_2) -- (layer3);
+            \draw [arrow] (layer3) -- (H_3);
+            \draw [arrow] (H_3) -- (Z);
+
+            \draw [arrow] (Z) -- (Z_out);
+            \draw [arrow] (Z) -- (maxP);
+            \draw [arrow] (Z) -- (meanP);
+
+            \draw [arrow] (meanP) -- (left_of_concat) -- (concat);
+            \draw [arrow] (maxP) -- (right_of_concat) -- (concat);
+            
+
+            \draw [arrow] (concat) -- (DT);
+            \draw [arrow] (DT) -- (softmax);
+            \draw [arrow] (softmax) -- (Y_o);
+
+            \begin{pgfonlayer}{background}
+                \draw [arrow] (input) -- (layer3);
+                \node[draw=gray, dashed, rounded corners, inner sep=10pt, fit=(GNNE) (H_1) (meanP) (DT)] (backgroundevaluation) {};
+                \node[
+                    rotate=90, 
+                    anchor=center
+                ] at ([xshift=-3mm]backgroundevaluation.west) {Downstream Model Graph Classification};
+            \end{pgfonlayer}
+            
+            %\begin{pgfonlayer}{background}
+            %    \node[draw=gray, thick, rounded corners, fit=(layer1) (layerL)] (backgroundevaluation) {};
+            %    \node[
+            %        rotate=90, 
+            %        anchor=center
+            %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
+            %\end{pgfonlayer}
+        \end{tikzpicture}
+        \caption{Graph classification model.}
+        \label{fig:graph-classification}
+    \end{subfigure}
+    \caption{Visualizations of two downstream GNN models for (a) node classification and (b) graph classification.}
+    \label{fig:gnn-models}
+\end{figure}
 
 Furthermore, following the original paper, all layer weights are initialized with Xavier initialization \cite{glorot2010understanding}, while biases are initialized with $0$. The datasets are split into training, testing and validation sets with an 80/10/10 split ratio. The models are trained for 1000 epochs, with a learning rate of $1.0 \times 10^{-3}$ and Adam \cite{kingma2014adam} is used as an optimizer. The loss is defined as the PyTorch \lstinline|CrossEntropyLoss()| between the GNN prediction and the actual label of the input. \bigskip
 
@@ -532,9 +912,9 @@ We want to stress that though not documented in the paper, early stopping is uti
 
 In a more recent version of the PGExplainer \cite{10423141}, the authors add a formal description of the downstream model layer used in their framework. The used GNN layer is defined as:
 \begin{equation}
-    f(H(l),A)=\sigma(W(l)AH(l)),
+    f(\mathbf{H}^{(l)},\mathbf{A})=\sigma(\mathbf{W}^{(l)}\mathbf{A}\mathbf{H}^{(l)}),
 \end{equation}
-where $H(l)$ are the hidden representations of nodes in the $l$-th layer, $A$ is the normalized Laplacian matrix, and $W(l)$ is the weight matrix.
+where $A$ is the normalized Laplacian matrix.
 
 Note that a PyTorch Geometric implementation of the GCN layer described in equation \ref{eq:GCN} is used in the replication paper \cite{holdijk2021re} with a ReLU activation function. Thus, the sole difference between the two is the order of the matrix multiplication. \bigskip
 
@@ -563,7 +943,7 @@ We implement the calculation of edge embeddings as follows:
 The trained, fixed downstream model \lstinline|modelGNN| is passed to the explainer and returns its node embeddings for the input graph, defined by its node features \lstinline|x| and the \lstinline|edge_index|. Depending on the task at hand, the node embeddings of each two connected nodes, as well as the node embeddings of the node to be predicted \lstinline|nodeToPred| in the case of a node task, are concatenated and returned as edge embeddings. \bigskip
 
 \textbf{Explainer Training Specifications}\par
-We initialize all linear layer weights of the explainer with He initialization \cite{he2015delving}, which is used by default for linear layers with ReLU activation in PyTorch. We also test the effect of adopting the initializations from the downstream models and initializing all layer weights with Xavier \cite{glorot2010understanding} (see Section \ref{sec:ind_results}). Biases are generally initialized with zero. During training, the Adam optimizer \cite{kingma2014adam} is used to update the model parameters based on gradients. Additionally, gradients are clipped during training using PyTorch's \lstinline|clip_grad_norm_| with a maximum norm of 2. The authors define the temperature used in the reparameterization trick (see Equation \ref{eq:reparam_trick}) with an annealing temperature schedule, as proposed by Abid et al. \cite{abid2019concrete}:
+We initialize all linear layer weights of the explainer with He initialization \cite{he2015delving}, which is used by default for linear layers with ReLU activation in PyTorch. We also test the effect of adopting the initializations from the downstream models and initializing all layer weights with Xavier \cite{glorot2010understanding} (see Section \ref{sec:ind_results}). Biases are generally initialized with zero. During training, the Adam \cite{kingma2014adam} optimizer is used to update the model parameters based on gradients. Additionally, gradients are clipped during training using PyTorch's \lstinline|clip_grad_norm_| with a maximum norm of 2. The authors define the temperature used in the reparameterization trick (see Equation \ref{eq:reparam_trick}) with an annealing temperature schedule, as proposed by Abid et al. \cite{abid2019concrete}:
 \begin{equation}
     \tau^{(t)} = \tau_0(\frac{\tau_T}{\tau_0})^{\frac{t}{T}},
 \end{equation} 
@@ -611,7 +991,7 @@ We implement this calculation using the \lstinline|BinaryAUROC| from TorchEval, 
 
 The qualitative explanations provided by the explainer are implemented as a NetworkX visualization of the graph instance in the case of graph tasks, or of the $3$-hop subgraph of the instance node in the case of node tasks. Only the edges with the top-$2k$ importance scores are drawn, where $k$ equals $\text{\#motif-edges}$, since edges are bidirectional and guaranteed to carry identical weights. $k$ can therefore be understood as a needed parameter for qualitative evaluation. TODO: Holdijk discussion about k as hyperparameter! \bigskip
 
-The inference time (IT) is measured as the time it takes to generate an explanation for any instance. This starts with the computation of node embeddings from the downstream model and ends with the reparameterization trick - the simple application of a Sigmoid to the edge logits during evaluation - that returns the edge importance scores. This process is illustrated in Figure \ref{fig:PGExplainer_pipeline}, starting from input graph $G_o$ and ending at the sampled graph $\hat{G}_s$. \bigskip
+The inference time is measured as the time it takes to generate an explanation for any instance. This starts with the computation of node embeddings from the downstream model and ends with the reparameterization trick - the simple application of a Sigmoid to the edge logits during evaluation - that returns the edge importance scores. This process is illustrated in Figure \ref{fig:PGExplainer_pipeline}, starting from input graph $G_o$ and ending at the sampled graph $\hat{G}_s$. \bigskip
 
 \textbf{TODO: Challenges}: NECESSARY? MENTION DIFFICULTIES IN EACH SUBSECTION? Difficulties getting the code to work, as we started working with the paper only. Found that hyperparameters had to be finetuned, exact downstream model is relevant (e.g. batch norm present or not, overfit models obviously generate bad explanations, need for early stopping). Different loss used in code than in paper; we adopt the loss described in the paper. No documentation of the motif node selection/training only performed on graphs/nodes that contain gt! Imprecise about dataset description (BA-2Motif has different features than the rest of the syn datasets). No description of the AUROC calculation, had to be extracted from code (global vs local) \bigskip
 

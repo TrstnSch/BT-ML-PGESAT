@@ -305,7 +305,7 @@ To fully understand the learning objective of PGExplainer it is necessary to def
 \subsection{Entropy}
 %TODO: REVISE THIS. Probably best to define with general expactation, for continous and discrete, according to Goodfellow. Derive conditional entropy for general case. Only apply discrete case where needed? (cross entropy in PGE) \bigskip
 
-Entropy is used to describe the uncertainty of a random variable. It quantifies the average amount of information produced by the outcomes of said variable. This is commonly illustrated as the average number of bits needed to encode its values if optimal code is used. Let $X$ be a discrete random variable with alphabet $\mathcal{X}$ and probability mass function $p(x)=Pr\{X=x\}$ for $x\in X$. TODO: EINHEITLICHE DEFINITION! SIMPLY USE THIS DEFINITION IN MONTE CARLO SAMPLING?
+Entropy is used to describe the uncertainty of a random variable. It quantifies the average amount of information produced by the outcomes of said variable. This is commonly illustrated as the average number of bits needed to encode its values if optimal code is used. Let $X$ be a discrete random variable with alphabet $\mathcal{X}$ and probability mass function $p(x)=Pr\{X=x\}$ for $x\in \mathcal{X}$. TODO: EINHEITLICHE DEFINITION! SIMPLY USE THIS DEFINITION IN MONTE CARLO SAMPLING?
 The entropy $H(X)$, also written as $H(p)$, is defined as
 \begin{equation}
     H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x).
@@ -403,14 +403,14 @@ with $\mathbf{x}$ denoting input features and $\mathbf{h}$ the hidden state. $\m
 Note that $F$ is assumed to be a contraction map and the value of $\mathbf{H}$ is the fixed point of equation \eqref{eq:gnn_state_global}. To compute the state the iterative scheme
 \begin{equation}
     \label{eq:GNN_iterations}
-    \mathbf{H}^{t+1} = F(\mathbf{H}^t, \mathbf{X})
+    \mathbf{H}^{t+1} = F(\mathbf{H}^{t}, \mathbf{X})
 \end{equation}
-is used with $\mathbf{H}^t$ denoting iteration t of $\mathbf{H}$. The computations of $f$ and $g$ can be understood as the feedforward neural network. \\
+is used with $\mathbf{H}^{t}$ denoting iteration t of $\mathbf{H}$. The computations of $f$ and $g$ can be understood as the feedforward neural network. \\
 To learn the parameters of this GNN, with target information $t_v$ for a specific node $v$, the loss is defined as
 \begin{equation}
     loss = \sum_{i=1}^p (t_i-\mathbf{o},)
 \end{equation}
-where $p$ are the supervised nodes. A gradient-descent strategy is utilized in the learning algorithm, which consist of the following three steps: the states $h_v^t$ are updated iteratively using equation \eqref{eq:gnn_state_local} until time step $T$. We then obtain an approximate fixed point solution of equation \eqref{eq:gnn_state_global}: $\mathbf{H}(T)\approx\mathbf{H}$. For the next step the gradients of the weights $W$ are calculated from the loss. Finally, the weights $W$ are updated according to the computed gradient. This allows us to train a model for specific supervised or semi-supervised tasks, referred to as downstream task, and get hidden states of nodes in a graph. \bigskip
+where $p$ are the supervised nodes. A gradient-descent strategy is utilized in the learning algorithm, which consist of the following three steps: the states $\mathbf{h}_v^{t}$ are updated iteratively using equation \eqref{eq:gnn_state_local} until time step $T$. We then obtain an approximate fixed point solution of equation \eqref{eq:gnn_state_global}: $\mathbf{H}(T)\approx\mathbf{H}$. For the next step the gradients of the weights $W$ are calculated from the loss. Finally, the weights $W$ are updated according to the computed gradient. This allows us to train a model for specific supervised or semi-supervised tasks, referred to as downstream task, and get hidden states of nodes in a graph. \bigskip
 
 Though the architecture proposed by Scarselli et al. \cite{4700287} proved to be powerful for modeling structural data, this initial approach suffers from a few limitations. Most notably, it uses the same parameters in the iteration, while nowadays it is common practice to use different parameters in different layers. Stacking $k$ GNN layers allows each node to aggregate information from nodes within its $k$-hop neighborhood, represented in Figure \ref{fig:k-hop}, seeking an increase in performance. It is important to note that this approach may also increase the noisy information spread by the exponentially increasing neighborhood nodes \cite{Liu2020}.
 
@@ -460,9 +460,9 @@ Therefore, we briefly present two subsequent models that are used in the course 
 Graph convolutional networks (GCNs) aim to generalize the convolution operation of convolutional neural networks (CNNs) to the graph domain. An example is the model proposed by Kipf and Welling \cite{kipf2016semi} that introduces a simple, layer-wise propagation rule for multi-layer GCNs as
 \begin{equation}
     \label{eq:GCN}
-    H^{l+1} = \sigma(\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}),
+    \mathbf{H}^{(l+1)} = \sigma(\tilde{\mathbf{D}}^{-\frac{1}{2}}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-\frac{1}{2}}\mathbf{H}^{(l)}\mathbf{W}^{(l)}),
 \end{equation}
-where $\tilde{A} = A + I_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $I_N$ is the identity matrix, $\tilde{D}$ is the degree matrix and $W^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $H^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $H^{(0)} = X$. Note that this definition differs slightly from the iterative formulation in Equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F_l$, rather than a shared function $F$. $\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix, referred to as renormalization trick. This architecture aims to alleviate the problem of overfitting on local neighborhood structures for graphs with very wide node degree distributions (TODO: Source). \bigskip
+where $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}_N$ is the adjacency matrix of the undirected input graph $G$ with added self-connections. $\mathbf{I}_N$ is the identity matrix, $\tilde{\mathbf{D}}$ is the degree matrix and $\mathbf{W}^{(l)}$ is a layer-specific trainable weight matrix. $\sigma(\cdot)$ denotes an activation function, such as ReLU. $\mathbf{H}^{(l)} \in \mathbb{R}^{n\times d}$ denotes the matrix of node activations in the $l$-th layer, where $\mathbf{H}^{(0)} = X$. Note that this definition differs from the iterative formulation in Equation \ref{eq:GNN_iterations}, in the sense that each layer applies a different function $F^{(l)}$, rather than a shared function $F$. $\tilde{\mathbf{D}}^{-\frac{1}{2}}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-\frac{1}{2}}$ describes a normalization of the adjacency matrix, referred to as renormalization trick. This architecture aims to alleviate the problem of overfitting on local neighborhood structures for graphs with very wide node degree distributions (TODO: Source). \bigskip
 
 %TODO: generalization to signal X?
 %\begin{equation}
@@ -474,24 +474,25 @@ TODO: A basic GNN model can be implemented as follows (Hamilton, Ying, and Lesko
 Morris et al. \cite{morris2019weisfeiler} propose an implementation for a GNN model consisting of stacked neural network layers, that each aggregate the local neighborhood information of a node and pass it to the next one. This network is defined specifically for graphs that can be partitioned into $r$ color classes and therefore applicable to bipartite graphs. The new features of node $i$ are then computed with:
 \begin{equation}
     \label{eq:higher-order-gnn}
-    x_i^{(l)} = \sigma(W_1^{(l)}x_i^{(l-1)}+W_2^{(l)}\cdot\sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j^{(l-1)}),
+    \mathbf{x}_i^{(l)} = \sigma(\mathbf{W}_1^{(l)}\mathbf{x}_i^{(l-1)}+\mathbf{W}_2^{(l)}\cdot\sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot \mathbf{x}_j^{(l-1)}),
 \end{equation}
 where $W_1^{(l)}$ and $W_2^{(l)}$ are two layer-specific trainable weight matrices.
 
 %No activation: x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j \\
 TODO: MORE MOTIVATION FOR THIS! \bigskip
 
-\textbf{Message Passing Neural Network}\par
+\paragraph{Message Passing Neural Network}\par
+\label{par:MPNN}
 The Message Passing Neural Network (MPNN) proposed by Gilmer et al. \cite{gilmer2017neural} seeks to unify GNN models, by providing a general framework for supervised learning on GNNs, since many by now existing models operate similarly. Typically, messages derived from node features are passed along edges of a graph to be able to learn meaningful graph and node representations that can be used for downstream tasks \cite{kipf2016semi} \cite{4700287} \cite{velivckovic2017graph} \cite{xu2018powerful}. Therefore, GNNs may be expressed as MPPNs, where the forward pass consist of a message passing phase and a readout phase. The message passing phase runs for $T$ time steps and is defined by the message function $M_t$, as well as the node update function $U_t$. At each time step $t$, the hidden state $\mathbf{h}_v^{t+1}$ of a node $v$ in the graph $G$ is updated based on the message $\mathbf{m}_v^{t+1}$, which aggregates information from the previous hidden states of its neighbors according to the message function $M_t$. Formally, this is defined as
 
 \begin{align}
-    \mathbf{m}_v^{t+1} &= \sum_{w \in \mathcal{N}(v)} M_t\left(\mathbf{h}_v^t, \mathbf{h}_w^t, \mathbf{e}_{v,w}\right) \tag{1} \\
-    \mathbf{h}_v^{t+1} &= U_t\left(\mathbf{h}_v^t, \mathbf{m}_v^{t+1}\right) \tag{2},
+    \mathbf{m}_v^{t+1} &= \sum_{w \in \mathcal{N}(v)} M_t\left(\mathbf{h}_v^t, \mathbf{h}_w^t, \mathbf{e}_{v,w}\right) \\
+    \mathbf{h}_v^{t+1} &= U_t\left(\mathbf{h}_v^t, \mathbf{m}_v^{t+1}\right),
 \end{align}
 where $\mathbf{e}_{v,w}$ denotes possible edge features of edge $(v,w)$.
 In the readout phase a feature vector $\hat{\mathbf{y}}$ is computed for the entire graph from the final node states  using a readout function $R$:
 \begin{equation}
-    \hat{\mathbf{y}} = R\left(\{ \mathbf{h}_v^T \mid v \in G \}\right) \tag{3}.
+    \hat{\mathbf{y}} = R\left(\{ \mathbf{h}_v^T \mid v \in G \}\right).
 \end{equation}
 Note that the three functions $M_t$, $U_t$ and $R_t$ are learned and differentiable.
     
@@ -569,4 +570,4 @@ where $\mathbf{0}$ denotes a zero matrix in the shape of their subscript. \bigsk
 %var(F)= c \in cla(F) var(c) for its set of variables.$"  Incidence graph of $\psi$ is the %bipartite graph $inc(\psi) = (V,E)$ with $V=lit(\psi) \cup cla(\psi)$. Additionally for %literal $x \in lit(\psi)$ and clause $c \in cla(\psi)$ we define $xc \in E$ if $x \in var(c)$.
 
 \subsection{Unsatisfiable Cores}
-The core of an unsatisfiable formula in CNF is a subset of the formula that is also unsatisfiable. Every unsatisfiable formula therefore is a core on its own, but can be broken down into smaller cores. The smaller a core the more significance it holds. A minimal unsatisfiable core is also referred to as a minimal unsatisfiable subset (MUS). SAT solvers like minisat \cite{een2003extensible} are able to compute unsatisfiable cores but do not generally provide a MUS due to high computational cost. However, several deletion-based algorithms exist for computing MUSs (see Torlak et al. \cite{10.1007/978-3-540-68237-0_23}).
+The core of an unsatisfiable formula in CNF is a subset of the formula that is also unsatisfiable. Every unsatisfiable formula therefore is a core on its own, but can be broken down into smaller cores. The smaller a core the more significance it holds. A minimal unsatisfiable core is also referred to as a minimal unsatisfiable subset (MUS). SAT solvers like MiniSat \cite{een2003extensible} are able to compute unsatisfiable cores but do not generally provide a MUS due to high computational cost. However, several deletion-based algorithms exist for computing MUSs (see Torlak et al. \cite{10.1007/978-3-540-68237-0_23}).

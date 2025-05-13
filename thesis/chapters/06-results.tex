@@ -381,7 +381,6 @@ Note that the ground truth does not affect the training procedure in any way and
     \caption[Inductive performance on BA-2Motif with inverted ground truth]{Explanation AUROC for BA-2Motif with inverted GT.}
     \label{tab:flippedGT}
 \end{table}
-\newpage
 \textbf{Results} \par
 
 As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment, even surpassing the original baseline, as seen in Table \ref{tab:flippedGT}. It is notable that the results by Holdijk et al. \cite{holdijk2021re} suggest a similar observation, however the authors do not expand on this.
@@ -548,9 +547,9 @@ Original dataset with features changed to ones instead of 0.1: Works good as wel
 \section{PGExplainer applied to NeuroSAT}
 \label{sec:SAT-experiments}
 
-TODO: We present our approach for generating bipartite explanations for NeuroSAT \cite{} predictions of SAT problems.
+In this section we present the experiments for generating bipartite explanations for NeuroSAT \cite{selsam2018learning} predictions of unsatisfiable SAT problems. We describe the general procedure in Section \ref{}, followed by the results using the PGExplainer with a soft constraint in Section \ref{}, as well as the hard constraint experiment in Section \ref{}.
 
-\subsection{Common experimental setup}
+\subsection{Common Experimental Setup}
 
 NeuroSAT \cite{selsam2018learning} uses a distribution $\textbf{SR}(n)$ that creates pairs of SAT problems on $n$ variables, which are satisfiable and unsatisfiable, only differing in a singular negated literal. These are created by randomly sampling subclauses of $k$ variables, where each variable is negated with a probability of $50\%$. These subclauses are added to the problem until a SAT solver \cite{een2003extensible} finds it to be unsatisfiable. We adapt this to only contain singular unsatisfiable problems, rather than pairs of problems, since unsatisfiable cores only appear in unsatisfiable problems. The difficulty of the problems is slightly reduced by using $n=8$, to allow for the explainer to run on NeuroSAT on our limited hardware. We create a dataset of 100 problems.
 
@@ -558,27 +557,32 @@ We create the expected ground truth with the deletion-based MUS extractor \lstin
 
 The quantitative evaluation is adopted from Section \ref{sec:PGE_exp_setup}, with the positive targets being the edges that appear in the corresponding ground truth MUS of each problem. Since the qualitative evaluation relies on knowing $k$, we calculate this dynamically during evaluation from the ground truth of the current problem.
 
-The NeuroSAT model was provided by a fellow student, trained on a $\textbf{SR}(40)$ distribution. It achieves an accuracy of 1.0 on the dataset we created.
+The NeuroSAT model trained on a $\textbf{SR}(40)$ distribution was provided by a fellow student. It achieves an accuracy of 1.0 on the dataset we created.
 
 We apply PGExplainer in the inductive setting, using a 50/25/25 split for training, evaluating and testing the NeuroSAT explainer. \bigskip
 
 \textbf{Hyperparameter Search}\par
-We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the applied hard constraint. We follow the general grid search procedure used for the previous experiments, but introduce 4 new hyperparameters, 1 exclusive to the hard constraint and 2 exclusive to the soft constraint. $\alpha_{arch} \in \{0,1\}$, exclusive to the hard constraint, denotes whether a more complex MLP architecture is used in the explainer. The second introduced hyperparameter $\alpha_{concat} \in \{0,1\}$ controls whether the node embeddings $\mathbf{z}$ are used from the last iteration of NeuroSAT or if a concatenation of the states at multiple iterations shall be used (see Section \ref{sec:NeuroSAT_extension}). For the soft constraint, we also try using the AdamW \cite{loshchilov2017decoupled} optimizer from PyTorch with an internal weight decay of $0.01$, denoted by $\alpha_{AdamW} \in \{0,1\}$. Lastly, the coefficient $\alpha_{c} \in \mathbb{R}^+$ controls the effect of the soft constraint $R_C$ (see Equation \ref{eq:soft_restraint}) on the loss. This is disregarded in the hard constraint experiment, as the hard constraint replaces the soft constraint. The sample bias $b$ used in PGExplainer is disregarded completely. We found that the validation AUROC tends to decrease during training and therefore focus on minimizing the metric as well as the validation loss. TODO: Also consider highest individual local AUROC
+We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the applied hard constraint. We follow the general grid search procedure used for the previous experiments, but introduce 4 new hyperparameters, 1 exclusive to the hard constraint and 2 exclusive to the soft constraint. $\alpha_{arch} \in \{0,1\}$, exclusive to the hard constraint, denotes whether a more complex MLP architecture is used in the explainer. The second introduced hyperparameter $\alpha_{concat} \in \{0,1\}$ controls whether the node embeddings $\mathbf{z}$ are used from the last iteration of NeuroSAT or if a concatenation of the states at multiple iterations shall be used (see Section \ref{sec:NeuroSAT_extension}). For the soft constraint, we also try using the AdamW \cite{loshchilov2017decoupled} optimizer from PyTorch with an internal weight decay of $0.01$, denoted by $\alpha_{AdamW} \in \{0,1\}$. Lastly, the coefficient $\alpha_{c} \in \mathbb{R}^+$ controls the effect of the soft constraint $R_C$ (see Equation \ref{eq:soft_restraint}) on the loss. This is disregarded in the hard constraint experiment, as the hard constraint replaces the soft constraint. The sample bias $b$ used in PGExplainer is disregarded completely. We evaluate the search with respect to the validation AUROC score, as well as the validation loss. TODO: Also consider highest individual local AUROC
 
 
 \subsection{Soft Constraint Experiment}
-In this experiment we adopt the soft constraint introduced in Section \ref{sec:NeuroSAT_extension} to use the PGExplainer to generate explanations for the predictions of NeuroSAT on unsatisfiable SAT problems. \bigskip
+\textbf{Experimental Setup}\par
+In this experiment we apply the soft constraint introduced in Section \ref{sec:NeuroSAT_extension} to the PGExplainer to generate explanations for the predictions of NeuroSAT on unsatisfiable SAT problems. After performing a grid search specified in Appendix \ref{}, we utilize the optimal parameters to evaluate the test AUROC over 10 seeded runs. Additionally, we provide qualitative explanations in comparison to the ground truth MUS for the problem that results in the highest individual AUROC. \bigskip
 
 \textbf{Results}\par
+We found that the grid search resulted in a maximum validation AUROC of 0.5248 and a minimal score of 0.4726. All runs achieved results in this interval, indicating completely random edge predictions. It seems that regardless of the tested hyperparameters the general explanations of NeuroSAT predictions provided by PGExplainer do not align with unsatisfiable cores. 
 
 
 \subsection{Hard Constraint Experiment}
-In this experiment we adopt the hard constraint introduced in Section \ref{sec:NeuroSAT_extension} to use the PGExplainer to generate explanations for the predictions of NeuroSAT on unsatisfiable SAT problems. \bigskip
+\textbf{Experimental Setup}\par
+In this experiment we apply the hard constraint introduced in Section \ref{sec:NeuroSAT_extension} to the PGExplainer to generate explanations for the predictions of NeuroSAT on unsatisfiable SAT problems. The experimental setup is adopted from Section \ref{}. \bigskip
 
 \textbf{Hyperparameter search}\par
-We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the hard constraints. We follow the general grid search procedure used for the previous experiments, but introduce new hyperparameters. 
+We found that the validation AUROC tends to decrease during training and therefore focus on minimizing the validation AUROC as well as the validation loss in the grid search.
 
-The search revealed that none of the parameter configurations achieves an AUROC score above $0.5$ and below $0.44$. Since $0.5$ equals pure randomness and is usually caused by all edges being predicted with a score of $0$, we select the model that achieves the lowest score, thus departing from the point of randomness. However, this mostly indicates that the explainer predictions do not align with the selected ground truth. We found that a low learning rate is important to keep the edge predictions from reaching 0, as these steadily decrease over training time. $\alpha_s=1.0$ further enhanced this unwanted behavior. Using a concatenation of the embedding at multiple iterations achieved worse results than the usual graph task procedure when considering the highest individual AUROC of a validation instance. However, this does not consider whether a general procedure is learned.
+The search revealed that none of the parameter configurations achieves an AUROC score above $0.5$ and below $0.44$. Since $0.5$ equals pure randomness and is usually caused by all edges being predicted with a score of $0$, we select the model that achieves the lowest score, thus departing from the point of randomness. We found that a low learning rate is important to keep the edge predictions from reaching 0, as these steadily decrease over training time. $\alpha_s=1.0$ further enhanced this unwanted behavior. Using a concatenation of the embeddings at multiple iterations achieved worse results than the usual graph task procedure when considering the highest individual AUROC of a validation instance. However, this does not consider whether a general procedure is learned. \bigskip
 
 \textbf{Results}\par
 We found that running the training for 500 epochs resulted in a converging loss, as well as a converging metric score, close to $0.46$. A local score minimum is reached in epoch 60 with a value of $0.44$. Since this is very close to a score indicating randomness, we conclude that NeuroSAT does in fact not learn generalized unsatisfiable cores in the form of MUSs.
+
+However, this mostly indicates that the explainer predictions do not align with the selected ground truth (IF VARIANCE IN EXPERIMENT RUNS LOW!)
