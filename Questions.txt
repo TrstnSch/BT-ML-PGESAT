@@ -386,3 +386,15 @@ Code highlighting? Background color etc using listings or fine as is?
 
 Citation: Okay to use a combination of in [1], see xy et al [2] and NeuroSAT, proposed by yz et al. [3]?
 Or either always/never name author?
+
+
+FIGURES!
+
+WandB Sweep image?
+
+Refer to code? Submit code? Link in text? Prefer not to local
+
+Results/Discussion separation?
+
+One line code examples for e.g. node instances?
+

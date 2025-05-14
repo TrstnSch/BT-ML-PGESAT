@@ -572,6 +572,10 @@ In this experiment we apply the soft constraint introduced in Section \ref{sec:N
 \textbf{Results}\par
 We found that the grid search resulted in a maximum validation AUROC of 0.5248 and a minimal score of 0.4726. All runs achieved results in this interval, indicating completely random edge predictions. It seems that regardless of the tested hyperparameters the general explanations of NeuroSAT predictions provided by PGExplainer do not align with unsatisfiable cores. 
 
+Low size reg highest importance, followed by high consistency reg and low lr. Other parameters not as decisive. We select the parameters that maximize the validation AUROC.
+
+Seed 4 achieves the highest individual test AUROC of 0.711! (See visualization). Only 2 edegs are identified correctly, no full clauses.
+
 
 \subsection{Hard Constraint Experiment}
 \textbf{Experimental Setup}\par
@@ -586,3 +590,5 @@ The search revealed that none of the parameter configurations achieves an AUROC 
 We found that running the training for 500 epochs resulted in a converging loss, as well as a converging metric score, close to $0.46$. A local score minimum is reached in epoch 60 with a value of $0.44$. Since this is very close to a score indicating randomness, we conclude that NeuroSAT does in fact not learn generalized unsatisfiable cores in the form of MUSs.
 
 However, this mostly indicates that the explainer predictions do not align with the selected ground truth (IF VARIANCE IN EXPERIMENT RUNS LOW!)
+
+Seed 0 achieves the highest individual test AUROC of 0.776! (See visualization). Notable the 2(?) clauses are predicted correctly, but not still not good result out of (?). Show that prediction is not unsatisfiable (Results)! Besides that, mean test AUROC see Table.

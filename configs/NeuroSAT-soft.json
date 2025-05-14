@@ -3,18 +3,22 @@
         "architecture": "MLP",
         "dataset": "SAT",
         "graph_task": true,
-        "epochs": 50,
+        "epochs": 20,
         "batch_size": 1,
-        "lr_mlp": 0.00003,
+        "lr_mlp": 0.0003,
         "sampled_graphs": 5,
-        "coefficient_size_reg": 0.01,
+        "coefficient_size_reg": 0.001,
         "coefficient_entropy_reg": 1.0,
         "coefficient_L2_reg": 0.0,
-        "coefficient_consistency": 0.0,
+        "coefficient_consistency": 10.0,
         "sample_bias": 0.0,
         "num_explanation_edges": 0,
         "num_training_instances" : 30,
         "t0": 5.0,
-        "tT": 5.0
+        "tT": 1.0,
+        "bce_loss": 0,
+        "complex_architecture": 0,
+        "three_embs": 1,
+        "adamW": 1
     }
 }

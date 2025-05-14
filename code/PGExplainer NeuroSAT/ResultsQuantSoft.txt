@@ -1,0 +1,1244 @@
+
+Running experiment on dataset: NeuroSAT-soft, with hyperparameters specified in configs
+Epoch 1, Loss: 2.5124518871307373
+mean auroc score: 0.499504953622818
+Epoch 2, Loss: 2.8924272060394287
+mean auroc score: 0.5022974610328674
+Epoch 3, Loss: 3.3012566566467285
+mean auroc score: 0.5034802556037903
+Epoch 4, Loss: 3.8699405193328857
+mean auroc score: 0.4991380274295807
+Epoch 5, Loss: 4.420193672180176
+mean auroc score: 0.49170535802841187
+Epoch 6, Loss: 4.868782043457031
+mean auroc score: 0.48681753873825073
+Epoch 7, Loss: 5.564253807067871
+mean auroc score: 0.48351573944091797
+Epoch 8, Loss: 6.210936069488525
+mean auroc score: 0.4800480008125305
+Epoch 9, Loss: 6.8348846435546875
+mean auroc score: 0.47832655906677246
+Epoch 10, Loss: 7.676471710205078
+mean auroc score: 0.47670918703079224
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed0_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 8.0668363571167
+mean auroc score: 0.4764900207519531
+Epoch 12, Loss: 8.653433799743652
+mean auroc score: 0.47647935152053833
+Epoch 13, Loss: 9.308753967285156
+mean auroc score: 0.4766782224178314
+Epoch 14, Loss: 9.269264221191406
+mean auroc score: 0.4767646789550781
+Epoch 15, Loss: 9.523530960083008
+mean auroc score: 0.4771190285682678
+Epoch 16, Loss: 9.45276927947998
+mean auroc score: 0.4780220091342926
+Epoch 17, Loss: 9.26661491394043
+mean auroc score: 0.47843337059020996
+Epoch 18, Loss: 8.610419273376465
+mean auroc score: 0.4789346754550934
+Epoch 19, Loss: 7.796177387237549
+mean auroc score: 0.47938379645347595
+Epoch 20, Loss: 7.194313049316406
+mean auroc score: 0.48006778955459595
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed0_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed0_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_vis_gt.html
+Visualization saved as results/experiments/seed0_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.6578682661056519
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_highestAUC.html
+Visualization saved as results/experiments/seed0_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_highestAUC_gt.html
+Visualization saved as results/experiments/seed0_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed0_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[ 396 1180]
+ [ 169 1180]
+ [ 175 1184]
+ [ 170 1187]
+ [ 175 1188]
+ [ 172 1189]
+ [ 397 1191]
+ [ 394 1191]
+ [ 170 1193]
+ [ 173 1193]
+ [ 392 1194]
+ [ 397 1195]
+ [ 172 1196]
+ [ 397 1199]
+ [ 394 1199]
+ [ 399 1199]
+ [ 170 1200]
+ [ 170 1202]
+ [ 170 1208]
+ [ 394 1210]
+ [ 393 1210]
+ [ 396 1211]
+ [ 399 1212]
+ [ 397 1213]
+ [ 170 1214]
+ [ 173 1216]
+ [ 170 1216]
+ [ 172 1217]
+ [ 392 1217]
+ [ 394 1217]
+ [ 169 1220]
+ [ 172 1220]
+ [ 175 1221]
+ [ 173 1221]]
+[[-172, 169], [175], [170], [175], [172], [-173, -170], [170, 173], [-168], [-173], [172], [-173, -170, -175], [170], [170], [170], [-170, -169], [-172], [-175], [-173], [170], [173, 170], [172, -168, -170], [169, 172], [175, 173]]
+Lowest individual auroc: 0.31749260425567627
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_lowestAUC.html
+Visualization saved as results/experiments/seed0_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_lowestAUC_gt.html
+Visualization saved as results/experiments/seed0_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed0_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.5272840261459351
+Highest individual TEST auroc: 0.6981981992721558
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_highestAUC_TEST.html
+Visualization saved as results/experiments/seed0_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed0_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed0_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed0_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.5181901454925537
+mean auroc score: 0.48604241013526917
+Epoch 2, Loss: 2.889564037322998
+mean auroc score: 0.48652562499046326
+Epoch 3, Loss: 3.4203391075134277
+mean auroc score: 0.48734918236732483
+Epoch 4, Loss: 3.822788715362549
+mean auroc score: 0.486939013004303
+Epoch 5, Loss: 4.326251983642578
+mean auroc score: 0.49040740728378296
+Epoch 6, Loss: 5.027292728424072
+mean auroc score: 0.4974903166294098
+Epoch 7, Loss: 5.619302272796631
+mean auroc score: 0.5059312582015991
+Epoch 8, Loss: 6.312429904937744
+mean auroc score: 0.5111778378486633
+Epoch 9, Loss: 7.22512674331665
+mean auroc score: 0.5146890878677368
+Epoch 10, Loss: 7.959330081939697
+mean auroc score: 0.5170556306838989
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed1_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 8.688687324523926
+mean auroc score: 0.5185283422470093
+Epoch 12, Loss: 9.394633293151855
+mean auroc score: 0.5220397710800171
+Epoch 13, Loss: 9.561920166015625
+mean auroc score: 0.52332603931427
+Epoch 14, Loss: 10.168492317199707
+mean auroc score: 0.5238358378410339
+Epoch 15, Loss: 10.185104370117188
+mean auroc score: 0.5247150659561157
+Epoch 16, Loss: 9.975579261779785
+mean auroc score: 0.5244928002357483
+Epoch 17, Loss: 9.469775199890137
+mean auroc score: 0.5238988995552063
+Epoch 18, Loss: 8.6187162399292
+mean auroc score: 0.5231999754905701
+Epoch 19, Loss: 7.860015869140625
+mean auroc score: 0.5221747756004333
+Epoch 20, Loss: 6.724272727966309
+mean auroc score: 0.5218049883842468
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed1_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed1_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_vis_gt.html
+Visualization saved as results/experiments/seed1_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.6585614085197449
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_highestAUC.html
+Visualization saved as results/experiments/seed1_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_highestAUC_gt.html
+Visualization saved as results/experiments/seed1_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed1_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[350 852]
+ [345 852]
+ [349 852]
+ [120 852]
+ [351 852]
+ [346 852]
+ [350 860]
+ [345 868]
+ [121 872]
+ [124 873]
+ [350 875]
+ [124 875]
+ [120 875]
+ [345 875]
+ [349 875]
+ [345 878]
+ [345 880]
+ [344 880]
+ [350 880]
+ [122 880]
+ [351 880]
+ [349 880]
+ [348 880]
+ [349 886]
+ [345 886]
+ [126 886]
+ [124 886]
+ [345 891]
+ [349 891]
+ [346 894]
+ [125 894]
+ [350 894]
+ [121 894]
+ [349 896]
+ [124 896]
+ [345 896]
+ [350 896]
+ [126 898]
+ [121 898]
+ [125 900]
+ [121 900]
+ [350 900]
+ [120 900]
+ [121 903]
+ [126 905]
+ [124 906]
+ [126 906]
+ [345 906]
+ [120 906]
+ [349 906]
+ [345 907]
+ [349 909]]
+[[-126, -121, -125, 120, -127, -122], [-126], [-121], [121], [124], [-126, 124, 120, -121, -125], [-121], [-121, -120, -126, 122, -127, -125, -124], [-125, -121, 126, 124], [-121, -125], [-122, 125, -126, 121], [-125, 124, -121, -126], [126, 121], [125, 121, -126, 120], [121], [126], [124, 126, -121, 120, -125], [-121], [-125]]
+Lowest individual auroc: 0.40232062339782715
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_lowestAUC.html
+Visualization saved as results/experiments/seed1_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_lowestAUC_gt.html
+Visualization saved as results/experiments/seed1_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed1_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.47585463523864746
+Highest individual TEST auroc: 0.5676082968711853
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_highestAUC_TEST.html
+Visualization saved as results/experiments/seed1_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed1_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed1_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed1_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.584350347518921
+mean auroc score: 0.4896985590457916
+Epoch 2, Loss: 2.9088833332061768
+mean auroc score: 0.4916203022003174
+Epoch 3, Loss: 3.3294003009796143
+mean auroc score: 0.49392202496528625
+Epoch 4, Loss: 3.833966016769409
+mean auroc score: 0.49530309438705444
+Epoch 5, Loss: 4.3817362785339355
+mean auroc score: 0.4954952299594879
+Epoch 6, Loss: 5.106125831604004
+mean auroc score: 0.49566081166267395
+Epoch 7, Loss: 5.679028034210205
+mean auroc score: 0.4928464889526367
+Epoch 8, Loss: 6.514932155609131
+mean auroc score: 0.48912352323532104
+Epoch 9, Loss: 7.345626354217529
+mean auroc score: 0.48648181557655334
+Epoch 10, Loss: 7.9556756019592285
+mean auroc score: 0.4841519892215729
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed2_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 9.066171646118164
+mean auroc score: 0.4827403426170349
+Epoch 12, Loss: 9.79670524597168
+mean auroc score: 0.48145899176597595
+Epoch 13, Loss: 10.985610961914062
+mean auroc score: 0.4808136820793152
+Epoch 14, Loss: 11.794382095336914
+mean auroc score: 0.48021093010902405
+Epoch 15, Loss: 12.54744815826416
+mean auroc score: 0.479964941740036
+Epoch 16, Loss: 13.047097206115723
+mean auroc score: 0.47914645075798035
+Epoch 17, Loss: 13.79495906829834
+mean auroc score: 0.47866305708885193
+Epoch 18, Loss: 13.955513000488281
+mean auroc score: 0.47829750180244446
+Epoch 19, Loss: 13.84675121307373
+mean auroc score: 0.4787108302116394
+Epoch 20, Loss: 13.503578186035156
+mean auroc score: 0.4780404567718506
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed2_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed2_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_vis_gt.html
+Visualization saved as results/experiments/seed2_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.555973470211029
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_highestAUC.html
+Visualization saved as results/experiments/seed2_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_highestAUC_gt.html
+Visualization saved as results/experiments/seed2_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed2_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[333 771]
+ [333 772]
+ [333 774]
+ [111 774]
+ [333 775]
+ [111 775]
+ [335 776]
+ [333 776]
+ [111 777]
+ [333 778]
+ [334 779]
+ [328 780]
+ [335 781]
+ [334 781]
+ [332 782]
+ [334 783]
+ [335 783]
+ [328 783]
+ [332 785]
+ [111 785]
+ [332 787]
+ [335 787]
+ [111 790]
+ [111 791]
+ [333 792]
+ [111 793]
+ [111 795]
+ [111 796]
+ [333 797]
+ [335 797]
+ [332 798]
+ [333 798]
+ [111 799]
+ [328 800]
+ [332 803]
+ [333 804]
+ [111 804]
+ [332 809]
+ [108 810]
+ [331 810]]
+[[-109], [-109], [-109, 111], [-109, 111], [-111, -109], [111], [-109], [-110], [-104], [-111, -110], [-108], [-110, -111, -104], [-108, 111], [-108, -111], [111], [111], [-109], [111], [111], [111], [-109, -111], [-108, -109], [111], [-104], [-108], [-109, 111], [-108], [108, -107]]
+Lowest individual auroc: 0.3719489574432373
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_lowestAUC.html
+Visualization saved as results/experiments/seed2_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_lowestAUC_gt.html
+Visualization saved as results/experiments/seed2_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed2_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.5187066793441772
+Highest individual TEST auroc: 0.6676869988441467
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_highestAUC_TEST.html
+Visualization saved as results/experiments/seed2_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed2_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed2_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed2_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.5682220458984375
+mean auroc score: 0.5041977763175964
+Epoch 2, Loss: 2.890733242034912
+mean auroc score: 0.5195167064666748
+Epoch 3, Loss: 3.2570595741271973
+mean auroc score: 0.5156489610671997
+Epoch 4, Loss: 3.855055332183838
+mean auroc score: 0.5121860504150391
+Epoch 5, Loss: 4.303484916687012
+mean auroc score: 0.5085582137107849
+Epoch 6, Loss: 4.996166229248047
+mean auroc score: 0.5064944624900818
+Epoch 7, Loss: 5.655738830566406
+mean auroc score: 0.5055299997329712
+Epoch 8, Loss: 6.398849010467529
+mean auroc score: 0.5030614733695984
+Epoch 9, Loss: 7.283997058868408
+mean auroc score: 0.5000931620597839
+Epoch 10, Loss: 8.12518310546875
+mean auroc score: 0.496297687292099
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed3_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 8.76344108581543
+mean auroc score: 0.4934135973453522
+Epoch 12, Loss: 9.907246589660645
+mean auroc score: 0.4909622073173523
+Epoch 13, Loss: 10.475028991699219
+mean auroc score: 0.48990991711616516
+Epoch 14, Loss: 11.131299018859863
+mean auroc score: 0.4886379539966583
+Epoch 15, Loss: 11.478070259094238
+mean auroc score: 0.48817524313926697
+Epoch 16, Loss: 11.83236026763916
+mean auroc score: 0.48817744851112366
+Epoch 17, Loss: 11.943883895874023
+mean auroc score: 0.487785279750824
+Epoch 18, Loss: 11.618410110473633
+mean auroc score: 0.48790478706359863
+Epoch 19, Loss: 11.541420936584473
+mean auroc score: 0.48765578866004944
+Epoch 20, Loss: 10.823397636413574
+mean auroc score: 0.4876890778541565
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed3_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed3_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_vis_gt.html
+Visualization saved as results/experiments/seed3_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.626445472240448
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_highestAUC.html
+Visualization saved as results/experiments/seed3_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_highestAUC_gt.html
+Visualization saved as results/experiments/seed3_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed3_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[ 175 1181]
+ [ 175 1184]
+ [ 173 1184]
+ [ 394 1185]
+ [ 399 1185]
+ [ 173 1187]
+ [ 175 1188]
+ [ 172 1189]
+ [ 397 1191]
+ [ 394 1191]
+ [ 170 1193]
+ [ 173 1193]
+ [ 392 1194]
+ [ 397 1195]
+ [ 172 1196]
+ [ 397 1199]
+ [ 394 1199]
+ [ 399 1199]
+ [ 394 1201]
+ [ 172 1202]
+ [ 173 1202]
+ [ 399 1205]
+ [ 399 1206]
+ [ 394 1210]
+ [ 399 1212]
+ [ 397 1213]
+ [ 173 1216]
+ [ 172 1217]
+ [ 392 1217]
+ [ 394 1217]
+ [ 399 1218]
+ [ 172 1220]
+ [ 175 1221]
+ [ 173 1221]]
+[[175], [175, 173], [-170, -175], [173], [175], [172], [-173, -170], [170, 173], [-168], [-173], [172], [-173, -170, -175], [-170], [172, 173], [-175], [-175], [-170], [-175], [-173], [173], [172, -168, -170], [-175], [172], [175, 173]]
+Lowest individual auroc: 0.3152736723423004
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_lowestAUC.html
+Visualization saved as results/experiments/seed3_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_lowestAUC_gt.html
+Visualization saved as results/experiments/seed3_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed3_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.5295567512512207
+Highest individual TEST auroc: 0.6771758198738098
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_highestAUC_TEST.html
+Visualization saved as results/experiments/seed3_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed3_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed3_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed3_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.5490353107452393
+mean auroc score: 0.517483651638031
+Epoch 2, Loss: 2.918581485748291
+mean auroc score: 0.5065659880638123
+Epoch 3, Loss: 3.3107171058654785
+mean auroc score: 0.49983569979667664
+Epoch 4, Loss: 3.837550640106201
+mean auroc score: 0.4992252290248871
+Epoch 5, Loss: 4.409140586853027
+mean auroc score: 0.49777260422706604
+Epoch 6, Loss: 4.994114875793457
+mean auroc score: 0.49654802680015564
+Epoch 7, Loss: 5.5766921043396
+mean auroc score: 0.49347129464149475
+Epoch 8, Loss: 6.459961891174316
+mean auroc score: 0.4924224317073822
+Epoch 9, Loss: 7.29240083694458
+mean auroc score: 0.49151182174682617
+Epoch 10, Loss: 7.80988073348999
+mean auroc score: 0.49002552032470703
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed4_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 8.744950294494629
+mean auroc score: 0.4883757531642914
+Epoch 12, Loss: 9.58503246307373
+mean auroc score: 0.4876498878002167
+Epoch 13, Loss: 10.258246421813965
+mean auroc score: 0.486812561750412
+Epoch 14, Loss: 10.917442321777344
+mean auroc score: 0.48638105392456055
+Epoch 15, Loss: 11.739591598510742
+mean auroc score: 0.48568063974380493
+Epoch 16, Loss: 12.044161796569824
+mean auroc score: 0.48518794775009155
+Epoch 17, Loss: 12.377884864807129
+mean auroc score: 0.48488134145736694
+Epoch 18, Loss: 12.195237159729004
+mean auroc score: 0.4840378165245056
+Epoch 19, Loss: 11.98557186126709
+mean auroc score: 0.48319950699806213
+Epoch 20, Loss: 11.710342407226562
+mean auroc score: 0.48322170972824097
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed4_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed4_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_vis_gt.html
+Visualization saved as results/experiments/seed4_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.6045751571655273
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_highestAUC.html
+Visualization saved as results/experiments/seed4_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_highestAUC_gt.html
+Visualization saved as results/experiments/seed4_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed4_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[ 396 1180]
+ [ 397 1181]
+ [ 175 1181]
+ [ 393 1182]
+ [ 175 1184]
+ [ 170 1187]
+ [ 175 1188]
+ [ 397 1191]
+ [ 394 1191]
+ [ 170 1193]
+ [ 392 1194]
+ [ 397 1195]
+ [ 393 1196]
+ [ 397 1199]
+ [ 399 1199]
+ [ 170 1200]
+ [ 170 1202]
+ [ 170 1208]
+ [ 392 1209]
+ [ 397 1209]
+ [ 394 1210]
+ [ 393 1210]
+ [ 396 1211]
+ [ 399 1212]
+ [ 397 1213]
+ [ 170 1214]
+ [ 397 1215]
+ [ 170 1216]
+ [ 172 1217]
+ [ 392 1217]
+ [ 394 1217]
+ [ 172 1220]
+ [ 175 1221]
+ [ 173 1221]]
+[[-172], [-173, 175], [-169], [175], [170], [175], [-173, -170], [170], [-168], [-173], [-169], [-173, -175], [170], [170], [170], [-168, -173], [-170, -169], [-172], [-175], [-173], [170], [-173], [170], [172, -168, -170], [172], [175, 173]]
+Lowest individual auroc: 0.36335060000419617
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_lowestAUC.html
+Visualization saved as results/experiments/seed4_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_lowestAUC_gt.html
+Visualization saved as results/experiments/seed4_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed4_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.5266376733779907
+Highest individual TEST auroc: 0.7110499143600464
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_highestAUC_TEST.html
+Visualization saved as results/experiments/seed4_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed4_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed4_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed4_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.5722882747650146
+mean auroc score: 0.511401891708374
+Epoch 2, Loss: 2.853393077850342
+mean auroc score: 0.5082969069480896
+Epoch 3, Loss: 3.2567672729492188
+mean auroc score: 0.5057631134986877
+Epoch 4, Loss: 3.7086219787597656
+mean auroc score: 0.502432107925415
+Epoch 5, Loss: 4.219537258148193
+mean auroc score: 0.4995347857475281
+Epoch 6, Loss: 4.806639194488525
+mean auroc score: 0.49771422147750854
+Epoch 7, Loss: 5.294423580169678
+mean auroc score: 0.4967673420906067
+Epoch 8, Loss: 5.936205863952637
+mean auroc score: 0.4954805374145508
+Epoch 9, Loss: 6.187594890594482
+mean auroc score: 0.49438780546188354
+Epoch 10, Loss: 6.818262577056885
+mean auroc score: 0.4932405650615692
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed5_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 7.159403324127197
+mean auroc score: 0.4922146201133728
+Epoch 12, Loss: 7.351814270019531
+mean auroc score: 0.49182090163230896
+Epoch 13, Loss: 7.574317932128906
+mean auroc score: 0.49170276522636414
+Epoch 14, Loss: 7.861172676086426
+mean auroc score: 0.49149519205093384
+Epoch 15, Loss: 7.721786022186279
+mean auroc score: 0.4910401999950409
+Epoch 16, Loss: 7.436737060546875
+mean auroc score: 0.4910358786582947
+Epoch 17, Loss: 7.346246242523193
+mean auroc score: 0.4904725253582001
+Epoch 18, Loss: 6.562089443206787
+mean auroc score: 0.49019140005111694
+Epoch 19, Loss: 6.097304344177246
+mean auroc score: 0.4899663031101227
+Epoch 20, Loss: 5.658614158630371
+mean auroc score: 0.48973482847213745
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed5_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed5_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_vis_gt.html
+Visualization saved as results/experiments/seed5_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.5799396634101868
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_highestAUC.html
+Visualization saved as results/experiments/seed5_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_highestAUC_gt.html
+Visualization saved as results/experiments/seed5_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed5_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[ 175 1181]
+ [ 175 1184]
+ [ 399 1185]
+ [ 170 1187]
+ [ 175 1188]
+ [ 172 1189]
+ [ 397 1191]
+ [ 394 1191]
+ [ 170 1193]
+ [ 173 1193]
+ [ 392 1194]
+ [ 397 1195]
+ [ 172 1196]
+ [ 397 1199]
+ [ 399 1199]
+ [ 170 1202]
+ [ 399 1205]
+ [ 392 1205]
+ [ 399 1206]
+ [ 175 1207]
+ [ 170 1208]
+ [ 392 1209]
+ [ 394 1210]
+ [ 399 1212]
+ [ 397 1213]
+ [ 170 1214]
+ [ 170 1216]
+ [ 172 1217]
+ [ 392 1217]
+ [ 394 1217]
+ [ 399 1218]
+ [ 172 1220]
+ [ 175 1221]
+ [ 173 1221]]
+[[175], [175], [-175], [170], [175], [172], [-173, -170], [170, 173], [-168], [-173], [172], [-173, -175], [170], [-175, -168], [-175], [175], [170], [-168], [-170], [-175], [-173], [170], [170], [172, -168, -170], [-175], [172], [175, 173]]
+Lowest individual auroc: 0.33034393191337585
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_lowestAUC.html
+Visualization saved as results/experiments/seed5_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_lowestAUC_gt.html
+Visualization saved as results/experiments/seed5_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed5_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.5254142880439758
+Highest individual TEST auroc: 0.6511896252632141
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_highestAUC_TEST.html
+Visualization saved as results/experiments/seed5_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed5_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed5_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed5_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.52704119682312
+mean auroc score: 0.5100615620613098
+Epoch 2, Loss: 2.8214447498321533
+mean auroc score: 0.509666383266449
+Epoch 3, Loss: 3.2698233127593994
+mean auroc score: 0.5110608339309692
+Epoch 4, Loss: 3.777611017227173
+mean auroc score: 0.5101408362388611
+Epoch 5, Loss: 4.218621253967285
+mean auroc score: 0.5077883005142212
+Epoch 6, Loss: 4.824071407318115
+mean auroc score: 0.5061648488044739
+Epoch 7, Loss: 5.453071117401123
+mean auroc score: 0.5036234855651855
+Epoch 8, Loss: 5.936683654785156
+mean auroc score: 0.5011347532272339
+Epoch 9, Loss: 6.652462482452393
+mean auroc score: 0.4986308217048645
+Epoch 10, Loss: 7.3322248458862305
+mean auroc score: 0.4954327642917633
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed6_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 7.698973178863525
+mean auroc score: 0.49292078614234924
+Epoch 12, Loss: 8.452880859375
+mean auroc score: 0.49068447947502136
+Epoch 13, Loss: 8.601765632629395
+mean auroc score: 0.48853635787963867
+Epoch 14, Loss: 8.905571937561035
+mean auroc score: 0.4867932200431824
+Epoch 15, Loss: 9.19055461883545
+mean auroc score: 0.4857073426246643
+Epoch 16, Loss: 9.05687427520752
+mean auroc score: 0.48494619131088257
+Epoch 17, Loss: 8.86780834197998
+mean auroc score: 0.48413947224617004
+Epoch 18, Loss: 8.404441833496094
+mean auroc score: 0.4838489592075348
+Epoch 19, Loss: 8.312941551208496
+mean auroc score: 0.48378250002861023
+Epoch 20, Loss: 7.364943504333496
+mean auroc score: 0.483410507440567
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed6_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed6_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_vis_gt.html
+Visualization saved as results/experiments/seed6_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.6239316463470459
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_highestAUC.html
+Visualization saved as results/experiments/seed6_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_highestAUC_gt.html
+Visualization saved as results/experiments/seed6_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed6_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[ 396 1180]
+ [ 397 1181]
+ [ 175 1181]
+ [ 393 1182]
+ [ 175 1184]
+ [ 170 1187]
+ [ 175 1188]
+ [ 172 1189]
+ [ 397 1191]
+ [ 394 1191]
+ [ 170 1193]
+ [ 392 1194]
+ [ 397 1195]
+ [ 393 1196]
+ [ 397 1199]
+ [ 394 1199]
+ [ 399 1199]
+ [ 170 1200]
+ [ 170 1202]
+ [ 170 1208]
+ [ 394 1210]
+ [ 393 1210]
+ [ 396 1211]
+ [ 399 1212]
+ [ 397 1213]
+ [ 170 1214]
+ [ 170 1216]
+ [ 172 1217]
+ [ 392 1217]
+ [ 394 1217]
+ [ 169 1220]
+ [ 172 1220]
+ [ 175 1221]
+ [ 173 1221]]
+[[-172], [-173, 175], [-169], [175], [170], [175], [172], [-173, -170], [170], [-168], [-173], [-169], [-173, -170, -175], [170], [170], [170], [-170, -169], [-172], [-175], [-173], [170], [170], [172, -168, -170], [169, 172], [175, 173]]
+Lowest individual auroc: 0.31675297021865845
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_lowestAUC.html
+Visualization saved as results/experiments/seed6_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_lowestAUC_gt.html
+Visualization saved as results/experiments/seed6_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed6_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.5324360132217407
+Highest individual TEST auroc: 0.6937047243118286
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_highestAUC_TEST.html
+Visualization saved as results/experiments/seed6_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed6_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed6_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed6_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.5403857231140137
+mean auroc score: 0.5186333656311035
+Epoch 2, Loss: 2.9206364154815674
+mean auroc score: 0.5171481966972351
+Epoch 3, Loss: 3.4126484394073486
+mean auroc score: 0.5144249200820923
+Epoch 4, Loss: 3.8282389640808105
+mean auroc score: 0.5134354829788208
+Epoch 5, Loss: 4.333052635192871
+mean auroc score: 0.5151059031486511
+Epoch 6, Loss: 4.923342704772949
+mean auroc score: 0.5170552134513855
+Epoch 7, Loss: 5.606013774871826
+mean auroc score: 0.518516480922699
+Epoch 8, Loss: 6.073544979095459
+mean auroc score: 0.5186322927474976
+Epoch 9, Loss: 6.83518123626709
+mean auroc score: 0.520170271396637
+Epoch 10, Loss: 7.4867424964904785
+mean auroc score: 0.5210497975349426
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed7_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 8.107821464538574
+mean auroc score: 0.5219249129295349
+Epoch 12, Loss: 8.886061668395996
+mean auroc score: 0.5218729972839355
+Epoch 13, Loss: 9.136850357055664
+mean auroc score: 0.5220217704772949
+Epoch 14, Loss: 9.180130004882812
+mean auroc score: 0.522204577922821
+Epoch 15, Loss: 9.647804260253906
+mean auroc score: 0.5227531790733337
+Epoch 16, Loss: 9.230177879333496
+mean auroc score: 0.5226408243179321
+Epoch 17, Loss: 8.977006912231445
+mean auroc score: 0.5226629972457886
+Epoch 18, Loss: 8.570838928222656
+mean auroc score: 0.5230002999305725
+Epoch 19, Loss: 8.112458229064941
+mean auroc score: 0.523260235786438
+Epoch 20, Loss: 7.39410400390625
+mean auroc score: 0.5230555534362793
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed7_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed7_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_vis_gt.html
+Visualization saved as results/experiments/seed7_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.6898114085197449
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_highestAUC.html
+Visualization saved as results/experiments/seed7_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_highestAUC_gt.html
+Visualization saved as results/experiments/seed7_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed7_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[350 852]
+ [345 852]
+ [348 852]
+ [349 852]
+ [348 860]
+ [350 860]
+ [345 868]
+ [125 868]
+ [124 873]
+ [350 875]
+ [124 875]
+ [347 875]
+ [122 875]
+ [345 875]
+ [349 875]
+ [350 878]
+ [345 878]
+ [345 880]
+ [344 880]
+ [350 880]
+ [122 880]
+ [351 880]
+ [349 880]
+ [348 880]
+ [349 886]
+ [124 886]
+ [349 891]
+ [125 894]
+ [350 894]
+ [348 894]
+ [344 894]
+ [121 894]
+ [349 896]
+ [124 896]
+ [347 896]
+ [345 896]
+ [122 896]
+ [350 896]
+ [125 900]
+ [121 900]
+ [122 900]
+ [348 900]
+ [350 900]
+ [120 900]
+ [124 906]
+ [126 906]
+ [345 906]
+ [120 906]
+ [122 906]
+ [349 906]
+ [345 907]
+ [348 907]]
+[[-126, -121, -124, -125], [-124, -126], [-121, 125], [124], [-126, 124, -123, 122, -121, -125], [-126, -121], [-121, -120, -126, 122, -127, -125, -124], [-125, 124], [-125], [125, -126, -124, -120, 121], [-125, 124, -123, -121, 122, -126], [125, 121, 122, -124, -126, 120], [124, 126, -121, 120, 122, -125], [-121, -124]]
+Lowest individual auroc: 0.35017597675323486
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_lowestAUC.html
+Visualization saved as results/experiments/seed7_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_lowestAUC_gt.html
+Visualization saved as results/experiments/seed7_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed7_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.48001793026924133
+Highest individual TEST auroc: 0.5813800692558289
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_highestAUC_TEST.html
+Visualization saved as results/experiments/seed7_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed7_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed7_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed7_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.520357131958008
+mean auroc score: 0.5200443863868713
+Epoch 2, Loss: 2.799109935760498
+mean auroc score: 0.5178219676017761
+Epoch 3, Loss: 3.271284341812134
+mean auroc score: 0.5175694227218628
+Epoch 4, Loss: 3.7192420959472656
+mean auroc score: 0.516086757183075
+Epoch 5, Loss: 4.221009731292725
+mean auroc score: 0.5157248377799988
+Epoch 6, Loss: 4.63328218460083
+mean auroc score: 0.5163307785987854
+Epoch 7, Loss: 5.094213008880615
+mean auroc score: 0.5170343518257141
+Epoch 8, Loss: 5.560587406158447
+mean auroc score: 0.5177876353263855
+Epoch 9, Loss: 5.82379674911499
+mean auroc score: 0.5183021426200867
+Epoch 10, Loss: 6.23231840133667
+mean auroc score: 0.5189666152000427
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed8_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 6.279993534088135
+mean auroc score: 0.5192562937736511
+Epoch 12, Loss: 6.363480091094971
+mean auroc score: 0.5195642709732056
+Epoch 13, Loss: 6.4447855949401855
+mean auroc score: 0.519332766532898
+Epoch 14, Loss: 6.1089959144592285
+mean auroc score: 0.5190869569778442
+Epoch 15, Loss: 5.690832614898682
+mean auroc score: 0.5185257196426392
+Epoch 16, Loss: 5.112639427185059
+mean auroc score: 0.5184592008590698
+Epoch 17, Loss: 4.585206031799316
+mean auroc score: 0.5184697508811951
+Epoch 18, Loss: 3.9447624683380127
+mean auroc score: 0.5186697840690613
+Epoch 19, Loss: 3.298858165740967
+mean auroc score: 0.518774151802063
+Epoch 20, Loss: 2.7388041019439697
+mean auroc score: 0.5189317464828491
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed8_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed8_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_vis_gt.html
+Visualization saved as results/experiments/seed8_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.6848188042640686
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_highestAUC.html
+Visualization saved as results/experiments/seed8_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_highestAUC_gt.html
+Visualization saved as results/experiments/seed8_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed8_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[350 852]
+ [345 852]
+ [348 852]
+ [349 852]
+ [351 852]
+ [350 860]
+ [345 868]
+ [345 873]
+ [124 873]
+ [350 875]
+ [124 875]
+ [347 875]
+ [122 875]
+ [345 875]
+ [349 875]
+ [350 878]
+ [345 878]
+ [345 880]
+ [344 880]
+ [350 880]
+ [122 880]
+ [351 880]
+ [349 880]
+ [348 880]
+ [349 886]
+ [345 886]
+ [124 886]
+ [345 891]
+ [346 894]
+ [125 894]
+ [350 894]
+ [348 894]
+ [344 894]
+ [121 894]
+ [349 896]
+ [124 896]
+ [344 896]
+ [345 896]
+ [122 896]
+ [350 896]
+ [125 900]
+ [121 900]
+ [122 900]
+ [348 900]
+ [350 900]
+ [124 906]
+ [126 906]
+ [345 906]
+ [120 906]
+ [122 906]
+ [349 906]
+ [345 907]]
+[[-126, -121, -124, -125, -127], [-126], [-121], [-121, 124], [-126, 124, -123, 122, -121, -125], [-126, -121], [-121, -120, -126, 122, -127, -125, -124], [-125, -121, 124], [-121], [-122, 125, -126, -124, -120, 121], [-125, 124, -120, -121, 122, -126], [125, 121, 122, -124, -126], [124, 126, -121, 120, 122, -125], [-121]]
+Lowest individual auroc: 0.37481147050857544
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_lowestAUC.html
+Visualization saved as results/experiments/seed8_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_lowestAUC_gt.html
+Visualization saved as results/experiments/seed8_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed8_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.476266473531723
+Highest individual TEST auroc: 0.5774370431900024
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_highestAUC_TEST.html
+Visualization saved as results/experiments/seed8_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed8_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed8_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed8_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Epoch 1, Loss: 2.458895444869995
+mean auroc score: 0.48623892664909363
+Epoch 2, Loss: 2.842165470123291
+mean auroc score: 0.47975119948387146
+Epoch 3, Loss: 3.220841884613037
+mean auroc score: 0.47650647163391113
+Epoch 4, Loss: 3.61470627784729
+mean auroc score: 0.4762330949306488
+Epoch 5, Loss: 3.966224431991577
+mean auroc score: 0.4752271771430969
+Epoch 6, Loss: 4.411891937255859
+mean auroc score: 0.4749416708946228
+Epoch 7, Loss: 4.734840393066406
+mean auroc score: 0.474569171667099
+Epoch 8, Loss: 5.104613304138184
+mean auroc score: 0.4747764468193054
+Epoch 9, Loss: 5.210677623748779
+mean auroc score: 0.47481784224510193
+Epoch 10, Loss: 5.393005847930908
+mean auroc score: 0.4747675955295563
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_vis_edge_ij_10.html
+Visualization saved as results/experiments/seed9_vis_edge_ij_10.html. Open it in your browser.
+Epoch 11, Loss: 5.391086101531982
+mean auroc score: 0.47461849451065063
+Epoch 12, Loss: 5.222003936767578
+mean auroc score: 0.47546058893203735
+Epoch 13, Loss: 5.016209602355957
+mean auroc score: 0.4759270250797272
+Epoch 14, Loss: 4.574690818786621
+mean auroc score: 0.476493775844574
+Epoch 15, Loss: 4.177931785583496
+mean auroc score: 0.47655895352363586
+Epoch 16, Loss: 3.5560855865478516
+mean auroc score: 0.4771718978881836
+Epoch 17, Loss: 3.0711042881011963
+mean auroc score: 0.47730159759521484
+Epoch 18, Loss: 2.7238142490386963
+mean auroc score: 0.47736018896102905
+Epoch 19, Loss: 2.1757493019104004
+mean auroc score: 0.47763028740882874
+Epoch 20, Loss: 1.735780119895935
+mean auroc score: 0.4777299761772156
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed9_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_vis_edge_ij_20.html
+Visualization saved as results/experiments/seed9_vis_edge_ij_20.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_vis_gt.html
+Visualization saved as results/experiments/seed9_vis_gt.html. Open it in your browser.
+Highest individual auroc: 0.5744092464447021
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_highestAUC.html
+Visualization saved as results/experiments/seed9_highestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_highestAUC_gt.html
+Visualization saved as results/experiments/seed9_highestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_highestAUC_commonEdges.html
+Visualization saved as results/experiments/seed9_highestAUC_commonEdges.html. Open it in your browser.
+Highest AUC example masked edges: [[ 396 1180]
+ [ 397 1181]
+ [ 175 1181]
+ [ 393 1182]
+ [ 175 1184]
+ [ 170 1187]
+ [ 175 1188]
+ [ 397 1191]
+ [ 394 1191]
+ [ 170 1193]
+ [ 392 1194]
+ [ 397 1195]
+ [ 397 1199]
+ [ 399 1199]
+ [ 170 1200]
+ [ 397 1201]
+ [ 170 1202]
+ [ 170 1208]
+ [ 392 1209]
+ [ 397 1209]
+ [ 394 1210]
+ [ 393 1210]
+ [ 396 1211]
+ [ 399 1212]
+ [ 397 1213]
+ [ 170 1214]
+ [ 397 1215]
+ [ 170 1216]
+ [ 172 1217]
+ [ 392 1217]
+ [ 394 1217]
+ [ 397 1218]
+ [ 172 1220]
+ [ 175 1221]]
+[[-172], [-173, 175], [-169], [175], [170], [175], [-173, -170], [170], [-168], [-173], [-173, -175], [170], [-173], [170], [170], [-168, -173], [-170, -169], [-172], [-175], [-173], [170], [-173], [170], [172, -168, -170], [-173], [172], [175]]
+Lowest individual auroc: 0.34421226382255554
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_lowestAUC.html
+Visualization saved as results/experiments/seed9_lowestAUC.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_lowestAUC_gt.html
+Visualization saved as results/experiments/seed9_lowestAUC_gt.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_lowestAUC_commonEdges.html
+Visualization saved as results/experiments/seed9_lowestAUC_commonEdges.html. Open it in your browser.
+mean TEST auroc score: 0.5230822563171387
+Highest individual TEST auroc: 0.6936026811599731
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_highestAUC_TEST.html
+Visualization saved as results/experiments/seed9_highestAUC_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_highestAUC_gt_TEST.html
+Visualization saved as results/experiments/seed9_highestAUC_gt_TEST.html. Open it in your browser.
+Warning: When  cdn_resources is 'local' jupyter notebook has issues displaying graphics on chrome/safari. Use cdn_resources='in_line' or cdn_resources='remote' if you have issues viewing graphics in a notebook.
+results/experiments/seed9_highestAUC_commonEdges_TEST.html
+Visualization saved as results/experiments/seed9_highestAUC_commonEdges_TEST.html. Open it in your browser.
+Results for NeuroSAT-soft:
+  Individual AUROCs - Mean: 0.5115, Std: 0.0226

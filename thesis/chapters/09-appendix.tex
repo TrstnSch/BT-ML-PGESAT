@@ -325,11 +325,7 @@ The following tables contain the grid search configurations for the NeuroSAT exp
 
 For the hard constraint the mean local ROC-AUC was no higher than $0.502$ and no lower than $0.44$ over all runs. Therefore, we select the hyperparameters that minimize the metric.
 
-TODO: For the soft constraint
-
 We conclude that regardless of exact hyperparameters, the NeuroSAT model does not succinctly learn UNSAT cores.
-
-TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A CERTAIN TIME!!! Try batchnorm?? Else lower lr, below 0.003...
 
 
 \begin{table}[h]
@@ -339,12 +335,18 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
   \hline
   \multicolumn{11}{|c|}{\textbf{Soft Constraint Explainer}} \\ \hline
   $\alpha_e$ & $E$ & $\eta$ & $K$ & $\alpha_{concat}$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $\alpha_{C}$ & $\alpha_{AdamW}$ \\ \hline
-  0.1 & 20 & 0.0003 & 1 & False & 75 & \textbf{0.005} & \textbf{1.0} & 5.0 & 0.1 & False\\ 
-  \textbf{1.0} & 30 & 0.003 & 5 & True & 76 & 0.01 & 5.0 &  & 1.0 & True\\ 
-   & 50 & 0.01 &  &  &  & 0.1 &  &  & & \\ \hline
+  0.1 & \textbf{20} & \textbf{0.0003} & 1 & False & 75 & \textbf{0.001} & \textbf{1.0} & 5.0 & 0.1 & False\\ 
+  \textbf{1.0} & 30 & 0.003 & \textbf{5} & \textbf{True} & 76 & 0.01 & 5.0 &  & 1.0 & \textbf{True}\\ 
+   & 50 & 0.01 &  &  &  & 0.1 &  &  & \textbf{10.0} & \\ \hline
   \end{tabular}
   \caption[NeuroSAT soft constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Bolded values indicate the best performance.}
 \end{table}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{img/NeuroSAT-soft_sweep.png}
+  \caption{Grid search results of all runs using WandB \cite{}.}
+\end{figure}
+
 
 
 \begin{table}[h]
@@ -362,7 +364,7 @@ TODO: THIS ONLY CONSIDERS AUROC SCORE!!! EDGES ARE 0 FOR ALL PREDICTIONS AFTER A
     }
 \end{table}
 
-
+\newpage
 \section{REMOVE}
 \begin{table}[ht]
   \centering
