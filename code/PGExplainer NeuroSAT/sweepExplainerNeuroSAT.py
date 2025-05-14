@@ -64,6 +64,7 @@ def trainExplainer () :
     #num_training_instances = wandb.config.num_training_instances
     complex_architecture = bool(wandb.config.complex_architecture)
     three_embs = bool(wandb.config.three_embs)
+    adamW = bool(wandb.config.adamW)
 
     hidden_dim = 64 # Make loading possible
     clip_grad_norm = 2 # Make loading possible
@@ -90,10 +91,14 @@ def trainExplainer () :
     checkpoint = torch.load(f"models/neurosat_sr10to40_ep1024_nr26_d128_last.pth.tar", weights_only=True, map_location=device)
     downstreamTask.load_state_dict(checkpoint['state_dict'])
 
-    mlp = explainer_NeuroSAT.MLP_SAT(GraphTask=graph_task, complex_architecture=complex_architecture, three_embs=three_embs).to(device)
+    #mlp = explainer_NeuroSAT.MLP_SAT(GraphTask=graph_task, complex_architecture=complex_architecture, three_embs=three_embs).to(device)
+    mlp = explainer_NeuroSAT.MLP(GraphTask=graph_task, three_embs=three_embs).to(device)
     wandb.watch(mlp, log= "all", log_freq=2, log_graph=False)
 
-    mlp_optimizer = torch.optim.Adam(params = mlp.parameters(), lr = lr_mlp)
+    if adamW:
+        mlp_optimizer = torch.optim.AdamW(params = mlp.parameters(), lr = lr_mlp)
+    else:
+        mlp_optimizer = torch.optim.Adam(params = mlp.parameters(), lr = lr_mlp)
 
     downstreamTask.eval()
     for param in downstreamTask.parameters():
@@ -110,14 +115,15 @@ def trainExplainer () :
 
         for index, content in enumerate(training_iterator):
             # stop training before second to last batch, used for evaluation
-            if index == len(training_iterator)-3: break
+            if index == len(training_iterator)-2: break
             node_to_predict = None
             if graph_task: 
                 # !! current_problem is really a batch of problems !!
                 current_problem = content
 
             # MLP forward
-            w_ij, unique_clauses, inverse_indices = mlp.forward(downstreamTask, current_problem, nodeToPred=node_to_predict)
+            #w_ij, unique_clauses, inverse_indices = mlp.forward(downstreamTask, current_problem, nodeToPred=node_to_predict)
+            w_ij = mlp.forward(downstreamTask, current_problem, nodeToPred=node_to_predict)
 
             sampleLoss = torch.FloatTensor([0]).to(device)
             loss = torch.FloatTensor([0]).to(device)
@@ -128,7 +134,8 @@ def trainExplainer () :
             #pOriginal = torch.tensor([1 - pOriginal, pOriginal])
             
             for k in range(0, sampled_graphs):
-                edge_ij = mlp.sampleGraph(w_ij, unique_clauses, inverse_indices, temperature)
+                #edge_ij = mlp.sampleGraph(w_ij, unique_clauses, inverse_indices, temperature)
+                edge_ij = mlp.sampleGraph(w_ij, temperature)
                 
                 #sampledEdges += torch.sum(edge_ij)
             
@@ -140,13 +147,13 @@ def trainExplainer () :
                 #samplePredSum += torch.sum(torch.argmax(pSample, dim=1))
                 
                 if graph_task:
-                    currLoss = mlp.loss(pOriginal, pSample, edge_ij, current_problem.batch_edges, coefficient_size_reg, coefficient_entropy_reg, coefficientConsistency=coefficient_consistency, bce=bce)
+                    currLoss = mlp.loss(pOriginal, pSample, edge_ij, current_problem.batch_edges, coefficient_size_reg, coefficient_entropy_reg, coefficientConsistency=coefficient_consistency)
                     sampleLoss.add_(currLoss)
                     
 
             loss += sampleLoss / sampled_graphs
         
-        loss = loss / len(training_iterator)
+        loss = loss / ((len(training_iterator)-2)*len(data[0].is_sat))
         loss.backward()
         
         mlp_optimizer.step()
@@ -162,12 +169,16 @@ def trainExplainer () :
         mlp.eval()
         
         # Calculate weights and prediction for all sub_problems in eval_problem
-        w_ij_eval, unique_clauses_eval, inverse_indices_eval = mlp.forward(downstreamTask, eval_problem, nodeToPred=node_to_predict)
-        edge_ij_eval = mlp.sampleGraph(w_ij_eval, unique_clauses_eval, inverse_indices_eval, temperature).detach()
+        #w_ij_eval, unique_clauses_eval, inverse_indices_eval = mlp.forward(downstreamTask, eval_problem, nodeToPred=node_to_predict)
+        w_ij_eval = mlp.forward(downstreamTask, eval_problem, nodeToPred=node_to_predict)
+        #edge_ij_eval = mlp.sampleGraph(w_ij_eval, unique_clauses_eval, inverse_indices_eval, temperature).detach()
+        edge_ij_eval = mlp.sampleGraph(w_ij_eval).detach()
         #pSample_eval, _, _, _ = downstreamTask.forward(eval_problem, edge_weights=edge_ij_eval)
         #pOriginal_eval, _, _, _ = downstreamTask.forward(eval_problem)
         
         auroc_list = []
+        
+        valLoss = torch.FloatTensor([0]).to(device)
         
         for current_batch_num in range(len(eval_problem.is_sat)):
             # This can be repeated for each sub_problem
@@ -188,6 +199,16 @@ def trainExplainer () :
             curr_auroc = binary_auroc(edge_ij_eval_masked, reals[current_batch_num])
             auroc_list.append(curr_auroc.item())
             
+            
+        pOriginal, _, _, _ = downstreamTask.forward(eval_problem)
+        pOriginal = fn.softmax(pOriginal, dim=0)
+        
+        pSample, _, _, _ = downstreamTask.forward(eval_problem, edge_weights=edge_ij_eval)
+        pSample = fn.softmax(pSample, dim=0)
+        
+        valLoss = mlp.loss(pOriginal, pSample, edge_ij_eval, eval_problem.batch_edges, coefficient_size_reg, coefficient_entropy_reg, coefficientConsistency=coefficient_consistency)
+            
+        valLoss = valLoss / len(eval_problem.is_sat)
         
         auroc_tensor = torch.tensor(auroc_list)
         mean_auroc = auroc_tensor.mean()
@@ -217,7 +238,8 @@ def trainExplainer () :
         
         print(f"mean auroc score: {mean_auroc}")
         
-        wandb.log({"train/Loss": loss, "val/temperature": temperature, "val/auroc": mean_auroc})
+        wandb.log({"train/Loss": loss, "val/Loss": valLoss, "val/auroc": mean_auroc, "edge_importance/min": edge_ij_eval.min().item(), "edge_importance/max": edge_ij_eval.max().item(),
+                "edge_importance/mean": edge_ij_eval.mean().item()})
                 
     wandb.finish()
     

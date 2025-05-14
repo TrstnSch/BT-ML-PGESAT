@@ -6,14 +6,14 @@ import math
 
 #PGExplainer MLP with one hidden layer?      Input: Concatenated node embeddings for each edge (graph), conc. node embeddings and embedding of node to be predicted? (node)
 class MLP(nn.Module):
-    def __init__(self, GraphTask=True, hidden_dim=64, emb_dim=128):
+    def __init__(self, GraphTask=True, hidden_dim=64, emb_dim=128, three_embs=False):
         super(MLP, self).__init__()
         
         self.graphTask = GraphTask
+        self.three_embs = three_embs
         
-        #self.inputSize = 2 * 20 if GraphTask else 3 * 60
-        # emb*dim * 2 for both nodes per edge, * 3 since we take embeddings from 3 iterations
-        self.inputSize = 2 * emb_dim * 3
+        # emb*dim * 2 for both nodes per edge, * 3 if we use embeddings from 3 iterations
+        self.inputSize = 2 * emb_dim * 3 if three_embs else 2 * emb_dim
 
         self.model = nn.Sequential(
             nn.Linear(self.inputSize, hidden_dim),          # Embedding size for graph is 20, for node is 60. Input MLP for graph is 2*emb, for node is 3*emb
@@ -74,7 +74,7 @@ class MLP(nn.Module):
 
 
     # current_batch_edges contains batch_edges for the current sub_problem/graph
-    def loss(self, pOriginal, pSample, edge_ij, current_batch_edges, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConsistency=0.0, coefficientConnect=0.0):
+    def loss(self, pOriginal, pSample, edge_ij, current_batch_edges, coefficientSizeReg, coefficientEntropyReg, coefficientL2Reg=0.0, coefficientConsistency=0.0, bce=False):
         """Loss of explanation model for singular (sampled) instance(graph)
 
         Args:
@@ -121,7 +121,10 @@ class MLP(nn.Module):
                 clauses_var = torch.var(clause_edge_probs)
                 consistencyLoss += clauses_var
             
-        Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency               # use sum to get values for all class labels
+        if bce is True:
+            Loss = torch.nn.functional.binary_cross_entropy(pSample, pOriginal) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency
+        else:
+            Loss = -torch.sum(pOriginal * torch.log(pSample + 1e-8)) + entropyReg + sizeReg + l2norm + consistencyLoss * coefficientConsistency               # use sum to get values for all class labels
         #Loss = torch.nn.functional.cross_entropy(pSample, pOriginal) + entropyReg + sizeReg             # This is used in PyG impl.
         #Loss = -torch.log(pSample[torch.argmax(pOriginal)]) + entropyReg + sizeReg                      # This is used in og?
         
@@ -156,14 +159,18 @@ class MLP(nn.Module):
         
         iterations = downstreamTask.opts['iterations']
         
-        l_emb_interm1 = all_l_emb[math.floor(iterations * 0.5)]           # Shape: (n_literals, emb_dim=128)
-        c_emb_interm1 = all_c_emb[math.floor(iterations * 0.5)]           # Shape: (n_clauses, emb_dim=128)
-        
-        l_emb_interm2 = all_l_emb[math.floor(iterations * 0.75)]           # Shape: (n_literals, emb_dim=128)
-        c_emb_interm2 = all_c_emb[math.floor(iterations * 0.75)]           # Shape: (n_clauses, emb_dim=128)
-        
-        l_embs_cat = torch.cat([l_emb, l_emb_interm1, l_emb_interm2], dim=1)
-        c_embs_cat = torch.cat([c_emb, c_emb_interm1, c_emb_interm2], dim=1)
+        if self.three_embs:
+            l_emb_interm1 = all_l_emb[math.floor(iterations * 0.5)]           # Shape: (n_literals, emb_dim=128)
+            c_emb_interm1 = all_c_emb[math.floor(iterations * 0.5)]           # Shape: (n_clauses, emb_dim=128)
+            
+            l_emb_interm2 = all_l_emb[math.floor(iterations * 0.75)]           # Shape: (n_literals, emb_dim=128)
+            c_emb_interm2 = all_c_emb[math.floor(iterations * 0.75)]           # Shape: (n_clauses, emb_dim=128)
+            
+            l_embs_cat = torch.cat([l_emb, l_emb_interm1, l_emb_interm2], dim=1)
+            c_embs_cat = torch.cat([c_emb, c_emb_interm1, c_emb_interm2], dim=1)
+        else:
+            l_embs_cat = l_emb
+            c_embs_cat = c_emb
         
         # This does not grant larger edge weights
         """l_emb = F.normalize(all_l_emb[-1], p=2, dim=1)  # L2 normalization

@@ -77,7 +77,7 @@ def combineEdgeWeights (edge_index, edge_weights):
 
 
 def loadConfig(dataset):
-    datasetType = ['BA-2Motif','MUTAG', 'BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid', 'NeuroSAT']
+    datasetType = ['BA-2Motif','MUTAG', 'BA-Shapes', 'BA-Community', 'Tree-Cycles', 'Tree-Grid', 'NeuroSAT-soft', 'NeuroSAT-hard']
     if dataset not in datasetType:
         print("Dataset argument must be one of the following: BA-2Motif, MUTAG, BA-Shapes, BA-Community, Tree-Cycles, Tree-Grid")
         return -1
