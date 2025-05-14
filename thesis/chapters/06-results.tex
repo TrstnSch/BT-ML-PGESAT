@@ -592,3 +592,20 @@ We found that running the training for 500 epochs resulted in a converging loss,
 However, this mostly indicates that the explainer predictions do not align with the selected ground truth (IF VARIANCE IN EXPERIMENT RUNS LOW!)
 
 Seed 0 achieves the highest individual test AUROC of 0.776! (See visualization). Notable the 2(?) clauses are predicted correctly, but not still not good result out of (?). Show that prediction is not unsatisfiable (Results)! Besides that, mean test AUROC see Table.
+
+
+\begin{table}[ht]
+    \centering
+    \scriptsize
+    \begin{tabularx}{0.35\textwidth}{l*{1}{X}}   % Adjust width as needed
+    \toprule
+    \textbf{Method} & \textbf{AUROC} \\
+    \midrule
+    Soft Constraint & 0.512$\pm$0.023 \\
+    \midrule
+    Hard Constraint & 0.528$\pm$0.013 \\
+    \bottomrule
+    \end{tabularx}
+    \caption[Inductive performance of explainer on NeuroSAT]{Explanation AUROC for NeuroSAT predictions of unsatisfiable SAT problems.}
+    \label{tab:res_neuroSAT}
+\end{table}

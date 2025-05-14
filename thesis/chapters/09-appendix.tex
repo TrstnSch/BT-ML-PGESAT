@@ -323,7 +323,7 @@ The following figures contain 16 randomly sampled explanations for the best expl
 
 The following tables contain the grid search configurations for the NeuroSAT explainer models with either the soft constraint or the hard constraint applied. The columns contain the values tested for the corresponding hyperparameter. The optimal settings for each explainer implementation are highlighted.
 
-For the hard constraint the mean local ROC-AUC was no higher than $0.502$ and no lower than $0.44$ over all runs. Therefore, we select the hyperparameters that minimize the metric.
+For the hard constraint the mean local ROC-AUC was no higher than $0.502$ and no lower than $0.44$ over all runs. We select the hyperparameters that maximize the metric and minimize the validation loss while avoiding edge weights of 0. TODO:
 
 We conclude that regardless of exact hyperparameters, the NeuroSAT model does not succinctly learn UNSAT cores.
 
@@ -360,7 +360,7 @@ We conclude that regardless of exact hyperparameters, the NeuroSAT model does no
     \textbf{1.0} & 30 & 0.003  & \textbf{5}  & True  & 76 & 0.1 & 5.0 &  & \textbf{True}  \\
         &  \textbf{50} & 0.01   &  &       &     &   1.0   &      &      &       \\ \hline
     \end{tabular}
-    \caption[NeuroSAT hard constraint Sweep]{Highlighted values are the best performing ones, leading to a smaller mean validation AUROC and avoiding same weighted edges. Bolded values indicate the best performance.
+    \caption[NeuroSAT hard constraint Sweep]{TODO: ALSO INCLUDE LOWER LR?!?! Highlighted values are the best performing ones, leading to a smaller mean validation AUROC and avoiding same weighted edges. Bolded values indicate the best performance.
     }
 \end{table}
 
