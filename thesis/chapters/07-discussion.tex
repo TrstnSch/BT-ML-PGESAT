@@ -1,14 +1,24 @@
 \chapter{Discussion}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+In the following chapter we discuss our results regarding the general reproducibility of the PGExplainer when using modified \acp{TM} in an inductive setting (see Section \ref{sec:discuss_pge}). Moreover, we elaborate on the explanations provided for predictions of the NeuroSAT model and their alignment with the human-understandable concepts in Section \ref{sec:discuss_sat}.
 
 
+\section{Generalizability of PGExplainer}
+\label{sec:discuss_pge}
+When taking a closer look at the simplicity of replicating the PGExplainer, we share the concerns highlighted by Holdijk et al. \cite{holdijk2021re}. The many inconsistencies between paper and codebase, as well as the lackluster documentation of experiments hinder the implementation. However, we are able to achieve results comparable to the existing replication baseline, accentuating the explainer's functionality on modified \acp{TM}. Furthermore, we were able to achieve promising results in simplified experiment settings. We stress the necessity of a general setting for evaluating explanations of node instances, as well as the importance of a stable explainer setup, to evaluate the actual explanations using any GNN rather than the performance of the explainer. We were unable to generalize the setup, which results in the explainer requiring a lot of fine-tuning to achieve consistent results. This in itself is impeded by slightly different \acp{TM} resulting in vastly different explanations.
 
-WHAT? Maybe works well because if all motif nodes are used, subgraphs are used where only the motif or even only part of the motif is present (Tree-Grid). Thus constantly using one singular same node that contains the complete motif may be better? \bigskip
+TODO:
+Importance of future research regarding the reason for opposite classification of selected tasks, to confirm whether this can be understood as an improvement in performance.
 
+Interpretable, local fidelity, model-agnostic and global explanations!
 
-\subsection{Generalizability of PGExplainer}
+\section{Explanations for Unsatisfiable SAT Problems}
+\label{sec:discuss_sat}
 
+It seems that the PGExplainer is unable to learn the important edges for unsatisfiable problems well. Though we were able to obtain a range of importance scores comparable to the replication experiments, the explanations did ultimately not align with MUSes. We believe that a drawback in our approach may lie in the direct multiplication of the edge importance scores with the actual discrete edges and the introduced evidence problem therefore. 
 
-\subsection{Explanations for UNSAT predictions of NeuroSAT}
+Furthermore, our perturbation approach only modifies edges between literals and clauses, which essentially define a sub problem, but we do not consider the connections between literals and their negation. These may play a substantial role in the NeuroSAT predictions of unsatisfiability, which may hinder the learning process of the explainer if disregarded in the masking process. Lastly, since the NeuroSAT model is far more complex than the classification models used in the replication, the explanation networks tested may not be complex enough to capture the general features of MUSes or unsatisfiable cores in general. \bigskip
 
+It is important to note that our idea considers unsatisfiable cores as a conceptual motif, rather than a strict topological motif in the sense of a specific subgraph of nodes aligned in a fixed way. Though the MUS of a singular problem can be understood as a fixed subgraph, this cannot be generalized to other sub problems by its topological information alone. Thus, the approach using the PGExplainer may not be sufficient, since it focuses on graph structure rather than graph features.
+
+Ultimately, we believe that explainability methods can provide important insights into the functionality of GNNs, and are essential for supporting predictions of message passing networks such as NeuroSAT. This also suggests many possibilities for future work, including application of different explainer models to explain unsatisfiable problems using machine learning methods. Other directions may focus on explaining singular instances of said problems, as well as rethinking the evaluation methods, especially in regard to \ac{GT} motifs.

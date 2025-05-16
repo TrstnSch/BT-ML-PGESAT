@@ -23,6 +23,8 @@
 \usepackage[math]{blindtext}
 \usepackage{pdfpages}
 
+\usepackage{acro}
+
 % Graphics
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
@@ -33,6 +35,7 @@
 \usetikzlibrary{fit, backgrounds}
 \usepackage{tabularx}
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 

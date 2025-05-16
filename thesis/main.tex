@@ -1,5 +1,99 @@
 \documentclass[]{thesis}
 
+
+\DeclareAcronym{SAT}{
+  short=SAT,
+  long=boolean satisfiability problem,
+}
+
+\DeclareAcronym{DL}{
+  short=DL,
+  long=deep learning,
+}
+
+\DeclareAcronym{ML}{
+  short=DL,
+  long=machine learning,
+}
+
+\DeclareAcronym{GNN}{
+  short=GNN,
+  long=graph neural network,
+}
+
+\DeclareAcronym{MUS}{
+  short=MUS,
+  long=minimal unsatisfiable subset,
+  short-plural=es,
+}
+
+\DeclareAcronym{PGE}{
+  short=PGExplainer,
+  long=parameterized explainer for graph neural networks,
+}
+
+\DeclareAcronym{MLP}{
+  short=MLP,
+  long=multilayer perceptron,
+}
+
+\DeclareAcronym{GCN}{
+  short=GCN,
+  long=graph convolutional network,
+}
+
+\DeclareAcronym{CNN}{
+  short=GCN,
+  long=convolutional neural network,
+}
+
+\DeclareAcronym{MPNN}{
+  short=MPNN,
+  long=message passing neural network,
+}
+
+\DeclareAcronym{CNF}{
+  short=CNF,
+  long=conjunctive normal form,
+}
+
+\DeclareAcronym{LCG}{
+  short=LCG,
+  long=literal-clause graph,
+}
+
+\DeclareAcronym{ROC-AUC}{
+  short=ROC-AUC,
+  alt = AUROC,
+  long=area under the receiver operating characteristic curve,
+}
+
+\DeclareAcronym{ROC}{
+  short=ROC,
+  long=receiver operating characteristic,
+}
+
+\DeclareAcronym{AUC}{
+  short=AUC,
+  long=area under the curve,
+}
+
+\DeclareAcronym{GT}{
+  short=GT,
+  long=ground truth,
+}
+
+\DeclareAcronym{BA}{
+  short=BA,
+  long=Barabási-Albert,
+}
+
+\DeclareAcronym{TM}{
+  short=TM,
+  long=target model,
+}
+
+
 \begin{document}
 
     \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -55,8 +149,13 @@
 
     \cleardoublepage
     \phantomsection
-    \addcontentsline{toc}{chapter}{List of variables}
+    \addcontentsline{toc}{chapter}{List of Variables}
     \include{chapters/variables}
+
+    \cleardoublepage
+    \phantomsection
+    \addcontentsline{toc}{chapter}{Acronyms}
+    \printacronyms
 
     \cleardoublepage
     \pagenumbering{arabic}

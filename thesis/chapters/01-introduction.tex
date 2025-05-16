@@ -1,28 +1,10 @@
 \chapter{Introduction}
 \label{ch:Introduction}
 
-SAT motivation: Advancements in deep learning SAT solving, e.g. NeuroSAT. Need for evaluation of these models! use of GNN explainers, since SAT can be reduced to graph domain. GOAL: Application of PGExplainer on NeruoSAT to generate explanations. Explanations need gt to be evaluated on accuracy. Use concepts like unsat cores as gt and compare to explanations provided by PGExplainer to see whether NeuroSAT explanations align with "human-observable" principles.
-Concrete: Graph task: Prediction of UNSAT and unsat cores as gt. Node task: Difficult with NeuroSAT?\bigskip
+Solvers for the \ac{SAT} are one of many applications that have seen progress through the development of \ac{DL} in recent years. NeuroSAT \cite{selsam2018learning} is one exemplary framework that combines \ac{ML} with SAT solving. Since SAT instances can naturally be represented as bipartite graphs, \acp{GNN} or \acp{MPNN} are a logical choice for solving this task. However, NeuroSAT lacks the ability of providing proofs to its predictions of unsatisfiability, which are required to compete with state-of-the-art SAT solvers \cite{audemard2009predicting}, \cite{een2003extensible}. This is one example of the general need for explanations that establish trust in the predictions of GNNs \cite{guo2023machine}, \cite{ribeiro2016should}. \bigskip
 
-Therefore explanation and replication of PGExplainer. After successful replication, application on NeuroSAT. \bigskip
+Several approaches have been developed to explain the predictions made by deep graph models. One perturbation-based method is the \ac{PGE} \cite{luo2020parameterized} whose explanations provide a global, generalizable understanding of the underlying trained GNN. It learns approximated discrete edge masks from GNN representations of input graphs to explain instance predictions. Since the masks are sampled from a mask predictor shared across all edges in the dataset, it is able to provide explanations with a global view of the model \cite{luo2020parameterized}, \cite{yuan2022explainability}. Moreover, this allows for the application in an inductive setting, where unexplained test instances can be explained without being used during training, as opposed to the collective setting used in previous works.\bigskip
 
-PGExplainer claims to be model-agnostic - Works for any GNN. Additionally, able to generate explanations in an inductive setting, which is what we want to do.\bigskip
+We will start this work by introducing the theoretical background, including the concepts of GNNs and explainability in GNNs \cite{yuan2022explainability}. After explaining the main concepts of PGExplainer \cite{luo2020parameterized} we re-implement the model, as well as the underlying GNNs, using PyTorch Geometric \cite{Fey/Lenssen/2019} rather than the originally used library TensorFlow \cite{tensorflow2015-whitepaper}. Additionally, we introduce slight changes to the GNN design in regard to bipartite graphs to verify if the explainer, as claimed by the authors, is invariant to changes in model architecture. The generated explanations are evaluated using both qualitative and quantitative metrics, which we further use to optimize the model. We will then compare our results to the baseline of the original paper, as well as a present replication study, while focusing on the application in the inductive setting. \cite{holdijk2021re}. \bigskip
 
-Since our goal is application on a bipartite problem, reimplementation of PGExplainer that changes architecture of target GNN to a PyG layer that works on bipartite graphs and also allows passing of edge weights (required for PGE).\bigskip
-
-Pytorch reimplemenations already exist, eg. Replication study RE-PGE that focuses on orginal code to replicate results. We follow paper as close as possible, and also conduct the code to try different settings/hyperparameters for our changed GNN - OUR FOCUS: Evaluate whether PGExplainer still applicable for our slightly changed GNN model!\bigskip
-
-Therefore, use PGExplainer and Repliaction paper as baselines to compare our results (INDUCTIVE SETTING!) \bigskip
-
-Lastly, apply PGExplainer NeuroSAT, a solver for bipartite graph problem SAT inductively
-
-
-
-
-Topic and context: Explainability in GNNs, show importance, examples, 
-
-Focus and scope: Focus on PGExplainer that allows inductive explanations + is model agnostic
-
-Relevance and importance: Context to SAT? Need for explanations of the predictions made by NNs
-
-Questions and objectives: Generate explanations and compare to UNSAT cores?
+After a successful replication of the baseline experiments we aim to apply the explainer method to NeuroSAT. In doing so, we aim to learn and generate  general, retrospective bipartite explanations of unsatisfiable problems that support the predictions of NeuroSAT. Since we require \acp{GT} to evaluate the accuracy of explanations, we propose treating \acp{MUS} of the problems as expected \ac{GT}. We justify this with the fact that unsatisfiable SAT problems can be "reduced" to MUSes by perturbing the edges outside the subset, which represent appearances of literals in clauses not included in the subset. Ultimately, our goal is testing whether the explanations provided for NeuroSAT align with "human-understandable" principles, specifically the appointed MUS \ac{GT}.

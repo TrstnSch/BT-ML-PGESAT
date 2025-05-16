@@ -2,6 +2,7 @@
 
 \section{Material from original PGExplainer}
 \label{sec:PGE_material}
+This section contains the reprinted pseudocode by Luo et al. \cite{luo2020parameterized} in algorithms \ref{alg:node-alg} and \ref{alg:graph-alg}, as well as the accuracies achieved by their used target models in Table \ref{tab:compact-accuracy}.
 
 \begin{algorithm}
     \caption{Training Algorithm for Explaining Node Classification from \cite{luo2020parameterized}.}
@@ -113,7 +114,7 @@
 
 \section{Replication Hyperparameter Searches}
 \label{sec:sweeps}
-The following tables contain the grid search configurations for the explainer on each downstream model. The first row includes the configuration used in the original codebase \cite{luo2020parameterized} and the second row contains the configurations used in \cite{holdijk2021re}. For BA-Community (see Table \ref{tab:BA-Community_sweep}) both configurations are identical, and the second row is thus omitted. The last section of each table contains the set of the values that we tested for each parameter. The optimal settings for our explainer implementation are highlighted in each column. Note that we optimize Tree-Cycles (see Table \ref{tab:Tree-Cycles_sweep}) and BA-2Motif (see Table \ref{tab:BA-2M-sweep}) towards a minimal metric score, as discussed in Section \ref{sec:ind_results}.
+The following tables contain the grid search configurations for the explainer on each target model. The first row includes the configuration used in the original codebase \cite{luo2020parameterized} and the second row contains the configurations used in \cite{holdijk2021re}. For BA-Community (see Table \ref{tab:BA-Community_sweep}) both configurations are identical, and the second row is thus omitted. The last section of each table contains the set of the values that we tested for each parameter. The optimal settings for our explainer implementation are highlighted in each column. Note that we optimize Tree-Cycles (see Table \ref{tab:Tree-Cycles_sweep}) and BA-2Motif (see Table \ref{tab:BA-2M-sweep}) towards a minimal metric score, as discussed in Section \ref{sec:ind_results}.
 
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{table}[h]
@@ -219,7 +220,7 @@ The following tables contain the grid search configurations for the explainer on
 \clearpage
 \section{Multiple Explanation Visualizations}
 \label{sec:grid_vis}
-The following figures contain 16 randomly sampled explanations for the best explainer model of every dataset. For graph tasks all nodes of the input graph are included, while for node tasks only the nodes of the local computation graph from the prediction motif node are shown.
+The following figures \ref{fig:grid-BA-Shapes-explanations}, \ref{fig:grid-BA-Community-explanations}, \ref{fig:grid-Tree-Cycles-explanations}, \ref{fig:grid-Tree-Grid-explanations}, \ref{fig:grid-BA-2Motif-explanations}, \ref{fig:grid-MUTAG-explanations} contain 16 randomly sampled explanations for the best explainer model of every dataset. For graph tasks all nodes of the input graph are included, while for node tasks only the nodes of the local computation graph from the prediction motif node are shown.
 
 % REMOVE draw=black TO REMOVE EDGES
 \begin{figure}[htbp]
@@ -320,13 +321,9 @@ The following figures contain 16 randomly sampled explanations for the best expl
 
 \clearpage
 \section{NeuroSAT explainer Hyperparameter Searches}
+\label{sec:neurSAT_sweeps}
 
-The following tables contain the grid search configurations for the NeuroSAT explainer models with either the soft constraint or the hard constraint applied. The columns contain the values tested for the corresponding hyperparameter. The optimal settings for each explainer implementation are highlighted.
-
-For the hard constraint the mean local ROC-AUC was no higher than $0.502$ and no lower than $0.44$ over all runs. We select the hyperparameters that maximize the metric and minimize the validation loss while avoiding edge weights of 0. TODO:
-
-We conclude that regardless of exact hyperparameters, the NeuroSAT model does not succinctly learn UNSAT cores.
-
+The following tables contain the grid search configurations for the NeuroSAT explainer models with either the soft constraint (see Table \ref{tab:sweep_conf_soft}) or the hard constraint (see Table \ref{tab:sweep_conf_hard}) applied. The columns contain the values tested for the corresponding hyperparameter. The optimal settings for each explainer implementation are highlighted. Figure \ref{fig:soft-sweep} shows the AUROC range of all runs performed in the grid search for the soft constraint explainer.
 
 \begin{table}[h]
   \centering
@@ -340,14 +337,8 @@ We conclude that regardless of exact hyperparameters, the NeuroSAT model does no
    & 50 & 0.01 &  &  &  & 0.1 &  &  & \textbf{10.0} & \\ \hline
   \end{tabular}
   \caption[NeuroSAT soft constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Bolded values indicate the best performance.}
+  \label{tab:sweep_conf_soft}
 \end{table}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{img/NeuroSAT-soft_sweep.png}
-  \caption{Grid search results of all runs using WandB \cite{}.}
-\end{figure}
-
-
 
 \begin{table}[h]
     \centering
@@ -356,79 +347,36 @@ We conclude that regardless of exact hyperparameters, the NeuroSAT model does no
     \hline
     \multicolumn{10}{|c|}{\textbf{Hard Constraint Explainer}} \\ \hline
     $\alpha_e$ & $E$ & $\eta$ & $K$ & $\alpha_{concat}$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $\alpha_{arch}$ \\ \hline
-    0.1 & 20 & \textbf{0.0003} & 1  & \textbf{False} & 75 & \textbf{0.01} & \textbf{1.0} & 5.0 & False \\
-    \textbf{1.0} & 30 & 0.003  & \textbf{5}  & True  & 76 & 0.1 & 5.0 &  & \textbf{True}  \\
-        &  \textbf{50} & 0.01   &  &       &     &   1.0   &      &      &       \\ \hline
+    0.1 & 20 & \textbf{0.00003} & 1  & \textbf{False} & 75 & \textbf{0.01} & \textbf{1.0} & 5.0 & False \\
+    \textbf{1.0} & 30 & 0.0003  & \textbf{5}  & True  & 76 & 0.1 & 5.0 &  & \textbf{True}  \\
+    &  \textbf{50} & 0.003   &  &       &     &   1.0   &      &      &       \\
+    &   & 0.01   &  &       &     &   1.0   &      &      &       \\ \hline
     \end{tabular}
-    \caption[NeuroSAT hard constraint Sweep]{TODO: ALSO INCLUDE LOWER LR?!?! Highlighted values are the best performing ones, leading to a smaller mean validation AUROC and avoiding same weighted edges. Bolded values indicate the best performance.
+    \caption[NeuroSAT hard constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a hard constraint. Bolded values indicate the best performance.
+    \label{tab:sweep_conf_hard}
     }
 \end{table}
 
-\newpage
-\section{REMOVE}
-\begin{table}[ht]
-  \centering
-  \scriptsize
-  \begin{tabularx}{\textwidth}{l*{4}{X}}   % Now only 4 datasets
-  \toprule
-  \textbf{} & \multicolumn{4}{c}{\textbf{Explanation AUC}} \\
-  \cmidrule{2-5}
-  \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid \\
-  \midrule
-  Our work (inductive) & 0.993$\pm$0.002 & 0.829$\pm$0.008 & 0.109$\pm$0.108 & 0.689$\pm$0.027 \\
-  \addlinespace
-  \midrule
-  \midrule
-  \textit{Inference Time (ms)} & 39.0$\pm$1.9 & 25.6$\pm$1.5 & 3.1$\pm$0.3 & 3.4$\pm$0.1 \\
-  \bottomrule
-  \end{tabularx}
-  \caption[REMOVE! PGExplainer with $a=0.08$!]{PGExplainer performance WITH $a=0.08$! (4.8, 64, 4.8, 23) (USED IN SWEEP!)}
-  \label{tab:rem1}
-\end{table}
-
-
-\begin{figure}[htbp]
-    \centering
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/plots/Grid_val_loss_plot.pdf}  % Plot 1
-        \caption{Mean validation Loss per Epoch (Tree-Grid).}
-        \label{fig:Tree-Grid-val_loss}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/plots/Grid_val_auroc_plot.pdf}  % Plot 2
-        \caption{Mean validation AUROC per Epoch (Tree-Grid).}
-        \label{fig:Tree-Grid-val_auroc}
-    \end{minipage}
+\begin{figure}
+  \includegraphics[width=\linewidth]{img/NeuroSAT-soft_sweep.png}
+  \caption[Grid search results of soft constraint explainer]{Grid search results of all runs on the soft constraint explainer using WandB \cite{wandb}.}
+  \label{fig:soft-sweep}
 \end{figure}
 
-
-    % Second part without vertical lines
-    \begin{tabular}{l|cccc}
-    \midrule
-    \textbf{} & \multicolumn{4}{c}{\textbf{One-Motif-Node-Train}} \\
-    \addlinespace
-    \toprule
-    \#used motif instances $N$ & 60 & 60 & 160  & 32 \\
-    \bottomrule
-    \end{tabular}
-
-  
-
-\begin{table}[ht]
-    \centering
-    \scriptsize
-    \begin{tabularx}{0.6\textwidth}{l*{4}{X}}   % Adjust width as needed
-    \toprule
-    \textbf{} & \multicolumn{4}{c}{\textbf{Explanation AUROC}} \\
-    \cmidrule{2-5}
-    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid \\
-    \midrule
-    Experiment & 0.85$\pm$0.005 & 0.731$\pm$0.016 & 0.224$\pm$0.160 & 0.65$\pm$0.026 \\
-    \bottomrule
-    \end{tabularx}
-    \caption[REM]{TODO: THIS DOES NOT MAKE SENSE! TRAIN AND EVAL NODES SHALL BE FROM THE SAME DISTRIBUTION!!! Explanation AUROC for One-Motif-Node-Train.}
-    \label{tab:allmotifnodes_selected_rem}
-\end{table}
+\section{Satisfiability of a Hard Constraint Explanation}
+\label{sec:sat_expl_hard_cons}
+The SAT formula represented by the top-$k$ edges of the validation problem that achieved the highest individual AUROC score for the seed 0 run, with $k$ being the number of edges in its corresponding MUS, is defined as:
+\begin{align*}
+& (174 \lor 175 \lor 173 \lor 169) \land \\
+& (171 \lor 170 \lor 173) \land \\
+& (171 \lor 175 \lor 168 \lor 173) \land \\
+& (172 \lor 174 \lor 171) \land \\
+& (171 \lor 169 \lor 168 \lor 174) \land \\
+& (\neg 170) \land \\
+& (170 \lor 173 \lor 168) \land \\
+& (\neg 168 \lor 171) \land \\
+& (172 \lor \neg 168 \lor \neg 170) \land \\
+& (169 \lor 171 \lor 172 \lor \neg 174) \land \\
+& (175 \lor 173 \lor 168)
+\end{align*}
+We note that this subset of clauses is satisfiable and therefore not an unsatisfiable core. It is important to note that setting $k$ as the number of edges in its corresponding MUS only makes sense if the MUS is known to be the \ac{GT}. Since we do not know this, this selection of $k$ can be seen as arbitrary. However, a selection is necessary in the context of PGExplainer, since a dynamic way of getting the most important explanation edges was not provided in the original.
