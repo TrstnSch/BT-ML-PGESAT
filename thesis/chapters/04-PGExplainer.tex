@@ -222,7 +222,7 @@ Thus, a concatenation of the node embeddings of nodes $i, j$ and $v$ is fed thro
         \node[draw=gray, thick, rounded corners, fit=(node_emb_i2) (node_emb_v2) (edge_emb_ijv), fill=violet!30, label=above:Node Task] {};
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption[Visualization of edge embedding transformation]{TODO: UGLY AF! FOR ALL EDGES IN $G_o$ Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the \ac{TM} the created edge embeddings differ slightly.}
+\caption[Visualization of edge embedding transformation]{TODO: UGLY AF! JUST REMOVE? FOR ALL EDGES IN $G_o$ Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the \ac{TM} the created edge embeddings differ slightly.}
 \label{fig:edge_emb_trans}
 \end{figure}
 
@@ -450,7 +450,12 @@ In this section we propose additional restraints to fit the explanations of PGEx
 
 Proposed by Selsam et al. \cite{selsam2018learning}, NeuroSAT utilizes a MPNN, generally utilized to express GNNs, to solve SAT formulae. It is able to generalize in the sense that it may solve substantially larger and more difficult formulae than seen during training by running for more iterations. Though it may be used to calculate variable assignments that satisfy a formula, it is unable to provide proofs for predictions of formulae that are unsatisfiable. \bigskip
 
-In a separate experiment the authors were able to make NeuroSAT identify specific unsatisfiable cores. However, this is assumed to be due to the network memorizing the subgraphs rather than learning a generic procedure that proves unsatisfiability. To support and validate the predictions of unsatisfiability, we aim to generate global, generalized explanations for unsatisfiable formulae using the PGExplainer, trained on predictions of a trained NeuroSAT model. We test the quality and "human-understandability" of an explanation by comparing it to a MUS of the input problem, since the prediction of an unsatisfiable SAT problem can in theory be reduced to the prediction of said MUS. Thus, we test whether PGExplainer is able to generate explanations for NeuroSAT that align with MUSes.
+In a separate experiment the authors were able to make NeuroSAT identify specific unsatisfiable cores. However, this is assumed to be due to the network memorizing the subgraphs rather than learning a generic procedure that proves unsatisfiability. To support and validate the predictions of unsatisfiability, we aim to generate global, generalized explanations for unsatisfiable formulae using the PGExplainer, trained on predictions of a trained NeuroSAT model. 
+
+TODO: Rationality of how MUS "explains" UNSAT instance?
+
+
+We test the quality and "human-understandability" of an explanation by comparing it to a MUS of the input problem, since the prediction of an unsatisfiable SAT problem can in theory be reduced to the prediction of said MUS. Furthermore, the fundamental idea of perturbing edges, or sets of edges, to learn explanations is analogous to the process of deleting clauses from a problem until a minimal unsatisfiable core is attained, as done in deletion-based MUS extractors (see Marques-Silva \cite{5489199}). Thus, we test whether PGExplainer is able to generate explanations for NeuroSAT that align with MUSes. \bigskip
 
 %Let $n$ denote the number of variables in a SAT formula and $m$ the number of clauses.
 Since the following restraints are tailored to the application on bipartite graphs representing SAT formulae, we have to define the specifics of the input LCG in this context. A formula is encoded as an undirected bipartite graph $G_b$, with bipartition $(L,C)$. It contains one node for every literal $l \in L$, one for every clause $c \in C$, and an edge for every pair $(l,c)$ where $l$ appears in clause $c$. 
@@ -559,7 +564,7 @@ The softmax function is defined as follows \cite{Goodfellow-et-al-2016}:
 Given a vector \( \mathbf{z} = [z_1, z_2, \dots, z_K] \in \mathbb{R}^K \), the softmax function maps \( \mathbf{z} \) to a probability distribution over \( K \) classes:
 
 \begin{equation}
-    \text{Softmax}(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}} \quad \text{for } i = 1, 2, \dots, K,
+    \text{softmax}(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}} \quad \text{for } i = 1, 2, \dots, K,
 \end{equation}
 where $e$ denotes the exponential function. \bigskip
 
@@ -992,7 +997,7 @@ The qualitative explanations provided by the explainer are implemented as a Netw
 
 The inference time is measured as the time it takes to generate an explanation for any instance. This starts with the computation of node embeddings from the \ac{TM} and ends after the reparameterization trick - the simple application of a Sigmoid to the edge logits during evaluation - that returns the edge importance scores. This process is illustrated in Figure \ref{fig:PGExplainer_pipeline}, starting from input graph $G_o$ and ending at the sampled graph $\hat{G}_s$. \bigskip
 
-\textbf{TODO: Challenges}: NECESSARY? MENTION DIFFICULTIES IN EACH SUBSECTION? Difficulties getting the code to work, as we started working with the paper only. Found that hyperparameters had to be finetuned, exact \ac{TM} is relevant (e.g. batch norm present or not, overfit models obviously generate bad explanations, need for early stopping). Different loss used in code than in paper; we adopt the loss described in the paper. No documentation of the motif node selection/training only performed on graphs/nodes that contain gt! Imprecise about dataset description (BA-2Motif has different features than the rest of the syn datasets). No description of the AUROC calculation, had to be extracted from code (global vs local) \bigskip
+\textbf{TODO: Challenges}: NECESSARY? MENTION DIFFICULTIES IN EACH SUBSECTION? Difficulties getting the code to work, as we started working with the paper only. Found that hyperparameters had to be finetuned, exact \ac{TM} is relevant (e.g. batch norm present or not, overfit models obviously generate bad explanations, need for early stopping). Different loss used in code than in paper; we adopt the loss described in the paper. No documentation of the motif node selection/training only performed on graphs/nodes that contain GT! Imprecise about dataset description (BA-2Motif has different features than the rest of the synthetic datasets). No description of the AUROC calculation, had to be extracted from code (global vs local) \bigskip
 
 \subsection{Application on NeuroSAT}
 \label{sec:Application_to_NeuroSAT}
@@ -1046,10 +1051,10 @@ The unique \lstinline|clauses| are further used in the reparameterization trick 
 
 The soft constraint uses the same idea of iterating over the unique \lstinline|clauses| in a batch. Instead of calculating the \lstinline|torch.mean| it calculates the \lstinline|torch.var| and adds this to the loss after multiplication with a fixed connectivity coefficient hyperparameter. \bigskip
 
-To evaluate the explanations provided by the PGExplainer, we require \acp{GT} to calculate the AUROC score and understand the visualizations of explanations. Since our goal is testing whether the explanations of unsatisfiable problems, based on NeuroSAT predictions, align with human-understandable concepts, we propose the use of MUSes as \ac{GT}. Therefore, we utilize the deletion-based MUS extractor \lstinline|MUSX| from PySAT \cite{imms-sat18} to generate a MUS for each unsatisfiable problem. This MUS is transformed into a mask matching the corresponding edges in its problem's graph representation, and treated as expected \ac{GT}. This allows us to calculate the local AUROC for each SAT problem as described in Section \ref{sec:Replication_of_PGExplainer}. We visualize the provided explanations and \acp{GT} as a pyvis \cite{perrone2020network} \lstinline|Network| for qualitative evaluation. \bigskip
+To evaluate the explanations provided by the PGExplainer, we require \acp{GT} to calculate the AUROC score and understand the visualizations of explanations. Since our goal is testing whether the explanations of unsatisfiable problems, based on NeuroSAT predictions, align with human-understandable concepts, we propose the use of MUSes as \ac{GT}. Therefore, we utilize the deletion-based MUS extractor \lstinline|MUSX| from PySAT \cite{imms-sat18} to generate a MUS for each unsatisfiable problem. This \ac{MUS} is transformed into a mask matching the corresponding edges in its problem's graph representation, and treated as expected \ac{GT}. This allows us to calculate the local AUROC for each SAT problem as described in Section \ref{sec:Replication_of_PGExplainer}. We visualize the provided explanations and \acp{GT} as a pyvis \cite{perrone2020network} \lstinline|Network| for qualitative evaluation. \bigskip
 
 We adopt the MLP architecture described in Section \ref{sec:Replication_of_PGExplainer}, but also perform experiments with a more complex architecture (see Section \ref{sec:SAT-experiments}). This introduces two additional hidden layers, leading to the architecture described in Listing \ref{lst:ext_mlp_arch}.
-\begin{lstlisting}[language=Python, caption=TODO: REMOVE? Implementation of extended MLP architecture., label=lst:ext_mlp_arch]
+\begin{lstlisting}[language=Python, caption=TODO: REMOVE? VIS differently? Implementation of extended MLP architecture., label=lst:ext_mlp_arch]
     self.model = nn.Sequential(
             nn.Linear(self.inputSize, 256),
             nn.ReLU(),

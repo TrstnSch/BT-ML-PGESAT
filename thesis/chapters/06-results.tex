@@ -138,11 +138,11 @@ We perform the efficiency evaluation as described by Holdijk et al. \cite{holdij
 \textbf{Hyperparameter Search}\par
 Most details on the training procedure of the explainer have been established in Section \ref{sec:Replication_of_PGExplainer}. As found by Holdijk et al. \cite{holdijk2021re} the PGExplainer is very sensitive to hyperparameter settings on each dataset. Therefore, we conduct hyperparameter searches for the explainer model on each of the datasets to obtain the best performing explainers. We follow Liashchynskyi and Liashchynskyi \cite{liashchynskyi2019grid} to perform grid searches over the parameter space that we define as an extended combination of the setting used in the original \cite{luo2020parameterized}, as well as the configs provided in Replication study \cite{holdijk2021re}. 
 
-For our hyperparameters $\lambda_1,\lambda_2,...,\lambda_n$ we define corresponding sets $S_1,S_2,...,S_n$ of possible values. The grid search finds the best model with respect to the mean of the local ROC-AUC scores of all validation instances over all combinations $(\lambda_1,\lambda_2,...,\lambda_n) \in S_1\times S_2 \times...\times S_n$. Additionally, we consider that the predicted edge importance scores shall not be exactly 0 or 1 for all edges. Since we found that some datasets behave unexpectedly regarding the evaluation metric, we may choose to optimize in the opposite direction, which we will further discuss in Section \ref{sec:ind_results}. All experiments and training were conducted on an AMD Ryzen 7 2700X processor. \bigskip
+For our hyperparameters $\lambda_1,\lambda_2,...,\lambda_n$ we define corresponding sets $S_1,S_2,...,S_n$ of possible values. The grid search finds the best model with respect to the mean of the local AUROC scores on all validation instances over all combinations $(\lambda_1,\lambda_2,...,\lambda_n) \in S_1\times S_2 \times...\times S_n$. Additionally, we consider that the predicted edge importance scores shall not be exactly 0 or 1 for all edges. Although the theory defines the importance score to be in (0,1), in practice scores of 0 and 1 are possible due to floating point precision limits. Since we found that some datasets behave unexpectedly regarding the evaluation metric, we may choose to optimize in the opposite direction, which we will further discuss in Section \ref{sec:ind_results}. All experiments and training were conducted on an AMD Ryzen 7 2700X processor. \bigskip
 
-The hyperparameters tested consist of the learning rate $\eta \in \mathbb{R}^+$, the number of epochs $E \in \mathbb{N}$ used to train the explainer, the number of sampled graphs $K \in \mathbb{N}$, the initial and final temperatures $\tau_0, \tau_T \in \mathbb{R}^+$, as well as two coefficients $\alpha_e\in \mathbb{R}^+$ and $\alpha_s\in \mathbb{R}^+$ to control the entropy regularization and the size regularization, respectively. For the BA-Community explainer we also test a sample bias $b=0.5$, that restricts the $\epsilon$ in Equation \ref{eq:reparam_trick} to $\epsilon \sim \text{Uniform}(0+b,1-b)$. This is also extracted from the original codebase and leads to a constant $\epsilon=0.5$. We further define a set of fixed seeds used during each grid search as $S=\{74,75,76\}$, since we found that the performance of the explainer is highly dependent on the seed for some of the datasets. \bigskip
+The hyperparameters tested consist of the learning rate $\eta \in \mathbb{R}^+$, the number of epochs $E \in \mathbb{N}$ used to train the explainer, the number of sampled graphs $K \in \mathbb{N}$, the initial and final temperatures $\tau_0, \tau_T \in \mathbb{R}^+$, as well as two coefficients $\alpha_e\in \mathbb{R}^+$ and $\alpha_s\in \mathbb{R}^+$ to control the entropy regularization and the size regularization, respectively. For the BA-Community explainer we also test a sample bias $b=0.5$, that restricts the $\epsilon$ in Equation \ref{eq:reparam_trick} to $\epsilon \sim \text{Uniform}(0+b,1-b)$. This is also extracted from the original codebase of PGExplainer \cite{luo2020parameterized} and leads to a constant $\epsilon=0.5$. We further define a set of fixed seeds used during each grid search as $S=\{74,75,76\}$, since we found that the performance of the explainer is highly dependent on the seed for some of the datasets. \bigskip
 
-Since we care about the inductive performance and Luo et al. \cite{luo2020parameterized} demonstrate that the explainer performs well on few training instances, we set the number of training instances $a=30$ for graph tasks and $a=0.08$ for node tasks during the searches. We choose a percental split for the node tasks, since the node sets used in the original experiment highly vary in size and generally contain fewer instances than the graph sets. The resulting absolute number of training instances for the node tasks, as well as the specifics of each search can be seen in Section \ref{sec:sweeps}. Following PGExplainer \cite{luo2020parameterized}, the resulting validation set and test set each have a size of $\frac{(N-a)}{2}$, where $N$ denotes the number of used instances in each dataset. The optimal hyperparameter values used for the following experiments are listed in Table \ref{tab:best_sweep_values}. \bigskip
+Since we care about the inductive performance and Luo et al. \cite{luo2020parameterized} demonstrate that the explainer performs well on few training instances, we set the number of training instances $a=30$ for graph tasks and $a=0.08N$ for node tasks during the searches. We choose a percental split for the node tasks, since the node sets used in the original experiment highly vary in size and generally contain fewer instances than the graph sets. The resulting absolute number of training instances for the node tasks, as well as the specifics of each search can be seen in Section \ref{sec:sweeps}. Following PGExplainer \cite{luo2020parameterized}, the resulting validation set and test set each have a size of $\frac{(N-a)}{2}$, where $N$ denotes the number of used instances in each dataset. The optimal hyperparameter values used for the following experiments are listed in Table \ref{tab:best_sweep_values}. \bigskip
 
 \begin{table}[h]
     \centering
@@ -192,14 +192,14 @@ Since we care about the inductive performance and Luo et al. \cite{luo2020parame
 
 
 \textbf{Experimental Protocol}\par
-We follow the general experimental setup used in the baselines \cite{luo2020parameterized}, \cite{holdijk2021re}, originally proposed in \cite{ying2019gnnexplainer}. We train a PGExplainer model on a fixed \ac{TM} with a specified seed, with the hyperparameter values listed in Table \ref{tab:best_sweep_values}. This process is repeated 10 times for each dataset. The models are evaluated quantitatively using the AUROC metric and qualitatively for select experiments, in the sense of comparing visualizations of explanations to the \ac{GT} motifs. We provide the quantitative results as the mean and standard deviation over 10 runs for all experiments. \bigskip
+We follow the general experimental setup used in the baselines \cite{luo2020parameterized}, \cite{holdijk2021re}, originally proposed in \cite{ying2019gnnexplainer}. We train a PGExplainer model on a fixed \ac{TM} with a specified seed, with the hyperparameter values listed in Table \ref{tab:best_sweep_values}. This process is repeated 10 times for each dataset over a set of seeds $S_e=\{0,1,\dots,9\}$. The models are evaluated quantitatively using the AUROC metric and qualitatively for select experiments, in the sense of comparing visualizations of explanations to the \ac{GT} motifs. We provide the quantitative results as the mean and standard deviation over 10 runs for all experiments. \bigskip
 
 
 \subsection{Inductive Setting}
 \label{sec:ind_results}
 
 \textbf{Experimental Setup} \par
-In this experiment we evaluate the quantitative performance of PGExplainer in the inductive setting on our slightly adapted \acp{TM}. Since Luo et al. \cite{luo2020parameterized} showed that the PGExplainer can achieve good results with only few training instances, we aim to replicate this for $a=30$ training instances, one of the original experiment settings. Since the exact instances used are not further specified in the paper, we treat the motif node sets described in Section \ref{sec:PGE_exp_setup} as the instance sets of size $N$ for node task.
+In this experiment we evaluate the quantitative performance of PGExplainer in the inductive setting on our slightly adapted \acp{TM}. Since Luo et al. \cite{luo2020parameterized} showed that the PGExplainer can achieve good results with only few training instances, we aim to replicate this for $a=30$ training instances, one of the original experiment settings. Since the exact instance sets used are not further specified in the paper, we treat the motif node sets described in Section \ref{sec:PGE_exp_setup} as the instance sets of size $N$ for node task.
 
 We repeat this experiment with Xavier \cite{glorot2010understanding} used as initialization for the explainer MLP weights, opposed to the He \cite{he2015delving} initialization standard to PyTorch linear layers with ReLU activations. This is done since the grid searches showed that the performance is heavily dependent on the used seed for some datasets, which mainly controls the initializations. Xavier is used by default in the original TensorFlow \cite{tensorflow2015-whitepaper} implementation.
 
@@ -208,7 +208,7 @@ Additionally, we measure the average inference time to explain any instance and 
 %NOTE: Tree-Grid with original experimental setup (all motif nodes, 30 training instances) leads to mean of 0.5 for almost all hyperparam settings tried. Size reg of 0.05 (as in original) leads to all edges being assigned a values of one!
 
 \textbf{Results}\par
-Table \ref{tab:pgexplainer_auc} shows the quantitative results, as well as the inference time for all dataset. First, BA-Shapes is the only experiment that comes close to the originally recorded scores. It is notable, that both Tree-Cycles and BA-2Motif achieve an AUROC score far below $0.5$, indicating that the opposite of the \ac{GT} expectations is predicted. Though the variance of Tree-Cycles is quite high, the figures \ref{fig:Tree-Cycles-val_loss} and \ref{fig:Tree-Cycles-val_auroc} show that this is mostly cause by a singular outlier run. Both the losses and AUROC scores are decreasing steadily, illustrating a stable learning process. 
+Table \ref{tab:pgexplainer_auc} shows the quantitative results, as well as the inference time for all datasets. First, BA-Shapes is the only experiment that comes close to the originally recorded scores. It is notable, that both Tree-Cycles and BA-2Motif achieve an AUROC score far below $0.5$, indicating that the opposite of the \ac{GT} expectations is predicted. Though the variance of Tree-Cycles is quite high, the figures \ref{fig:Tree-Cycles-val_loss} and \ref{fig:Tree-Cycles-val_auroc} show that this is mostly caused by a singular outlier run. Both the losses and AUROC scores are decreasing steadily, illustrating a stable learning process. 
 
 \begin{figure}[htbp]
     \centering
@@ -263,7 +263,7 @@ When considering that AUROC scores close to 0 also indicate learning, Tree-Grid 
 
 It is notable that the Xavier initialized model achieves worse results across the board. Though the mean values are higher for most of the datasets, the variance is also much higher, suggesting less stability. Since we care for stable models we only consider He initialization for the following experiments. \bigskip
 
-Our implementation improves the inference time of the explainer for 4 datasets, but is notably slower for BA-Shapes. We report considerably lower times than the replication study, which we primarily attribute to our limited hardware.
+Our implementation improves the inference time of the original explainer for 4 datasets, but is notably slower for BA-Shapes. We report considerably lower times than the replication study, which we primarily attribute to our limited hardware.
 
 
 %We use normalization in our \acp{TM}, though it is not described in the paper, since it is used in the code. We also experimented with the effects of the use of normalization since it seems to be relevant to the performance of the explainer. \\
@@ -293,7 +293,7 @@ To allow for a better comparison with both baselines we perform an experiment in
 
 \textbf{Results}\par
 
-We are unable to reproduce the scores achieved in the original work for most of the datasets, as seen in Table \ref{tab:pgexplainer_auc_collective}. BA-Shapes achieves a higher score than the original, while MUTAG comes close to the original baseline and even obtains a higher score in the inductive setting. The other scores do not come close when considering the scores as they are without flipped \acp{GT}. We are however able to match the results achieved in the replication baseline in all but the Tree-Cycles experiment. This validates that the PGExplainer achieves similar results for different target GNN layers.
+We are unable to reproduce the scores achieved in the original work for most of the datasets, as seen in Table \ref{tab:pgexplainer_auc_collective}. BA-Shapes achieves a higher score than the original in both settings, while MUTAG comes close to the original baseline and even obtains a higher score in the inductive setting. The other scores do not come close when considering the scores as they are without flipped \acp{GT}. We are however able to match the results achieved in the replication baseline in all but the Tree-Cycles experiment. This validates that the PGExplainer achieves similar results for different target GNN layers. However, the actual difference in the models is hard to measure since GNNs operate very similarly.
 
 \begin{table}[ht]
     \centering
@@ -329,7 +329,7 @@ We are unable to reproduce the scores achieved in the original work for most of 
 Luo et al. \cite{luo2020parameterized} show that the inductive performance of PGExplainer improves with the number of instances used for training. To validate this we perform an inductive experiment with an increased number of training instances $a=60$. Since the motif instance sets of BA-Shapes and Tree-Cycles in the original setting only consist of 60 instances, we use a split ratio of $80/10/10$. This leads to $a=48$ for these two tasks. \bigskip
 
 \textbf{Results}\par
-The results for this experiment are found in Table \ref{tab:experiment_60train}. The graph tasks see a slight improvement, while the node tasks all seem to perform worse with more training instances. While the variance decreases for both tree tasks, the mean moves toward the value indicating random predictions. We observe that BA-Community reaches a peak in AUROC early but steadily decreases afterward, as opposed to the setting with $a=30$ where the AUROC rises steadily and converges strongly. This result suggests that the hyperparameters have to be retuned for this setting, which hinders the generalizability of the explainer. We are unable to confirm that the PGExplainer generally achieves better results when more instances are seen during training.
+The results for this experiment are found in Table \ref{tab:experiment_60train}. The graph tasks see a slight improvement, while the node tasks all seem to perform worse with more training instances. While the variance decreases for both tree tasks, the mean moves toward the value indicating random predictions. We observe that BA-Community reaches a peak in AUROC early but steadily decreases afterward, as opposed to the setting with $a=30$ where the AUROC rises steadily and converges strongly. This result suggests that the hyperparameters have to be retuned for this setting, which significantly limits the generalizability of the explainer. We are unable to confirm that the PGExplainer generally achieves better results when more instances are seen during training.
 
 \begin{table}[ht]
     \centering
@@ -354,7 +354,8 @@ The results for this experiment are found in Table \ref{tab:experiment_60train}.
 \label{sec:flipped_gt}
 
 \textbf{Experimental setup}\par
-Since we found that the AUROC score for BA-2Motif decreases rather than increases over the training epochs, while converging near zero, we run an additional experiment with inverted  GT. Since both the loss and AUROC curves decrease steadily and flatten in the original inductive experiment (see Figure \ref{fig:BA-2Motif-val_metrics}), we consider this experiment an additional validation.
+Since we found that the AUROC score for BA-2Motif decreases rather than increases over the training epochs, converging near zero, we run an additional experiment with inverted  GT. Since both the loss and AUROC curves decrease steadily and flatten in the original inductive experiment (see Figure \ref{fig:BA-2Motif-val_metrics}), we consider this experiment an additional validation to highlight that the explainer does learn the motifs.
+
 The mean individual AUROC is calculated identical to before, but the \ac{GT} mask of each graph is inverted, meaning that edges in the motif now carry a label of $0$ and all other edges a label of $1$. 
 Note that the \ac{GT} does not affect the training procedure in any way and merely changes the metric evaluation. \bigskip
 
@@ -377,7 +378,7 @@ Note that the \ac{GT} does not affect the training procedure in any way and mere
 \end{table}
 \textbf{Results} \par
 
-As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment, even surpassing the original baseline, as seen in Table \ref{tab:flippedGT}. It is notable that the results by Holdijk et al. \cite{holdijk2021re} suggest a similar observation, however the authors do not expand on this.
+As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment, even surpassing the original baseline, as seen in Table \ref{tab:flippedGT}. It is notable that the results by Holdijk et al. \cite{holdijk2021re} suggest a similar observation, however the authors do not expand on this. We are unable to identify an explanation for this behavior, since no consistent differences in comparison to the other experiments were observed. However, in principle this signals that the explainer learns to predict the edges that are unimportant to the prediction rather than the important ones. Further investigation of this behavior is necessary to determine its cause. 
 
 
 \begin{figure}[htbp]
@@ -405,11 +406,11 @@ As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment,
 %Tree-Grid: DURING OUR TRAINING: 11 of 30 training instances consisted of only motif nodes/edges, resulting in an incomputable AUROC
 %USAGE OF ALL MOTIF NODES LEADS TO k-HOP GRAPHS THAT DO NOT CONTAIN COMPLETE MOTIF! LEADS TO EXPLANATION ONLY CONTAINING 3 "BOXES" OF THE 4, AS SEEN IN BAD PERFORMING MODELS?
 \textbf{Experimental Setup} \par
-As presented in \ref{sec:PGE_exp_setup} the motif instances used in PGExplainer \cite{luo2020parameterized} for different node level explanation tasks do not follow the same rules. This is likely related to their direct comparison to GNNExplainer \cite{ying2019gnnexplainer} and the adaptation of their dataset settings. However, since the PGExplainer claims to generalize well and be able to provide explanations for any downstream GNN task, a uniform procedure for providing explanations is necessary. 
+As presented in \ref{sec:PGE_exp_setup} the motif instances used in PGExplainer \cite{luo2020parameterized} for different node level tasks are not defined consistently. This is likely related to their direct comparison to GNNExplainer \cite{ying2019gnnexplainer} and the adaptation of their dataset settings. However, since the PGExplainer claims to generalize well and be able to provide explanations for any downstream GNN task, a uniform procedure for providing explanations is necessary. 
 
 Evidently, different nodes in a motif have different local computation graphs, containing different motif- and non-motif nodes. The 3-hop graph computed from a corner node of a grid motif may for example never contain the complete motif. If such a node is commonly selected during training, it is reasonable to believe that the explainer may learn the "sub-motif" consisting of three squares, rather than the complete motif. A 3-layer GNN may therefore not be ideal for learning the grid motif. We evaluate the effect of using all motif nodes or a singular node from each motif as instances in this experiment.
 
-We suggest changing the instance sets $\mathcal{I}$ for training and evaluation to include either all or one select motif node, depending on the dataset. We use the same hyperparameters used for the previous experiments. Besides this change, we follow the general experimental setup in the inductive setting with $a=30$ to evaluate whether a reasoning behind the node selection can be made out. \bigskip
+We suggest changing the instance sets $\mathcal{I}$ used for training and evaluation to include either all or one select motif node of each motif, depending on the dataset. The hyperparameters used for the previous experiments are retained. Besides this change, we follow the general experimental setup in the inductive setting with $a=30$ to evaluate whether a reasoning behind the node selection can be made out. \bigskip
 
 Since BA-Shapes and Tree-Cycles originally use a singular node from each motif, we evaluate the effect of using all nodes in each motif and refer to this as All-Motif-Nodes. Accordingly, we select one fixed node from each motif for the BA-Community and Tree-Grid tasks, similar to the original BA-Shapes and Tree-Cycles task. For BA-Community we choose one of the two "middle" nodes in the house motif, similar to BA-Shapes. For Tree-Grid we select the "second" node, starting from the corner node attached to the base graph, as the 3-hop graph from this node contains all motif nodes as well as the most nodes from the base graph. We call this experiment One-Motif-Node. The exact number of instances used in this experiment can be seen in Table \ref{tab:motif-statistics-exp}.
 
@@ -436,6 +437,8 @@ It is noteworthy that using singular corresponding topological nodes across moti
 We present the results of the All-Motif-Nodes experiment compared to our results achieved in the inductive setting in Table \ref{tab:allmotifnodes_selected} and for One-Motif-Node in Table \ref{tab:onemotifnode_selected}. It is most notable that the Tree-Grid experiment achieves perfect edge classification accuracy in the One-Motif-Node experiment. BA-Community also reports a significant increase in AUROC score.
 
 The All-Motif-Nodes experiment leads to a slight deterioration in score for BA-Shapes, which is still better than the scores achieved on the other node tasks in our inductive experiment. The explainer's performance on Tree-Cycles deteriorates in both variance and mean score, particularly in terms of its distance from a random AUROC score.
+
+This indicates that the different settings lead to vastly different results, highlighting the need of a general setup procedure when explaining node instances with PGExplainer. Furthermore, it suggests that the explainer is able to reliably explain unseen node instances with identical topological information of the motif. Nonetheless, the ability of generally learning motif structures from different motif notes and generalizing this to unsee instances lacks, as indicated by the All-Motif-Nodes results of Tree-Cycles, Tree-Grid and BA-Community.
 
 \begin{table}[ht]
     \centering
@@ -469,7 +472,7 @@ The All-Motif-Nodes experiment leads to a slight deterioration in score for BA-S
     OneMotifNode & 0.951$\pm$0.007 & 1.0$\pm$0.0 \\
     \bottomrule
     \end{tabularx}
-    \caption[Inductive performance using one motif node for training]{Explanation AUROC for One-Motif-Node .}
+    \caption[Inductive performance using one motif node for training]{Explanation AUROC for One-Motif-Node.}
     \label{tab:onemotifnode_selected}
 \end{table}
 
@@ -480,11 +483,11 @@ The All-Motif-Nodes experiment leads to a slight deterioration in score for BA-S
 \textbf{Experimental setup}\par
 For the qualitative analysis the best performing explainer model for each \ac{TM} is selected, and random explanations are sampled. For the explainer models with AUROC scores below 0.5, we select the model that achieves the lowest score and visualize the top-$k$ lowest edges accordingly. Following the approach of the original, we present instance explanations that highlight the successful detection of motifs. We additionally include sample grids of 16 random graphs in the Appendix.
 
-Following Luo et al. \cite{luo2020parameterized}, we select dataset-specific values of $k$: BA-Shapes, BA-Community and Tree-Cycles use $k=6$; Tree-Grid uses $k=12$; BA-2Motif uses $k=5$ and MUTAG uses $k=10$. \bigskip
+Following Luo et al.~\cite{luo2020parameterized}, we select dataset-specific values of $k$: BA-Shapes, BA-Community and Tree-Cycles use $k=6$; Tree-Grid uses $k=12$; BA-2Motif uses $k=5$ and MUTAG uses $k=10$. These represent the lower bound of the number of edges needed to visualize a full motif, except for MUTAG where more edges are selected to show the additional prediction of base carbon rings. \bigskip
 
 \textbf{Results}\par
 The visualized explanations generated for each \ac{TM} show that the \ac{GT} motifs are detected (see Figure \ref{fig:qual_expl}).
-We found that the MUTAG explainer detects the chemical combinations that cause the mutagenicity as the highest edges regularly, but the shared base carbon ring is not detected at all. More qualitative samples for each dataset can be seen in Appendix \ref{sec:grid_vis}. The qualitative explanations of BA-Community rarely contain all connected motif edges, as seen in Figure \ref{fig:grid-BA-Community-explanations}. Note that due to the setting of $k=5$ for BA-2Motif the house motif is never detect completely, but it is clearly visible that the added house edge is detected.
+We found that the MUTAG explainer detects the chemical combinations that cause the mutagenicity as the highest edges regularly, but the shared base carbon ring is not detected at all. More qualitative random samples for each dataset can be seen in Appendix \ref{sec:grid_vis}. The qualitative explanations of BA-Community rarely contain all connected motif edges, as seen in Figure \ref{fig:grid-BA-Community-explanations}. Note that due to the setting of $k=5$ for BA-2Motif the house motif is never detected completely, but it is clearly visible that the additional house edge is detected.
 
 \begin{figure}[h]
     \centering
@@ -540,18 +543,22 @@ In this section we present the experiments for generating bipartite explanations
 \subsection{Common Experimental Setup}
 \label{sec:SAT-exp-setup}
 
-NeuroSAT \cite{selsam2018learning} uses a distribution $\textbf{SR}(n)$ that creates pairs of SAT problems on $n$ variables, which are satisfiable and unsatisfiable, only differing in a singular negated literal. These are created by randomly sampling subclauses of $k$ variables, where each variable is negated with a probability of $50\%$. These subclauses are added to the problem until a SAT solver \cite{een2003extensible} finds it to be unsatisfiable. We adapt this to only contain singular unsatisfiable problems, rather than pairs of problems, since unsatisfiable cores only appear in unsatisfiable problems. The difficulty of the problems is slightly reduced by using $n=8$, to allow for the explainer to run on NeuroSAT on our limited hardware. We create a dataset of 100 problems.
+NeuroSAT \cite{selsam2018learning} uses a distribution $\textbf{SR}(n)$ that creates pairs of SAT problems on $n$ variables, which are satisfiable and unsatisfiable, only differing in a singular negated literal. These are created by randomly sampling subclauses of $k$ variables, where each variable is negated with a probability of $50\%$. These subclauses are added to the problem until a SAT solver \cite{een2003extensible} finds it to be unsatisfiable. 
 
-We create the expected \ac{GT} with the deletion-based MUS extractor \lstinline|MUSX| from PySAT \cite{imms-sat18}, as described in section \ref{sec:Application_to_NeuroSAT}.
+We adapt this to only contain singular unsatisfiable problems, rather than pairs of problems, since unsatisfiable cores only appear in unsatisfiable problems. The difficulty of the problems is slightly reduced by using $n=8$, to allow for the explainer to run on NeuroSAT on our limited hardware. We create a dataset of 100 problems. The expected \ac{GT} is generated with the deletion-based MUS extractor \lstinline|MUSX| from PySAT \cite{imms-sat18}, as described in section \ref{sec:Application_to_NeuroSAT}. \bigskip
 
-The quantitative evaluation is adopted from Section \ref{sec:PGE_exp_setup}, with the positive targets being the edges that appear in the corresponding \ac{GT} MUS of each problem. We additionally evaluate the test instance that achieves the highest individual AUROC score and visualize it. Since the qualitative evaluation relies on knowing $k$, we calculate this dynamically during evaluation from the \ac{GT} of the current problem. Clause nodes are drawn in red, while nodes representing literals are drawn in magenta.
+The quantitative evaluation is adopted from Section \ref{sec:PGE_exp_setup}, with the positive targets being the edges that appear in the corresponding \ac{GT} MUS of each problem. We additionally evaluate the test instance that achieves the highest individual AUROC score and visualize it. Since the qualitative evaluation relies on knowing $k$, we calculate this dynamically during evaluation from the \ac{GT} of the current problem. Clause nodes are drawn in red, while nodes representing literals are drawn in magenta. \bigskip
 
 The NeuroSAT model trained on a $\textbf{SR}(40)$ distribution was provided by a fellow student. It achieves an accuracy of 1.0 on the dataset we created.
 
 We apply PGExplainer in the inductive setting, using a 50/25/25 split for training, evaluating and testing the NeuroSAT explainer. \bigskip
 
 \textbf{Hyperparameter Search}\par
-We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the applied hard constraint. We follow the general grid search procedure used for the previous experiments, but introduce 4 new hyperparameters, 1 exclusive to the hard constraint and 2 exclusive to the soft constraint. $\alpha_{arch} \in \{0,1\}$, exclusive to the hard constraint, denotes whether a more complex MLP architecture is used in the explainer. The second introduced hyperparameter $\alpha_{concat} \in \{0,1\}$ controls whether the node embeddings $\mathbf{z}$ are used from the last iteration of NeuroSAT or if a concatenation of the states at multiple iterations shall be used (see Section \ref{sec:NeuroSAT_extension}). For the soft constraint, we also try using the AdamW \cite{loshchilov2017decoupled} optimizer from PyTorch with an internal weight decay of $0.01$, denoted by $\alpha_{AdamW} \in \{0,1\}$. Lastly, the coefficient $\alpha_{c} \in \mathbb{R}^+$ controls the effect of the soft constraint $R_C$ (see Equation \ref{eq:soft_restraint}) on the loss. This is disregarded in the hard constraint experiment, as the hard constraint replaces the soft constraint. The sample bias $b$ used in PGExplainer is disregarded completely. We evaluate the search with respect to the validation AUROC score, as well as the validation loss. The specification of both grid searches can be found in Appendix \ref{sec:neurSAT_sweeps}.
+We perform a hyperparameter search for both the explainer with the soft constraint, and the explainer with the applied hard constraint. We follow the general grid search procedure used for the previous experiments, but introduce 4 new hyperparameters, 1 exclusive to the hard constraint and 2 exclusive to the soft constraint. 
+
+$\alpha_{arch} \in \{0,1\}$, exclusive to the hard constraint, denotes whether a more complex MLP architecture is used in the explainer (see Listing \ref{lst:ext_mlp_arch}). The second introduced hyperparameter $\alpha_{concat} \in \{0,1\}$ controls whether the node embeddings $\mathbf{z}$ are used from the last iteration of NeuroSAT or if a concatenation of the states at multiple iterations shall be used (see Section \ref{sec:NeuroSAT_extension}). For the soft constraint, we also try using the AdamW \cite{loshchilov2017decoupled} optimizer from PyTorch with an internal weight decay of $0.01$, denoted by $\alpha_{AdamW} \in \{0,1\}$. Lastly, the coefficient $\alpha_{c} \in \mathbb{R}^+$ controls the effect of the soft constraint $R_C$ (see Equation \ref{eq:soft_restraint}) on the loss. This is disregarded in the hard constraint experiment, as the hard constraint replaces the soft constraint. 
+
+The sample bias $b$ used in PGExplainer is disregarded completely. We evaluate the search with respect to the validation AUROC score, as well as the validation loss. The specification of both grid searches can be found in Appendix \ref{sec:neurSAT_sweeps}.
 
 
 \subsection{Soft Constraint Experiment}
@@ -560,7 +567,7 @@ We perform a hyperparameter search for both the explainer with the soft constrai
 In this experiment we apply the soft constraint introduced in Section \ref{sec:NeuroSAT_extension} to the PGExplainer to generate explanations for unsatisfiable SAT problems learned from NeuroSAT predictions. After performing the grid search, we utilize the optimal parameters to evaluate the test AUROC over 10 seeded runs. Additionally, we provide qualitative explanations in comparison to the \ac{GT} MUS for the problem that results in the highest individual AUROC. \bigskip
 
 \textbf{Results}\par
-We found that the grid search resulted in a maximum average validation AUROC of 0.5248 and a minimal score of 0.4726. This can be seen in Figure \ref{fig:soft-sweep}. All runs achieved results in this interval, indicating completely random edge predictions on average. It seems that regardless of the tested hyperparameters the general explanations of unsatisfiable problems, as learned from NeuroSAT, do not align with unsatisfiable cores.
+We found that the grid search resulted in a maximum average validation AUROC of 0.5248 and a minimal score of 0.4726. This can be seen in Figure \ref{fig:soft-sweep}. All runs achieved results in this interval, indicating completely random edge predictions on average. It seems that regardless of the tested hyperparameters the general explanations of unsatisfiable problems, as learned from NeuroSAT, do not align with \acp{MUS}.
 
 We note that a low size regularization has the highest impact on the mean AUROC score, since a high value leads to uniform edge importance scores of 0. This is followed by a high consistency regularization, as well as a low learning rate. The other hyperparameters are not as decisive. We select the hyperparameter combination that maximizes the validation AUROC, as highlighted in Table \ref{tab:sweep_conf_soft}. \bigskip
 
@@ -586,7 +593,7 @@ Over all runs, the highest individual test AUROC score of 0.711 is achieved for 
         \caption{\ac{GT}}
         \label{fig:soft_gt}
     \end{subfigure}
-    \caption[Visualization of soft constraint explanation]{Visualization of the soft constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} unsatisfiable core.}
+    \caption[Visualization of the best soft constraint explanation]{Visualization of the soft constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} unsatisfiable core.}
     \label{fig:soft_quant}
 \end{figure}
 
@@ -597,12 +604,6 @@ In this experiment we apply the hard constraint introduced in Section \ref{sec:N
 
 \textbf{Results}\par
 The grid search revealed that none of the parameter configurations achieves an AUROC score above $0.5$ and below $0.44$. Since $0.5$ equals random guessing and is usually caused by all edges being predicted with a uniform score of 0, we select the hyperparameter combination that achieves the highest score, while maintaining edge weights unequal to 0. We found that a low learning rate is important to keep the edge predictions from reaching 0, as these steadily decrease over training time. $\alpha_s=1.0$ further enhanced this unwanted behavior. The resulting combination used for the experiment is highlighted in Table \ref{tab:sweep_conf_hard}. \bigskip
-
-Using a concatenation of the embeddings at multiple iterations achieved worse results than the usual graph task procedure when considering the highest individual AUROC of a validation instance. However, this does not consider whether a general procedure is learned. It is important to note that the average of the lowest absolute edge importance score per run is 0.34, while the average of the highest score is 0.44. This indicates a reasonable span of importance scores, but may still lack in the sense of resembling approximated discrete masks.\bigskip
-
-We found that the run on seed 0 achieves the highest individual test AUROC of 0.776 (See Figure \ref{fig:hard_quant}). It is notable that 2 out of 6 full clauses are predicted correctly. Nevertheless, the mean test AUROC only sees a slight increase as presented in Table \ref{tab:res_neuroSAT}. \bigskip
-
-We present an additional evaluation of the satisfiability of an explanation in Appendix \ref{sec:sat_expl_hard_cons}. \bigskip
 
 \begin{table}[ht]
     \centering
@@ -619,6 +620,12 @@ We present an additional evaluation of the satisfiability of an explanation in A
     \caption[Inductive performance of explainer on NeuroSAT]{Explanation AUROC for NeuroSAT predictions of unsatisfiable SAT problems.}
     \label{tab:res_neuroSAT}
 \end{table}
+
+TODO: Remove? Using a concatenation of the embeddings at multiple iterations achieved worse results than the usual graph task procedure when considering the highest individual AUROC of validation instances. However, this does not consider whether a general procedure is learned. It is important to note that the average of the lowest absolute edge importance score per run is 0.34, while the average of the highest score is 0.44. This indicates a reasonable span of importance scores, but may still lack in the sense of resembling approximated discrete masks.\bigskip
+
+We found that the run on seed 0 achieves the highest individual test AUROC of 0.776 (See Figure \ref{fig:hard_quant}). It is notable that 2 out of 6 full clauses are predicted correctly. Nevertheless, the mean test AUROC only sees a slight increase as presented in Table \ref{tab:res_neuroSAT}. \bigskip
+
+We present an additional evaluation of the satisfiability of a singular explanation in Appendix \ref{sec:sat_expl_hard_cons}. \bigskip
 
 \begin{figure}[h]
     \centering
@@ -638,8 +645,8 @@ We present an additional evaluation of the satisfiability of an explanation in A
         \caption{\ac{GT}}
         \label{fig:hard_gt}
     \end{subfigure}
-    \caption[Visualization of hard constraint explanation]{Visualization of the hard constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} unsatisfiable core.}
+    \caption[Visualization of the best hard constraint explanation]{Visualization of the hard constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} unsatisfiable core.}
     \label{fig:hard_quant}
 \end{figure}
 
-Furthermore, we found that running the training on a singular seed for 500 epochs resulted in a converging loss, as well as a converging metric score close to $0.46$. A local score minimum is reached in epoch 60 with a value of $0.44$. Since this is very close to a score indicating randomness, we conclude that the post-hoc explanations provided by our modified version of PGExplainer for NeuroSAT do not align with MUSes.
+Furthermore, we found that running the training on seed 0 for 500 epochs resulted in a converging loss, as well as a converging metric score close to $0.46$. A local score minimum is reached in epoch 60 with a value of $0.44$. Since this is very close to a score indicating randomness, we conclude that the post-hoc explanations provided by our modified version of PGExplainer for NeuroSAT do not align with MUSes.

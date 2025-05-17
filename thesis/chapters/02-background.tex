@@ -391,12 +391,17 @@ Let $X$ and $Y$ be two random variables with the joint probability mass function
 \section{Graph Neural Networks}
 \label{sec:gnns}
 
-\acp{GNN} \cite{4700287} are a DL-based approach for modeling graph data. Due to their unique non-Euclidean property they find usage in many areas, with common tasks including node classification \cite{gao2019graph}, graph classification \cite{xu2018powerful} and link prediction \cite{zhang2018link}. Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. Modern GNNs combine the key features of convolutional neural networks \cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings \cite{cai2018comprehensive} to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu and Zhou~\cite{Liu2020}).\bigskip
+\acp{GNN} \cite{4700287} are a DL-based approach for modeling graph data. Due to their unique non-Euclidean property they find usage in many areas, with common tasks including node classification \cite{gao2019graph}, graph classification \cite{xu2018powerful} and link prediction \cite{zhang2018link} (see Figure \ref{fig:gnn_tasks}). Their high interpretability and strong performance have led to GNNs becoming a commonly employed method in graph analysis. Modern GNNs combine the key features of convolutional neural networks \cite{726791}, such as local connection, shared weights, and multi-layer usage, with the concept of graph embeddings \cite{cai2018comprehensive} to leverage the power of feature extraction and representation as low-dimensional vectors for graphs (see Liu and Zhou~\cite{Liu2020}).\bigskip
 
-TODO: CONCRETELY DEFINE NODE AND GRAPH TASKS! VISUALIZE?
 Graphs are a common way of representing data in many different fields, including ML. ML applications on graphs can mostly be divided into graph-focused tasks and node-focused tasks. For graph-focused applications our model does not consider specific singular nodes, but rather implements, for example, a classifier on representations of complete graphs. In node-focused applications however the model is dependent on specific nodes, leading to classification tasks that rely on the properties of each node.
 
 The study of GNNs was first introduced in \cite{gori2005new} and refined in \cite{4700287}. Thus, we describe the supervised GNN model by Scarselli et al.~\cite{4700287} that aims to preserve the important, structural information of graphs by encoding their topological relationships among nodes. \bigskip
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{img/graph_tasks.png}
+    \caption[Applications of GNNs]{Common applications of GNNs. Reprinted from \cite{masui2022gnn}.}
+    \label{fig:gnn_tasks}
+\end{figure}
 
 A node is naturally defined by its features as well as its related nodes in a graph. The goal of a GNN is to learn state embeddings $\mathbf{h}_v \in \mathbb{R}^d$ for each node $v$, that map the neighborhood of a node into a representation. These embeddings are used to obtain outputs $\mathbf{o}_v$, that, e.g., may contain the distribution of a predicted node label. The GNN model proposed by Scarselli et al.~\cite{4700287} uses undirected homogeneous graphs with $\mathbf{x}_v$ describing the $d$-dimensional features of each node and $x_e$ the optional features of each edge. The model updates the node states according to the input neighborhood with a local transition function $f$ that is shared by all nodes. Additionally, the local output function $g$ is used to produce the output of each node. $\mathbf{h}_v$ and $\mathbf{o}_v$ are therefore defined as
 \begin{equation}
@@ -498,7 +503,7 @@ This network is defined specifically for graphs that can be partitioned into $r$
 \end{equation}
 where $W_1^{(l)}, W_2^{(l)} \in \mathbb{R}^{d\times e}$ are two layer-specific trainable weight matrices with embedding dimension $r$. Note that $e_{j,i}$ denotes an optional edge weight for the edge $(j,i)$ that defaults to 1 in the case without explicit edge weights. 
 %No activation: x_i' = W_1x_i+W_2 \sum_{j\in\mathcal{N}(i)}e_{j,i}\cdot x_j \\
-TODO: MORE MOTIVATION FOR THIS! \bigskip
+TODO: MORE MOTIVATION FOR THIS? \bigskip
 
 \textbf{Message Passing Neural Network}\par
 The \ac{MPNN} proposed by Gilmer et al.~\cite{gilmer2017neural} seeks to unify GNN models, by providing a general framework for supervised learning on GNNs, since many by now existing models operate similarly. Typically, messages derived from node features are passed along edges of a graph to be able to learn meaningful graph and node representations that can be used for downstream tasks \cite{kipf2016semi}, \cite{4700287}, \cite{velivckovic2017graph}, \cite{xu2018powerful}. This is visualized in Figure \ref{fig:message_passing}. Therefore, GNNs may be expressed as MPPNs, where the forward pass consist of a message passing phase and a readout phase. The message passing phase runs for $T$ time steps and is defined by the message function $M_t$, as well as the node update function $U_t$. At each time step $t$, the hidden state $\mathbf{h}_v^{t+1}$ of a node $v$ in the graph $G$ is updated based on the message $\mathbf{m}_v^{t+1}$, which aggregates information from the previous hidden states of its neighbors according to the message function $M_t$. Formally, this is defined as
