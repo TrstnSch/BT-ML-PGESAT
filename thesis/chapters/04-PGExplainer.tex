@@ -164,7 +164,7 @@ Consequently, $G_o^{(i)}$ and $G_s^{(i,k)}$ denote the input graph and the $k$-t
         %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
         %\end{pgfonlayer}
     \end{tikzpicture}
-    \caption["Black-box" target model in PGExplainer context.]{A "black-box" target model in the context of PGExplainer.}
+    \caption["Black-box" target model in PGExplainer context]{A "black-box" target model in the context of PGExplainer.}
     \label{fig:blackbox_downstream_model}
 \end{figure}
 
@@ -574,181 +574,13 @@ The max pooling operation extracts the maximum value of each feature dimension a
 
 \tikzstyle{function} = [rectangle, sharp corners, minimum width=2cm, minimum height=0.5cm, text centered, draw=black, fill=brown!30, font=\small]
 
-\begin{figure}
-    \centering
-    \begin{tikzpicture}
-        \node (input) [data] {\small $G_o$};
-
-        %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
-        \node (layer1) [module2, below=of input] {GNN Layer 1};
-        \node (layer2) [module2, below=of layer1] {GNN Layer 2};
-        \node (layer3) [module2, below=of layer2] {GNN Layer 3};
-        \node (concat) [process, below=of layer3] {concat};
-        \coordinate (right_of_concat) at ($ (concat) + (3.5cm, 0) $);
-        \node (Z) [emb, below=0.5cm of concat] {$\mathbf{Z}$};
-        \node (DT) [module3, below=0.5cm of Z] {Linear Layer};
-        \node (softmax) [process, below=of DT] {Softmax};
-
-        \node (Z_out) [right=3.5cm of Z] {};
-
-        \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
-
-        
-        %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
-
-        %\node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
-        %\node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
-        %\node (h_3) [data, right=0.5cm of h_2] {$h_{L,i}$};
-    
-        %\node (O) [module, above=1cm of h_2] {Downstream Task};
-        %\node (F_1) [module, above=0.2cm of O, minimum height=5cm] {L-Layer GNN};
-        \node (H_1) [emb, right=0.5cm of layer1] {$\mathbf{H}^{(1)}$};
-        \coordinate (right_of_layer1) at ($ (layer1) + (3.5cm, 0) $);
-        \node (H_2) [emb, right=0.5cm of layer2] {$\mathbf{H}^{(2)}$};
-        \coordinate (right_of_layer2) at ($ (layer2) + (3.5cm, 0) $);
-        \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
-        \coordinate (right_of_layer3) at ($ (layer3) + (3.5cm, 0) $);
-
-        
-        \node (features) [data, above=of H_1] {\small $\mathbf{X}$};
-
-        \node (GraphConv) [function, right=3cm of H_1] {GraphConv};
-        \node (ReLu) [function, below=0.1cm of GraphConv] {ReLu};
-        \node (BN) [function, below=0.1cm of ReLu] {BatchNorm};
-        \node (Dropout) [function, below=0.1cm of BN] {Dropout};
-
-        
-        \draw [arrow] (features) -- (layer1);
-
-        \draw [arrow] (layer1) -- (H_1);
-        \draw [arrow] (H_1) -- (layer2);
-        \draw [arrow] (layer2) -- (H_2);
-        \draw [arrow] (H_2) -- (layer3);
-        \draw [arrow] (layer3) -- (H_3);
-    
-        \draw [arrow] (H_1) -- (right_of_layer1) -- (right_of_concat) -- (concat);
-        \draw [-] (H_2) -- (right_of_layer2);
-        \draw [-] (H_3) -- (right_of_layer3);
-
-        \draw [arrow] (concat) -- (Z);
-        \draw [arrow] (Z) -- (Z_out);
-        \draw [arrow] (Z) -- (DT);
-
-        \draw [arrow] (DT) -- (softmax);
-        \draw [arrow] (softmax) -- (Y_o);
-
-        \begin{pgfonlayer}{background}
-            \draw [arrow] (input) -- (layer3);
-            \node[draw=gray, dashed, rounded corners, inner sep=15pt,  fit=(GNNE) (H_1) (DT)] (backgroundevaluation) {};
-            \node[
-                rotate=90, 
-                anchor=center
-            ] at ([xshift=-3mm]backgroundevaluation.west) {Target Model Node Classification};
-        \end{pgfonlayer}
-        
-        %\begin{pgfonlayer}{background}
-        %    \node[draw=gray, thick, rounded corners, fit=(layer1) (layerL)] (backgroundevaluation) {};
-        %    \node[
-        %        rotate=90, 
-        %        anchor=center
-        %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
-        %\end{pgfonlayer}
-    \end{tikzpicture}
-    \caption{Visualization of the concrete node classification target model. concat denotes the row-wise concatenation along the feature dimension.}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{tikzpicture}
-        \node (input) [data] {\small $G_o$};
-
-        %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
-        \node (layer1) [module2, below=of input] {GNN Layer 1};
-        \node (layer2) [module2, below=of layer1] {GNN Layer 2};
-        \node (layer3) [module2, below=of layer2] {GNN Layer 3};
-        \node (Z) [emb, below=of layer3] {$\mathbf{Z}$};
-        \node at ($(Z.south)+(0,-1)$) (belowZ) {};
-        \node (meanP) [process, left=0.3cm of belowZ] {MeanPool};
-        \node (maxP) [process, right=0.3cm of belowZ] {MaxPool};
-        \node (concat) [below=0.5cm of belowZ] {\Large $\oplus$};
-        \coordinate (right_of_concat) at ($ (maxP |- concat) $);
-        \coordinate (left_of_concat) at ($ (meanP |- concat) $);
-        \node (DT) [module3, below=0.3cm of concat] {Linear Layer};
-        \node (softmax) [process, below=of DT] {Softmax};
-
-        \node (Z_out) [right=3.5cm of Z] {};
-
-        \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
-
-        
-        %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
-
-        %\node (h_2) [data, above=1cm of z_i] {$h_{2,i}$};
-        %\node (h_1) [data, left=0.5cm of h_2] {$h_{1,i}$};
-        %\node (h_3) [data, right=0.5cm of h_2] {$h_{L,i}$};
-    
-        %\node (O) [module, above=1cm of h_2] {Downstream Task};
-        %\node (F_1) [module, above=0.2cm of O, minimum height=5cm] {L-Layer GNN};
-        \node (H_1) [emb, right=0.5cm of layer1] {$\mathbf{H}^{(1)}$};
-        \node (H_2) [emb, right=0.5cm of layer2] {$\mathbf{H}^{(2)}$};
-        \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
-
-        \node (features) [data, above=of H_1] {\small $\mathbf{X}$};
-
-        %\node (input) [data, above=1cm of F_1] {$G_o$};
-
-        %\node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
-
-        \draw [arrow] (features) -- (layer1);
-
-        \draw [arrow] (layer1) -- (H_1);
-        \draw [arrow] (H_1) -- (layer2);
-        \draw [arrow] (layer2) -- (H_2);
-        \draw [arrow] (H_2) -- (layer3);
-        \draw [arrow] (layer3) -- (H_3);
-        \draw [arrow] (H_3) -- (Z);
-
-        \draw [arrow] (Z) -- (Z_out);
-        \draw [arrow] (Z) -- (maxP);
-        \draw [arrow] (Z) -- (meanP);
-
-        \draw [arrow] (meanP) -- (left_of_concat) -- (concat);
-        \draw [arrow] (maxP) -- (right_of_concat) -- (concat);
-        
-
-        \draw [arrow] (concat) -- (DT);
-        \draw [arrow] (DT) -- (softmax);
-        \draw [arrow] (softmax) -- (Y_o);
-
-        \begin{pgfonlayer}{background}
-            \draw [arrow] (input) -- (layer3);
-            \node[draw=gray, dashed, rounded corners, inner sep=10pt, fit=(GNNE) (H_1) (meanP) (DT)] (backgroundevaluation) {};
-            \node[
-                rotate=90, 
-                anchor=center
-            ] at ([xshift=-3mm]backgroundevaluation.west) {Target Model Graph Classification};
-        \end{pgfonlayer}
-        
-        %\begin{pgfonlayer}{background}
-        %    \node[draw=gray, thick, rounded corners, fit=(layer1) (layerL)] (backgroundevaluation) {};
-        %    \node[
-        %        rotate=90, 
-        %        anchor=center
-        %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
-        %\end{pgfonlayer}
-    \end{tikzpicture}
-    \caption{Visualization of the concrete graph classification target model.}
-\end{figure}
-
-
-
 \begin{figure}[htbp]
     \centering
     % Subfigure 1: Node Classification
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \begin{tikzpicture}
-            \node (input) [data] {\small Input Graph $G_o$ with node features $\mathbf{X}$};
+            \node (input) [data] {$G_o$};
 
             %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
             \node (layer1) [module2, below=of input] {GNN Layer 1};
@@ -760,9 +592,9 @@ The max pooling operation extracts the maximum value of each feature dimension a
             \node (DT) [module3, below=0.5cm of Z] {Linear Layer};
             \node (softmax) [process, below=of DT] {Softmax};
 
-            \node (Z_out) [right=3.5cm of Z] {};
+            \node (Z_out) [left=1.5cm of Z] {};
 
-            \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
+            \node (Y_o) [data, below=0.5cm of softmax] {$Y_o$};
 
             
             %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
@@ -780,10 +612,14 @@ The max pooling operation extracts the maximum value of each feature dimension a
             \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
             \coordinate (right_of_layer3) at ($ (layer3) + (3.5cm, 0) $);
 
+            \node (features) [data, above=of H_1] {\small $\mathbf{X}$};
+
             %\node (input) [data, above=1cm of F_1] {$G_o$};
 
             %\node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
 
+            
+            \draw [arrow] (features) -- (layer1);
             \draw [arrow] (layer1) -- (H_1);
             \draw [arrow] (H_1) -- (layer2);
             \draw [arrow] (layer2) -- (H_2);
@@ -828,14 +664,14 @@ The max pooling operation extracts the maximum value of each feature dimension a
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \begin{tikzpicture}
-            \node (input) [data] {\small Input Graph $G_o$ with node features $\mathbf{X}$};
+            \node (input) [data] {$G_o$};
 
             %\node (gnn) [module, below=of input, minimum height=5cm] {L-Layer GNN};
             \node (layer1) [module2, below=of input] {GNN Layer 1};
             \node (layer2) [module2, below=of layer1] {GNN Layer 2};
             \node (layer3) [module2, below=of layer2] {GNN Layer 3};
             \node (Z) [emb, below=of layer3] {$\mathbf{Z}$};
-            \node at ($(Z.south)+(0,-1)$) (belowZ) {};
+            \node at ($(Z.south)+(0,-0.97)$) (belowZ) {};
             \node (meanP) [process, left=0.3cm of belowZ] {MeanPool};
             \node (maxP) [process, right=0.3cm of belowZ] {MaxPool};
             \node (concat) [below=0.5cm of belowZ] {\Large $\oplus$};
@@ -846,7 +682,7 @@ The max pooling operation extracts the maximum value of each feature dimension a
 
             \node (Z_out) [right=3.5cm of Z] {};
 
-            \node (Y_o) [data, below=0.5cm of softmax] {\small Prediction $Y_o$};
+            \node (Y_o) [data, below=0.5cm of softmax] {$Y_o$};
 
             
             %\node (z_i) [data, above=2cm of node_emb_j2] {$z_i$};
@@ -861,10 +697,13 @@ The max pooling operation extracts the maximum value of each feature dimension a
             \node (H_2) [emb, right=0.5cm of layer2] {$\mathbf{H}^{(2)}$};
             \node (H_3) [emb, right=0.5cm of layer3] {$\mathbf{H}^{(3)}$};
 
+            \node (features) [data, above=of H_1] {\small $\mathbf{X}$};
+
             %\node (input) [data, above=1cm of F_1] {$G_o$};
 
             %\node (concat3) at ($ (h_2 |- z_i) + (0,1)$) {\Large $\oplus$};
 
+            \draw [arrow] (features) -- (layer1);
             \draw [arrow] (layer1) -- (H_1);
             \draw [arrow] (H_1) -- (layer2);
             \draw [arrow] (layer2) -- (H_2);
@@ -910,7 +749,7 @@ The max pooling operation extracts the maximum value of each feature dimension a
 
 Furthermore, following the original paper, all layer weights are initialized with Xavier initialization \cite{glorot2010understanding}, while biases are initialized with $0$. The datasets are split into training, testing and validation sets with an 80/10/10 split ratio. The models are trained for 1000 epochs, with a learning rate of $1.0 \times 10^{-3}$ and Adam \cite{kingma2014adam} is used as an optimizer. The loss is defined as the PyTorch \lstinline|CrossEntropyLoss()| between the GNN prediction and the actual label of the input. \bigskip
 
-Note that the main differences between our \ac{TM} and the model described in PGExplainer \cite{luo2020parameterized} lie in the used graph layer, as well as the addition of dropout, two batch normalizations before the activations, rather than after activations, and the usage of a slightly different global pooling. TODO: DIFFERENCE TO REPLICATION STUDY?
+Note that the main differences between our \ac{TM} and the model described in PGExplainer \cite{luo2020parameterized} lie in the used graph layer, as well as the addition of dropout, two batch normalizations before the activations, rather than after activations, and the usage of a slightly different global pooling.
 
 We want to stress that though not documented in the paper, early stopping is utilized in the \ac{TM} training and the model state with the highest validation accuracy is selected. For models that achieve the highest accuracy at multiple epochs, the model state with the lowest validation loss is chosen. If the validation loss does not decrease below the minimum for 500 epochs, the training is stopped early. This is very important for a fair comparison of the models, as we found that the explanations of an overfit \ac{TM} differ significantly from those of the best performing one.\bigskip
 

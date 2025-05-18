@@ -130,7 +130,7 @@ The following tables contain the grid search configurations for the explainer on
    & 5 &  &  & \textbf{0.003} & 75 & 0.5 & \textbf{0.05} &  & 2 \\
    & 10 &  &  & 0.03 & 76 & 1.0 & 0.1 &  & 5 \\ \hline
   \end{tabular}
-  \caption[BA-Shapes Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \caption[BA-Shapes grid search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
 \end{table}
 
 \begin{table}[h]
@@ -145,7 +145,7 @@ The following tables contain the grid search configurations for the explainer on
    & \textbf{5} & 0.5 &  & 0.0003 & 75 & 0.1 & \textbf{0.1} &  & \textbf{5.0} \\
    & 10 &  &  &  & 76 &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[BA-Community Grid Search]{First row shows hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \caption[BA-Community grid search]{First row shows hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}. Last section contains our grid search configuration. Bolded values indicate the best performance.}
   \label{tab:BA-Community_sweep}
 \end{table}
 
@@ -162,7 +162,7 @@ The following tables contain the grid search configurations for the explainer on
    & \textbf{5} &  &  & 0.003 & 75 & \textbf{1.0} & 0.05 &  & 5.0 \\
    & 10 &  &  &  & 76 & 10.0 & 0.1 &  &  \\ \hline
   \end{tabular}
-  \caption[Tree-Cycles Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \caption[Tree-Cycles grid search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
   \label{tab:Tree-Cycles_sweep}
 \end{table}
 
@@ -180,7 +180,7 @@ The following tables contain the grid search configurations for the explainer on
    & 10 &  & 30 & 0.01 & 76 & 10 & 1.0 &  &  \\ 
    &  &  &  & 0.05 &  &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[Tree-Grid Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \caption[Tree-Grid grid search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
 \end{table}
 
 \begin{table}[h]
@@ -197,7 +197,7 @@ The following tables contain the grid search configurations for the explainer on
    & \textbf{10} &  &  & 0.005 & 76 &  &  &  &  \\
    &  &  &  & \textbf{0.01} &  &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[BA-2Motif Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \caption[BA-2Motif grid search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
   \label{tab:BA-2M-sweep}
 \end{table}
 
@@ -214,7 +214,7 @@ The following tables contain the grid search configurations for the explainer on
    & 5 &  & \textbf{20} & 0.003 & 75 & \textbf{1.0} & \textbf{0.005} &  & 5.0 \\
    & \textbf{10} &  & 30 & \textbf{0.01} & 76 &  &  &  &  \\ \hline
   \end{tabular}
-  \caption[MUTAG Grid Search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
+  \caption[MUTAG grid search]{First two rows show hyperparameter settings used in \cite{luo2020parameterized} and \cite{holdijk2021re}, respectively. Last section contains our grid search configuration. Bolded values indicate the best performance.}
 \end{table}
 
 \clearpage
@@ -328,33 +328,32 @@ The following tables contain the grid search configurations for the NeuroSAT exp
 \begin{table}[h]
   \centering
   \scriptsize
-  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{11}{|c|}{\textbf{Soft Constraint Explainer}} \\ \hline
-  $\alpha_e$ & $E$ & $\eta$ & $K$ & $\alpha_{concat}$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $\alpha_{C}$ & $\alpha_{AdamW}$ \\ \hline
-  0.1 & \textbf{20} & \textbf{0.0003} & 1 & False & 75 & \textbf{0.001} & \textbf{1.0} & 5.0 & 0.1 & False\\ 
-  \textbf{1.0} & 30 & 0.003 & \textbf{5} & \textbf{True} & 76 & 0.01 & 5.0 &  & 1.0 & \textbf{True}\\ 
-   & 50 & 0.01 &  &  &  & 0.1 &  &  & \textbf{10.0} & \\ \hline
+  $K$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ & $\alpha_{concat}$ & $\alpha_C$ & $\alpha_{AdamW}$ \\ \hline
+  1 & \textbf{20} & \textbf{0.0003} & 75 & 0.1 & \textbf{0.001} & 5.0 & \textbf{1.0} & False & 0.1 & False\\ 
+  \textbf{5} & 30 & 0.003 & 76 & \textbf{1.0} & 0.01 &  & 5.0 & \textbf{True} & 1.0 & \textbf{True}\\ 
+   & 50 & 0.01 &  &  & 0.1 &  &  &  & \textbf{10.0} & \\ \hline
   \end{tabular}
-  \caption[NeuroSAT soft constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Bolded values indicate the best performance.}
+  \caption[NeuroSAT soft constraint grid search]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Bolded values indicate the best performance.}
   \label{tab:sweep_conf_soft}
 \end{table}
 
 \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
     \hline
     \multicolumn{10}{|c|}{\textbf{Hard Constraint Explainer}} \\ \hline
-    $\alpha_e$ & $E$ & $\eta$ & $K$ & $\alpha_{concat}$ & $S$ & $\alpha_s$ & $\tau_T$ & $\tau_0$ & $\alpha_{arch}$ \\ \hline
-    0.1 & 20 & \textbf{0.00003} & 1  & \textbf{False} & 75 & \textbf{0.01} & \textbf{1.0} & 5.0 & False \\
-    \textbf{1.0} & 30 & 0.0003  & \textbf{5}  & True  & 76 & 0.1 & 5.0 &  & \textbf{True}  \\
-    &  \textbf{50} & 0.003   &  &       &     &   1.0   &      &      &       \\
-    &   & 0.01   &  &       &     &   1.0   &      &      &       \\ \hline
+    $K$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ & $\alpha_{concat}$ & $\alpha_{arch}$ \\ \hline
+    1 & 20 & \textbf{0.00003} & 75 & 0.1 & \textbf{0.01} & 5.0 & \textbf{1.0} & \textbf{False} & False \\
+    \textbf{5} & 30 & 0.0003 & 76 & \textbf{1.0} & 0.1 &  & 5.0 & True & \textbf{True} \\
+     & \textbf{50} & 0.003 &  &  & 1.0 &  &  &  & \\
+     &  & 0.01 &  &  &  &  &  &  & \\ \hline
     \end{tabular}
-    \caption[NeuroSAT hard constraint Sweep]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a hard constraint. Bolded values indicate the best performance.
+    \caption[NeuroSAT hard constraint grid search]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a hard constraint. Bolded values indicate the best performance.}
     \label{tab:sweep_conf_hard}
-    }
 \end{table}
 
 \begin{figure}

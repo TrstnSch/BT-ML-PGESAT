@@ -81,7 +81,7 @@ Note that in the collective setting used in the original paper the explainer is 
         \label{fig:subfig4}
     \end{subfigure}
     
-    \caption{The different motifs used in the datasets.}
+    \caption[The different motifs used in the datasets]{The different motifs used in the datasets.}
     \label{fig:motifs}
 \end{figure}
 
@@ -373,7 +373,7 @@ Note that the \ac{GT} does not affect the training procedure in any way and mere
         Inverted GT     & 0.985$\pm$0.006 \\
         \bottomrule
     \end{tabularx}
-    \caption[Inductive performance on BA-2Motif with inverted \ac{GT}]{Explanation AUROC for BA-2Motif with inverted GT.}
+    \caption[Inductive performance on BA-2Motif with inverted ground truth]{Explanation AUROC for BA-2Motif with inverted GT.}
     \label{tab:flippedGT}
 \end{table}
 \textbf{Results} \par
@@ -429,7 +429,7 @@ It is noteworthy that using singular corresponding topological nodes across moti
     \#total motif instances & 300 & 360 & 800 & 289 \\
     \#used motif instances $N$ & 300 & 360 & 160  & 32 \\
     \end{tabular}
-    \caption[Statistics of adapted Motif Node Instance]{Amount of possible and actually used motif instances in the experiments with adapted instance sets.}
+    \caption[Statistics of adapted motif node instances]{Amount of possible and actually used motif instances in the experiments with adapted instance sets.}
     \label{tab:motif-statistics-exp}
 \end{table}
 
@@ -621,7 +621,7 @@ The grid search revealed that none of the parameter configurations achieves an A
     \label{tab:res_neuroSAT}
 \end{table}
 
-TODO: Remove? Using a concatenation of the embeddings at multiple iterations achieved worse results than the usual graph task procedure when considering the highest individual AUROC of validation instances. However, this does not consider whether a general procedure is learned. It is important to note that the average of the lowest absolute edge importance score per run is 0.34, while the average of the highest score is 0.44. This indicates a reasonable span of importance scores, but may still lack in the sense of resembling approximated discrete masks.\bigskip
+Using a concatenation of the embeddings at multiple iterations achieved worse results than the usual graph task procedure when considering the highest individual AUROC of validation instances. However, this does not consider whether a general procedure is learned. It is important to note that the average of the lowest absolute edge importance score per run is 0.34, while the average of the highest score is 0.44. This indicates a reasonable span of importance scores, but may still lack in the sense of resembling approximated discrete masks.\bigskip
 
 We found that the run on seed 0 achieves the highest individual test AUROC of 0.776 (See Figure \ref{fig:hard_quant}). It is notable that 2 out of 6 full clauses are predicted correctly. Nevertheless, the mean test AUROC only sees a slight increase as presented in Table \ref{tab:res_neuroSAT}. \bigskip
 
