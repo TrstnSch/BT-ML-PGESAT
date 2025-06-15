@@ -55,22 +55,20 @@ This section contains the reprinted pseudocode by Luo et al. \cite{luo2020parame
 
 \begin{table}[h]
     \centering
-    \scriptsize
+    \small
     \begin{tabularx}{\linewidth}{l|X X X X|X X}
+    \textbf{Accuracy} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
     \hline
-    \textbf{Accuracy} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2Motif} & \textbf{MUTAG} \\
-    \hline
-    \textbf{Training}   & 0.98 & 0.99 & 0.99 & 0.92 & 1.00 & 0.87 \\
-    \textbf{Validation} & 1.00 & 0.88 & 1.00 & 0.94 & 1.00 & 0.89 \\
-    \textbf{Testing}    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
-    \hline
+    Training   & 0.98 & 0.99 & 0.99 & 0.92 & 1.00 & 0.87 \\
+    Validation & 1.00 & 0.88 & 1.00 & 0.94 & 1.00 & 0.89 \\
+    Testing    & 0.97 & 0.93 & 0.99 & 0.94 & 1.00 & 0.87 \\
     \end{tabularx}
-    \caption[Accuracies of original GNN downstream task]{Compact accuracy table for Node and Graph Classification. Reprinted from \cite{luo2020parameterized}.}
+    \caption[Accuracies of original GNN downstream task]{Accuracy table for Node and Graph Classification. Reprinted from \cite{luo2020parameterized}.}
     \label{tab:compact-accuracy}
 \end{table}
 
 
-\section{Data visualization}
+\section{Data Visualization}
 \label{sec:data_vis}
 
 \begin{figure}[H]
@@ -119,7 +117,7 @@ The following tables contain the grid search configurations for the explainer on
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{table}[h]
   \centering
-  \scriptsize
+  \small
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{10}{|c|}{\textbf{BA-Shapes}} \\ \hline
@@ -135,7 +133,7 @@ The following tables contain the grid search configurations for the explainer on
 
 \begin{table}[h]
   \centering
-  \scriptsize
+  \small
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{10}{|c|}{\textbf{BA-Community}} \\ \hline
@@ -151,13 +149,13 @@ The following tables contain the grid search configurations for the explainer on
 
 \begin{table}[h]
   \centering
-  \scriptsize
+  \small
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{10}{|c|}{\textbf{Tree-Cycles}} \\ \hline
   $a$ & $K$ & $b$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
   $N$ & 1 & 0.0 & 20 & 0.003 & - & 0.01 & 0.0001 & 5.0 & 5.0 \\ \hline
-  $N$ & 1 & 0.0 & 20 & 0.003 & - & 10.0 & 0.1 & 1.0 & 5.0 \\ \midrule
+  $N$ & 1 & 0.0 & 20 & 0.003 & - & 10.0 & 0.1 & 1.0 & 5.0 \\ \hline
   5 & 1 & 0.0 & 20 & \textbf{0.0003} & 74 & 0.01 & \textbf{0.0001} & 1.0 & \textbf{1.0} \\
    & \textbf{5} &  &  & 0.003 & 75 & \textbf{1.0} & 0.05 &  & 5.0 \\
    & 10 &  &  &  & 76 & 10.0 & 0.1 &  &  \\ \hline
@@ -168,13 +166,13 @@ The following tables contain the grid search configurations for the explainer on
 
 \begin{table}[h]
   \centering
-  \scriptsize
+  \small
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{10}{|c|}{\textbf{Tree-Grid}} \\ \hline
   $a$ & $K$ & $b$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
   $N$ & 1 & 0.0 & 30 & 0.01 & - & 1.0 & 0.01 & 5.0 & 5.0 \\ \hline
-  $N$ & 1 & 0.0 & 30 & 0.003 & - & 1.0 & 1.0 & 5.0 & 2.0 \\ \midrule
+  $N$ & 1 & 0.0 & 30 & 0.003 & - & 1.0 & 1.0 & 5.0 & 2.0 \\ \hline
   24 & 1 & 0.0 & 30 & 0.0003 & 74 & 0.1 & 0.01 & 5.0 & \textbf{2.0} \\
    & \textbf{5} &  & 30 & \textbf{0.003} & 75 & \textbf{1.0} & \textbf{0.5} &  & 5.0 \\
    & 10 &  & 30 & 0.01 & 76 & 10 & 1.0 &  &  \\ 
@@ -185,13 +183,13 @@ The following tables contain the grid search configurations for the explainer on
 
 \begin{table}[h]
   \centering
-  \scriptsize
+  \small
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{10}{|c|}{\textbf{BA-2Motif}} \\ \hline
   $a$ & $K$ & $b$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
   $N$ & 1 & 0.0 & 10 & 0.003 & - & 0.0 & 0.00 & 1.0 & 0.0 \\ \hline
-  $N$ & 1 & 0.0 & 20 & 0.005 & - & 0.01 & 0.03 & 5.0 & 1.0 \\ \midrule
+  $N$ & 1 & 0.0 & 20 & 0.005 & - & 0.01 & 0.03 & 5.0 & 1.0 \\ \hline
   30 & 1 & 0.0 & 10 & 0.0003 & 74 & 0.01 & 0.03 & 5.0 & \textbf{1.0} \\
    & 5 &  & \textbf{20} & 0.003 & 75 & \textbf{0.1} &  &  & 5.0 \\
    & \textbf{10} &  &  & 0.005 & 76 &  &  &  &  \\
@@ -203,13 +201,13 @@ The following tables contain the grid search configurations for the explainer on
 
 \begin{table}[h]
   \centering
-  \scriptsize
+  \small
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{10}{|c|}{\textbf{MUTAG}} \\ \hline
   $a$ & $K$ & $b$ & $E$ & $\eta$ & $S$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
   $N$ & 1 & 0.0 & 10 & 0.01 & - & 1.0 & 0.01 & 5.0 & 5.0 \\ \hline
-  $N$ & 1 & 0.0 & 30 & 0.0003 & - & 1.0 & 0.005 & 5.0 & 5.0 \\ \midrule
+  $N$ & 1 & 0.0 & 30 & 0.0003 & - & 1.0 & 0.005 & 5.0 & 5.0 \\ \hline
   30 & 1 & 0.0 & 10 & 0.0003 & 74 & 0.1 & 0.01 & 5.0 & \textbf{1.0} \\
    & 5 &  & \textbf{20} & 0.003 & 75 & \textbf{1.0} & \textbf{0.005} &  & 5.0 \\
    & \textbf{10} &  & 30 & \textbf{0.01} & 76 &  &  &  &  \\ \hline
@@ -235,7 +233,7 @@ The following figures \ref{fig:grid-BA-Shapes-explanations}, \ref{fig:grid-BA-Co
         }
       }
     \end{tikzpicture}
-    \caption{Grid of BA-Shapes explanations (top-6 edges)}
+    \caption[Grid of BA-Shapes explanations (top-6 edges)]{Grid of BA-Shapes explanations (top-6 edges).}
     \label{fig:grid-BA-Shapes-explanations}
 \end{figure}
 
@@ -251,7 +249,7 @@ The following figures \ref{fig:grid-BA-Shapes-explanations}, \ref{fig:grid-BA-Co
         }
       }
     \end{tikzpicture}
-    \caption{Grid of BA-Community explanations (top-6 edges)}
+    \caption[Grid of BA-Community explanations (top-6 edges)]{Grid of BA-Community explanations (top-6 edges).}
     \label{fig:grid-BA-Community-explanations}
 \end{figure}
 
@@ -267,7 +265,7 @@ The following figures \ref{fig:grid-BA-Shapes-explanations}, \ref{fig:grid-BA-Co
         }
       }
     \end{tikzpicture}
-    \caption{Grid of Tree-Cycles explanations (top-6 edges)}
+    \caption[Grid of Tree-Cycles explanations (top-6 edges)]{Grid of Tree-Cycles explanations (top-6 edges).}
     \label{fig:grid-Tree-Cycles-explanations}
 \end{figure}
 
@@ -283,7 +281,7 @@ The following figures \ref{fig:grid-BA-Shapes-explanations}, \ref{fig:grid-BA-Co
         }
       }
     \end{tikzpicture}
-    \caption{Grid of Tree-Grid explanations (top-12 edges)}
+    \caption[Grid of Tree-Grid explanations (top-6 edges)]{Grid of Tree-Grid explanations (top-12 edges).}
     \label{fig:grid-Tree-Grid-explanations}
 \end{figure}
 
@@ -299,7 +297,7 @@ The following figures \ref{fig:grid-BA-Shapes-explanations}, \ref{fig:grid-BA-Co
         }
       }
     \end{tikzpicture}
-    \caption{Grid of BA-2Motif explanations (top-5 edges)}
+    \caption[Grid of BA-2Motif explanations (top-6 edges)]{Grid of BA-2Motif explanations (top-5 edges).}
     \label{fig:grid-BA-2Motif-explanations}
 \end{figure}
 
@@ -315,19 +313,19 @@ The following figures \ref{fig:grid-BA-Shapes-explanations}, \ref{fig:grid-BA-Co
         }
       }
     \end{tikzpicture}
-    \caption{Grid of MUTAG explanations (top-10 edges)}
+    \caption[Grid of MUTAG explanations (top-6 edges)]{Grid of MUTAG explanations (top-10 edges).}
     \label{fig:grid-MUTAG-explanations}
 \end{figure}
 
 \clearpage
-\section{NeuroSAT explainer Hyperparameter Searches}
+\section{NeuroSAT Explainer Hyperparameter Searches}
 \label{sec:neurSAT_sweeps}
 
 The following tables contain the grid search configurations for the NeuroSAT explainer models with either the soft constraint (see Table \ref{tab:sweep_conf_soft}) or the hard constraint (see Table \ref{tab:sweep_conf_hard}) applied. The columns contain the values tested for the corresponding hyperparameter. The optimal settings for each explainer implementation are highlighted. Figure \ref{fig:soft-sweep} shows the AUROC range of all runs performed in the grid search for the soft constraint explainer.
 
 \begin{table}[h]
   \centering
-  \scriptsize
+  \small
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
   \hline
   \multicolumn{11}{|c|}{\textbf{Soft Constraint Explainer}} \\ \hline
@@ -336,13 +334,13 @@ The following tables contain the grid search configurations for the NeuroSAT exp
   \textbf{5} & 30 & 0.003 & 76 & \textbf{1.0} & 0.01 &  & 5.0 & \textbf{True} & 1.0 & \textbf{True}\\ 
    & 50 & 0.01 &  &  & 0.1 &  &  &  & \textbf{10.0} & \\ \hline
   \end{tabular}
-  \caption[NeuroSAT soft constraint grid search]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Bolded values indicate the best performance.}
+  \caption[NeuroSAT soft constraint grid search]{Grid search results over the defined hyperparameter space for the NeuroSAT explainer that uses a soft constraint. Bolded values indicate the best performance.}
   \label{tab:sweep_conf_soft}
 \end{table}
 
 \begin{table}[h]
     \centering
-    \scriptsize
+    \small
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
     \hline
     \multicolumn{10}{|c|}{\textbf{Hard Constraint Explainer}} \\ \hline
@@ -352,7 +350,7 @@ The following tables contain the grid search configurations for the NeuroSAT exp
      & \textbf{50} & 0.003 &  &  & 1.0 &  &  &  & \\
      &  & 0.01 &  &  &  &  &  &  & \\ \hline
     \end{tabular}
-    \caption[NeuroSAT hard constraint grid search]{Grid search results over hyperparameter space for the NeuroSAT explainer that uses a hard constraint. Bolded values indicate the best performance.}
+    \caption[NeuroSAT hard constraint grid search]{Grid search results over the defined hyperparameter space for the NeuroSAT explainer that uses a hard constraint. Bolded values indicate the best performance.}
     \label{tab:sweep_conf_hard}
 \end{table}
 
