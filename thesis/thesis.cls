@@ -26,6 +26,7 @@
 \usepackage{acro}
 
 % Graphics
+\usepackage[dvipsnames]{xcolor}
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
 \usetikzlibrary{decorations.pathreplacing}

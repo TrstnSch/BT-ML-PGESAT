@@ -27,22 +27,22 @@ Tree-Cycles uses an 8-level balanced binary tree as a base graph. 80 cycle motif
 
 The Tree-Grid dataset is assembled in the same way as Tree-Cycles, with the difference that the motifs are 3-by-3 grids (see \ref{fig:subfig3}). Node features and labels also follow the same procedure.
 
-BA-2Motif is the first graph-level dataset with 800 graphs. Each of these graphs is obtained by attaching either a house or a cycle as a motif to a base BA graph of 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 or 1 implying a house or circle, respectively.
+BA-2Motif is the first graph-level dataset with 800 graphs. Each of these graphs is obtained by attaching either a house or a cycle as a motif to a base BA graph of 20 nodes. According to the attached motif the graphs are assigned one of two labels, with 0 or 1 implying a house or circle, respectively. Node features are represented as 10-dimensional vectors with elements equal to 0.1, instead of 1.
 
 The real-world dataset MUTAG contains $4,337$ molecule graphs that are assigned to one of 2 classes, depending on the molecules mutagenic effect \cite{riesen2008iam}, \cite{ying2019gnnexplainer}. Node features are assigned as a one-hot encoding in $\{0,1\}^{14}$, representing the chemical group of a node out of 14 possible ones. Following \cite{debnath1991structure}, \cite{ying2019gnnexplainer}, carbon rings with chemical groups $NH_2$ or $NO_2$ are known to be mutagenic, with carbon rings in general existing in both mutagenic and non-mutagenic graphs. The authors thus propose treating the carbon ring as a shared base graph and $NH_2$ and $NO_2$ as motifs for mutagenic graphs (see \ref{fig:subfig4}). Since there are no explicit motifs for the non-mutagenic graphs, these graphs are not considered in PGExplainer.
 
 \begin{table}[h]
     \centering
-    \scriptsize
+    \small
     \begin{tabular}{l|cccc|cc}
-    \hline
-    \textbf{} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2motifs} & \textbf{MUTAG} \\
+    \multicolumn{1}{c}{\textbf{}} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
+    \addlinespace
+    \textbf{} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motifs & MUTAG \\
     \hline
     \#graphs & 1 & 1 & 1 & 1 & 1,000 & 4,337 \\
     \#nodes  & 700 & 1,400 & 871 & 1,231 & 25,000 & 131,488 \\
     \#edges  & 4,110 & 8,920 & 1,950 & 3,410 & 51,392 & 266,894 \\
     \#labels & 4 & 8 & 2 & 2 & 2 & 2 \\
-    \hline
     \end{tabular}
     \caption[Statistics of PGExplainer datasets]{Dataset statistics for Node and Graph Classification tasks, reprinted from \cite{luo2020parameterized}.}
     \label{tab:dataset-statistics}
@@ -95,34 +95,30 @@ The selection of instances for the remaining dataset is as follows: In BA-Shapes
     \centering
     \scriptsize
     \begin{tabular}{l|cccc|cc}
-    \hline
-    \textbf{} & \textbf{BA-Sh.} & \textbf{BA-Co.} & \textbf{Tree-Cy.} & \textbf{Tree-Gr.} & \textbf{BA-2M.} & \textbf{MUTAG} \\
+    \multicolumn{1}{c}{\textbf{}} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
+    \addlinespace
+    \textbf{} & BA-Sh. & BA-Community & Tree-Cycles & Tree-Grid & BA-2M. & MUTAG \\
     \hline
     \#total motif instances & 300 & 800 & 360 & 289 & 1,000 & 1,015 \\
     \#used motif instances $N$ & 60 & 800 & 60 & 289 & 1,000 & 1,015 \\
-    \hline
     \end{tabular}
     \caption[Statistics of motif instances per dataset]{Amount of possible and actually used motif instances per dataset, as found in the original codebase.}
     \label{tab:motif-statistics}
 \end{table}
 
-
-
 The fixed \ac{TM} that we use for each dataset is trained as described in Section \ref{sec:Replication_of_PGExplainer}. Since we use a different GNN layer, we try to achieve accuracies above 85\%, similar to the original. The accuracies can be seen in Table \ref{tab:our-dt-accuracy} and are slightly higher than in the original for four of the datasets, except for BA-Community and MUTAG. We add a dropout layer with a probability of $p=0.1$ to the latter two models to improve their generalizability and achieve testing scores closer to the original. The exact downstream task accuracies achieved in PGExplainer \cite{luo2020parameterized} can be seen in Table \ref{tab:compact-accuracy}. \bigskip
 
 \begin{table}[h]
     \centering
-    \scriptsize
+    \small
     \begin{tabularx}{\linewidth}{l|X X X X|X X}
+    \textbf{Accuracy} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
     \hline
-    \textbf{Accuracy} & \textbf{BA-Shapes} & \textbf{BA-Community} & \textbf{Tree-Cycles} & \textbf{Tree-Grid} & \textbf{BA-2Motif} & \textbf{MUTAG} \\
-    \hline
-    \textbf{Training}   & 1.00 & 0.92 & 1.00 & 0.99 & 1.00 & 0.86 \\
-    \textbf{Validation} & 1.00 & 0.87 & 1.00 & 0.99 & 1.00 & 0.86 \\
-    \textbf{Testing}    & 0.97 & 0.89 & 0.99 & 0.99 & 1.00 & 0.82 \\
-    \hline
+    Training   & 1.00 & 0.92 & 1.00 & 0.99 & 1.00 & 0.86 \\
+    Validation & 1.00 & 0.87 & 1.00 & 0.99 & 1.00 & 0.86 \\
+    Testing    & 0.97 & 0.89 & 0.99 & 0.99 & 1.00 & 0.82 \\
     \end{tabularx}
-    \caption[Accuracies of adapted GNN downstream task]{Accuracy table for Node and Graph Classification downstream tasks from our reimplementation using a slightly adapted GNN.}
+    \caption[Accuracies of adapted target GNN]{Accuracy table for node and graph classification downstream tasks from our reimplementation using a slightly adapted GNN.}
     \label{tab:our-dt-accuracy}
 \end{table}
 \newpage
@@ -146,19 +142,19 @@ Since we care about the inductive performance and Luo et al. \cite{luo2020parame
 
 \begin{table}[h]
     \centering
-    \scriptsize
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|} \hline
-    Dataset & $K$ & $b$ & $E$ & $\eta$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
-    \textbf{BA-Shapes} & 1 & 0.0 & 10 & 0.003 & 0.1 & 0.05 & 5.0 & 1.0 \\ \hline
-    \textbf{BA-Community} & 5 & 0.0 & 20 & 0.003 & 1.0 & 0.1 & 1.0 & 5.0 \\ \hline
-    \textbf{Tree-Cycles} & 5 & 0.0 & 20 & 0.0003 & 1.0 & 0.0001 & 1.0 & 1.0 \\ \hline
-    \textbf{Tree-Grid} & 5 & 0.0 & 30 & 0.003 & 1.0 & 0.5 & 5.0 & 2.0 \\ \hline
-    \textbf{BA-2Motif} & 10 & 0.0 & 20 & 0.01 & 0.1 & 0.03 & 5.0 & 1.0 \\ \hline
-    \textbf{MUTAG} & 10 & 0.0 & 20 & 0.01 & 1.0 & 0.005 & 5.0 & 1.0 \\ \hline
+    \small
+    \begin{tabular}{l|c c c c c c c c}
+     & $K$ & $b$ & $E$ & $\eta$ & $\alpha_e$ & $\alpha_s$ & $\tau_0$ & $\tau_T$ \\ \hline
+    BA-Shapes & 1 & 0.0 & 10 & 0.003 & 0.1 & 0.05 & 5.0 & 1.0 \\
+    BA-Community & 5 & 0.0 & 20 & 0.003 & 1.0 & 0.1 & 1.0 & 5.0 \\ 
+    Tree-Cycles & 5 & 0.0 & 20 & 0.0003 & 1.0 & 0.0001 & 1.0 & 1.0 \\
+    Tree-Grid & 5 & 0.0 & 30 & 0.003 & 1.0 & 0.5 & 5.0 & 2.0 \\ \hline
+    BA-2Motif & 10 & 0.0 & 20 & 0.01 & 0.1 & 0.03 & 5.0 & 1.0 \\
+    MUTAG & 10 & 0.0 & 20 & 0.01 & 1.0 & 0.005 & 5.0 & 1.0 \\
     \end{tabular}
-    \caption[Optimal explainer parameter values for each dataset]{The best-performing parameter values for each dataset based on the performed grid searches (see Section \ref{sec:sweeps}).}
+    \caption[Optimal explainer parameter values for all replication datasets]{The best-performing parameter values for each dataset based on the performed grid searches (see Section \ref{sec:sweeps}).}
     \label{tab:best_sweep_values}
-  \end{table}
+\end{table}
 
 \textbf{Baselines}\par
  We compare our work to both the collective and inductive results from the original PGExplainer paper, as well as the results from the collective PyTorch replication study by Holdijk et al. \cite{holdijk2021re} (see Table \ref{tab:pgexplainer_baseline}). Since the inductive results of PGExplainer are only provided as plots, we approximate the numeric values. \bigskip
@@ -166,25 +162,22 @@ Since we care about the inductive performance and Luo et al. \cite{luo2020parame
 \begin{table}[ht]
     \centering
     \scriptsize
-    \begin{tabularx}{\textwidth}{lXXXX|XX}   % 'X' column type from tabularx automatically scales columns
-    \textbf{} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
-    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
+    \begin{tabularx}{\textwidth}{l|XXXX|XX}   % 'X' column type from tabularx automatically scales columns
+    \multicolumn{1}{c}{\textbf{}} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
+    \textbf{} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
     \midrule
     \addlinespace
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUROC}} \\
+    \multicolumn{7}{c}{\textbf{Explanation AUROC}} \\
     \midrule
     PGExplainer & 0.963$\pm$0.011 & 0.945$\pm$0.019 & 0.987$\pm$0.007 & 0.907$\pm$0.014 & 0.926$\pm$0.021 & 0.873$\pm$0.013 \\
-    \midrule
     RE-PGExplainer & 0.999$\pm$0.000 & 0.825$\pm$0.040 & 0.760$\pm$0.014 & 0.679$\pm$0.008 & 0.133$\pm$0.046 & 0.843$\pm$0.084 \\
-    \midrule
     PGExplainer (inductive) & $\sim$0.98 & $\sim$0.99 & $\sim$0.99 & $\sim$0.88 & $\sim$0.84 & - \\
     \midrule
     \addlinespace
-    \textbf{} & \multicolumn{6}{c}{\textbf{Inference Time (ms)}} \\
+    \multicolumn{7}{c}{\textbf{Inference Time (ms)}} \\
     \midrule
     \textit{PGExplainer} & 10.92 & 24.07 & 6.36 & 6.72 & 80.13 & 9.68 \\
     \textit{RE-PGExplainer} & 3.58 & 5.23 & 0.45 & 0.54 & 0.33 & 2.05 \\
-    \bottomrule
     \end{tabularx}
     \caption[Baseline PGExplainer and RE-PGExplainer]{PGExplainer performance baselines.}
     \label{tab:pgexplainer_baseline}
@@ -235,25 +228,22 @@ We were unable to determine a reason for the unexpected opposite classification 
     \centering
     \scriptsize
     \begin{tabularx}{\textwidth}{l|XXXX|XX}   % 'X' column type from tabularx automatically scales columns
-    \textbf{} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
-    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
+    \multicolumn{1}{c}{\textbf{}} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
+    \textbf{} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
     \midrule
     \addlinespace
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUROC}} \\
+    \multicolumn{7}{c}{\textbf{Explanation AUROC}} \\
     \midrule
     PGExplainer & $\sim$0.98 & $\sim$0.99 & $\sim$0.99 & $\sim$0.88 & $\sim$0.84 & - \\
-    \midrule
     Our work (He) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
-    \midrule
     Our work (Xavier) & 0.995$\pm$0.002 & 0.779$\pm$0.036 & 0.467$\pm$0.316 & 0.551$\pm$0.119 & 0.035$\pm$0.05 & 0.834$\pm$0.04 \\
     \midrule
     \addlinespace
-    \textbf{} & \multicolumn{6}{c}{\textbf{Inference Time (ms)}} \\
+    \multicolumn{7}{c}{\textbf{Inference Time (ms)}} \\
     \midrule
     \textit{PGExplainer} & 10.92 & 24.07 & 6.36 & 6.72 & 80.13 & 9.68 \\
     \textit{RE-PGExplainer} & 3.58 & 5.23 & 0.45 & 0.54 & 0.33 & 2.05 \\
     \textit{Our work} & 37.0$\pm$1.4 & 24.8$\pm$0.1 & 3.0$\pm$0.2 & 2.7$\pm$0.1 & 4.0$\pm$0.3 & 4.0 \\
-    \bottomrule
     \end{tabularx}
     \caption[Inductive performance of our reimplementation]{Inductive performance of PGExplainer ($a=30$).}
     \label{tab:pgexplainer_auc}
@@ -293,40 +283,37 @@ To allow for a better comparison with both baselines we perform an experiment in
 
 \textbf{Results}\par
 
-We are unable to reproduce the scores achieved in the original work for most of the datasets, as seen in Table \ref{tab:pgexplainer_auc_collective}. BA-Shapes achieves a higher score than the original in both settings, while MUTAG comes close to the original baseline and even obtains a higher score in the inductive setting. The other scores do not come close when considering the scores as they are without flipped \acp{GT}. We are however able to match the results achieved in the replication baseline in all but the Tree-Cycles experiment. This validates that the PGExplainer achieves similar results for different target GNN layers. However, the actual difference in the models is hard to measure since GNNs operate very similarly.
+We are unable to reproduce the scores achieved in the original work for most of the datasets, as seen in Table \ref{tab:pgexplainer_auc_collective}. BA-Shapes achieves a higher score than the original in both settings, while MUTAG comes close to the original baseline and even obtains a higher score in the inductive setting. The other scores do not come close when considering the scores as they are without flipped \acp{GT}. It is notable that we are able to match the results achieved in the replication baseline in all but the Tree-Cycles experiment. This validates that the PGExplainer achieves similar results for different target GNN layers. However, the actual difference in the models is hard to measure since GNNs operate very similarly.
 
 \begin{table}[ht]
     \centering
     \scriptsize
     \begin{tabularx}{\textwidth}{l|XXXX|XX}   % 'X' column type from tabularx automatically scales columns
-    \textbf{} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
-    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
+    \multicolumn{1}{c}{\textbf{}} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
+    \textbf{} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
     \midrule
     \addlinespace
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUROC}} \\
+    \multicolumn{7}{c}{\textbf{Explanation AUROC}} \\
     \midrule
     PGExplainer & 0.963$\pm$0.011 & 0.945$\pm$0.019 & 0.987$\pm$0.007 & 0.907$\pm$0.014 & 0.926$\pm$0.021 & 0.873$\pm$0.013 \\
-    \midrule
     RE-PGExplainer & 0.999$\pm$0.000 & 0.825$\pm$0.040 & 0.760$\pm$0.014 & 0.679$\pm$0.008 & 0.133$\pm$0.046 & 0.843$\pm$0.084 \\
-    \midrule
-    Our work & 0.993$\pm$0.001 & 0.831$\pm$0.009 & 0.084$\pm$0.078 & 0.679$\pm$0.032 & 0.018$\pm$0.004 & 0.833$\pm$0.006 \\
-    \midrule
+    Our work (collective) & 0.993$\pm$0.001 & 0.831$\pm$0.009 & 0.084$\pm$0.078 & 0.679$\pm$0.032 & 0.018$\pm$0.004 & 0.833$\pm$0.006 \\
+    \hline
     %collective with Xavier & 0.993.$\pm$0.003 & 0.833$\pm$0.023 & 0.322$\pm$0.278 & 0.68$\pm$0.057 & 0.027$\pm$0.009 & 0.774$\pm$0.034 \\
     %\midrule
-    \midrule
+    %\addlinespace
     Our work (inductive) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
-    \bottomrule
     \end{tabularx}
     \caption[Collective performance of our reimplementation]{Collective PGExplainer performance ($a=N$).}
     \label{tab:pgexplainer_auc_collective}
 \end{table}
 
 
-\subsection{Inductive Setting with more training data}
+\subsection{Inductive Setting with More Training Instances}
 \label{sec:exp_more_train}
 
 \textbf{Experimental Setup}\par
-Luo et al. \cite{luo2020parameterized} show that the inductive performance of PGExplainer improves with the number of instances used for training. To validate this we perform an inductive experiment with an increased number of training instances $a=60$. Since the motif instance sets of BA-Shapes and Tree-Cycles in the original setting only consist of 60 instances, we use a split ratio of $80/10/10$. This leads to $a=48$ for these two tasks. \bigskip
+Luo et al. \cite{luo2020parameterized} show that the inductive performance of PGExplainer improves with the number of instances used for training. To validate this we perform an inductive experiment with an increased number of training instances $a=60$. Since the motif instance sets of BA-Shapes and Tree-Cycles in the original setting only consist of 60 instances, we use a split ratio of $80/10/10$. This leads to $a=48$ for these two tasks. We compare the results to our original inductive experiment (see Section \ref{sec:ind_results}). \bigskip
 
 \textbf{Results}\par
 The results for this experiment are found in Table \ref{tab:experiment_60train}. The graph tasks see a slight improvement, while the node tasks all seem to perform worse with more training instances. While the variance decreases for both tree tasks, the mean moves toward the value indicating random predictions. We observe that BA-Community reaches a peak in AUROC early but steadily decreases afterward, as opposed to the setting with $a=30$ where the AUROC rises steadily and converges strongly. This result suggests that the hyperparameters have to be retuned for this setting, which significantly limits the generalizability of the explainer. We are unable to confirm that the PGExplainer generally achieves better results when more instances are seen during training.
@@ -335,16 +322,14 @@ The results for this experiment are found in Table \ref{tab:experiment_60train}.
     \centering
     \scriptsize
     \begin{tabularx}{\textwidth}{l|XXXX|XX}   % 'X' column type from tabularx automatically scales columns
-    \textbf{} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
-    \textbf{Method} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
+    \multicolumn{1}{c}{\textbf{}} & \multicolumn{4}{c}{\textbf{Node Classification}} & \multicolumn{2}{c}{\textbf{Graph Classification}} \\
+    \textbf{} & BA-Shapes & BA-Community & Tree-Cycles & Tree-Grid & BA-2Motif & MUTAG \\
     \midrule
     \addlinespace
-    \textbf{} & \multicolumn{6}{c}{\textbf{Explanation AUROC}} \\
+    \multicolumn{7}{c}{\textbf{Explanation AUROC}} \\
     \midrule
-    Our work (inductive) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
-    \midrule
-    $a=60$ & 0.987$\pm$0.002 & 0.641$\pm$0.045 & 0.144$\pm$0.096 & 0.495$\pm$0.052 & 0.017$\pm$0.004 & 0.895$\pm$0.009 \\
-    \bottomrule
+    Inductive ($a=30$) & 0.994$\pm$0.001 & 0.754$\pm$0.013 & 0.106$\pm$0.104 & 0.537$\pm$0.081 & 0.017$\pm$0.006 & 0.874$\pm$0.009 \\
+    More instances & 0.987$\pm$0.002 & 0.641$\pm$0.045 & 0.144$\pm$0.096 & 0.495$\pm$0.052 & 0.017$\pm$0.004 & 0.895$\pm$0.009 \\
     \end{tabularx}
     \caption[Inductive performance with more training instances]{Inductive PGExplainer performance with more training instances where $a$ is either 48 or 60.}
     \label{tab:experiment_60train}
@@ -359,26 +344,25 @@ Since we found that the AUROC score for BA-2Motif decreases rather than increase
 The mean individual AUROC is calculated identical to before, but the \ac{GT} mask of each graph is inverted, meaning that edges in the motif now carry a label of $0$ and all other edges a label of $1$. 
 Note that the \ac{GT} does not affect the training procedure in any way and merely changes the metric evaluation. \bigskip
 
-\begin{table}[ht]
+\begin{table}[h]
     \centering
-    \scriptsize
-    \begin{tabularx}{0.45\textwidth}{l c}
-        \toprule
-        \textbf{Method} & \textbf{Explanation AUROC} \\
-        \midrule
-        PGExplainer       & 0.926$\pm$0.021 \\
-        RE-PGExplainer       & 0.133$\pm$0.046 \\
-        Our work       & 0.017$\pm$0.006 \\
-        \midrule
-        Inverted GT     & 0.985$\pm$0.006 \\
-        \bottomrule
-    \end{tabularx}
+    \small
+    \begin{tabular}{l|c}
+    \textbf{AUROC} & BA-2Motif \\
+    \hline
+    PGExplainer       & 0.926$\pm$0.021 \\
+    RE-PGExplainer       & 0.133$\pm$0.046 \\
+    Our work       & 0.017$\pm$0.006 \\
+    \hline
+    Inverted GT     & 0.985$\pm$0.006 \\
+    \end{tabular}
     \caption[Inductive performance on BA-2Motif with inverted ground truth]{Explanation AUROC for BA-2Motif with inverted GT.}
     \label{tab:flippedGT}
 \end{table}
+
 \textbf{Results} \par
 
-As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment, even surpassing the original baseline, as seen in Table \ref{tab:flippedGT}. It is notable that the results by Holdijk et al. \cite{holdijk2021re} suggest a similar observation, however the authors do not expand on this. We are unable to identify an explanation for this behavior, since no consistent differences in comparison to the other experiments were observed. However, in principle this signals that the explainer learns to predict the edges that are unimportant to the prediction rather than the important ones. Further investigation of this behavior is necessary to determine its cause. 
+As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment, even surpassing the original baseline, as seen in Table \ref{tab:flippedGT}. It is notable that the results by Holdijk et al. \cite{holdijk2021re} suggest a similar observation, but the authors do not expand on this. We are unable to identify an explanation for this behavior, since no consistent differences in comparison to the other experiments were observed. However, in principle, this signals that the explainer learns to predict the edges that are unimportant to the prediction, rather than the important ones. Further investigation of this behavior is necessary to determine its cause. 
 
 
 \begin{figure}[htbp]
@@ -399,14 +383,14 @@ As expected, the AUROC score for BA-2Motif is nearly perfect in this experiment,
     \caption[Validation metrics for BA-2Motif]{Validation metrics for BA-2Motif over 10 runs in inductive setting.}
     \label{fig:BA-2Motif-val_metrics}
 \end{figure}
-
+\newpage
 \subsection{Effects of Used Motif Instances for Node Tasks}
 \label{sec:motif_set_experiment}
 
 %Tree-Grid: DURING OUR TRAINING: 11 of 30 training instances consisted of only motif nodes/edges, resulting in an incomputable AUROC
 %USAGE OF ALL MOTIF NODES LEADS TO k-HOP GRAPHS THAT DO NOT CONTAIN COMPLETE MOTIF! LEADS TO EXPLANATION ONLY CONTAINING 3 "BOXES" OF THE 4, AS SEEN IN BAD PERFORMING MODELS?
 \textbf{Experimental Setup} \par
-As presented in \ref{sec:PGE_exp_setup} the motif instances used in PGExplainer \cite{luo2020parameterized} for different node level tasks are not defined consistently. This is likely related to their direct comparison to GNNExplainer \cite{ying2019gnnexplainer} and the adaptation of their dataset settings. However, since the PGExplainer claims to generalize well and be able to provide explanations for any downstream GNN task, a uniform procedure for providing explanations is necessary. 
+As presented in \ref{sec:PGE_exp_setup} the motif instances used in PGExplainer \cite{luo2020parameterized} for different node level tasks are not defined consistently. This is likely related to their direct comparison to GNNExplainer \cite{ying2019gnnexplainer} and the adaptation of their dataset settings. Nevertheless, since the PGExplainer claims to generalize well and be able to provide explanations for any downstream GNN task, a uniform procedure for providing explanations is necessary. 
 
 Evidently, different nodes in a motif have different local computation graphs, containing different motif- and non-motif nodes. The 3-hop graph computed from a corner node of a grid motif may for example never contain the complete motif. If such a node is commonly selected during training, it is reasonable to believe that the explainer may learn the "sub-motif" consisting of three squares, rather than the complete motif. A 3-layer GNN may therefore not be ideal for learning the grid motif. We evaluate the effect of using all motif nodes or a singular node from each motif as instances in this experiment.
 
@@ -419,13 +403,12 @@ It is noteworthy that using singular corresponding topological nodes across moti
 
 \begin{table}[h]
     \centering
-    \scriptsize
+    \small
     \begin{tabular}{l|cc|cc}
-    \textbf{} & \multicolumn{2}{c|}{\textbf{All-Motif-Nodes}} & \multicolumn{2}{c}{\textbf{One-Motif-Node}} \\
+    \multicolumn{1}{c}{\textbf{}} & \multicolumn{2}{c}{\textbf{All-Motif-Nodes}} & \multicolumn{2}{c}{\textbf{One-Motif-Node}} \\
     \addlinespace
-    \toprule
-    \textbf{} & \textbf{BA-Sh.} & \textbf{Tree-Cy.} & \textbf{BA-Co.} & \textbf{Tree-Gr.} \\
-    \midrule
+    \textbf{} & BA-Shapes & Tree-Cycles & BA-Community & Tree-Grid \\
+    \hline
     \#total motif instances & 300 & 360 & 800 & 289 \\
     \#used motif instances $N$ & 300 & 360 & 160  & 32 \\
     \end{tabular}
@@ -440,42 +423,31 @@ The All-Motif-Nodes experiment leads to a slight deterioration in score for BA-S
 
 This indicates that the different settings lead to vastly different results, highlighting the need of a general setup procedure when explaining node instances with PGExplainer. Furthermore, it suggests that the explainer is able to reliably explain unseen node instances with identical topological information of the motif. Nonetheless, the ability of generally learning motif structures from different motif notes and generalizing this to unsee instances lacks, as indicated by the All-Motif-Nodes results of Tree-Cycles, Tree-Grid and BA-Community.
 
-\begin{table}[ht]
+\begin{table}[h]
     \centering
-    \scriptsize
-    \begin{tabularx}{0.6\textwidth}{l*{2}{X}}   % Adjust width as needed
-    \toprule
-    \textbf{} & \multicolumn{2}{c}{\textbf{Explanation AUROC}} \\
-    \cmidrule{2-3}
-    \textbf{Method} & BA-Shapes & Tree-Cycles \\
-    \midrule
+    \small
+    \begin{tabular}{l|cc}
+    \textbf{AUROC} & BA-Shapes & Tree-Cycles \\
+    \hline
     Our work & 0.994$\pm$0.001 & 0.106$\pm$0.104 \\
-    \midrule
-    AllMotifNodes & 0.959$\pm$0.004 & 0.204$\pm$0.162 \\
-    \bottomrule
-    \end{tabularx}
+    All-Motif-Nodes & 0.959$\pm$0.004 & 0.204$\pm$0.162 \\
+    \end{tabular}
     \caption[Inductive performance using all motif nodes for training]{Explanation AUROC for All-Motif-Nodes.}
     \label{tab:allmotifnodes_selected}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[h]
     \centering
-    \scriptsize
-    \begin{tabularx}{0.6\textwidth}{l*{2}{X}}   % Adjust width as needed
-    \toprule
-    \textbf{} & \multicolumn{2}{c}{\textbf{Explanation AUROC}} \\
-    \cmidrule{2-3}
-    \textbf{Method} & BA-Community & Tree-Grid \\
-    \midrule
+    \small
+    \begin{tabular}{l|cc}
+    \textbf{AUROC} & BA-Community & Tree-Grid \\
+    \hline
     Our work & 0.754$\pm$0.013 & 0.537$\pm$0.081 \\
-    \midrule
-    OneMotifNode & 0.951$\pm$0.007 & 1.0$\pm$0.0 \\
-    \bottomrule
-    \end{tabularx}
+    One-Motif-Node & 0.951$\pm$0.007 & 1.0$\pm$0.0 \\
+    \end{tabular}
     \caption[Inductive performance using one motif node for training]{Explanation AUROC for One-Motif-Node.}
     \label{tab:onemotifnode_selected}
 \end{table}
-
 
 \subsection{Qualitative Analysis}
 \label{sec:qual_exp}
@@ -523,7 +495,7 @@ We found that the MUTAG explainer detects the chemical combinations that cause t
         \label{fig:qual_MUTAG}
     \end{subfigure}
     
-    \caption{Explanations for one instance of each dataset.}
+    \caption{Explanations for a singular instance of each dataset.}
     \label{fig:qual_expl}
 \end{figure}
 
@@ -593,7 +565,7 @@ Over all runs, the highest individual test AUROC score of 0.711 is achieved for 
         \caption{\ac{GT}}
         \label{fig:soft_gt}
     \end{subfigure}
-    \caption[Visualization of the best soft constraint explanation]{Visualization of the soft constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} unsatisfiable core.}
+    \caption[Visualization of the best soft constraint explanation]{Visualization of the soft constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} MUS.}
     \label{fig:soft_quant}
 \end{figure}
 
@@ -605,21 +577,21 @@ In this experiment we apply the hard constraint introduced in Section \ref{sec:N
 \textbf{Results}\par
 The grid search revealed that none of the parameter configurations achieves an AUROC score above $0.5$ and below $0.44$. Since $0.5$ equals random guessing and is usually caused by all edges being predicted with a uniform score of 0, we select the hyperparameter combination that achieves the highest score, while maintaining edge weights unequal to 0. We found that a low learning rate is important to keep the edge predictions from reaching 0, as these steadily decrease over training time. $\alpha_s=1.0$ further enhanced this unwanted behavior. The resulting combination used for the experiment is highlighted in Table \ref{tab:sweep_conf_hard}. \bigskip
 
-\begin{table}[ht]
+\begin{table}[h]
     \centering
-    \scriptsize
-    \begin{tabularx}{0.35\textwidth}{l*{1}{X}}   % Adjust width as needed
-    \toprule
-    \textbf{Method} & \textbf{AUROC} \\
-    \midrule
+    \small
+    \begin{tabular}{l|c}
+    \textbf{AUROC} & NeuroSAT \\
+    \hline
     Soft Constraint & 0.512$\pm$0.023 \\
-    \midrule
     Hard Constraint & 0.528$\pm$0.013 \\
-    \bottomrule
-    \end{tabularx}
-    \caption[Inductive performance of explainer on NeuroSAT]{Explanation AUROC for NeuroSAT predictions of unsatisfiable SAT problems.}
+    \end{tabular}
+    \caption[Inductive performance of PGExplainer on NeuroSAT]{Inductive explanation AUROC for NeuroSAT predictions of unsatisfiable SAT problems.}
     \label{tab:res_neuroSAT}
 \end{table}
+
+\subsection{Qualitative Analysis}
+\label{sec:qual_exp_sat}
 
 Using a concatenation of the embeddings at multiple iterations achieved worse results than the usual graph task procedure when considering the highest individual AUROC of validation instances. However, this does not consider whether a general procedure is learned. It is important to note that the average of the lowest absolute edge importance score per run is 0.34, while the average of the highest score is 0.44. This indicates a reasonable span of importance scores, but may still lack in the sense of resembling approximated discrete masks.\bigskip
 
@@ -645,7 +617,7 @@ We present an additional evaluation of the satisfiability of a singular explanat
         \caption{\ac{GT}}
         \label{fig:hard_gt}
     \end{subfigure}
-    \caption[Visualization of the best hard constraint explanation]{Visualization of the hard constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} unsatisfiable core.}
+    \caption[Visualization of the best hard constraint explanation]{Visualization of the hard constraint explanation that achieves the highest individual test AUROC score when compared to its corresponding \ac{GT} MUS.}
     \label{fig:hard_quant}
 \end{figure}
 

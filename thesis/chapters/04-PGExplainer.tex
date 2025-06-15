@@ -1,4 +1,4 @@
-\chapter{PGExplainer - Methodology}
+\chapter{Methodology}
 \label{ch:PGExplainer}
 %V1: In the following chapter, we introduce the PGExplainer\cite{luo2020parameterized} and its concepts. The idea is to generate explanations in the form of probabilistic graph generative models for any learned GNN model, henceforth referred to as the downstream task (DT), by utilizing a deep neural network to parameterize the generation process. This approach seeks to explain multiple instances collectively, as they share the same neural network parameters, and therefore improve the generalizability to previous works, particularly the GNNExplainer\cite{ying2019gnnexplainer}.
 
@@ -13,7 +13,7 @@ We then describe our implementation in detail (see Section \ref{sec:implementati
 \section{Theoretical Foundations of PGExplainer}
 \label{sec:TheoryPGE}
 
-In the following subchapter, we introduce the PGExplainer by Luo et al.~\cite{luo2020parameterized}. The idea is to generate explanations in the form of edge distributions or soft masks for input graphs using a probabilistic generative model for graph data. The explainer uncovers the concise underlying structures of the graphs, believed to have the biggest impact on the prediction of a GNN, as explanations. This approach may be applied to any trained GNN based model, henceforth referred to as \ac{TM}. 
+In the following subchapter, we introduce the PGExplainer by Luo et al.~\cite{luo2020parameterized}. The idea is to generate explanations in the form of edge distributions or soft masks for input graphs using a probabilistic generative model for graph data. The explainer uncovers the concise underlying structures of the graphs, believed to have the biggest impact on the prediction of a GNN, as explanations. This approach may be applied to any trained GNN-based model, henceforth referred to as \ac{TM}. 
 
 By utilizing a deep neural network to parameterize the generation process, the explainer learns to collectively explain multiple target instances. Since the parameters of the neural network are shared across the population of explained instances, PGExplainer provides "model-level explanations for each instance with a global view of the GNN model" \cite{luo2020parameterized}. Therefore, this approach cannot only be used in a collective setting, but also in an inductive setting, where explanations for not yet explained instances can be generated without retraining the explanation model. This improves the generalizability compared to previous works, particularly the GNNExplainer by Ying et al. \cite{ying2019gnnexplainer} and focuses on explaining graph structure rather than graph features. \bigskip
 
@@ -30,7 +30,7 @@ where $Y_o$ is the prediction of the \ac{TM} with $G_o$ as input and number of p
 Intuitively, if removing an edge $(i,j)$ changes the prediction of a GNN drastically, this edge is considered important and should therefore be included in $G_s$. This idea originates from traditional forward propagation based methods for white-box explanations (see Dabkowski and Gal \cite{dabkowski2017real}).
 It is important to note that $H(Y_o)$ is only related to the \ac{TM} with fixed parameters during the evaluation/explanation stage. This leads to the objective being equivalent to minimizing the conditional entropy $H(Y_o|G=G_s)$. \bigskip
 
-To optimize this function, a relaxation is applied for the edges, since normally there would be $2^m$ candidates for $G_s$. The explanatory graph is henceforth assumed to be a Gilbert random graph, where the selections of edges from $G_o$ are conditionally independent to each other. However, the Luo et al.~\cite{luo2020parameterized} describe a random graph with each edge having its own probability, rather than a shared probability as described in Section \ref{sec:random-graphs}, as follows: Let $e_{i,j}\in V \times V$ be the binary variable indicating whether the edge is selected, with $e_{i,j} = 1$ if edge $(i,j)$ is selected to be in the graph, and 0 otherwise. For the random graph variable $G$ the probability of a graph $G$ can be factorized as 
+To optimize this function, a relaxation is applied for the edges, since normally there would be $2^m$ candidates for $G_s$. The explanatory graph is henceforth assumed to be a Gilbert random graph, where the selections of edges from $G_o$ are conditionally independent to each other. However, Luo et al.~\cite{luo2020parameterized} describe a random graph with each edge having its own probability, rather than a shared probability as described in Section \ref{sec:random-graphs}, as follows: Let $e_{i,j}\in V \times V$ be the binary variable indicating whether the edge is selected, with $e_{i,j} = 1$ if edge $(i,j)$ is selected to be in the graph, and 0 otherwise. For the random graph variable $G$ the probability of a graph $G$ can be factorized as 
 \begin{equation}
     P(G) = \prod_{(i,j)\in E(G)}P(e_{i,j}).
 \end{equation}
@@ -54,7 +54,7 @@ The binary concrete distribution \cite{maddison2016concrete} is utilized as an i
     \label{eq:reparam_trick}
     \epsilon \sim \text{Uniform}(0,1), \qquad \hat{e}_{i,j}=\sigma((\log \epsilon - \log(1-\epsilon)+\omega_{ij}/\tau),
 \end{equation}
-where $\sigma(\cdot)$ is the Sigmoid function and $\omega_{ij} \in \mathbb{R}$ is an explainer logit for the corresponding edge used as a parameter. When $\tau \rightarrow 0$, e.g. during the explanation stage, the weight $\hat{e}_{i,j}$ is binarized with the sigmoid function $\lim_{\tau\rightarrow 0}P(\hat{e}_{i,j} = 1) = \frac{e(\omega{ij})}{1+e(\omega{ij})}$. Since $P(e_{i,j} = 1) = \theta_{ij}$, choosing $\omega_{ij} = \log\frac{\theta_{ij}}{1-\theta_{ij}}$ leads to $\lim_{\tau\rightarrow 0}\hat{G}_s = G_s$ and justifies the approximation of the Bernoulli distribution with the binary concrete distribution. During training, when $\tau > 0$, the objective function in \eqref{eq:init_learning_obj} is smoothed with a well-defined gradient $\frac{\partial\hat{e}_{i,j}}{\partial\omega_{ij}}$ and becomes
+where $\sigma(\cdot)$ is the Sigmoid function and $\omega_{ij} \in \mathbb{R}$ is an explainer parameter, more specifically a logit associated with the corresponding edge (see Section \ref{sec:Global_Explanations}). When $\tau \rightarrow 0$, e.g. during the explanation stage, the weight $\hat{e}_{i,j}$ is binarized with the sigmoid function $\lim_{\tau\rightarrow 0}P(\hat{e}_{i,j} = 1) = \frac{e(\omega{ij})}{1+e(\omega{ij})}$. Since $P(e_{i,j} = 1) = \theta_{ij}$, choosing $\omega_{ij} = \log\frac{\theta_{ij}}{1-\theta_{ij}}$ leads to $\lim_{\tau\rightarrow 0}\hat{G}_s = G_s$ and justifies the approximation of the Bernoulli distribution with the binary concrete distribution. During training, when $\tau > 0$, the objective function in \eqref{eq:init_learning_obj} is smoothed with a well-defined gradient $\frac{\partial\hat{e}_{i,j}}{\partial\omega_{ij}}$ and becomes
 \begin{equation}
     \min_\Omega \mathbb{E}_{\epsilon \sim \text{Uniform}(0,1)}H(Y_o| G = \hat{G}_s)
 \end{equation}
@@ -84,7 +84,7 @@ GNN models generally apply two functions to first learn node representations and
 \begin{equation}
     \mathbf{Z} = \text{GNNE}_{\Phi_0}(G_o, \mathbf{X}), \qquad Y = \text{GNNC}_{\Phi_1}(\mathbf{Z}),
 \end{equation}
-where $\mathbf{Z}$ denotes a matrix of node representations $\mathbf{z}$, referred to as node embeddings. $\mathbf{X} \in \mathbb{R}^{|V(G_o)|\times d}$ denotes the $d$-dimensional node features of $G_o$. The general target GNN model is visualized in Figure \ref{fig:blackbox_downstream_model}. Note that $\mathbf{Z}$ encapsulates both features and structure of the input graph and therefore serves as input for the explainer network $g_\Psi$, defined as
+where $\mathbf{Z} \in \mathbb{R}^{n\times D}$ denotes a matrix of $n$ node representations $\mathbf{z}$, referred to as node embeddings. $\mathbf{X} \in \mathbb{R}^{n\times d}$ denotes the $d$-dimensional node features of $G_o$. The general target GNN model is visualized in Figure \ref{fig:blackbox_downstream_model}. Note that $\mathbf{Z}$ encapsulates both features and structure of the input graph and therefore serves as input for the explainer network $g_\Psi$, defined as
 \begin{equation}
     \label{eq:explainer_network}
     \Omega = g_\Psi(G_o,\mathbf{Z}).
@@ -164,7 +164,7 @@ Consequently, $G_o^{(i)}$ and $G_s^{(i,k)}$ denote the input graph and the $k$-t
         %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
         %\end{pgfonlayer}
     \end{tikzpicture}
-    \caption["Black-box" target model in PGExplainer context]{A "black-box" target model in the context of PGExplainer.}
+    \caption[Black-box target model in PGExplainer context]{A black-box target model in the context of PGExplainer.}
     \label{fig:blackbox_downstream_model}
 \end{figure}
 
@@ -184,47 +184,8 @@ For node level tasks on the other hand, each prediction node is considered as an
 \begin{equation}
     \omega_{ij} = \text{MLP}_\Psi ([\mathbf{z}_i\oplus\mathbf{z}_j\oplus\mathbf{z}_v]).
 \end{equation}
-Thus, a concatenation of the node embeddings of nodes $i, j$ and $v$ is fed through the network. We denote this preprocessing step of creating edge embeddings from node embeddings as edge embedding transformation (see Figure \ref{fig:edge_emb_trans}). The full pipeline of the PGExplainer can be observed in figure \ref{fig:PGExplainer_pipeline}. \bigskip
+Thus, a concatenation of the node embeddings of nodes $i, j$ and $v$ is fed through the network. We denote this preprocessing step of creating edge embeddings from node embeddings as edge embedding transformation. The full pipeline of the PGExplainer can be observed in figure \ref{fig:PGExplainer_pipeline}. \bigskip
 
-\begin{figure}
-\centering
-\begin{tikzpicture}
-    
-    \node (node_emb_i1) [data] {$\mathbf{z}_i$};
-    \node (node_emb_j1) [data, right=0.5cm of node_emb_i1] {$\mathbf{z}_j$};
-    
-    \coordinate (i_j_mid) at ($ (node_emb_i1)!0.5!(node_emb_j1) $);
-    
-    \node (concat) at ($(i_j_mid) + (0,-1)$) {\Large $\oplus$};
-    
-    \node (edge_emb_ij) [data] at ($(i_j_mid) + (0,-2)$) {Edge Embedding of $(i,j)$};
-    
-    
-    \node (node_emb_i2) [data, right=3cm of node_emb_j1] {$\mathbf{z}_i$};
-    \node (node_emb_j2) [data, right=0.5cm of node_emb_i2] {$\mathbf{z}_j$};
-    \node (node_emb_v2) [data, right=0.5cm of node_emb_j2] {$\mathbf{z}_v$};
-    
-    \coordinate (i_v_mid) at ($ (node_emb_i2)!0.5!(node_emb_v2) $);
-    
-    \node (concat2) at ($(i_v_mid) + (0,-1)$) {\Large $\oplus$};
-    
-    \node (edge_emb_ijv) [data] at ($(i_v_mid) + (0,-2)$) {Edge Embedding of $(i,j)$ with target node $v$};
-
-    \begin{pgfonlayer}{background}
-        \node[draw=purple, dashed, rounded corners, fit=(node_emb_i1) (node_emb_j1) (node_emb_i2)(node_emb_v2) (edge_emb_ijv), inner sep=20pt, label=above:\text{Edge Embedding Transformation}] {};
-    \end{pgfonlayer}
-    
-    \begin{pgfonlayer}{background}
-        \node[draw=gray, thick, rounded corners, fit=(node_emb_i1) (node_emb_j1) (edge_emb_ij), fill=olive!30, label=above:Graph Task] {};
-    \end{pgfonlayer}
-    
-    \begin{pgfonlayer}{background}
-        \node[draw=gray, thick, rounded corners, fit=(node_emb_i2) (node_emb_v2) (edge_emb_ijv), fill=violet!30, label=above:Node Task] {};
-    \end{pgfonlayer}
-\end{tikzpicture}
-\caption[Visualization of edge embedding transformation]{TODO: UGLY AF! JUST REMOVE? FOR ALL EDGES IN $G_o$ Visualization of the edge embedding transformation used to create inputs for the explainer network. Depending on the downstream task used in the \ac{TM} the created edge embeddings differ slightly.}
-\label{fig:edge_emb_trans}
-\end{figure}
 
 It is important to note, that for $L$-layer target GNNs utilizing a message passing mechanism, the prediction at node $v$ is fully determined by its local computation graph \cite{ying2019gnnexplainer}. The local computation graph of $v$ is defined as its $L-$hop neighborhood $\mathcal{N}_L(v)$ (see Figure \ref{fig:k-hop}).\bigskip
 
@@ -284,10 +245,10 @@ This means that explanations can be generated for a set of instances from the sa
     \node[circle, draw, fill=black, inner sep=2pt] (y) at (0.5,0.5) {};
     \node[circle, draw, fill=black, inner sep=2pt] (a) at (0,0.5) {};
     \node[circle, draw, fill=black, inner sep=2pt] (b) at (0,-0.5 ) {};
-    \draw[-] (x) -- node[midway, right, font=\scriptsize] {$\mathbf{z}_{ij}$} (y);
-    \draw[-] (a) -- node[midway, above, font=\scriptsize] {$\mathbf{z}_{jk}$}(y);
-    \draw[-] (b) -- node[midway, left, font=\scriptsize] {$\mathbf{z}_{il}$}(x);
-    \draw[-] (a) -- node[midway, left, font=\scriptsize] {$\mathbf{z}_{ik}$}(x);
+    \draw[-] (x) -- node[midway, right, font=\scriptsize] {$\mathbf{z}_{i,j}$} (y);
+    \draw[-] (a) -- node[midway, above, font=\scriptsize] {$\mathbf{z}_{j,k}$}(y);
+    \draw[-] (b) -- node[midway, left, font=\scriptsize] {$\mathbf{z}_{i,l}$}(x);
+    \draw[-] (a) -- node[midway, left, font=\scriptsize] {$\mathbf{z}_{i,k}$}(x);
   }
 }
 
@@ -319,7 +280,7 @@ This means that explanations can be generated for a set of instances from the sa
 \node (edge_embeddings) [emb, below=of embedding_transformation] {Edge Embeddings of $G_o$};
 \node[anchor=center] at ([xshift=4cm]edge_embeddings.center) 
  (edge_embs) 
- {$\begin{bmatrix} \mathbf{z}_{ij} \\ \mathbf{z}_{jk} \\ \vdots \end{bmatrix}$};
+ {$\begin{bmatrix} \mathbf{z}_{i,j} \\ \mathbf{z}_{j,k} \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of edge_embs, anchor=west] 
  {\scriptsize $\in \mathbb{R}^{|E(G_o)|}$};
 \pic at ([xshift=7cm]edge_embeddings.center) {mymini4};
@@ -327,14 +288,14 @@ This means that explanations can be generated for a set of instances from the sa
 \node (logits) [emb, below=of explainer] {Edge Logits/Latent variables $\Omega$};
 \node[anchor=center] at ([xshift=4cm]logits.center) 
  (omega) 
- {$\begin{bmatrix} \omega_{ij} \\ \omega_{jk} \\ \vdots \end{bmatrix}$};
+ {$\begin{bmatrix} \omega_{i,j} \\ \omega_{j,k} \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of omega, anchor=west] 
  {\scriptsize $\in \mathbb{R}^{|E(G_o)|}$};
 \node (trick) [process, below=of logits] {Reparameterization Trick};
 \node (weights) [emb, below=of trick] {Sampled edge importance weights};
 \node[anchor=center] at ([xshift=4cm]weights.center) 
  (edge_score) 
- {$\begin{bmatrix} \hat{e}_{i,j} \\ \hat{e}_{jk} \\ \vdots \end{bmatrix}$};
+ {$\begin{bmatrix} \hat{e}_{i,j} \\ \hat{e}_{j,k} \\ \vdots \end{bmatrix}$};
 \node[right=0.01cm of edge_score, anchor=west] 
  {\scriptsize $\in (0,1)^{|E(G_o)|}$};
 
@@ -365,7 +326,7 @@ This means that explanations can be generated for a set of instances from the sa
 \end{pgfonlayer}
 
 \begin{pgfonlayer}{background}
-    \node[draw=gray, thick, rounded corners, fit=(topK) (explanation), fill=green!30] (backgroundevaluation) {};
+    \node[draw=gray, thick, rounded corners, fit=(topK) (explanation), fill=YellowGreen!80] (backgroundevaluation) {};
     \node[
         rotate=90, 
         anchor=center
@@ -444,18 +405,15 @@ To enhance the effect of the explainer detecting a small, connected subgraph, mo
 We note that in practice this is implemented only for the two highest edge weights for each edge. The definition therefore would change to $(i,j)$ and $(i,k)$ being the edges carrying the top two edge weights from all nodes connecting to node $i$.
 
 
-\section{Extension to application on NeuroSAT}
+\section{Extension to Application on NeuroSAT}
 \label{sec:NeuroSAT_extension}
 In this section we propose additional restraints to fit the explanations of PGExplainer to the structure of SAT formulae. We start by giving a short introduction to NeuroSAT\cite{selsam2018learning} and how it may function as a \ac{TM}.\bigskip
 
 Proposed by Selsam et al. \cite{selsam2018learning}, NeuroSAT utilizes a MPNN, generally utilized to express GNNs, to solve SAT formulae. It is able to generalize in the sense that it may solve substantially larger and more difficult formulae than seen during training by running for more iterations. Though it may be used to calculate variable assignments that satisfy a formula, it is unable to provide proofs for predictions of formulae that are unsatisfiable. \bigskip
 
-In a separate experiment the authors were able to make NeuroSAT identify specific unsatisfiable cores. However, this is assumed to be due to the network memorizing the subgraphs rather than learning a generic procedure that proves unsatisfiability. To support and validate the predictions of unsatisfiability, we aim to generate global, generalized explanations for unsatisfiable formulae using the PGExplainer, trained on predictions of a trained NeuroSAT model. 
+In a separate experiment the authors were able to make NeuroSAT identify specific unsatisfiable cores. This is assumed to be due to the network memorizing the subgraphs rather than learning a generic procedure that proves unsatisfiability. To support and validate the predictions of unsatisfiability, we aim to generate global, generalized explanations for unsatisfiable formulae using the PGExplainer, trained on predictions of a trained NeuroSAT model.
 
-TODO: Rationality of how MUS "explains" UNSAT instance?
-
-
-We test the quality and "human-understandability" of an explanation by comparing it to a MUS of the input problem, since the prediction of an unsatisfiable SAT problem can in theory be reduced to the prediction of said MUS. Furthermore, the fundamental idea of perturbing edges, or sets of edges, to learn explanations is analogous to the process of deleting clauses from a problem until a minimal unsatisfiable core is attained, as done in deletion-based MUS extractors (see Marques-Silva \cite{5489199}). Thus, we test whether PGExplainer is able to generate explanations for NeuroSAT that align with MUSes. \bigskip
+We test the quality and "human-understandability" of an explanation by comparing it to a MUS of the input problem, since the prediction of an unsatisfiable SAT instance can in theory be reduced to the prediction of said MUS. Furthermore, the fundamental idea of perturbing edges, or sets of edges, to learn explanations is analogous to the process of deleting clauses from a problem until a minimal unsatisfiable core is attained, as done in deletion-based MUS extractors (see Marques-Silva \cite{5489199}). Thus, we test whether PGExplainer is able to generate explanations for NeuroSAT that align with MUSes. \bigskip
 
 %Let $n$ denote the number of variables in a SAT formula and $m$ the number of clauses.
 Since the following restraints are tailored to the application on bipartite graphs representing SAT formulae, we have to define the specifics of the input LCG in this context. A formula is encoded as an undirected bipartite graph $G_b$, with bipartition $(L,C)$. It contains one node for every literal $l \in L$, one for every clause $c \in C$, and an edge for every pair $(l,c)$ where $l$ appears in clause $c$. 
@@ -464,11 +422,11 @@ Additionally, in the context of NeuroSAT connections exist between each literal 
 
 %aggregation: sum the outgoing messages of each of a node’s neighbors to form the incoming message
 
-Since PGExplainer generates edge wise explanations, and we want to explain the SAT problem predictions with unsatisfiable cores as \ac{GT}, we need to adapt the framework to account for the definition of unsatisfiable cores. Since a core is a subset of clauses, predicting singular edges that represent literals being present in a clause, may not provide sufficient results in the sense of human understandable explanations. Therefore, we propose a soft and a hard restraint that encourage the explainer to predict "sets" of edges that connect to the same node $c$, approximating the prediction of a complete clause.
+Since PGExplainer generates edge wise explanations, and we want to explain the SAT instance predictions with unsatisfiable cores as \ac{GT}, we need to adapt the framework to account for the definition of unsatisfiable cores. Since a core is a subset of clauses, predicting singular edges that represent literals being present in a clause, may not provide sufficient results in the sense of human understandable explanations. Therefore, we propose a soft and a hard restraint that encourage the explainer to predict "sets" of edges that connect to the same node $c$, approximating the prediction of a complete clause.
 
 The remainder of the explainer pipeline stays identical. The target model - NeuroSAT - calculates hidden node representations $\mathbf{h}^t$ for the input graph $G_b$, now modeling a SAT instance, at each iteration $t$. The representations in the last iteration $T$ are extracted as node embeddings $\mathbf{z}$ for clause and literal nodes respectively, and transformed into edge embeddings (see Equation \ref{eq:mlp_graph_input}). Though this is only done for node level tasks in the original, we also consider using a concatenation of multiple hidden representations $\mathbf{h}^{\frac{1}{2}T} \oplus \mathbf{h}^{\frac{3}{4}T} \oplus \mathbf{h}^T$ as node embeddings $\mathbf{z}$. These serve as the input of the explainer MLP and are processed as usual, with either of the following additional limitations. \bigskip
 
-
+\newpage
 \textbf{Soft Modified Connectivity Constraint}\par
 To account for the definition of unsatisfiable cores - a subset of clauses in the original formula whose conjunction is still unsatisfiable - we add a constraint that reinforces the prediction of complete clauses. Therefore, if the explainer assigns a high score to an edge $(l_1,c)$, all edges $(l_k,c) \in E(c)$ that also connect to the clause node $c$ should receive a high score. Therefore, we introduce a soft constraint that punishes varying edge weights for the same clause. For our sampled bipartite Graph $\hat{G}_s$ with node sets $L$ and $C$ containing literal nodes and clause nodes respectively, we define
 \begin{equation}
@@ -511,7 +469,7 @@ The reparameterization trick is still applied for each edge, but $\epsilon_c$ is
 \end{equation}
 
 
-\section{Implementation details}
+\section{Implementation Details}
 \label{sec:implementation_details}
 In the following, we provide the implementation details needed to reproduce our results. This includes the general replication of the PGExplainer \cite{luo2020parameterized} with the adapted \acp{TM} in Section \ref{sec:Replication_of_PGExplainer} and the specifics for the application on NeuroSAT \cite{selsam2018learning} in Section \ref{sec:Application_to_NeuroSAT}.
 
@@ -530,7 +488,7 @@ We use the original datasets that are provided in the PGExplainer codebase\footn
 In PyTorch Geometric edges are stored in the edge-index format as a COO tensor - a PyTorch coordinate format that stores tuples of element indices and their corresponding values. In the context of graph edges in PyTorch Geometric, for an edge $(i,j)$ the element index is the starting node $i$ and the corresponding value its incident node $j$. This is computed from the adjacency matrix $A$ as \lstinline|A.nonzero().t().contiguous()|.
 First, the matrix indices or coordinates of the edges - non-zero elements - are extracted. These are then transposed and lastly stored in contiguous memory. The resulting shape of the edge-index is $[2, E]$, where E denotes the number of edges in the graph. Therefore, we only transform the data without changing its content. \bigskip
 %$\mathbb{N}^{2\times \text{\#edges}}$
-
+\newpage
 \textbf{Reproducibility}\par
  Inspired by Holdijk et al. \cite{holdijk2021re} we implement the ability to seed the experiments performed on PGExplainer. PyTorch Geometric provides a way of seeding all modules that generate random numbers during the training process, including torch and python random.
 To further increase reproducibility, we utilize PyTorch's \lstinline|use_deterministic_algorithms|, forcing the learning algorithm to only use deterministic algorithms. For the dataset splits we use a separate fixed seed that consistently creates the same instance sets across all explainer training runs and experiments.\bigskip
@@ -551,11 +509,11 @@ Note that in their codebase the authors use a concatenation of the hidden repres
 %    &\vdots \\
 %    \mathbf{H}^{(L)} &= F_L(G_o, \mathbf{H}^{(L-1)},), \\
 %\end{align*}
-This leads to $\mathbf{Z} \in \mathbb{R}^{|V(G_o)|\times (Ld)}$ being the matrix of node embeddings $\mathbf{z}$ that are computed as:
+This leads to $\mathbf{Z} \in \mathbb{R}^{n\times (LD)}$ being the matrix of node embeddings $\mathbf{z}$ that are computed as:
 \begin{equation}
     \mathbf{z}_i = \mathbf{h}^{(1)}_i \oplus \mathbf{h}^{(2)}_i \oplus \mathbf{h}^{(3)}_i,
 \end{equation}
-with $\mathbf{h}^{(L)}_i$ denoting the hidden representations of node $i$ in layer $L \in \{1,2,3\}$.\bigskip
+with $\mathbf{h}^{(l)}_i \in  \mathbb{R}^D$ denoting the hidden representations of node $i$ in layer $l$ for the specified $L=3$ layer network with constant embedding dim $D=20$.\bigskip
 
 
 Thus, the node embeddings used in the explainer as well as in the downstream classification task each have a shape of $\mathbb{R}^{3(20)}$. For the classification a final linear layer is added to the model that maps each $60$-dimensional node embedding to $C$ classes. A softmax is applied to the model output to get class probabilities for each node. We also adopt this in our implementation.
@@ -570,7 +528,7 @@ where $e$ denotes the exponential function. \bigskip
 
 The model used for graph tasks differs slightly, in the sense that only the hidden embeddings of the last \lstinline|GraphConv| layer are treated as node embeddings. In addition, before the final linear layer used for classification, both a max pooling and mean pooling operation are performed on the embeddings of each graph and the results concatenated to get a representation of a complete graph. Note that the paper only states to use max pooling, while in practice a concatenation of the max pooling and sum pooling is used. We adopt the combination of mean pooling and max pooling from the replication study \cite{holdijk2021re}, as this has been used in recent graph neural networks \cite{ma2021unsupervised}, \cite{simonovsky2017dynamic}, \cite{zhao2023faithful}. 
 
-The max pooling operation extracts the maximum value of each feature dimension across the nodes of a graph, while the mean pooling extracts the mean value of each feature dimension across all nodes of a graph. Since the results of both pooling operations are in $\mathbb{R}^{20}$, the resulting $40$-dimensional graph embedding is fed into the linear layer, again mapping to $C$ classes, and a softmax is applied to get probabilities of a graph belonging to each class.\bigskip
+The max pooling operation extracts the maximum value of each feature dimension across the nodes of a graph, while the mean pooling extracts the mean value of each feature dimension across all nodes of a graph. Since the results of both pooling operations are in $\mathbb{R}^{20}$, the resulting $40$-dimensional graph embedding is fed into the linear layer, again mapping to $C$ classes, and a softmax is applied to get probabilities of a graph belonging to each class. Figure \ref{fig:gnn-models} visualizes both described models. \bigskip
 
 \tikzstyle{function} = [rectangle, sharp corners, minimum width=2cm, minimum height=0.5cm, text centered, draw=black, fill=brown!30, font=\small]
 
@@ -654,11 +612,13 @@ The max pooling operation extracts the maximum value of each feature dimension a
             %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
             %\end{pgfonlayer}
         \end{tikzpicture}
-        \caption{concat denotes row-wise concatenation along the feature dimension.}
+        \caption{Node classification model}
         \label{fig:node-classification}
     \end{subfigure}
     \hfill
-    \rule{0.4pt}{\linewidth}
+    \begin{minipage}[t]{0.01\textwidth}
+    \rule{0.4pt}{16.1cm} % Manually adjust this height
+    \end{minipage}
     \hfill
     % Subfigure 2: Graph Classification
     \begin{subfigure}[t]{0.48\textwidth}
@@ -740,10 +700,10 @@ The max pooling operation extracts the maximum value of each feature dimension a
             %    ] at ([xshift=-3mm]backgroundevaluation.west) {GNNE};
             %\end{pgfonlayer}
         \end{tikzpicture}
-        \caption{Graph classification model.}
+        \caption{Graph classification model}
         \label{fig:graph-classification}
     \end{subfigure}
-    \caption{Visualizations of the two target GNN models used for (a) node classification and (b) graph classification.}
+    \caption[Visualization of used target models]{Visualizations of the two target GNN models used for node classification (a) and graph classification (b). "concat" denotes the row-wise concatenation along the feature dimension.}
     \label{fig:gnn-models}
 \end{figure}
 
@@ -803,7 +763,7 @@ where $c_i$ denotes the class label according to the prediction on the original 
 
 A further undocumented specification is that for \acp{TM} that perform node tasks, only node instances that belong to the "motif classes" are selected for training and evaluation, since for nodes that do not belong to these classes there does not exist a specific \ac{GT} motif that may serve as an explanation. This is only documented for one graph classification dataset, where only one of two possible classes has a dedicated motif. The specific node sets used for each dataset vary as well and are presented in Section \ref{sec:experiments_replication}.\bigskip
 
-In the PGExplainer paper, Luo et al. \cite{luo2020parameterized} propose the use of high temperatures, with $\tau_0 = 5.0$ and $\tau_T=2.0$. However, Holdijk et al. \cite{holdijk2021re} found that all hyperparameters described in the paper are overly simplified and in practice, different parameters are used for each dataset. Therefore, we conduct hyperparameter searches for each task in \ref{sec:experiments_replication}. We add that the number of sampled graphs $K$ is not defined in the original work, and the codebase suggests the use of $K=1$. We implement the ability to sample multiple graphs as described in the pseudocode (see Appendix \ref{sec:PGE_material}) and also consider this in our hyperparameter searches. \bigskip
+In the PGExplainer paper, Luo et al. \cite{luo2020parameterized} propose the use of high temperatures, with $\tau_0 = 5.0$ and $\tau_T=2.0$. Holdijk et al. \cite{holdijk2021re} found that all hyperparameters described in the paper are overly simplified and in practice, different parameters are used for each dataset. Therefore, we conduct hyperparameter searches for each task in \ref{sec:experiments_replication}. We add that the number of sampled graphs $K$ is not defined in the original work, and the codebase suggests the use of $K=1$. We implement the ability to sample multiple graphs as described in the pseudocode (see Appendix \ref{sec:PGE_material}) and also consider this in our hyperparameter searches. \bigskip
 
 \textbf{Extension Description}\par
 This is not described in the original paper, but since undirected graphs contain bidirectional edges, effectively each edge carries two importance scores. The authors alleviate this in the code by symmetrizing the edge weight matrix, corresponding to the adjacency matrix of the graph. We propose meaning the logits of each pair of bidirectional edges after the MLP output has been calculated. We implement the logic of meaning each edge's logits as seen in Listing \ref{lst:edge_meaning}.
@@ -836,8 +796,6 @@ The qualitative explanations provided by the explainer are implemented as a Netw
 
 The inference time is measured as the time it takes to generate an explanation for any instance. This starts with the computation of node embeddings from the \ac{TM} and ends after the reparameterization trick - the simple application of a Sigmoid to the edge logits during evaluation - that returns the edge importance scores. This process is illustrated in Figure \ref{fig:PGExplainer_pipeline}, starting from input graph $G_o$ and ending at the sampled graph $\hat{G}_s$. \bigskip
 
-\textbf{TODO: Challenges}: NECESSARY? MENTION DIFFICULTIES IN EACH SUBSECTION? Difficulties getting the code to work, as we started working with the paper only. Found that hyperparameters had to be finetuned, exact \ac{TM} is relevant (e.g. batch norm present or not, overfit models obviously generate bad explanations, need for early stopping). Different loss used in code than in paper; we adopt the loss described in the paper. No documentation of the motif node selection/training only performed on graphs/nodes that contain GT! Imprecise about dataset description (BA-2Motif has different features than the rest of the synthetic datasets). No description of the AUROC calculation, had to be extracted from code (global vs local) \bigskip
-
 \subsection{Application on NeuroSAT}
 \label{sec:Application_to_NeuroSAT}
 
@@ -847,7 +805,7 @@ Since NeuroSAT can be regarded as a black box MPNN in the context of our work, w
 
 Besides the prediction of satisfiability, NeuroSAT returns the node embeddings of both clauses and literals at each iteration. We use these to generate edge embeddings for all edges in the biadjacency matrix as input for the explainer MLP (see Section \ref{sec:NeuroSAT_extension}), using the same procedure as in the previous replication study (see Section \ref{sec:Replication_of_PGExplainer}). Since the SAT instances are defined as biadjacency matrices, edges only exist in one direction - from literals to clauses. Thus, we dismiss the meaning of edge logits and qualitatively evaluate using the top-$k$ edges, rather than the previous top-$2k$. \bigskip
 
-The only change we have to make is allowing the NeuroSAT forward pass to receive edge weights as a parameter. If no edge weights are passed, the forward pass behaves as usual and the biadjacency matrix contains discrete values of 0 or 1. However, when predicting sampled graphs from the explainer, we pass the sampled edge weights and multiply these with the biadjacency matrix, to receive a weighted biadjacency matrix. NeuroSAT then calculates the prediction for the weighted matrix. This change is implemented as seen in Listing \ref{lst:NeuroSAT_adaptation}.
+The only change we have to make is allowing the NeuroSAT forward pass to receive edge weights as a parameter. If no edge weights are passed, the forward pass behaves as usual and the biadjacency matrix contains discrete values of 0 or 1. When predicting sampled graphs from the explainer, we pass the sampled edge weights and multiply these with the biadjacency matrix, to receive a weighted biadjacency matrix. NeuroSAT then calculates the prediction for the weighted matrix. This change is implemented as seen in Listing \ref{lst:NeuroSAT_adaptation}.
 \begin{lstlisting}[language=Python, caption=Adaptation of NeuroSAT., label=lst:NeuroSAT_adaptation]
     connections = torch.sparse_coo_tensor(
             indices=edges,
@@ -893,7 +851,7 @@ The soft constraint uses the same idea of iterating over the unique \lstinline|c
 To evaluate the explanations provided by the PGExplainer, we require \acp{GT} to calculate the AUROC score and understand the visualizations of explanations. Since our goal is testing whether the explanations of unsatisfiable problems, based on NeuroSAT predictions, align with human-understandable concepts, we propose the use of MUSes as \ac{GT}. Therefore, we utilize the deletion-based MUS extractor \lstinline|MUSX| from PySAT \cite{imms-sat18} to generate a MUS for each unsatisfiable problem. This \ac{MUS} is transformed into a mask matching the corresponding edges in its problem's graph representation, and treated as expected \ac{GT}. This allows us to calculate the local AUROC for each SAT problem as described in Section \ref{sec:Replication_of_PGExplainer}. We visualize the provided explanations and \acp{GT} as a pyvis \cite{perrone2020network} \lstinline|Network| for qualitative evaluation. \bigskip
 
 We adopt the MLP architecture described in Section \ref{sec:Replication_of_PGExplainer}, but also perform experiments with a more complex architecture (see Section \ref{sec:SAT-experiments}). This introduces two additional hidden layers, leading to the architecture described in Listing \ref{lst:ext_mlp_arch}.
-\begin{lstlisting}[language=Python, caption=TODO: REMOVE? VIS differently? Implementation of extended MLP architecture., label=lst:ext_mlp_arch]
+\begin{lstlisting}[language=Python, caption=Implementation of extended MLP architecture., label=lst:ext_mlp_arch]
     self.model = nn.Sequential(
             nn.Linear(self.inputSize, 256),
             nn.ReLU(),

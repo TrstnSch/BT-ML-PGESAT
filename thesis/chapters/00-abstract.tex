@@ -1,19 +1,12 @@
 \chapter*{Abstract}
-TODO:
 
-Summarize entire study! Mostly generate interest
-
-Very brief backgrounds, short summary of results
-
-Details on research methods and design of study
-
-Seperate from main paper content
-
-Usually no citations
+%Context/Background: Why is this topic and this research important?
+%Objective: What questions are you trying to answer in your research?
+%Methods/Design: What are the basic details of your research? In general, how did you go %about answering the research questions? 
+%Results: What answers did you find? Were there any other observations?
+%Conclusion/Takeaways: Were your results expected? Is more research needed?
 
 
-Context/Background: Why is this topic and this research important?
-Objective: What questions are you trying to answer in your research?
-Methods/Design: What are the basic details of your research? In general, how did you go about answering the research questions? 
-Results: What answers did you find? Were there any other observations?
-Conclusion/Takeaways: Were your results expected? Is more research needed?
+The recent advances in \ac{DL} have lead to \ac{ML} approaches for solving the \ac{SAT}, commonly represented as a bipartite graph problem, with NeuroSAT being a prominent example utilizing a \ac{GNN}. However, models like these often suffer from a lack of natural proofs or explanations of their predictions, hindering the trustworthiness as well as practical cross-domain applicability. In this work, we explore a method that provides instance explanations with a global view of the GNN, thus seeking to generally explain a model's predictions. We reimplement the \ac{PGE} using PyTorch Geometric, testing its generalizability in the inductive setting and extending it to the domain of NeuroSAT.
+
+While our replication showed that the framework succeeds in generating inductive explanations for structurally similar node instances, it struggles with generalizing these across different node instances of a motif. At the same time, general explanations for graph instances showed promising results. To apply the PGExplainer on NeuroSAT and generate explanations for SAT instances, we interpret unsatisfiable SAT instances using \acp{MUS} - small unsatisfiable cores - as \ac{GT}. Though we were unable to generate favorable explanations that consistently align with these, our findings indicate potential measures for future work and highlight the need for more robust and generalizable methods. 
